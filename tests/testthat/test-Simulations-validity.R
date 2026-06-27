@@ -83,6 +83,27 @@ test_that("v_simulations returns message for invalid stop_report matrix", {
   expect_match(v_simulations(object), err_msg)
 })
 
+# ComboSimulations ----
+
+test_that("v_combo_simulations passes for valid object", {
+  object <- .DefaultComboSimulations()
+  expect_true(v_combo_simulations(object))
+})
+
+test_that("v_combo_simulations returns message for non-DataCombo in data list", {
+  object <- .DefaultComboSimulations()
+  object@data <- list("not a DataCombo object")
+  err_msg <- "all data elements must be DataCombo objects"
+  expect_match(paste(v_combo_simulations(object), collapse = " "), err_msg)
+})
+
+test_that("v_combo_simulations returns message for invalid dose matrix", {
+  object <- .DefaultComboSimulations()
+  object@doses <- matrix(1, nrow = length(object@data), ncol = 1)
+  err_msg <- "doses must be a numeric matrix with 2 columns and one row per simulation"
+  expect_match(paste(v_combo_simulations(object), collapse = " "), err_msg)
+})
+
 # DualSimulations ----
 
 test_that("v_dual_simulations passes for valid object", {

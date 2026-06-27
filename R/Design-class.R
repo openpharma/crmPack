@@ -1,5 +1,7 @@
 #' @include Design-validity.R
 #' @include Model-class.R
+#' @include TwoDrugsCombo-class.R
+#' @include HierarchicalModel-class.R
 #' @include Rules-class.R
 #' @include Backfill-class.R
 #' @include Data-class.R
@@ -224,6 +226,167 @@ Design <- function(
     cohort_size = my_size,
     data = Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)),
     startingDose = 3
+  )
+}
+
+# DesignCombo ----
+
+## class ----
+
+#' `DesignCombo`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`DesignCombo`] is the class for two-drug combination dose-escalation
+#' designs.
+#'
+#' @details
+#' This class stores the same core design components as [`Design`], but uses
+#' [`DataCombo`] and [`TwoDrugsCombo`] to represent two-drug
+#' combinations.
+#'
+#' @slot model (`TwoDrugsCombo`)
+#'   the model to be used.
+#' @slot nextBest (`NextBestNCRM`)
+#'   the rule to select the next dose combination.
+#' @slot stopping (`Stopping`)
+#'   stopping rule(s) for the trial.
+#' @slot increments (`Increments`)
+#'   how to control increments between dose combinations.
+#' @slot cohort_size (`CohortSize`)
+#'   rules for the cohort sizes.
+#' @slot data (`DataCombo`)
+#'   specifies dose grids and any previously observed data.
+#' @slot startingDose (`numeric`)
+#'   starting dose combination as a numeric vector of length 2.
+#' @slot backfill (`Backfill`)
+#'   rules for backfilling patients in the trial.
+#'
+#' @aliases DesignCombo
+#' @export
+#'
+.DesignCombo <- setClass(
+  Class = "DesignCombo",
+  slots = c(
+    model = "TwoDrugsCombo",
+    nextBest = "NextBestNCRM",
+    stopping = "Stopping",
+    increments = "Increments",
+    cohort_size = "CohortSize",
+    data = "DataCombo",
+    startingDose = "numeric",
+    backfill = "Backfill"
+  ),
+  prototype = prototype(
+    model = .TwoDrugsCombo(),
+    nextBest = .NextBestNCRM(),
+    stopping = .StoppingMinPatients(),
+    increments = .IncrementsComboOneDrugOnly(),
+    cohort_size = CohortSizeConst(3L),
+    data = DataCombo(
+      doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+    ),
+    startingDose = c(drug1 = 10, drug2 = 20),
+    backfill = .Backfill(opening = .OpeningNone())
+  ),
+  contains = "CrmPackClass",
+  validity = v_design_combo
+)
+
+## constructor ----
+
+#' @rdname DesignCombo-class
+#'
+#' @param model (`TwoDrugsCombo`)
+#'   see slot definition.
+#' @param nextBest (`NextBestNCRM`)
+#'   see slot definition.
+#' @param stopping (`Stopping`)
+#'   see slot definition.
+#' @param increments (`Increments`)
+#'   see slot definition.
+#' @param cohort_size (`CohortSize`)
+#'   see slot definition.
+#' @param data (`DataCombo`)
+#'   see slot definition.
+#' @param startingDose (`numeric`)
+#'   see slot definition.
+#' @param backfill (`Backfill`)
+#'   see slot definition.
+#'
+#' @export
+#' @example examples/Design-class-DesignCombo.R
+#'
+DesignCombo <- function(
+  model,
+  nextBest,
+  stopping,
+  increments,
+  cohort_size,
+  data,
+  startingDose,
+  backfill = Backfill(opening = OpeningNone())
+) {
+  new(
+    "DesignCombo",
+    model = model,
+    nextBest = nextBest,
+    stopping = stopping,
+    increments = increments,
+    cohort_size = cohort_size,
+    data = data,
+    startingDose = startingDose,
+    backfill = backfill
+  )
+}
+
+## default constructor ----
+
+#' @rdname DesignCombo-class
+#' @note Typically, end users will not use the `.DefaultDesignCombo()` function.
+#' @export
+.DefaultDesignCombo <- function() {
+  empty_data <- DataCombo(
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  my_increments <- IncrementsMin(
+    increments_list = list(
+      IncrementsComboOneDrugOnly(),
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+        drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+      )
+    )
+  )
+
+  DesignCombo(
+    model = TwoDrugsCombo(
+      single_models = list(
+        drug1 = LogisticLogNormal(
+          mean = c(-0.85, 1),
+          cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+          ref_dose = 10
+        ),
+        drug2 = LogisticLogNormal(
+          mean = c(-0.7, 0.8),
+          cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+          ref_dose = 20
+        )
+      ),
+      gamma = 0,
+      tau = 1
+    ),
+    nextBest = NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    ),
+    stopping = StoppingMinPatients(nPatients = 20),
+    increments = my_increments,
+    cohort_size = CohortSizeConst(3L),
+    data = empty_data,
+    startingDose = c(drug1 = 10, drug2 = 20)
   )
 }
 

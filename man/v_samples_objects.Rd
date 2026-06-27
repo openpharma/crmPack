@@ -3,9 +3,12 @@
 \name{v_samples_objects}
 \alias{v_samples_objects}
 \alias{v_samples}
+\alias{v_hierarchical_samples}
 \title{Internal Helper Functions for Validation of \code{\link{Samples}} Objects}
 \usage{
 v_samples(object)
+
+v_hierarchical_samples(object)
 }
 \arguments{
 \item{object}{(\code{Samples})\cr object to validate.}
@@ -22,5 +25,8 @@ of an input \code{\link{Samples}} or inherited classes and therefore not exporte
 \itemize{
 \item \code{v_samples()}: validates that the \code{\link{Samples}} object contains
 valid \code{data} slot.
+
+\item \code{v_hierarchical_samples()}: validates that the \code{\link{HierarchicalSamples}}
+object contains valid per-arm sample mappings.
 
 }}

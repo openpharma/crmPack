@@ -82,12 +82,15 @@ test_that("Global environment is clean after testing h_custom_method_exists", {
 
 crmpack_class_list <- getClasses(asNamespace("crmPack"))
 exclusions <- c(
+  "ArmCondition",
   "CohortSize",
+  "ComboSimulationsSummary",
   "CrmPackClass",
   "DualEndpoint",
   "GeneralData",
   "GeneralModel",
   "GeneralSimulationsSummary",
+  "HierarchicalSimulationsSummary",
   "Increments",
   "ModelEff",
   "ModelPseudo",
@@ -308,6 +311,58 @@ test_that("knit_print.CohortSizeParts works correctly", {
 })
 
 # Increments ----
+
+test_that("knit_print.IncrementsComboOneDrugOnly works correctly", {
+  x <- IncrementsComboOneDrugOnly()
+  rv <- knit_print(x)
+  expect_equal(
+    rv,
+    paste0(
+      "At most one drug may be escalated in any given cohort. If drug 1 is escalated ",
+      "above its last administered dose, then drug 2 must remain at or below its ",
+      "last administered dose, and vice versa.\n\n"
+    ),
+    ignore_attr = TRUE
+  )
+
+  rv <- knit_print(x, asis = FALSE)
+  expect_equal(
+    rv,
+    paste0(
+      "At most one drug may be escalated in any given cohort. If drug 1 is escalated ",
+      "above its last administered dose, then drug 2 must remain at or below its ",
+      "last administered dose, and vice versa.\n\n"
+    )
+  )
+})
+
+test_that("knit_print.IncrementsComboCartesian works correctly", {
+  x <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)),
+    drug2 = IncrementsDoseLevels(levels = 2)
+  )
+
+  rv <- knit_print(x, asis = FALSE)
+
+  expect_true(startsWith(
+    rv,
+    paste0(
+      "The maximum admissible doses are defined independently for each drug by ",
+      "the following rules:\n\n",
+      "Drug 1\n\n"
+    )
+  ))
+  expect_true(grepl(
+    "Defined by highest dose administered so far",
+    rv,
+    fixed = TRUE
+  ))
+  expect_true(grepl(
+    "Drug 2\n\nThe maximum increment between cohorts is 2 levels relative to the dose used in the previous cohort.\n\n",
+    rv,
+    fixed = TRUE
+  ))
+})
 
 test_that("knit_print.IncrementsRelativeParts works correctly", {
   testList <- list(

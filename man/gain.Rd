@@ -54,7 +54,7 @@ pseudo DLE and Efficacy models as well as a given DLE and Efficacy samples.
   samples_dle = Samples,
   model_eff = ModelEff,
   samples_eff = Samples
-)}: 
+)}: Compute gain values from toxicity and efficacy model samples.
 
 \item \code{gain(
   dose = numeric,

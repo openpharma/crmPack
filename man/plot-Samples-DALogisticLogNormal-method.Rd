@@ -7,11 +7,11 @@
 \S4method{plot}{Samples,DALogisticLogNormal}(x, y, data, hazard = FALSE, ..., showLegend = TRUE)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object}
+\item{x}{the \link{Samples} object}
 
-\item{y}{the \code{\linkS4class{DALogisticLogNormal}} object}
+\item{y}{the \link{DALogisticLogNormal} object}
 
-\item{data}{the \code{\linkS4class{DataDA}} object}
+\item{data}{the \link{DataDA} object}
 
 \item{hazard}{see \code{\link{fitPEM}} for the explanation}
 

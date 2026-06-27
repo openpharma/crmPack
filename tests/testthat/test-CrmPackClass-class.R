@@ -32,12 +32,16 @@ testthat::local_mocked_bindings(
 test_that("CrmPackClass correctly identifies crmPack classes", {
   crmPack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
+    "ArmCondition",
     "CohortSize",
+    "ComboSimulationsSummary",
     "CrmPackClass",
     "DualEndpoint",
+    "DualSimulationsSummary",
     "GeneralData",
     "GeneralModel",
     "GeneralSimulationsSummary",
+    "HierarchicalSimulationsSummary",
     "Increments",
     "ModelEff",
     "ModelPseudo",

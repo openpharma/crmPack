@@ -71,6 +71,7 @@ Suggests:
     broom,
     covr,
     data.tree,
+    decider,
     DiagrammeR,
     ggmcmc,
     quarto (>= 1.4),
@@ -88,7 +89,6 @@ Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Collate:
     'Backfill-validity.R'
@@ -108,6 +108,8 @@ Collate:
     'Model-validity.R'
     'helpers_jags.R'
     'Model-class.R'
+    'HierarchicalModel-class.R'
+    'TwoDrugsCombo-class.R'
     'Design-validity.R'
     'Design-class.R'
     'McmcOptions-validity.R'
@@ -126,6 +128,9 @@ Collate:
     'checkmate.R'
     'Rules-methods.R'
     'Design-methods.R'
+    'HierarchicalDesign-validity.R'
+    'HierarchicalDesign-class.R'
+    'HierarchicalDesign-methods.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
@@ -149,3 +154,6 @@ Collate:
     'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'
+Config/roxygen2/version: 8.0.0
+Remotes:
+    Boehringer-Ingelheim/decider

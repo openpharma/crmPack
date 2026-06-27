@@ -152,6 +152,139 @@ h_get_logistic_log_normal_mix <- function() {
   )
 }
 
+h_get_two_drugs_combo <- function(log_normal_eta = FALSE) {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 10
+      ),
+      drug2 = LogisticLogNormal(
+        mean = c(-0.7, 0.8),
+        cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+        ref_dose = 20
+      )
+    ),
+    gamma = 0,
+    tau = 1,
+    log_normal_eta = log_normal_eta
+  )
+}
+
+h_get_logistic_normal_mix_for_combo <- function(ref_dose) {
+  LogisticNormalMixture(
+    comp1 = ModelParamsNormal(mean = c(-1.2, 0.8), cov = diag(2)),
+    comp2 = ModelParamsNormal(
+      mean = c(-0.4, 1.6),
+      cov = matrix(c(1.4, -0.2, -0.2, 0.8), nrow = 2)
+    ),
+    weightpar = c(a = 2, b = 3),
+    ref_dose = ref_dose
+  )
+}
+
+h_get_two_drugs_combo_with_normal_mix <- function(
+  two_mixtures = FALSE
+) {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = h_get_logistic_normal_mix_for_combo(ref_dose = 10),
+      drug2 = if (two_mixtures) {
+        h_get_logistic_normal_mix_for_combo(ref_dose = 20)
+      } else {
+        LogisticLogNormal(
+          mean = c(-0.7, 0.8),
+          cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+          ref_dose = 20
+        )
+      }
+    ),
+    gamma = 0,
+    tau = 1
+  )
+}
+
+h_get_two_drugs_combo_exotic <- function() {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = h_get_logistic_normal_fixed_mix(),
+      drug2 = LogisticKadane(
+        theta = 0.35,
+        xmin = 1,
+        xmax = 200
+      )
+    ),
+    gamma = 0,
+    tau = 1,
+    log_normal_eta = TRUE
+  )
+}
+
+h_get_general_single_agent_no_ref <- function(beta_mean = c(0, 0)) {
+  .GeneralModel(
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- beta0 + beta1 * x[i]
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = function() {
+      beta0 ~ dnorm(beta_mean[1], 1)
+      beta1 ~ dnorm(beta_mean[2], 1)
+    },
+    modelspecs = function(from_prior) {
+      list(beta_mean = beta_mean)
+    },
+    init = function() {
+      list(beta0 = 0, beta1 = 0)
+    },
+    datanames = c("nObs", "y", "x"),
+    sample = c("beta0", "beta1")
+  )
+}
+
+h_get_two_drugs_combo_no_alpha_no_ref <- function() {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = h_get_general_single_agent_no_ref(beta_mean = c(-2, 0.02)),
+      drug2 = h_get_general_single_agent_no_ref(beta_mean = c(-3, 0.03))
+    ),
+    gamma = 0,
+    tau = 1
+  )
+}
+
+h_get_two_drugs_combo_sub <- function() {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = LogisticLogNormalSub(
+        mean = c(-2, 0.02),
+        cov = diag(2),
+        ref_dose = 10
+      ),
+      drug2 = LogisticLogNormalSub(
+        mean = c(-3, 0.03),
+        cov = diag(2),
+        ref_dose = 20
+      )
+    ),
+    gamma = 0,
+    tau = 1
+  )
+}
+
+h_get_two_drugs_combo_diff_pars <- function() {
+  TwoDrugsCombo(
+    single_models = list(
+      drug1 = h_get_general_single_agent_no_ref(beta_mean = c(-2, 0.02)),
+      drug2 = h_get_logistic_log_normal()
+    ),
+    gamma = 0,
+    tau = 1
+  )
+}
+
 h_get_dual_endpoint <- function(use_log_dose = FALSE, fixed = TRUE) {
   if (fixed) {
     sigma2W <- 1 # nolint

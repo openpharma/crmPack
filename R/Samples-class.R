@@ -38,6 +38,37 @@ NULL
   validity = v_samples
 )
 
+# HierarchicalSamples ----
+
+## class ----
+
+#' `HierarchicalSamples`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`HierarchicalSamples`] stores posterior draws from a [`HierarchicalModel`]
+#' together with metadata that maps each hierarchical arm back to its arm-level
+#' sample names.
+#'
+#' @slot arm_samples (`list`)\cr named list with one entry per hierarchical arm.
+#'   Each entry is a named character vector mapping arm-level parameter names
+#'   such as `"alpha0"` to the corresponding sample names stored in `data`.
+#'
+#' @aliases HierarchicalSamples
+#' @export
+#'
+.HierarchicalSamples <- setClass(
+  Class = "HierarchicalSamples",
+  contains = "Samples",
+  slots = c(
+    arm_samples = "list"
+  ),
+  prototype = prototype(
+    arm_samples = list()
+  ),
+  validity = v_hierarchical_samples
+)
+
 ## constructor ----
 
 #' @rdname Samples-class
@@ -52,6 +83,22 @@ Samples <- function(data, options) {
   new("Samples", data = data, options = options)
 }
 
+#' @rdname HierarchicalSamples-class
+#'
+#' @param data see slot definition.
+#' @param options see slot definition.
+#' @param arm_samples see slot definition.
+#'
+#' @export
+HierarchicalSamples <- function(data, options, arm_samples) {
+  new(
+    "HierarchicalSamples",
+    data = data,
+    options = options,
+    arm_samples = arm_samples
+  )
+}
+
 ## default constructor ----
 
 #' @rdname Samples-class
@@ -61,6 +108,20 @@ Samples <- function(data, options) {
   mcmc(
     data = .DefaultData(),
     model = .DefaultLogisticLogNormal(),
+    options = .DefaultMcmcOptions()
+  )
+}
+
+#' @rdname HierarchicalSamples-class
+#' @note Typically, end users will not use the
+#'   `.DefaultHierarchicalSamples()` function directly.
+#' @export
+.DefaultHierarchicalSamples <- function() {
+  design <- .DefaultHierarchicalDesign()
+
+  mcmc(
+    data = design@data,
+    model = design@model,
     options = .DefaultMcmcOptions()
   )
 }

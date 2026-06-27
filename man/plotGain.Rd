@@ -14,15 +14,15 @@ plotGain(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 \S4method{plotGain}{ModelTox,missing,ModelEff,missing}(DLEmodel, Effmodel, data, size = c(8L, 8L), shape = c(16L, 17L), ...)
 }
 \arguments{
-\item{DLEmodel}{the dose-DLE model of \code{\linkS4class{ModelTox}} class object}
+\item{DLEmodel}{the dose-DLE model of \link{ModelTox} class object}
 
-\item{DLEsamples}{the DLE sample of \code{\linkS4class{Samples}} class object}
+\item{DLEsamples}{the DLE sample of \link{Samples} class object}
 
-\item{Effmodel}{the dose-efficacy model of \code{\linkS4class{ModelEff}} class object}
+\item{Effmodel}{the dose-efficacy model of \link{ModelEff} class object}
 
-\item{Effsamples}{the efficacy sample of of \code{\linkS4class{Samples}} class object}
+\item{Effsamples}{the efficacy sample of of \link{Samples} class object}
 
-\item{data}{the data input of \code{\linkS4class{DataDual}} class object}
+\item{data}{the data input of \link{DataDual} class object}
 
 \item{\dots}{not used}
 

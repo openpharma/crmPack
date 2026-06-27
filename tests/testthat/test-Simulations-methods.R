@@ -1,3 +1,9 @@
+## show-HierarchicalSimulations ----
+
+test_that("show-HierarchicalSimulations works correctly", {
+  expect_snapshot(show(.HierarchicalSimulations()))
+})
+
 skip_on_cran_but_not_ci()
 
 testthat::local_mocked_bindings(
@@ -100,6 +106,59 @@ test_that("plot-DualSimulations works correctly", {
   expect_s3_class(result_sigma2w, "ggplot")
   expect_doppel("plot_dualSims_sigma2w", result_sigma2w)
   expect_equal(result_sigma2w$labels$y, "Biomarker variance estimates")
+})
+
+## plot-ComboSimulations ----
+
+test_that("plot-ComboSimulations works correctly", {
+  mySims <- .DefaultComboSimulations()
+
+  result <- plot(mySims)
+  expect_s3_class(result, "gtable")
+
+  result_trajectory <- plot(mySims, type = "trajectory")
+  expect_s3_class(result_trajectory, "gtable")
+
+  result_doses <- plot(mySims, type = "dosesTried")
+  expect_s3_class(result_doses, "gtable")
+
+  result_2d <- plot(mySims, type = "trajectory2D")
+  expect_s3_class(result_2d, "ggplot")
+  expect_equal(result_2d$labels$y, mySims@data[[1L]]@drugNames[2L])
+
+  expect_error(plot(mySims, type = "invalid_type"), "should be one of")
+})
+
+test_that("plot-ComboSimulations trajectory2D works with 20 simulated trials", {
+  design <- .DefaultDesignCombo()
+  # Loosen stopping/recommendation settings so simulated paths contain
+  # multiple combination steps and yield visible 2D transitions.
+  design@stopping <- StoppingMinPatients(nPatients = 60)
+  design@nextBest <- NextBestNCRM(
+    target = c(0.1, 0.6),
+    overdose = c(0.99, 1),
+    max_overdose_prob = 0.999
+  )
+
+  true_tox_combo <- function(dose) {
+    plogis(-7 + 0.05 * dose[1] + 0.04 * dose[2] + 0.0005 * dose[1] * dose[2])
+  }
+
+  sims <- simulate(
+    design,
+    truth = true_tox_combo,
+    nsim = 20,
+    seed = 819,
+    mcmcOptions = h_get_mcmc_options(samples = 8),
+    parallel = FALSE
+  )
+
+  n_unique_combos <- sapply(sims@data, function(d) nrow(unique(d@x)))
+  expect_true(any(n_unique_combos > 1L))
+
+  result_2d <- plot(sims, type = "trajectory2D")
+  expect_s3_class(result_2d, "ggplot")
+  expect_doppel("plot_comboSims_trajectory2D_20sims", result_2d)
 })
 
 # summary ----
@@ -243,6 +302,66 @@ test_that("summary-DualSimulations works correctly", {
   # Check that it inherits from SimulationsSummary
   expect_true("fit_at_dose_most_selected" %in% slotNames(result))
   expect_true("mean_fit" %in% slotNames(result))
+})
+
+## summary-ComboSimulations ----
+
+test_that("summary-ComboSimulations works correctly", {
+  mySims <- .DefaultComboSimulations()
+  myTruth <- function(dose) {
+    if (is.matrix(dose)) {
+      plogis((dose[, 1] + dose[, 2] - 40) / 20)
+    } else {
+      plogis((dose[1] + dose[2] - 40) / 20)
+    }
+  }
+
+  result <- summary(mySims)
+  expect_s4_class(result, "ComboSimulationsSummary")
+  expect_equal(result@nsim, length(mySims@data))
+  expect_equal(nrow(result@dose_selected), result@nsim)
+  expect_equal(ncol(result@dose_selected), 2)
+  expect_equal(length(result@n_obs), result@nsim)
+  expect_equal(length(result@prop_dlts), result@nsim)
+
+  result_truth <- summary(mySims, truth = myTruth, target = c(0.2, 0.35))
+  expect_s4_class(result_truth, "ComboSimulationsSummary")
+  expect_equal(length(result_truth@tox_at_doses_selected), result_truth@nsim)
+  expect_true(
+    result_truth@prop_at_target >= 0 && result_truth@prop_at_target <= 1
+  )
+})
+
+test_that("summary-ComboSimulations handles all-NA dose recommendations", {
+  mySims <- .DefaultComboSimulations()
+  mySims@doses[,] <- NA_real_
+  myTruth <- function(dose) {
+    if (is.matrix(dose)) {
+      plogis((dose[, 1] + dose[, 2] - 40) / 20)
+    } else {
+      plogis((dose[1] + dose[2] - 40) / 20)
+    }
+  }
+
+  result <- summary(mySims, truth = myTruth, target = c(0.2, 0.35))
+
+  expect_s4_class(result, "ComboSimulationsSummary")
+  expect_equal(nrow(result@dose_selected), result@nsim)
+  expect_equal(ncol(result@dose_selected), 2)
+  expect_equal(
+    result@dose_selected,
+    matrix(
+      0,
+      nrow = result@nsim,
+      ncol = 2,
+      dimnames = list(NULL, c("drug1", "drug2"))
+    )
+  )
+  expect_equal(result@dose_most_selected, c(0, 0))
+  expect_true(is.na(result@obs_tox_rate_at_dose_most_selected))
+  expect_length(result@tox_at_doses_selected, result@nsim)
+  expect_equal(result@tox_at_doses_selected, rep(myTruth(c(0, 0)), result@nsim))
+  expect_equal(result@prop_at_target, 0)
 })
 
 # Report ----
@@ -447,6 +566,37 @@ test_that("show-GeneralSimulations works correctly", {
   result <- capture.output(show(mySims))
   expect_true(length(result) > 0)
   expect_snap(show(mySims))
+})
+
+## show-ComboSimulations ----
+
+test_that("show-ComboSimulations works correctly", {
+  mySims <- .DefaultComboSimulations()
+
+  expect_output(show(mySims))
+
+  result <- capture.output(show(mySims))
+  expect_true(length(result) > 0)
+})
+
+## show-ComboSimulationsSummary ----
+
+test_that("show-ComboSimulationsSummary works correctly", {
+  mySims <- .DefaultComboSimulations()
+  myTruth <- function(dose) {
+    if (is.matrix(dose)) {
+      plogis((dose[, 1] + dose[, 2] - 40) / 20)
+    } else {
+      plogis((dose[1] + dose[2] - 40) / 20)
+    }
+  }
+
+  simSummary <- summary(mySims, truth = myTruth)
+
+  expect_output(show(simSummary))
+  result <- capture.output(show(simSummary))
+  expect_true(length(result) > 0)
+  expect_true(any(grepl("combination simulations", result)))
 })
 
 ## show-GeneralSimulationsSummary ----
@@ -884,6 +1034,32 @@ test_that("plot-PseudoSimulationsSummary works correctly", {
   expect_s3_class(result_nobs, "ggplot")
   expect_doppel("plot_pseudoSimsSummary_nObs", result_nobs)
   expect_equal(result_nobs$labels$x, "Number of patients in total")
+
+  ## plot-ComboSimulationsSummary ----
+
+  test_that("plot-ComboSimulationsSummary works correctly", {
+    mySims <- .DefaultComboSimulations()
+    simSummary <- summary(mySims)
+
+    result <- plot(simSummary)
+    expect_s3_class(result, "gtable")
+
+    resultNObs <- plot(simSummary, type = "nObs")
+    expect_s3_class(resultNObs, "ggplot")
+    expect_equal(resultNObs$labels$x, "Number of patients in total")
+
+    resultD1 <- plot(simSummary, type = "doseSelectedDrug1")
+    expect_s3_class(resultD1, "ggplot")
+    expect_equal(resultD1$labels$x, "Selected dose for drug 1")
+
+    result_d2 <- plot(simSummary, type = "doseSelectedDrug2")
+    expect_s3_class(result_d2, "ggplot")
+    expect_equal(result_d2$labels$x, "Selected dose for drug 2")
+
+    result_prop <- plot(simSummary, type = "propDLTs")
+    expect_s3_class(result_prop, "ggplot")
+    expect_equal(result_prop$labels$x, "Proportion of DLTs [%]")
+  })
 
   result_dose <- plot(pseudo_summary, type = "doseSelected")
   expect_s3_class(result_dose, "ggplot")

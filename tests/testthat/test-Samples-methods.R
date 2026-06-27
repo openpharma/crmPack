@@ -268,6 +268,65 @@ test_that("fit-Samples works specifically also for LogisticLogNormalGrouped", {
   expect_named(result, c("dose", "middle", "lower", "upper"))
 })
 
+test_that("fit-Samples works specifically also for TwoDrugsCombo", {
+  model <- h_get_two_drugs_combo()
+  data <- h_get_data_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  # We extra change here the column order and see if still everything works below.
+  points <- rbind(
+    c(drug2 = 20, drug1 = 10),
+    c(drug2 = 40, drug1 = 20)
+  )
+
+  actual <- fit(samples, model, data, points = points, middle = mean)
+
+  points <- points[, c(2, 1)]
+  log_dose1 <- log(points[, 1] / model@ref_dose[1])
+  log_dose2 <- log(points[, 2] / model@ref_dose[2])
+  p1 <- plogis(sweep(
+    samples@data$alpha1[, 1, drop = FALSE] %*% t(log_dose1),
+    1L,
+    samples@data$alpha0[, 1],
+    "+"
+  ))
+  p2 <- plogis(sweep(
+    samples@data$alpha1[, 2, drop = FALSE] %*% t(log_dose2),
+    1L,
+    samples@data$alpha0[, 2],
+    "+"
+  ))
+  p0 <- p1 + p2 - p1 * p2
+  expected_odds <- (p0 / (1 - p0)) *
+    exp(
+      samples@data$eta %o%
+        apply(sweep(points, 2L, model@ref_dose, "/"), 1L, prod)
+    )
+  expected_prob <- expected_odds / (1 + expected_odds)
+  expected <- data.frame(
+    drug1 = points[, 1],
+    drug2 = points[, 2],
+    middle = apply(expected_prob, 2L, mean),
+    lower = apply(expected_prob, 2L, quantile, probs = 0.025),
+    upper = apply(expected_prob, 2L, quantile, probs = 0.975)
+  )
+
+  expect_equal(actual, expected, tolerance = 1e-7)
+})
+
 ## Samples-DataModel ----
 
 test_that("fit-Samples works correctly for dual models", {
@@ -610,6 +669,32 @@ test_that("plot-Samples works correctly", {
 
   actual1 <- plot(x = samples, y = model, data = data, showLegend = FALSE)
   expect_doppel("plot-Samples_showLegend-FALSE", actual1)
+})
+
+test_that("plot-Samples works specifically also for TwoDrugsCombo", {
+  data <- h_get_data_combo()
+  model <- h_get_two_drugs_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+
+  actual <- plot(samples, model, data)
+  expect_s3_class(actual, "ggplot")
+
+  actual1 <- plot(samples, model, data, showLegend = FALSE)
+  expect_s3_class(actual1, "ggplot")
 })
 
 test_that("plot-Samples-DualEndpoint fails gracefully with bad input", {

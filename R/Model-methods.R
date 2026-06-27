@@ -2,6 +2,67 @@
 #' @include Samples-class.R
 NULL
 
+# show ----
+
+## show-HierarchicalModel ----
+
+#' Show `HierarchicalModel` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalModel`] object.
+#'
+#' @param object (`HierarchicalModel`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalModel
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalModel"),
+  def = function(object) {
+    arm_names <- names(object@models_to_arms)
+    model_classes <- vapply(
+      object@models_to_arms,
+      function(model) class(model)[1L],
+      character(1L)
+    )
+    pool_names <- names(object@parameter_pools)
+
+    cat(
+      "An object of class 'HierarchicalModel'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    if (length(model_classes) > 0L) {
+      cat(
+        "Arm models: ",
+        paste(
+          paste0(names(model_classes), " = ", model_classes),
+          collapse = ", "
+        ),
+        "\n",
+        sep = ""
+      )
+    }
+    cat(
+      "Exchangeable parameter pools (",
+      length(pool_names),
+      "): ",
+      h_show_hierarchical_names(pool_names),
+      "\n",
+      sep = ""
+    )
+
+    invisible(object)
+  }
+)
+
 # doseFunction ----
 
 ## generic ----
@@ -34,7 +95,7 @@ setGeneric(
 
 ## GeneralModel ----
 
-#' @describeIn doseFunction
+#' @describeIn doseFunction Return a dose function for a `GeneralModel`.
 #'
 #' @aliases doseFunction-GeneralModel
 #' @export
@@ -58,7 +119,7 @@ setMethod(
 
 ## ModelPseudo ----
 
-#' @describeIn doseFunction
+#' @describeIn doseFunction Return a dose function for a `ModelPseudo`.
 #'
 #' @aliases doseFunction-ModelPseudo
 #' @export
@@ -87,7 +148,7 @@ setMethod(
 
 ## LogisticLogNormalOrdinal ----
 
-#' @describeIn doseFunction
+#' @describeIn doseFunction Return a grade-specific dose function for a `LogisticLogNormalOrdinal` model.
 #'
 #' @param grade (`integer`)\cr the toxicity grade for which the dose function is
 #' required
@@ -168,7 +229,7 @@ setGeneric(
 
 ## GeneralModel ----
 
-#' @describeIn probFunction
+#' @describeIn probFunction Return a probability function for a `GeneralModel`.
 #'
 #' @aliases probFunction-GeneralModel
 #' @export
@@ -192,7 +253,7 @@ setMethod(
 
 ## ModelTox ----
 
-#' @describeIn probFunction
+#' @describeIn probFunction Return a probability function for a `ModelTox`.
 #'
 #' @aliases probFunction-ModelTox
 #' @export
@@ -221,7 +282,7 @@ setMethod(
 
 ## LogisticLogNormalOrdinal ----
 
-#' @describeIn probFunction
+#' @describeIn probFunction Return a grade-specific probability function for a `LogisticLogNormalOrdinal` model.
 #'
 #' @param grade (`integer`)\cr the toxicity grade for which the dose function is
 #' required
@@ -303,7 +364,7 @@ setGeneric(
 
 ## ModelEff ----
 
-#' @describeIn efficacyFunction
+#' @describeIn efficacyFunction Return an efficacy function for a `ModelEff`.
 #'
 #' @aliases efficacyFunction-ModelEff
 #' @export
@@ -974,14 +1035,16 @@ setMethod(
 #'   used to compute toxicity probabilities. Can also be missing for some models.
 #' @param ... model specific parameters when `samples` are not used.
 #'
-#' @return A `proportion` or `numeric` vector with the toxicity probabilities.
-#'   If non-scalar `samples` were used, then every element in the returned vector
-#'   corresponds to one element of a sample. Hence, in this case, the output
-#'   vector is of the same length as the sample vector. If scalar `samples` were
-#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
-#'   then the output is of the same length as the length of the `dose`.  In the
-#'   case of `LogisticLogNormalOrdinal`, the probabilities relate to toxicities
-#'   of  grade given by `grade`.
+#' @return A `proportion` or `numeric` vector with the toxicity probabilities,
+#'   or a numeric matrix for methods that evaluate multiple dose combinations at
+#'   once. If non-scalar `samples` were used, then every element in the returned
+#'   vector corresponds to one element of a sample. Hence, in this case, the
+#'   output vector is of the same length as the sample vector. If scalar
+#'   `samples` were used or no `samples` were used, e.g. for pseudo
+#'   DLE/toxicity `model`, then the output is of the same length as the length
+#'   of the `dose`. For matrix-valued dose inputs, the returned matrix contains
+#'   one column per dose combination. In the case of `LogisticLogNormalOrdinal`,
+#'   the probabilities relate to toxicities of grade given by `grade`.
 #'
 #' @seealso [probFunction()], [dose()], [efficacy()].
 #'
@@ -993,12 +1056,12 @@ setGeneric(
   def = function(dose, model, samples, ...) {
     standardGeneric("prob")
   },
-  valueClass = c("numeric", "list")
+  valueClass = c("numeric", "list", "matrix")
 )
 
 ## LogisticNormal ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticNormal` model.
 #'
 #' @aliases prob-LogisticNormal
 #' @export
@@ -1024,7 +1087,7 @@ setMethod(
 
 ## LogisticLogNormal ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticLogNormal` model.
 #'
 #' @aliases prob-LogisticLogNormal
 #' @export
@@ -1050,7 +1113,7 @@ setMethod(
 
 ## LogisticLogNormalSub ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticLogNormalSub` model.
 #'
 #' @aliases prob-LogisticLogNormalSub
 #' @export
@@ -1076,7 +1139,7 @@ setMethod(
 
 ## ProbitLogNormal ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `ProbitLogNormal` model.
 #'
 #' @aliases prob-ProbitLogNormal
 #' @export
@@ -1102,7 +1165,7 @@ setMethod(
 
 ## ProbitLogNormalRel ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `ProbitLogNormalRel` model.
 #'
 #' @aliases prob-ProbitLogNormalRel
 #' @export
@@ -1164,9 +1227,240 @@ setMethod(
   }
 )
 
+## TwoDrugsCombo ----
+
+#' Extract Single-Agent Samples from Combo Samples
+#'
+#' @description
+#' Converts posterior draws from a [`TwoDrugsCombo`] fit back to the sample
+#' shape expected by one of its single-agent models. Shared scalar sample names,
+#' such as `alpha0` and `alpha1`, are stored as matrices in combo samples and
+#' sliced by drug. Parameters that are already model-specific matrix-valued
+#' samples, such as mixture-model parameters, are kept intact.
+#'
+#' @param samples (`Samples`)\cr combo model samples.
+#' @param model (`TwoDrugsCombo`)\cr combo model.
+#' @param drug_index (`integer`)\cr index of the single-agent model to extract.
+#'
+#' @return A [`Samples`] object for the requested single-agent model.
+#' @keywords internal
+h_prob_two_drugs_combo_single_samples <- function(samples, model, drug_index) {
+  single_samples <- lapply(
+    model@single_models[[drug_index]]@sample,
+    function(sample_name) {
+      sample_value <- samples@data[[sample_name]]
+      sample_model_indices <- which(vapply(
+        model@single_models,
+        function(single_model) sample_name %in% single_model@sample,
+        logical(1L)
+      ))
+      sample_index <- match(drug_index, sample_model_indices)
+
+      if (
+        is.matrix(sample_value) &&
+          ncol(sample_value) == length(sample_model_indices)
+      ) {
+        sample_value[, sample_index]
+      } else {
+        sample_value
+      }
+    }
+  )
+  names(single_samples) <- model@single_models[[drug_index]]@sample
+  Samples(data = single_samples, options = samples@options)
+}
+
+#' Evaluate Single-Agent Toxicity Probabilities in a Combo Model
+#'
+#' @description
+#' Computes the monotherapy toxicity contribution for one drug by delegating to
+#' that drug's own [prob()] method. This keeps the combo probability calculation
+#' aligned with each single-agent link function and dose transformation.
+#'
+#' @inheritParams h_prob_two_drugs_combo_single_samples
+#' @param dose (`matrix`)\cr combo dose combinations, one row per combination.
+#'
+#' @return Numeric matrix with one row per posterior sample and one column per
+#'   dose combination.
+#' @keywords internal
+#'
+h_prob_two_drugs_combo_single_prob <- function(
+  dose,
+  model,
+  samples,
+  drug_index
+) {
+  single_model <- model@single_models[[drug_index]]
+  single_samples <- h_prob_two_drugs_combo_single_samples(
+    samples = samples,
+    model = model,
+    drug_index = drug_index
+  )
+
+  vapply(
+    dose[, drug_index],
+    function(single_dose) {
+      prob(
+        dose = rep(single_dose, size(single_samples)),
+        model = single_model,
+        samples = single_samples
+      )
+    },
+    numeric(size(single_samples))
+  )
+}
+
+#' Evaluate a Single-Agent Dose Normalization
+#'
+#' @description
+#' Reuses the dose-normalization expression inferred from a single-agent JAGS
+#' data model, such as `x / ref_dose` or `x - ref_dose`, and evaluates it for R
+#' dose inputs. The result is used for the combo interaction term so runtime
+#' probabilities match the JAGS model used for MCMC.
+#'
+#' @param dose (`numeric`)\cr single-agent doses.
+#' @param single_model (`GeneralModel`)\cr single-agent model.
+#'
+#' @return Numeric vector of normalized doses.
+#' @keywords internal
+#'
+h_prob_two_drugs_combo_normalized_dose <- function(dose, single_model) {
+  normalized_expr <- h_two_drugs_combo_normalized_dose_expr(
+    body(single_model@datamodel),
+    list()
+  )
+  specs <- h_two_drugs_combo_single_model_specs(
+    single_model,
+    from_prior = FALSE
+  )
+  eval_env <- list2env(
+    c(
+      specs,
+      list(
+        x = dose,
+        i = seq_along(dose)
+      )
+    ),
+    parent = baseenv()
+  )
+  normalized <- eval(normalized_expr, envir = eval_env)
+  assert_numeric(normalized, any.missing = FALSE, len = length(dose))
+  normalized
+}
+
+#' Calculate Two-Drug Combo Toxicity Probabilities
+#'
+#' @description
+#' Combines delegated single-agent toxicity probabilities with the combo
+#' interaction term. Both the monotherapy probabilities and the interaction
+#' covariate follow the corresponding single-agent model definitions.
+#'
+#' @param dose (`numeric` or `matrix`)\cr one or more combo dose combinations.
+#' @inheritParams h_prob_two_drugs_combo_single_samples
+#'
+#' @return Numeric vector for one dose combination, otherwise numeric matrix
+#'   with one row per posterior sample and one column per dose combination.
+#' @keywords internal
+#'
+h_prob_two_drugs_combo <- function(dose, model, samples) {
+  assert_subset("eta", names(samples))
+
+  eta <- samples@data$eta
+
+  if (!is.matrix(dose)) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = 2L)
+    assert_names(names(dose), identical.to = model@drug_names)
+    dose <- matrix(dose, nrow = 1L, dimnames = list(NULL, model@drug_names))
+  } else {
+    assert_matrix(dose, mode = "numeric", any.missing = FALSE, ncols = 2L)
+    if (is.null(colnames(dose))) {
+      colnames(dose) <- model@drug_names
+    } else {
+      assert_names(colnames(dose), permutation.of = model@drug_names)
+      dose <- dose[, model@drug_names, drop = FALSE]
+    }
+    assert_true(all(dose >= 0))
+  }
+
+  p1 <- h_prob_two_drugs_combo_single_prob(
+    dose = dose,
+    model = model,
+    samples = samples,
+    drug_index = 1L
+  )
+  p2 <- h_prob_two_drugs_combo_single_prob(
+    dose = dose,
+    model = model,
+    samples = samples,
+    drug_index = 2L
+  )
+  p0 <- p1 + p2 - p1 * p2
+  normalized_dose <- do.call(
+    cbind,
+    lapply(seq_along(model@single_models), function(drug_index) {
+      h_prob_two_drugs_combo_normalized_dose(
+        dose = dose[, drug_index],
+        single_model = model@single_models[[drug_index]]
+      )
+    })
+  )
+  interaction <- eta %o% apply(normalized_dose, 1L, prod)
+  odds <- (p0 / (1 - p0)) * exp(interaction)
+  odds <- pmin(odds, .Machine$double.xmax / 2)
+  probs <- odds / (1 + odds)
+
+  assert_true(all(is.finite(probs)))
+
+  if (ncol(probs) == 1L) {
+    as.numeric(probs)
+  } else {
+    probs
+  }
+}
+
+#' @describeIn prob method for [`TwoDrugsCombo`] for a single dose
+#'   combination provided as a named numeric vector.
+#' @aliases prob-TwoDrugsCombo
+#' @export
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "TwoDrugsCombo",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    h_prob_two_drugs_combo(
+      dose = dose,
+      model = model,
+      samples = samples
+    )
+  }
+)
+
+#' @describeIn prob method for [`TwoDrugsCombo`] for one or more dose
+#'   combinations provided in the rows of a numeric matrix.
+#' @aliases prob-TwoDrugsCombo-matrix
+#' @export
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "matrix",
+    model = "TwoDrugsCombo",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    h_prob_two_drugs_combo(
+      dose = dose,
+      model = model,
+      samples = samples
+    )
+  }
+)
+
 ## LogisticKadane ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticKadane` model.
 #'
 #' @aliases prob-LogisticKadane
 #' @export
@@ -1197,7 +1491,7 @@ setMethod(
 
 ## LogisticKadaneBetaGamma ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticKadaneBetaGamma` model.
 #'
 #' @aliases prob-LogisticKadaneBetaGamma
 #' @export
@@ -1228,7 +1522,7 @@ setMethod(
 
 ## LogisticNormalMixture ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticNormalMixture` model.
 #'
 #' @aliases prob-LogisticNormalMixture
 #' @export
@@ -1254,7 +1548,7 @@ setMethod(
 
 ## LogisticNormalFixedMixture ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticNormalFixedMixture` model.
 #'
 #' @aliases prob-LogisticNormalFixedMixture
 #' @export
@@ -1280,7 +1574,7 @@ setMethod(
 
 ## LogisticLogNormalMixture ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `LogisticLogNormalMixture` model.
 #'
 #' @aliases prob-LogisticLogNormalMixture
 #' @export
@@ -1308,7 +1602,7 @@ setMethod(
 
 ## DualEndpoint ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `DualEndpoint` model.
 #'
 #' @aliases prob-DualEndpoint
 #' @export
@@ -1397,7 +1691,7 @@ setMethod(
 
 ## OneParLogNormalPrior ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `OneParLogNormalPrior` model.
 #'
 #' @aliases prob-OneParLogNormalPrior
 #' @export
@@ -1422,7 +1716,7 @@ setMethod(
 
 ## OneParExpPrior ----
 
-#' @describeIn prob
+#' @describeIn prob Calculate toxicity probabilities for a `OneParExpPrior` model.
 #'
 #' @aliases prob-OneParExpPrior
 #' @export
@@ -1448,7 +1742,7 @@ setMethod(
 ## LogisticLogNormalOrdinal ----
 
 #' Calculate a grade-specific probability of toxicity for a given dose.
-#' @describeIn prob
+#' @describeIn prob Calculate grade-specific toxicity probabilities for a `LogisticLogNormalOrdinal` model.
 #'
 #' @param grade (`integer` or `integer_vector`)\cr The toxicity grade for which probabilities are required
 #' @param cumulative (`flag`)\cr Should the returned probability be cumulative
@@ -1499,10 +1793,11 @@ setMethod(
       }
     )
     if (length(rv) == 1) {
-      return(rv[[1]])
+      rv[[1]]
+    } else {
+      names(rv) <- as.character(grade)
+      rv
     }
-    names(rv) <- as.character(grade)
-    return(rv)
   }
 )
 
@@ -1702,7 +1997,7 @@ setGeneric(
 
 ## DualEndpoint ----
 
-#' @describeIn biomarker
+#' @describeIn biomarker Extract biomarker values for a `DualEndpoint` model.
 #'
 #' @aliases biomarker-DualEndpoint
 #' @export
@@ -1769,7 +2064,7 @@ setGeneric(
 
 ## ModelTox-ModelEff ----
 
-#' @describeIn gain
+#' @describeIn gain Compute gain values from toxicity and efficacy model samples.
 #'
 #' @aliases gain-ModelTox-ModelEff
 #' @export
@@ -1861,6 +2156,69 @@ setMethod(
 )
 
 # tidy ----
+
+# HierarchicalModel
+
+#' Tidy Method for the [`HierarchicalModel`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`HierarchicalModel`] object.
+#'
+#' @return The [`list`] of [`tibble`] objects.
+#'
+#' @aliases tidy-HierarchicalModel
+#' @rdname tidy
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalModel"),
+  definition = function(x, ...) {
+    models_to_arms <- lapply(
+      names(x@models_to_arms),
+      function(arm_name) {
+        model <- x@models_to_arms[[arm_name]]
+        tibble::tibble(
+          Arm = arm_name,
+          ModelClass = class(model)[1L],
+          Model = list(tidy(model))
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    parameter_pools <- lapply(
+      names(x@parameter_pools),
+      function(pool_name) {
+        pool <- x@parameter_pools[[pool_name]]
+        tibble::tibble(
+          Pool = pool_name,
+          Arm = names(pool),
+          Parameter = unname(unlist(pool, use.names = FALSE))
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    pool_correlations <- tibble::tibble(
+      PoolCorrelation = names(x@pool_correlations),
+      Pools = unname(x@pool_correlations)
+    )
+
+    pool_priors <- tibble::tibble(
+      Pool = names(x@pool_priors),
+      Prior = unname(x@pool_priors)
+    )
+
+    list(
+      models_to_arms = models_to_arms,
+      parameter_pools = parameter_pools,
+      pool_correlations = pool_correlations,
+      pool_priors = pool_priors
+    ) %>%
+      h_tidy_class(x)
+  }
+)
 
 # LogisticIndepBeta
 

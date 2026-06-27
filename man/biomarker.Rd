@@ -34,7 +34,7 @@ to \code{xLevel}) of the biomarker samples matrix, which is included in the the
 }
 \section{Functions}{
 \itemize{
-\item \code{biomarker(xLevel = integer, model = DualEndpoint, samples = Samples)}: 
+\item \code{biomarker(xLevel = integer, model = DualEndpoint, samples = Samples)}: Extract biomarker values for a \code{DualEndpoint} model.
 
 }}
 \examples{

@@ -8,6 +8,8 @@
 \alias{v_model_logistic_normal_mix}
 \alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
+\alias{v_model_two_drugs_combo}
+\alias{v_hierarchical_model}
 \alias{v_model_dual_endpoint}
 \alias{v_model_dual_endpoint_rw}
 \alias{v_model_dual_endpoint_beta}
@@ -33,6 +35,10 @@ v_model_logistic_normal_mix(object)
 v_model_logistic_normal_fixed_mix(object)
 
 v_model_logistic_log_normal_mix(object)
+
+v_model_two_drugs_combo(object)
+
+v_hierarchical_model(object)
 
 v_model_dual_endpoint(object)
 
@@ -90,6 +96,10 @@ parameters with a beta and gamma prior are valid.
 valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
 \item \code{v_model_logistic_log_normal_mix()}: validates that \code{share_weight} represents probability.
+
+\item \code{v_model_two_drugs_combo()}: validates that \code{\link{TwoDrugsCombo}} slots are valid.
+
+\item \code{v_hierarchical_model()}: validates that \code{\link{HierarchicalModel}} slots are valid.
 
 \item \code{v_model_dual_endpoint()}: validates that \code{\link{DualEndpoint}} class slots are valid.
 

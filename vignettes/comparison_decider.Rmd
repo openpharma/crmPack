@@ -1,0 +1,449 @@
+---
+title: "Comparison with the decider package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparison with the decider package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: vignettes.bib
+---
+
+```{r, include = FALSE}
+github_pkg <- "decider"
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = requireNamespace(github_pkg, quietly = TRUE)
+)
+```
+
+In this vignette we want to compare the combination design implemented in `crmPack` and explained in this [vignette](combo_designs.Rmd) with the implementation in the [`decider` package](https://boehringer-ingelheim.github.io/decider/) [@Schroeter2023]. 
+Please note that the `decider` package is not available on CRAN, therefore the vignette is only executing
+the code chunks if the package is available on this system.
+
+## Example
+
+We are going to use the example as described in the `decider` vignette [here](https://boehringer-ingelheim.github.io/decider/articles/intro_jointBLRM.html#setting-up-and-evaluating-priors-using-scenario_jointblrm):
+
+- Three arms:
+  - Arm A: monotherapy of compound 1
+  - Arm B: combination of compound 1 and compound 2
+  - Arm C: historical data from compound 2
+- Arm B can start when certain doses of Arm A have been cleared
+- Logistic log-normal models for compound 1 and compound 2
+- Target interval is 16-33% DLT rate
+- Prior specification
+  - uniform prior for the correlation between intercept and log-slope in the logistic log-normal model
+  - for the hyper-means (i.e. mean of parameters across trials)
+  - between-trial heterogeneity (i.e. standard deviation of parameters across trials)
+
+
+## Using `decider`
+
+```{r}
+library(decider)
+```
+
+This is the data from the historical Arm C:
+
+```{r}
+historical_data <- list(
+  dose1 = c(0, 0, 0, 0, 0),
+  dose2 = c(2, 4, 8, 12, 16),
+  n.pat = c(3, 3, 3, 9, 12),
+  n.dlt = c(0, 0, 0, 1, 2),
+  trial = c("H1", "H1", "H1", "H1", "H1")
+)
+```
+
+The monotherapy dose grid for Arm A is:
+
+```{r}
+d1 <- c(0.1, 0.2, 0.4, 0.8, 1.6, 2.4, 3.6, 5, 6)
+```
+
+The dose grid for compound 2 in Arm B is more sparse:
+
+```{r}
+d2 <- c(8, 12)
+```
+
+The overall dose grid for combination Arm B is therefore:
+
+```{r}
+doses_of_interest <- rbind(
+    c(d1, rep(d1, times = length(d2))),
+    c(rep(0, length(d1)), rep(d2, each = length(d1)))
+)
+```
+
+The reference doses to be used in the models are:
+
+```{r}
+dose_ref1 <- 6
+dose_ref2 <- 12
+```
+
+We further need to specify the arms and types of the arms as follows:
+
+```{r}
+trials_of_interest <- c("A", "B")
+types_of_interest <- c("mono1", "combi")
+```
+
+The prior for the hypermeans is specified like this:
+
+```{r}
+#                Parameter   Mean         SD
+prior_mu <- list(mu_a1  =  c(logit(0.33), 2),
+                 mu_b1  =  c(0,           1), # standard normal
+                 mu_a2  =  c(logit(0.33), 2),
+                 mu_b2  =  c(0,           1), # standard normal
+                 mu_eta =  c(0,           1.121))
+```
+
+The prior mean for $\mu_{\alpha_{1}}$ is set to $\text{logit}(0.33)$, which implies that we assume the reference dose has a prior median DLT rate of 33%.
+
+Note that we use a normal prior here on the interaction parameter $\eta$, thus allowing both positive and negative interactions. The standard deviation is set such that $\exp(1.96 \cdot 1.121) \approx 9$, thus allowing for a 95% prior interval of $[1 / 9, 9]$ for the odds changes for a DLT at the reference dose. So $1.121 = \log(9) / z_{0.975}$.
+
+The prior for the between-trial heterogeneity parameters is specified like this:
+
+```{r}
+#                 Parameter    Mean        SD
+prior_tau <- list(tau_a1  =  c(log(0.25),  log(2) / 1.96),
+                  tau_b1  =  c(log(0.125), log(2) / 1.96),
+                  tau_a2  =  c(log(0.25),  log(2) / 1.96),
+                  tau_b2  =  c(log(0.125), log(2) / 1.96),
+                  tau_eta =  c(log(0.125), log(2) / 1.96))
+```
+
+These are all the log normal prior parameters for the corresponding $\tau$ parameters. These are all "moderate" degrees of heterogeneity, according to @Neuenschwander2015.
+
+Then we look at the following scenario, where two cohorts of patients are available from Arm A:
+
+```{r}
+scenario1 <- list(
+  dose1 = c(0.1, 0.2),
+  dose2 = c(0, 0),
+  n.pat = c(3, 3),
+  n.dlt = c(0, 1),
+  trial = c("A",  "A")
+)
+```
+
+We note that the `trial` specification here needs to match the name used in `trials_of_interest` above.
+
+Now we can call the scenario function:
+
+```{r}
+result1 <- scenario_jointBLRM(
+  data = scenario1,
+  historical.data = historical_data,
+  doses.of.interest = doses_of_interest,
+  dose.ref1 = dose_ref1,
+  dose.ref2 = dose_ref2,
+  trials.of.interest = trials_of_interest,
+  types.of.interest = types_of_interest,
+  prior.mu = prior_mu,
+  prior.tau = prior_tau
+)
+```
+
+We can look at the results:
+
+```{r}
+result1
+```
+
+For each trial of interest, the posterior toxicities previously designated to be of interest are shown.
+
+Under the hood, the implementation works as follows:
+
+- [`post_tox_jointBLRM()`](https://github.com/Boehringer-Ingelheim/decider/blob/main/R/sampling_jointBLRM.R#L232) is called to sample from the posterior, which in turn uses
+- [`sampling_jointBLRM()`](https://github.com/Boehringer-Ingelheim/decider/blob/main/R/sampling_jointBLRM.R#L17) which then calls `rstan::sampling()` on
+- [`stanmodels$jointBLRM`](https://github.com/Boehringer-Ingelheim/decider/blob/main/R/stanmodels.R#L11) which is the constant Stan model sourced from
+- [`jointBLRM.stan`](https://github.com/Boehringer-Ingelheim/decider/blob/main/inst/stan/jointBLRM.stan)
+
+So we can compare this with the implementation in `crmPack` which is based on JAGS.
+
+## Using `crmPack`
+
+Now we are going to define the same design and scenario in `crmPack`. 
+
+We start with the monotherapy model for compound 1:
+
+```{r}
+library(crmPack)
+
+mono_model1 <- LogisticLogNormal(
+  mean = c(logit(0.33), 0),
+  cov = diag(c(2, 1)^2),
+  ref_dose = dose_ref1
+)
+```
+
+And for compound 2 the same:
+
+```{r}
+mono_model2 <- LogisticLogNormal(
+    mean = c(logit(0.33), 0),
+    cov = diag(c(2, 1)^2),
+    ref_dose = dose_ref2
+)
+```
+
+Then we define the combination model:
+
+```{r}
+combo_model <- TwoDrugsCombo(
+    list(
+        compound1 = mono_model1,
+        compound2 = mono_model2
+    ),
+    gamma = 0, # prior mean for the interaction parameter
+    tau = 1 / (1.121^2) # prior precision for the interaction parameter
+)
+```
+
+We define the historical data which is already available:
+
+```{r}
+hist_data_comp2 <- Data(
+    x = rep(historical_data$dose2, historical_data$n.pat),
+    y = c(
+        rep(0, sum(historical_data$n.pat) - sum(historical_data$n.dlt)), 
+        rep(1, sum(historical_data$n.dlt))
+    ),
+    doseGrid = historical_data$dose2
+)
+```
+
+We are going to use simple rules here (they are not relevant for the current scenario comparison):
+
+```{r}
+my_stopping <- StoppingMinPatients(nPatients = 50)
+my_increments <- IncrementsRelative(0, 2)
+myNextBest <- NextBestNCRM(
+    target = c(0.16, 0.33), 
+    overdose = c(0.33, 1), 
+    max_overdose_prob = 0.25
+)
+my_cohort_size <- CohortSizeConst(size = 3)
+my_increments_combo <- IncrementsComboOneDrugOnly()
+```
+
+Then we define the design arms accordingly:
+
+```{r}
+designArmA <- DesignArm(
+    "A",
+    design = Design(
+        data = Data(doseGrid = d1),
+        startingDose = d1[1],
+        model = mono_model1,
+        stopping = my_stopping,
+        increments = my_increments,
+        nextBest = myNextBest,
+        cohort_size = my_cohort_size
+    )
+)
+
+designArmB <- DesignArm(
+    "B",
+    design = DesignCombo(
+        data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
+        startingDose = c(compound1 = d1[1], compound2 = 0),
+        model = combo_model,
+        stopping = my_stopping,
+        increments = my_increments_combo,
+        nextBest = myNextBest,
+        cohort_size = my_cohort_size
+    ),
+    open_when = ArmMinDoseCondition("A", min_dose = d1[2])
+)
+
+designArmC <- HistoricalArm(
+    "C",
+    data = hist_data_comp2,
+    model = mono_model2
+)
+```
+
+Now we can define the hierarchical design:
+
+```{r}
+design_hierarchical <- HierarchicalDesign(
+    designArmA,
+    designArmB,
+    designArmC,
+    exchangeable_parameters = list(
+        comp1_intercept = list(
+            A = "alpha0",
+            B = "alpha0[1]"
+        ),
+        comp1_slope = list(
+            A = "alpha1",
+            B = "alpha1[1]"
+        ),
+        comp2_intercept = list(
+            B = "alpha0[2]",
+            C = "alpha0"
+        ),
+        comp2_slope = list(
+            B = "alpha1[2]",
+            C = "alpha1"    
+        )
+    ),
+    pool_correlations = list(
+        comp1 = c("comp1_intercept", "comp1_slope"),
+        comp2 = c("comp2_intercept", "comp2_slope")
+    ),
+    pool_priors = list(
+        comp1_intercept = list(
+            mu = prior_mu$mu_a1,
+            tau = prior_tau$tau_a1
+        ),
+        comp1_slope = list(
+            mu = prior_mu$mu_b1,
+            tau = prior_tau$tau_b1
+        ),
+        comp2_intercept = list(
+            mu = prior_mu$mu_a2,
+            tau = prior_tau$tau_a2
+        ),
+        comp2_slope = list(
+            mu = prior_mu$mu_b2,
+            tau = prior_tau$tau_b2
+        )
+    )
+)
+```
+
+Note that each entry in `pool_correlations` can correlate exactly two scalar
+exchangeable parameter pools. In this example, `comp1` correlates the compound 1
+intercept pool with the compound 1 slope pool, and `comp2` does the same for
+compound 2. Correlated blocks with three or more parameters are not currently
+supported.
+
+Then we define the scenario:
+
+```{r}
+scenario_hierarchical <- HierarchicalData(
+    A = Data(
+        x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
+        y = c(0, 0, 0, 0, 0, 1),
+        doseGrid = designArmA@design@data@doseGrid
+    ),
+    B = designArmB@design@data,
+    C = designArmC@design@data
+)
+```
+
+And then we can use the `scenario()` function:
+
+```{r}
+result1CrmPack <- scenario(
+    design_hierarchical,
+    data = scenario_hierarchical,
+    mcmcOptions = McmcOptions()
+)
+```
+
+We can look at the fit results:
+
+```{r}
+result1CrmPack$fit
+```
+
+We can also check the probabilities to be in target and overdosing intervals:
+
+```{r}
+result1CrmPack$next_best$A$probs
+result1CrmPack$next_best$B$probs
+```
+
+## Comparison of fit
+
+Based on this we can first compare the fit results.
+
+Let's look at the results for Arm A:
+
+```{r}
+fitTrialADecider <- result1$`trial-A` |> as.data.frame()
+fitTrialACrmPack <- result1CrmPack$fit$A
+probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
+diffTrialA <- data.frame(
+    dose = fitTrialACrmPack$dose,
+    center = fitTrialADecider$mean - fitTrialACrmPack$middle,
+    lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
+    upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
+    target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
+    overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
+)
+diffTrialA
+```
+
+And then the results for Arm B:
+
+```{r}
+fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
+fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
+probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
+    as.data.frame() |>
+    dplyr::filter(compound2 > 0)
+diffTrialB <- data.frame(
+    dose1 = fitTrialBCrmPack$compound1,
+    dose2 = fitTrialBCrmPack$compound2,
+    center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
+    lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
+    upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
+    target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
+    overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
+)
+diffTrialB
+```
+
+So these differences look relatively small, and there does not seem to be any 
+systematic bias in the differences.
+
+## Comparison of model code
+
+Let's compare the model code used in `decider` and `crmPack`, in order to make sure that they really match and implement the same priors and models:
+
+### `decider`
+
+Here we have the following Stan model:
+
+```{r}
+#| results: "asis"
+#| echo: false
+
+cat("````\n")
+cat(decider:::stanmodels$jointBLRM@model_code)
+cat("\n````")
+```
+
+### `crmPack`
+
+Here we have the following JAGS model:
+
+```{r}
+#| results: "asis"
+#| echo: false
+
+cat("````", deparse(body(design_hierarchical@model@datamodel)), "````", sep = "\n")
+
+cat("````", deparse(body(design_hierarchical@model@priormodel)), "````", sep = "\n")
+```
+
+### Conclusion
+
+There are still some minor differences:
+
+- In `decider`, the $\eta$ parameter is part of the 5-parameter hierarchical vector and has its own hypermean and heterogeneity. In `crmPack`, the $\eta$ parameter is not part of the hierarchical vector. When there is only combo arm then this does not matter.
+- JAGS uses Bernoulli observations, Stan uses binomial cohort counts, but the likelihoods are equivalent.
+
+Apart from these, the probabilistic models are equivalent. We could also see that in the fit results which are very close to each other.
+
+## References

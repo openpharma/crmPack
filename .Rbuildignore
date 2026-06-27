@@ -37,3 +37,4 @@ lib
 ^vignettes/knit_print\.Rmd\.orig$
 ^vignettes/rolling-crm\.Rmd\.orig$
 ^vignettes/trial_sanity_checks\.Rmd\.orig$
+^AGENTS\.md$

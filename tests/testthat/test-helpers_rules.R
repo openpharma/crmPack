@@ -548,3 +548,30 @@ test_that("h_next_best_mgsamples_plot works as expected (no doselimit)", {
   )
   expect_doppel("h_next_best_mgsamples_plot_nodoselim", result)
 })
+
+test_that("h_dose_combo_below_limit works as expected", {
+  dose_matrix <- cbind(
+    c(10, 30, 50, 10, 30, 50, 10, 30, 50, 10, 30, 50),
+    c(5, 5, 5, 10, 10, 10, 25, 25, 25, 70, 70, 70)
+  )
+  dose_limit <- cbind(
+    c(10, 20, 30, 40, 50),
+    c(NA, 5, 30, NA, Inf)
+  )
+  result <- h_dose_combo_below_limit(dose_matrix, dose_limit)
+  expected <- c(
+    FALSE,
+    TRUE,
+    TRUE,
+    FALSE,
+    TRUE,
+    TRUE,
+    FALSE,
+    TRUE,
+    TRUE,
+    FALSE,
+    FALSE,
+    TRUE
+  )
+  expect_equal(result, expected)
+})

@@ -176,6 +176,294 @@ Simulations <- function(fit, stop_reasons, stop_report, additional_stats, ...) {
   )
 }
 
+# HierarchicalSimulations ----
+
+## class ----
+
+#' `HierarchicalSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures trial simulations from hierarchical designs
+#' ([`HierarchicalDesign`]).
+#'
+#' @slot data (`list`)\cr produced [`HierarchicalData`] objects.
+#' @slot doses (`list`)\cr final dose recommendations, one named list per
+#'   simulation run with entries for each hierarchical arm.
+#' @slot samples (`list`)\cr final [`HierarchicalSamples`] objects.
+#' @slot fit (`list`)\cr final arm-specific fits for each simulation run.
+#' @slot stop_reasons (`list`)\cr arm-specific stopping reasons for each
+#'   simulation run.
+#' @slot stop_report (`list`)\cr arm-specific stopping rule outcomes for each
+#'   simulation run.
+#' @slot additional_stats (`list`)\cr additional arm-specific statistics.
+#' @slot seed (`integer`)\cr random generator state before starting the
+#'   simulation.
+#'
+#' @aliases HierarchicalSimulations
+#' @export
+.HierarchicalSimulations <- setClass(
+  Class = "HierarchicalSimulations",
+  slots = c(
+    data = "list",
+    doses = "list",
+    samples = "list",
+    fit = "list",
+    stop_report = "list",
+    stop_reasons = "list",
+    additional_stats = "list",
+    seed = "integer"
+  ),
+  prototype = prototype(
+    data = list(.DefaultHierarchicalData()),
+    doses = list(list(arm1 = 1, combo = c(drug1 = 10, drug2 = 20))),
+    samples = list(.HierarchicalSamples()),
+    fit = list(list()),
+    stop_report = list(list()),
+    stop_reasons = list(list()),
+    additional_stats = list(list()),
+    seed = 1L
+  ),
+  contains = "CrmPackClass",
+  validity = v_hierarchical_simulations
+)
+
+## constructor ----
+
+#' @rdname HierarchicalSimulations-class
+#'
+#' @param data (`list`)\cr see slot definition.
+#' @param doses (`list`)\cr see slot definition.
+#' @param samples (`list`)\cr see slot definition.
+#' @param fit (`list`)\cr see slot definition.
+#' @param stop_reasons (`list`)\cr see slot definition.
+#' @param stop_report (`list`)\cr see slot definition.
+#' @param additional_stats (`list`)\cr see slot definition.
+#' @param seed (`integer`)\cr see slot definition.
+#'
+#' @export
+HierarchicalSimulations <- function(
+  data,
+  doses,
+  samples,
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  seed
+) {
+  assert_integerish(seed)
+  .HierarchicalSimulations(
+    data = data,
+    doses = doses,
+    samples = samples,
+    fit = fit,
+    stop_report = stop_report,
+    stop_reasons = stop_reasons,
+    additional_stats = additional_stats,
+    seed = as.integer(seed)
+  )
+}
+
+## default constructor ----
+
+#' @rdname HierarchicalSimulations-class
+#' @note Typically, end users will not use the
+#'   `.DefaultHierarchicalSimulations()` function directly.
+#' @export
+.DefaultHierarchicalSimulations <- function() {
+  design <- .DefaultHierarchicalDesign()
+  truth <- lapply(
+    design@arms,
+    function(arm) {
+      probFunction(arm@design@model, alpha0 = 7, alpha1 = 8)
+    }
+  )
+
+  simulate(
+    object = design,
+    args = NULL,
+    truth = truth,
+    nsim = 1,
+    seed = 819,
+    mcmcOptions = .DefaultMcmcOptions(),
+    parallel = FALSE
+  )
+}
+
+# ComboSimulations ----
+
+## class ----
+
+#' `ComboSimulations`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures trial simulations from two-drug combination designs
+#' ([`DesignCombo`]).
+#'
+#' It is intentionally separate from [`Simulations`] because
+#' [`DataCombo`] is not a subclass of [`Data`], and final recommendations are
+#' dose combinations.
+#'
+#' @slot data (`list`)
+#'   produced [`DataCombo`] objects.
+#' @slot doses (`matrix`)
+#'   final recommended dose combinations; one row per simulation run and
+#'   two columns (one per drug).
+#' @slot fit (`list`)
+#'   final fitted toxicity surfaces for each simulation run.
+#' @slot stop_reasons (`list`)
+#'   stopping reasons for each simulation run.
+#' @slot stop_report (`matrix`)
+#'   matrix of stopping rule outcomes.
+#' @slot additional_stats (`list`)
+#'   list of additional statistical summary values.
+#' @slot seed (`integer`)
+#'   random generator state before starting the simulation.
+#' @aliases ComboSimulations
+#' @export
+.ComboSimulations <-
+  setClass(
+    Class = "ComboSimulations",
+    slots = c(
+      data = "list",
+      doses = "matrix",
+      fit = "list",
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list",
+      seed = "integer"
+    ),
+    prototype = prototype(
+      data = list(
+        DataCombo(
+          x = cbind(drug1 = c(10, 10, 20), drug2 = c(20, 20, 20)),
+          y = c(0L, 0L, 1L),
+          ID = 1L:3L,
+          cohort = c(1L, 1L, 2L),
+          doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+        ),
+        DataCombo(
+          x = cbind(drug1 = c(10, 20, 20), drug2 = c(20, 20, 40)),
+          y = c(0L, 0L, 0L),
+          ID = 1L:3L,
+          cohort = c(1L, 2L, 3L),
+          doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+        )
+      ),
+      doses = cbind(drug1 = c(20, 20), drug2 = c(20, 40)),
+      fit = list(
+        data.frame(
+          drug1 = 10,
+          drug2 = 20,
+          middle = 0.1,
+          lower = 0.05,
+          upper = 0.2
+        ),
+        data.frame(
+          drug1 = 20,
+          drug2 = 40,
+          middle = 0.2,
+          lower = 0.1,
+          upper = 0.3
+        )
+      ),
+      stop_report = matrix(TRUE, nrow = 2),
+      stop_reasons = list("A", "B"),
+      additional_stats = list(list(), list()),
+      seed = 1L
+    ),
+    contains = "CrmPackClass",
+    validity = v_combo_simulations
+  )
+
+## constructor ----
+
+#' @rdname ComboSimulations-class
+#'
+#' @param data (`list`)
+#'   see slot definition.
+#' @param doses (`matrix`)
+#'   see slot definition.
+#' @param fit (`list`)
+#'   see slot definition.
+#' @param stop_reasons (`list`)
+#'   see slot definition.
+#' @param stop_report (`matrix`)
+#'   see slot definition.
+#' @param additional_stats (`list`)
+#'   see slot definition.
+#' @param seed (`integer`)
+#'   see slot definition.
+#' @export
+ComboSimulations <- function(
+  data,
+  doses,
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  seed
+) {
+  if (!is.matrix(doses)) {
+    doses <- as.matrix(doses)
+  }
+
+  assert_integerish(seed)
+
+  .ComboSimulations(
+    data = data,
+    doses = doses,
+    fit = fit,
+    stop_report = stop_report,
+    stop_reasons = stop_reasons,
+    additional_stats = additional_stats,
+    seed = as.integer(seed)
+  )
+}
+
+## default constructor ----
+
+#' @rdname ComboSimulations-class
+#' @note Typically, end users will not use the `.DefaultComboSimulations()` function.
+#' @export
+.DefaultComboSimulations <- function() {
+  ComboSimulations(
+    data = list(
+      DataCombo(
+        x = cbind(drug1 = c(10, 10, 20), drug2 = c(20, 20, 20)),
+        y = c(0L, 0L, 1L),
+        ID = 1L:3L,
+        cohort = c(1L, 1L, 2L),
+        doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+      ),
+      DataCombo(
+        x = cbind(drug1 = c(10, 20, 20), drug2 = c(20, 20, 40)),
+        y = c(0L, 0L, 0L),
+        ID = 1L:3L,
+        cohort = c(1L, 2L, 3L),
+        doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+      )
+    ),
+    doses = cbind(drug1 = c(20, 20), drug2 = c(20, 40)),
+    fit = list(
+      data.frame(
+        drug1 = 10,
+        drug2 = 20,
+        middle = 0.1,
+        lower = 0.05,
+        upper = 0.2
+      ),
+      data.frame(drug1 = 20, drug2 = 40, middle = 0.2, lower = 0.1, upper = 0.3)
+    ),
+    stop_report = matrix(c(TRUE, FALSE), nrow = 2),
+    stop_reasons = list("A", "B"),
+    additional_stats = list(list(), list()),
+    seed = 123L
+  )
+}
+
 # DualSimulations ----
 
 ## class ----
@@ -380,6 +668,118 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
     "Class SimulationsSummary cannot be instantiated directly.",
     "Please use one of its subclasses instead."
   ))
+}
+
+# HierarchicalSimulationsSummary ----
+
+## class ----
+
+#' `HierarchicalSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures arm-specific summaries from [`HierarchicalSimulations`]
+#' objects.
+#'
+#' @slot arms (`list`)\cr named list of arm-level simulation summary objects.
+#' @slot nsim (`integer`)\cr number of simulations.
+#' @aliases HierarchicalSimulationsSummary
+#' @export
+.HierarchicalSimulationsSummary <-
+  setClass(
+    Class = "HierarchicalSimulationsSummary",
+    slots = c(
+      arms = "list",
+      nsim = "integer"
+    ),
+    contains = "CrmPackClass"
+  )
+
+## default constructor ----
+
+#' @rdname HierarchicalSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultHierarchicalSimulationsSummary()` function.
+#' @export
+.DefaultHierarchicalSimulationsSummary <- function() {
+  stop(paste(
+    "Class HierarchicalSimulationsSummary cannot be instantiated directly.",
+    "Please use summary(HierarchicalSimulations, ...) to create objects of this class."
+  ))
+}
+
+# ComboSimulationsSummary ----
+
+## class ----
+
+#' `ComboSimulationsSummary`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This class captures summary output from [`ComboSimulations`] objects.
+#'
+#' @slot target (`numeric`)
+#'   target toxicity interval. Empty if no truth function was supplied.
+#' @slot nsim (`integer`)
+#'   number of simulations.
+#' @slot n_obs (`integer`)
+#'   number of patients in each simulation.
+#' @slot prop_dlts (`numeric`)
+#'   observed proportion of DLTs in each simulation.
+#' @slot mean_tox_risk (`numeric`)
+#'   average fitted toxicity risk in each simulation.
+#' @slot dose_selected (`matrix`)
+#'   selected dose combinations; one row per simulation.
+#' @slot tox_at_doses_selected (`numeric`)
+#'   true toxicity at selected dose combinations (if truth supplied).
+#' @slot prop_at_target (`numeric`)
+#'   proportion of selected combinations within target interval (if truth supplied).
+#' @slot dose_most_selected (`numeric`)
+#'   most frequently selected dose combination.
+#' @slot obs_tox_rate_at_dose_most_selected (`numeric`)
+#'   observed toxicity rate at the most frequently selected combination.
+#' @slot dose_grid (`list`)
+#'   dose grid for each drug.
+#' @slot stop_report (`matrix`)
+#'   matrix of stopping rule outcomes.
+#' @slot stop_reasons (`list`)
+#'   stopping reasons by simulation.
+#' @slot additional_stats (`list`)
+#'   additional statistics.
+#' @aliases ComboSimulationsSummary
+#' @export
+.ComboSimulationsSummary <-
+  setClass(
+    Class = "ComboSimulationsSummary",
+    slots = c(
+      target = "numeric",
+      nsim = "integer",
+      n_obs = "integer",
+      prop_dlts = "numeric",
+      mean_tox_risk = "numeric",
+      dose_selected = "matrix",
+      tox_at_doses_selected = "numeric",
+      prop_at_target = "numeric",
+      dose_most_selected = "numeric",
+      obs_tox_rate_at_dose_most_selected = "numeric",
+      dose_grid = "list",
+      stop_report = "matrix",
+      stop_reasons = "list",
+      additional_stats = "list"
+    )
+  )
+
+## default constructor ----
+
+#' @rdname ComboSimulationsSummary-class
+#' @note Typically, end users will not use the `.DefaultComboSimulationsSummary()` function.
+#' @export
+.DefaultComboSimulationsSummary <- function() {
+  stop(
+    paste(
+      "Class ComboSimulationsSummary cannot be instantiated directly.",
+      "Please use summary(ComboSimulations, ...) to create objects of this class."
+    )
+  )
 }
 
 # DualSimulationsSummary ----
@@ -1019,5 +1419,141 @@ setMethod(
       rv <- rv %>% dplyr::bind_cols()
     }
     rv %>% h_tidy_class(x)
+  }
+)
+
+## tidy-ComboSimulations ----
+
+#' @rdname tidy
+#' @aliases tidy-ComboSimulations
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "ComboSimulations"),
+  definition = function(x, ...) {
+    nsim <- length(x@data)
+    simulations <- seq_len(nsim)
+
+    data <- lapply(
+      simulations,
+      function(i) {
+        tidy(x@data[[i]]) %>%
+          tibble::add_column(Simulation = i, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    doses <- tibble::as_tibble(x@doses) %>%
+      tibble::add_column(Simulation = simulations, .before = 1L)
+
+    fit <- lapply(
+      simulations,
+      function(i) {
+        tibble::as_tibble(x@fit[[i]]) %>%
+          tibble::add_column(Simulation = i, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    stop_report <- tibble::as_tibble(x@stop_report, .name_repair = "unique")
+    if (is.null(names(stop_report))) {
+      names(stop_report) <- paste0("Rule", seq_along(stop_report))
+    }
+    stop_report <- stop_report %>%
+      tibble::add_column(Simulation = simulations, .before = 1L)
+
+    stop_reasons <- tibble::tibble(
+      Simulation = simulations,
+      StopReason = x@stop_reasons
+    )
+
+    additional_stats <- tibble::tibble(
+      Simulation = simulations,
+      AdditionalStats = x@additional_stats
+    )
+
+    list(
+      data = data,
+      doses = doses,
+      fit = fit,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      additional_stats = additional_stats,
+      seed = tibble::tibble(Seed = list(x@seed))
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-HierarchicalSimulations ----
+
+#' @rdname tidy
+#' @aliases tidy-HierarchicalSimulations
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalSimulations"),
+  definition = function(x, ...) {
+    nsim <- length(x@data)
+    simulations <- seq_len(nsim)
+
+    data <- lapply(
+      simulations,
+      function(i) {
+        tidy(x@data[[i]]) %>%
+          tibble::add_column(Simulation = i, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    doses <- lapply(
+      simulations,
+      function(i) {
+        dose_list <- x@doses[[i]]
+        tibble::tibble(
+          Simulation = i,
+          Arm = names(dose_list),
+          Dose = unname(dose_list)
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    samples <- tibble::tibble(
+      Simulation = simulations,
+      Samples = lapply(x@samples, tidy)
+    )
+
+    fit <- tibble::tibble(
+      Simulation = simulations,
+      Fit = x@fit
+    )
+
+    stop_report <- tibble::tibble(
+      Simulation = simulations,
+      StopReport = x@stop_report
+    )
+
+    stop_reasons <- tibble::tibble(
+      Simulation = simulations,
+      StopReason = x@stop_reasons
+    )
+
+    additional_stats <- tibble::tibble(
+      Simulation = simulations,
+      AdditionalStats = x@additional_stats
+    )
+
+    list(
+      data = data,
+      doses = doses,
+      samples = samples,
+      fit = fit,
+      stop_report = stop_report,
+      stop_reasons = stop_reasons,
+      additional_stats = additional_stats,
+      seed = tibble::tibble(Seed = list(x@seed))
+    ) %>%
+      h_tidy_class(x)
   }
 )

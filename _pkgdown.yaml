@@ -48,6 +48,8 @@ articles:
       - simulations
       - rolling-crm
       - ordinal-crm
+      - combo_designs
+      - comparison_decider
   - title: Tools
     navbar: Tools
     contents:
@@ -224,8 +226,11 @@ reference:
       - h_validate_common_data_slots
       - h_summarize_add_stats
       - h_determine_dlts
+      - h_dose_combo_below_limit
+      - h_eval_combo_truth
   - title: Internal Validation Functions
     contents:
+      - v_arm_condition
       - v_general_data
       - v_data
       - v_data_dual
@@ -290,6 +295,7 @@ reference:
       - v_safety_window_size
       - v_safety_window_const
       - v_rule_design
+      - v_hierarchical_design
       - v_general_simulations
       - v_pseudo_simulations
       - v_opening
@@ -318,117 +324,120 @@ reference:
       - expect_range
   - title: Methods
     contents:
-      - plot-Data
-      - plot-DataDual
-      - plot-DataDA
-      - subset-Data
-      - update-Data
-      - update-DataParts
-      - update-DataDual
-      - update-DataDA
-      - update-DataOrdinal
+      - "`plot-Data`"
+      - "`plot-DataDual`"
+      - "`plot-DataDA`"
+      - "`subset-Data`"
+      - singleDrugData
+      - "`update-Data`"
+      - "`update-DataParts`"
+      - "`update-DataDual`"
+      - "`update-DataDA`"
+      - "`update-DataOrdinal`"
       - getEff
-      - getEff-DataDual
+      - "`getEff-DataDual`"
       - ngrid
-      - ngrid-Data
+      - "`ngrid-Data`"
       - dose_grid_range
-      - dose_grid_range-Data
+      - "`dose_grid_range-Data`"
       - saveSample
-      - saveSample-McmcOptions
+      - "`saveSample-McmcOptions`"
       - size
-      - size-McmcOptions
-      - size-Samples
-      - size-CohortSizeRange
-      - size-CohortSizeDLT
-      - size-CohortSizeMax
-      - size-CohortSizeMin
-      - size-CohortSizeConst
-      - size-CohortSizeParts
+      - "`size-McmcOptions`"
+      - "`size-Samples`"
+      - "`size-CohortSizeRange`"
+      - "`size-CohortSizeDLT`"
+      - "`size-CohortSizeMax`"
+      - "`size-CohortSizeMin`"
+      - "`size-CohortSizeConst`"
+      - "`size-CohortSizeParts`"
       - doseFunction
-      - doseFunction-GeneralModel
-      - doseFunction-ModelPseudo
+      - "`doseFunction-GeneralModel`"
+      - "`doseFunction-ModelPseudo`"
       - dose
-      - dose-LogisticNormal
-      - dose-LogisticLogNormal
-      - dose-LogisticLogNormalSub
-      - dose-ProbitLogNormal
-      - dose-ProbitLogNormalRel
-      - dose-LogisticKadane
-      - dose-LogisticKadaneBetaGamma
-      - dose-LogisticNormalMixture
-      - dose-LogisticNormalFixedMixture
-      - dose-LogisticLogNormalMixture
-      - dose-DualEndpoint
-      - dose-LogisticIndepBeta
-      - dose-LogisticIndepBeta-noSamples
-      - dose-Effloglog-noSamples
-      - dose-EffFlexi
-      - dose-OneParLogNormalPrior
-      - dose-OneParExpPrior
+      - "`dose-LogisticNormal`"
+      - "`dose-LogisticLogNormal`"
+      - "`dose-LogisticLogNormalSub`"
+      - "`dose-ProbitLogNormal`"
+      - "`dose-ProbitLogNormalRel`"
+      - "`dose-LogisticKadane`"
+      - "`dose-LogisticKadaneBetaGamma`"
+      - "`dose-LogisticNormalMixture`"
+      - "`dose-LogisticNormalFixedMixture`"
+      - "`dose-LogisticLogNormalMixture`"
+      - "`dose-DualEndpoint`"
+      - "`dose-LogisticIndepBeta`"
+      - "`dose-LogisticIndepBeta-noSamples`"
+      - "`dose-Effloglog-noSamples`"
+      - "`dose-EffFlexi`"
+      - "`dose-OneParLogNormalPrior`"
+      - "`dose-OneParExpPrior`"
       - probFunction
-      - probFunction-GeneralModel
-      - probFunction-ModelTox
+      - "`probFunction-GeneralModel`"
+      - "`probFunction-ModelTox`"
       - prob
-      - prob-LogisticNormal
-      - prob-LogisticLogNormal
-      - prob-LogisticLogNormalSub
-      - prob-ProbitLogNormal
-      - prob-ProbitLogNormalRel
-      - prob-LogisticKadane
-      - prob-LogisticKadaneBetaGamma
-      - prob-LogisticIndepBeta
-      - prob-LogisticNormalMixture
-      - prob-LogisticNormalFixedMixture
-      - prob-LogisticLogNormalMixture
-      - prob-DualEndpoint
-      - prob-LogisticIndepBeta-noSamples
-      - prob-OneParLogNormalPrior
-      - prob-OneParExpPrior
+      - "`prob-LogisticNormal`"
+      - "`prob-LogisticLogNormal`"
+      - "`prob-LogisticLogNormalSub`"
+      - "`prob-ProbitLogNormal`"
+      - "`prob-ProbitLogNormalRel`"
+      - "`prob-LogisticKadane`"
+      - "`prob-LogisticKadaneBetaGamma`"
+      - "`prob-LogisticIndepBeta`"
+      - "`prob-LogisticNormalMixture`"
+      - "`prob-LogisticNormalFixedMixture`"
+      - "`prob-LogisticLogNormalMixture`"
+      - "`prob-DualEndpoint`"
+      - "`prob-LogisticIndepBeta-noSamples`"
+      - "`prob-OneParLogNormalPrior`"
+      - "`prob-OneParExpPrior`"
       - efficacyFunction
-      - efficacyFunction-ModelEff
+      - "`efficacyFunction-ModelEff`"
       - efficacy
-      - efficacy-Effloglog
-      - efficacy-Effloglog-noSamples
-      - efficacy-EffFlexi
+      - "`efficacy-Effloglog`"
+      - "`efficacy-Effloglog-noSamples`"
+      - "`efficacy-EffFlexi`"
       - biomarker
-      - biomarker-DualEndpoint
+      - "`biomarker-DualEndpoint`"
       - gain
-      - gain-ModelTox-ModelEff
-      - gain-ModelTox-Effloglog-noSamples
-      - update-ModelPseudo
-      - mcmc-GeneralData
-      - mcmc-GeneralData-DualEndpointBeta
-      - mcmc-GeneralData-OneParExpPrior
-      - names-Samples
+      - "`gain-ModelTox-ModelEff`"
+      - "`gain-ModelTox-Effloglog-noSamples`"
+      - "`update-ModelPseudo`"
+      - "`mcmc-GeneralData`"
+      - "`mcmc-GeneralData-DualEndpointBeta`"
+      - "`mcmc-GeneralData-OneParExpPrior`"
+      - "`names-Samples`"
+      - armSamples
       - nextBest
-      - nextBest-NextBestMTD
-      - nextBest-NextBestNCRM
-      - nextBest-NextBestNCRM-DataParts
-      - nextBest-NextBestNCRMLoss
-      - nextBest-NextBestThreePlusThree
-      - nextBest-NextBestDualEndpoint
-      - nextBest-NextBestMinDist
-      - nextBest-NextBestInfTheory
-      - nextBest-NextBestTDsamples
-      - nextBest-NextBestTD
-      - nextBest-NextBestMaxGain
-      - nextBest-NextBestMaxGainSamples
-      - nextBest-NextBestProbMTDLTE
-      - nextBest-NextBestProbMTDMinDist
-      - stopTrial-StoppingMissingDose
-      - stopTrial-StoppingLowestDoseHSRBeta
-      - stopTrial-StoppingMTDCV
+      - "`nextBest-NextBestMTD`"
+      - "`nextBest-NextBestNCRM`"
+      - "`nextBest-NextBestNCRM-DataParts`"
+      - "`nextBest-NextBestNCRMLoss`"
+      - "`nextBest-NextBestThreePlusThree`"
+      - "`nextBest-NextBestDualEndpoint`"
+      - "`nextBest-NextBestMinDist`"
+      - "`nextBest-NextBestInfTheory`"
+      - "`nextBest-NextBestTDsamples`"
+      - "`nextBest-NextBestTD`"
+      - "`nextBest-NextBestMaxGain`"
+      - "`nextBest-NextBestMaxGainSamples`"
+      - "`nextBest-NextBestProbMTDLTE`"
+      - "`nextBest-NextBestProbMTDMinDist`"
+      - "`stopTrial-StoppingMissingDose`"
+      - "`stopTrial-StoppingLowestDoseHSRBeta`"
+      - "`stopTrial-StoppingMTDCV`"
       - maxDose
-      - maxDose-IncrementsRelative
-      - maxDose-IncrementsRelativeDLT
-      - maxDose-IncrementsRelativeDLTCurrent
-      - maxDose-IncrementsRelativeParts
-      - maxDose-IncrementsDoseLevels
-      - maxDose-IncrementsHSRBeta
-      - maxDose-IncrementsMin
-      - maxDose-IncrementsMaxToxProb
+      - "`maxDose-IncrementsRelative`"
+      - "`maxDose-IncrementsRelativeDLT`"
+      - "`maxDose-IncrementsRelativeDLTCurrent`"
+      - "`maxDose-IncrementsRelativeParts`"
+      - "`maxDose-IncrementsDoseLevels`"
+      - "`maxDose-IncrementsHSRBeta`"
+      - "`maxDose-IncrementsMin`"
+      - "`maxDose-IncrementsMaxToxProb`"
       - maxRecruits
       - openCohort
+      - scenario
   - title: Functions
     contents:
       - enable_logging
@@ -437,14 +446,32 @@ reference:
       - log_trace
       - dapply
       - knit_print
+      - openArm
+      - get_arm_simulations
   - title: Classes
     contents:
+      - ArmCondition-class
+      - ArmConditionAll-class
+      - ArmConditionAny-class
+      - ArmConditionList-class
+      - ArmFinishedCondition-class
+      - ArmMinDoseCondition-class
       - CohortSizeOrdinal-class
+      - ComboSimulations-class
+      - ComboSimulationsSummary-class
+      - DataCombo-class
       - IncrementsOrdinal-class
+      - IncrementsComboCartesian-class
+      - IncrementsComboOneDrugOnly-class
       - DADesign-class
       - DADesign
       - DASimulations-class
       - DASimulations
+      - DesignArm-class
+      - DesignArm
+      - HistoricalArm
+      - DesignCombo-class
+      - DesignCombo
       - DualResponsesDesign-class
       - DualResponsesDesign
       - DualResponsesSamplesDesign-class
@@ -455,10 +482,17 @@ reference:
       - GeneralSimulations-class
       - GeneralSimulations
       - GeneralSimulationsSummary-class
+      - HierarchicalData-class
+      - HierarchicalDesign-class
+      - HierarchicalModel-class
+      - HierarchicalSamples-class
+      - HierarchicalSimulations-class
+      - HierarchicalSimulationsSummary-class
       - IncrementsMaxToxProb-class
       - LogisticLogNormalOrdinal-class
       - MinimalInformative
       - NextBestOrdinal-class
+      - NoArmCondition-class
       - PseudoDualFlexiSimulations-class
       - PseudoDualFlexiSimulations
       - PseudoDualSimulations-class
@@ -472,6 +506,7 @@ reference:
       - Simulations
       - SimulationsSummary-class
       - StoppingOrdinal-class
+      - TwoDrugsCombo-class
       - approximate
       - assertions
       - assert_equal
@@ -494,12 +529,19 @@ reference:
       - or-Stopping-Stopping
       - or-Stopping-StoppingAny
       - or-StoppingAny-Stopping
+      - and,ArmCondition,ArmCondition-method
+      - or,ArmCondition,ArmCondition-method
       - plot,Data,ModelTox-method
+      - plot,DataCombo,missing-method
       - plot,DataDual,ModelEff-method
+      - plot,ComboSimulations,missing-method
+      - plot,ComboSimulationsSummary,missing-method
       - plot,DualSimulations,missing-method
       - plot,DualSimulationsSummary,missing-method
       - plot,GeneralSimulations,missing-method
       - plot,GeneralSimulationsSummary,missing-method
+      - plot,HierarchicalData,missing-method
+      - plot,HierarchicalSamples,HierarchicalModel-method
       - plot,PseudoDualFlexiSimulations,missing-method
       - plot,PseudoDualSimulations,missing-method
       - plot,PseudoDualSimulationsSummary,missing-method
@@ -509,13 +551,21 @@ reference:
       - plot,Samples,GeneralModel-method
       - plot,Samples,ModelEff-method
       - plot,Samples,ModelTox-method
+      - plot,Samples,TwoDrugsCombo-method
       - plot,SimulationsSummary,missing-method
       - plotDualResponses
       - plotGain
       - plot.gtable
       - probit
       - set_seed
+      - show,ComboSimulations-method
+      - show,ComboSimulationsSummary-method
       - show,GeneralSimulations-method
+      - show,HierarchicalData-method
+      - show,HierarchicalDesign-method
+      - show,HierarchicalModel-method
+      - show,HierarchicalSimulations-method
+      - show,HierarchicalSimulationsSummary-method
       - show,DualSimulationsSummary-method
       - show,GeneralSimulationsSummary-method
       - show,PseudoDualSimulationsSummary-method
@@ -523,20 +573,26 @@ reference:
       - show,SimulationsSummary-method
       - simulate,DADesign-method
       - simulate,Design-method
+      - simulate,DesignCombo-method
       - simulate,DualDesign-method
       - simulate,DualResponsesDesign-method
       - simulate,DualResponsesSamplesDesign-method
+      - simulate,HierarchicalDesign-method
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
       - simulate-DesignGrouped
+      - summary,ComboSimulations-method
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
+      - summary,HierarchicalSimulations-method
       - summary,PseudoDualFlexiSimulations-method
       - summary,PseudoDualSimulations-method
       - summary,Simulations-method
       - summary,PseudoSimulations-method
       - tidy
+      - update,DataCombo-method
+      - update,HierarchicalData-method
       - windowLength
       - "&,Stopping,Stopping-method"
       - "&,Stopping,StoppingAll-method"

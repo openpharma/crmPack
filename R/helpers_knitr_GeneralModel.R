@@ -49,9 +49,11 @@ h_knit_print_render_biomarker_model <- function(x, use_values = TRUE, ...) {
 #' @param use_values logical; if `FALSE`, use symbolic parameters
 #' @param fmt format string for numeric values, passed to `sprintf`
 #' @noRd
-h_knit_print_render_normal_component <- function(component,
-                                                 use_values = TRUE,
-                                                 fmt = "%5.2f") {
+h_knit_print_render_normal_component <- function(
+  component,
+  use_values = TRUE,
+  fmt = "%5.2f"
+) {
   mean <- component@mean
   cov <- component@cov
 
@@ -153,6 +155,7 @@ knit_print.DualEndpoint <- function(
 }
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_biomarker_model DualEndpoint
 #' @noRd
 h_knit_print_render_biomarker_model.DualEndpoint <- function(
   x,
@@ -165,6 +168,7 @@ h_knit_print_render_biomarker_model.DualEndpoint <- function(
 # DualEndpointBeta ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_biomarker_model DualEndpointBeta
 #' @noRd
 h_knit_print_render_biomarker_model.DualEndpointBeta <- function(x, ...) {
   paste0(
@@ -230,6 +234,7 @@ h_knit_print_render_biomarker_model.DualEndpointBeta <- function(x, ...) {
 # DualEndpointEmax ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_biomarker_model DualEndpointEmax
 #' @noRd
 h_knit_print_render_biomarker_model.DualEndpointEmax <- function(x, ...) {
   paste0(
@@ -279,6 +284,7 @@ h_knit_print_render_biomarker_model.DualEndpointEmax <- function(x, ...) {
 # DualEndpointRW ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_biomarker_model DualEndpointRW
 #' @noRd
 h_knit_print_render_biomarker_model.DualEndpointRW <- function(
   x,
@@ -484,7 +490,53 @@ knit_print.GeneralModel <- function(
   rv
 }
 
+# HierarchicalModel ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print HierarchicalModel
+knit_print.HierarchicalModel <- function(
+  x,
+  ...,
+  asis = TRUE
+) {
+  assert_flag(asis)
+
+  arm_models <- vapply(
+    x@models_to_arms,
+    function(model) class(model)[[1L]],
+    character(1L)
+  )
+  arm_text <- paste0(
+    names(arm_models),
+    " = ",
+    unname(arm_models),
+    collapse = ", "
+  )
+  pool_text <- if (length(x@parameter_pools) == 0L) {
+    "none"
+  } else {
+    paste(names(x@parameter_pools), collapse = ", ")
+  }
+
+  rv <- paste0(
+    "The hierarchical model combines ",
+    length(arm_models),
+    " arm-specific models: ",
+    arm_text,
+    ".\n\nExchangeable parameter pools: ",
+    pool_text,
+    ".\n\n"
+  )
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
 #' @keywords internal
+#' @exportS3Method h_knit_print_render_ref_dose GeneralModel
 h_knit_print_render_ref_dose.GeneralModel <- function(
   x,
   ...,
@@ -513,6 +565,7 @@ h_knit_print_render_ref_dose.GeneralModel <- function(
 # LogisticKadane ----
 
 #' @keywords internal
+#' @exportS3Method h_knit_print_render_ref_dose LogisticKadane
 h_knit_print_render_ref_dose.LogisticKadane <- function(x, ...) {
   # The LogisticKadane class has no reference dose slot
   ""
@@ -677,6 +730,7 @@ knit_print.LogisticKadaneBetaGamma <- function(
 # LogisticLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticLogNormal
 #' @noRd
 h_knit_print_render_model.LogisticLogNormal <- function(
   x,
@@ -730,6 +784,7 @@ knit_print.LogisticLogNormal <- function(
 # LogisticLogNormalMixture ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticLogNormalMixture
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalMixture <- function(
   x,
@@ -813,6 +868,7 @@ knit_print.LogisticLogNormalMixture <- function(
 # LogisticLogNormalSub ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticLogNormalSub
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalSub <- function(
   x,
@@ -857,6 +913,7 @@ knit_print.LogisticLogNormalSub <- function(
 # LogisticNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticNormal
 #' @noRd
 h_knit_print_render_model.LogisticNormal <- function(
   x,
@@ -881,6 +938,7 @@ h_knit_print_render_model.LogisticNormal <- function(
 # ProbitLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model ProbitLogNormal
 #' @noRd
 h_knit_print_render_model.ProbitLogNormal <- function(
   x,
@@ -900,6 +958,7 @@ h_knit_print_render_model.ProbitLogNormal <- function(
 # ProbitLogNormalRel ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model ProbitLogNormalRel
 #' @noRd
 h_knit_print_render_model.ProbitLogNormalRel <- function(
   x,
@@ -921,6 +980,7 @@ h_knit_print_render_model.ProbitLogNormalRel <- function(
 # LogisticNormalMixture ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticNormalMixture
 #' @noRd
 h_knit_print_render_model.LogisticNormalMixture <- function(
   x,
@@ -1084,6 +1144,7 @@ knit_print.LogisticNormalFixedMixture <- function(
 }
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticNormalFixedMixture
 #' @noRd
 h_knit_print_render_model.LogisticNormalFixedMixture <- function(
   x,
@@ -1111,6 +1172,7 @@ h_knit_print_render_model.LogisticNormalFixedMixture <- function(
 # ModelLogNormal ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model ModelLogNormal
 #' @noRd
 h_knit_print_render_model.ModelLogNormal <- function(x, ...) {
   "The model used to characterise the dose toxicity relationship is defined in  subclasses.\n\n"
@@ -1195,7 +1257,60 @@ knit_print.LogisticLogNormalGrouped <- function(
   NextMethod(params = params)
 }
 
+# TwoDrugsCombo ----
+
 #' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print
+#' @export
+#' @method knit_print TwoDrugsCombo
+knit_print.TwoDrugsCombo <- function(
+  x,
+  ...,
+  use_values = TRUE,
+  fmt = "%5.2f",
+  asis = TRUE
+) {
+  assert_flag(asis)
+  assert_flag(use_values)
+  assert_format(fmt)
+
+  rv <- paste0(
+    h_knit_print_render_model.TwoDrugsCombo(x, ...),
+    "The first single-agent model is:\n\n",
+    knit_print(
+      x@single_models[[1]],
+      asis = FALSE,
+      use_values = use_values,
+      fmt = fmt,
+      ...
+    ),
+    "\n\nThe second single-agent model is:\n\n",
+    knit_print(
+      x@single_models[[2]],
+      asis = FALSE,
+      use_values = use_values,
+      fmt = fmt,
+      ...
+    ),
+    paste0(
+      "\n\nThe prior for the",
+      if (x@log_normal_eta) " log of the",
+      " interaction term $\\eta$ is $N(",
+      if (use_values) sprintf(fmt, x@gamma) else "\\gamma",
+      ", ",
+      if (use_values) sprintf(fmt, x@tau) else "\\tau",
+      "^2)$.\n\n"
+    )
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+#' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticLogNormalGrouped
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalGrouped <- function(
   x,
@@ -1218,9 +1333,31 @@ h_knit_print_render_model.LogisticLogNormalGrouped <- function(
   )
 }
 
+# TwoDrugsCombo ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model TwoDrugsCombo
+#' @noRd
+h_knit_print_render_model.TwoDrugsCombo <- function(
+  x,
+  tox_label = "toxicity",
+  ...
+) {
+  tox_label <- h_prepare_labels(tox_label)
+  paste0(
+    "A logistic log normal model will describe the relationship between dose ",
+    "combinations and ",
+    tox_label[1],
+    ". The two single-agent dose-toxicity surfaces are modelled separately ",
+    "and then combined with an interaction term that captures any additional ",
+    "combination effect.\n\n"
+  )
+}
+
 # LogisticLogNormalOrdinal ----
 
 #' @description `r lifecycle::badge("experimental")`
+#' @exportS3Method h_knit_print_render_model LogisticLogNormalOrdinal
 #' @noRd
 h_knit_print_render_model.LogisticLogNormalOrdinal <- function(x, ...) {
   z <- "e^{\\alpha_k + \\beta \\cdot log(d/d^*)}"

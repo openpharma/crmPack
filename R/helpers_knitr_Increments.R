@@ -147,8 +147,10 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
   assert_flag(asis)
 
   rv <- paste0(
-    "The minimum of the increments defined in the following rules:",
+    "The minimum of the increments defined in the following rules:\n\n",
     paste0(
+      seq_along(x@increments_list),
+      ") ",
       lapply(
         x@increments_list,
         function(x, ...) {
@@ -159,6 +161,58 @@ knit_print.IncrementsMin <- function(x, ..., asis = TRUE) {
     ),
     "\n\n",
     paste = "\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+#' Render an `IncrementsComboOneDrugOnly` object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @inherit knit_print.CohortSizeConst return
+#' @param ... ignored.
+#' @inheritParams knit_print.CohortSizeConst
+#' @export
+#' @method knit_print IncrementsComboOneDrugOnly
+#' @rdname knit_print
+knit_print.IncrementsComboOneDrugOnly <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+
+  rv <- paste0(
+    "At most one drug may be escalated in any given cohort. If drug 1 is escalated ",
+    "above its last administered dose, then drug 2 must remain at or below its ",
+    "last administered dose, and vice versa.\n\n"
+  )
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+#' Render an `IncrementsComboCartesian` object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @inherit knit_print.CohortSizeConst return
+#' @param ... passed through to the `knit_print` methods of the constituent
+#' increment rules.
+#' @inheritParams knit_print.CohortSizeConst
+#' @export
+#' @method knit_print IncrementsComboCartesian
+#' @rdname knit_print
+knit_print.IncrementsComboCartesian <- function(x, ..., asis = TRUE) {
+  assert_flag(asis)
+
+  rv <- paste0(
+    "The maximum admissible doses are defined independently for each drug by ",
+    "the following rules:\n\n",
+    "Drug 1\n\n",
+    knit_print(x@drug1, ..., asis = FALSE),
+    "Drug 2\n\n",
+    knit_print(x@drug2, ..., asis = FALSE)
   )
 
   if (asis) {

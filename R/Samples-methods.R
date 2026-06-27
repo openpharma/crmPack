@@ -45,10 +45,76 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Extract certain parameter from "Samples" object to produce
-## plots with "ggmcmc" package
-## --------------------------------------------------
+# armSamples ----
+
+#' Extract One Arm's Posterior Draws from a `HierarchicalSamples` Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Returns a plain [`Samples`] object for a single hierarchical arm, with the
+#' original arm-level parameter names restored.
+#'
+#' @param object (`HierarchicalSamples`)\cr hierarchical posterior draws.
+#' @param arm (`character`)\cr name of the arm to extract.
+#'
+#' @return A [`Samples`] object containing only the requested arm's parameters.
+#' @export
+setGeneric(
+  "armSamples",
+  def = function(object, arm) {
+    standardGeneric("armSamples")
+  },
+  valueClass = "Samples"
+)
+
+#' @rdname armSamples
+setMethod(
+  "armSamples",
+  signature = signature(
+    object = "HierarchicalSamples",
+    arm = "character"
+  ),
+  def = function(object, arm) {
+    assert_string(arm)
+    assert_choice(arm, names(object@arm_samples))
+
+    mapping <- object@arm_samples[[arm]]
+    Samples(
+      data = stats::setNames(
+        lapply(unname(mapping), function(sample_name) {
+          object@data[[sample_name]]
+        }),
+        names(mapping)
+      ),
+      options = object@options
+    )
+  }
+)
+
+h_hierarchical_check_fit_plot_args <- function(object, model, data) {
+  assert_class(object, "HierarchicalSamples")
+  assert_class(model, "HierarchicalModel")
+  assert_class(data, "HierarchicalData")
+  assert_names(names(data@arms), identical.to = names(model@models_to_arms))
+  assert_names(
+    names(object@arm_samples),
+    identical.to = names(model@models_to_arms)
+  )
+
+  for (arm_name in names(model@models_to_arms)) {
+    arm_model <- model@models_to_arms[[arm_name]]
+    arm_data <- data@arms[[arm_name]]
+
+    if (h_hierarchical_is_single_model(arm_model)) {
+      assert_class(arm_data, "Data")
+    } else {
+      assert_class(arm_data, "DataCombo")
+      assert_names(arm_data@drugNames, identical.to = arm_model@drug_names)
+    }
+  }
+
+  invisible(TRUE)
+}
 
 # The next line is required to suppress the message "Creating a generic function
 # for ‘get’ from package ‘base’ in package ‘crmPack’" on package load.
@@ -58,10 +124,10 @@ setGeneric("get")
 #' Get specific parameter samples and produce a data.frame
 #'
 #' Here you have to specify with \code{pos} which
-#' parameter you would like to extract from the \code{\linkS4class{Samples}}
+#' parameter you would like to extract from the [Samples]
 #' object
 #'
-#' @param x the \code{\linkS4class{Samples}} object
+#' @param x the [Samples] object
 #' @param pos the name of the parameter
 #' @param envir for vectorial parameters, you can give the indices of the
 #' elements you would like to extract. If \code{NULL}, the whole vector samples
@@ -146,19 +212,15 @@ setMethod(
 )
 
 
-## --------------------------------------------------
-## Get fitted curves from Samples
-## --------------------------------------------------
-
 #' Fit method for the Samples class
 #'
 #' Note this new generic function is necessary because the \code{\link{fitted}}
 #' function only allows the first argument \code{object} to appear in the
 #' signature. But we need also other arguments in the signature.
 #'
-#' @param object the \code{\linkS4class{Samples}} object
-#' @param model the \code{\linkS4class{GeneralModel}} object
-#' @param data the \code{\linkS4class{Data}} object
+#' @param object the [Samples] object
+#' @param model the [GeneralModel] object
+#' @param data the [Data] object
 #' @param \dots passed down to the [prob()] method.
 #' @return the data frame with required information (see method details)
 #'
@@ -174,10 +236,6 @@ setGeneric(
   valueClass = "data.frame"
 )
 
-
-## --------------------------------------------------
-## Get fitted dose-tox curve from Samples
-## --------------------------------------------------
 
 #' @param points at which dose levels is the fit requested? default is the dose
 #' grid
@@ -245,9 +303,95 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Get fitted dose-tox and dose-biomarker curves from Samples
-## --------------------------------------------------
+#' @describeIn fit This method returns a data frame with one row per dose
+#' combination and posterior summaries of the DLT probability surface.
+setMethod(
+  "fit",
+  signature = signature(
+    object = "Samples",
+    model = "TwoDrugsCombo",
+    data = "DataCombo"
+  ),
+  def = function(
+    object,
+    model,
+    data,
+    points = as.matrix(do.call(expand.grid, data@doseGrid)),
+    quantiles = c(0.025, 0.975),
+    middle = mean,
+    ...
+  ) {
+    assert_probability_range(quantiles)
+    if (!is.matrix(points)) {
+      points <- as.matrix(points)
+    }
+    assert_matrix(points, mode = "numeric", any.missing = FALSE, ncols = 2L)
+    point_names <- colnames(points)
+    if (is.null(point_names)) {
+      colnames(points) <- data@drugNames
+    } else {
+      if (!setequal(point_names, data@drugNames)) {
+        stop(
+          "`points` column names must either be NULL or a permutation of `data@drugNames`.",
+          call. = FALSE
+        )
+      }
+      points <- points[, data@drugNames, drop = FALSE]
+    }
+
+    prob_samples <- prob(points, model, object, ...)
+    if (!is.matrix(prob_samples)) {
+      prob_samples <- matrix(prob_samples, ncol = 1L)
+    }
+
+    middle_curve <- apply(prob_samples, 2L, FUN = middle)
+    quant_curve <- apply(prob_samples, 2L, quantile, prob = quantiles)
+
+    cbind(
+      as.data.frame(points),
+      data.frame(
+        middle = middle_curve,
+        lower = quant_curve[1, ],
+        upper = quant_curve[2, ]
+      )
+    )
+  }
+)
+
+#' @describeIn fit This method delegates to the arm-specific `fit` methods and
+#' returns one combined data frame with an `arm` column.
+setMethod(
+  "fit",
+  signature = signature(
+    object = "HierarchicalSamples",
+    model = "HierarchicalModel",
+    data = "HierarchicalData"
+  ),
+  def = function(
+    object,
+    model,
+    data,
+    ...
+  ) {
+    h_hierarchical_check_fit_plot_args(object, model, data)
+
+    arm_fits <- lapply(names(model@models_to_arms), function(arm_name) {
+      cbind(
+        arm = arm_name,
+        fit(
+          object = armSamples(object, arm_name),
+          model = model@models_to_arms[[arm_name]],
+          data = data@arms[[arm_name]],
+          ...
+        )
+      )
+    })
+
+    dplyr::bind_rows(arm_fits)
+  }
+)
+
+# fit-DualEndpoint ----
 
 #' @describeIn fit This method returns a data frame with dose, and middle,
 #' lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
@@ -312,18 +456,16 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Approximate posterior with (log) normal distribution
-## --------------------------------------------------
+# approximate ----
 
 #' Approximate posterior with (log) normal distribution
 #'
 #' To reproduce the resultant approximate model in the future exactly, include
 #' \code{seed = xxxx} in the call to `approximate`.
 #'
-#' @param object the \code{\linkS4class{Samples}} object
-#' @param model the \code{\linkS4class{GeneralModel}} object
-#' @param data the \code{\linkS4class{Data}} object
+#' @param object the [Samples] object
+#' @param model the [GeneralModel] object
+#' @param data the [Data] object
 #' @param \dots additional arguments (see methods)
 #' @return a `list` containing the approximation model and, if requested, a
 #' `ggplot2` object containing a graphical representation of the fitted model
@@ -487,15 +629,13 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Plot dose-tox fit from a model
-## --------------------------------------------------
+# plot ----
 
 #' Plotting dose-toxicity model fits
 #'
-#' @param x the \code{\linkS4class{Samples}} object
-#' @param y the \code{\linkS4class{GeneralModel}} object
-#' @param data the \code{\linkS4class{Data}} object
+#' @param x the [Samples] object
+#' @param y the [GeneralModel] object
+#' @param data the [Data] object
 #' @param xlab the x axis label
 #' @param ylab the y axis label
 #' @param showLegend should the legend be shown? (default)
@@ -589,19 +729,173 @@ setMethod(
   }
 )
 
+## plot-TwoDrugsCombo ----
 
-## --------------------------------------------------
-## Special method for dual endpoint model
-## --------------------------------------------------
+#' Plotting two-drug combination dose-toxicity model fits
+#'
+#' @param x the [Samples] object.
+#' @param y the [TwoDrugsCombo] object.
+#' @param data the [DataCombo] object.
+#' @param xlab the x axis label. If `NULL`, the first drug name is used.
+#' @param ylab the y axis label. If `NULL`, the second drug name is used.
+#' @param fillLab the fill legend label.
+#' @param showLegend should the legend be shown? (default)
+#' @param \dots passed to \code{\link{fit}}.
+#' @return This returns the \code{\link[ggplot2]{ggplot}} object for the
+#' two-drug combination dose-toxicity model fit.
+#'
+#' @export
+setMethod(
+  "plot",
+  signature = signature(
+    x = "Samples",
+    y = "TwoDrugsCombo"
+  ),
+  def = function(
+    x,
+    y,
+    data,
+    ...,
+    xlab = NULL,
+    ylab = NULL,
+    fillLab = "Probability of DLT [%]",
+    showLegend = TRUE
+  ) {
+    assert_class(data, "DataCombo")
+    assert_logical(showLegend)
+    assert_string(xlab, null.ok = TRUE)
+    assert_string(ylab, null.ok = TRUE)
+    assert_string(fillLab)
+
+    drug1 <- data@drugNames[1L]
+    drug2 <- data@drugNames[2L]
+    if (is.null(xlab)) {
+      xlab <- drug1
+    }
+    if (is.null(ylab)) {
+      ylab <- drug2
+    }
+
+    plotData <- fit(
+      x,
+      model = y,
+      data = data,
+      quantiles = c(0.025, 0.975),
+      middle = mean,
+      ...
+    )
+
+    gdata <- data.frame(
+      dose1 = rep(plotData[[drug1]], times = 3L),
+      dose2 = rep(plotData[[drug2]], times = 3L),
+      prob = c(plotData$lower, plotData$middle, plotData$upper) * 100,
+      Type = factor(
+        rep(c("Lower", "Middle", "Upper"), each = nrow(plotData)),
+        levels = c("Lower", "Middle", "Upper")
+      )
+    )
+
+    gdata %>%
+      ggplot(aes(x = .data$dose1, y = .data$dose2, fill = .data$prob)) +
+      geom_tile(colour = "white", linewidth = 0.5) +
+      facet_wrap(~.data$Type, nrow = 1L) +
+      scale_fill_gradient(
+        name = fillLab,
+        low = "grey95",
+        high = "red3",
+        limits = c(0, 100),
+        guide = ifelse(showLegend, "colourbar", "none")
+      ) +
+      scale_x_continuous(
+        breaks = data@doseGrid[[drug1]],
+        minor_breaks = NULL
+      ) +
+      scale_y_continuous(
+        breaks = data@doseGrid[[drug2]],
+        minor_breaks = NULL
+      ) +
+      labs(
+        x = xlab,
+        y = ylab
+      ) +
+      coord_fixed()
+  }
+)
+
+## plot-HierarchicalSamples ----
+
+#' Plotting hierarchical dose-toxicity model fits
+#'
+#' @param x the [HierarchicalSamples] object.
+#' @param y the [HierarchicalModel] object.
+#' @param data the [HierarchicalData] object.
+#' @param ncol (`count` or `NULL`)\cr number of columns in the combined plot.
+#'   If `NULL`, a compact layout is chosen automatically.
+#' @param \dots passed to the arm-specific `plot` methods.
+#' @return This returns a `gtable` object combining the arm-specific fitted
+#' plots, or `NULL` if no arm plot is available.
+#'
+#' @export
+setMethod(
+  "plot",
+  signature = signature(
+    x = "HierarchicalSamples",
+    y = "HierarchicalModel"
+  ),
+  def = function(
+    x,
+    y,
+    data,
+    ncol = NULL,
+    ...
+  ) {
+    h_hierarchical_check_fit_plot_args(x, y, data)
+    assert_int(ncol, lower = 1L, null.ok = TRUE)
+
+    arm_plots <- lapply(names(y@models_to_arms), function(arm_name) {
+      arm_plot <- plot(
+        x = armSamples(x, arm_name),
+        y = y@models_to_arms[[arm_name]],
+        data = data@arms[[arm_name]],
+        ...
+      )
+      if (is.null(arm_plot)) {
+        return(NULL)
+      }
+
+      gridExtra::arrangeGrob(
+        arm_plot,
+        top = grid::textGrob(
+          arm_name,
+          gp = grid::gpar(fontface = "bold")
+        )
+      )
+    })
+    arm_plots <- Filter(Negate(is.null), arm_plots)
+
+    if (length(arm_plots) == 0L) {
+      return()
+    }
+
+    if (is.null(ncol)) {
+      ncol <- ceiling(sqrt(length(arm_plots)))
+    }
+
+    do.call(gridExtra::arrangeGrob, c(arm_plots, list(ncol = ncol)))
+  }
+)
+
+
+## plot-DualEndpoint ----
 
 #' Plotting dose-toxicity and dose-biomarker model fits
 #'
 #' When we have the dual endpoint model,
 #' also the dose-biomarker fit is shown in the plot
 #'
-#' @param x the \code{\linkS4class{Samples}} object
-#' @param y the \code{\linkS4class{DualEndpoint}} object
-#' @param data the \code{\linkS4class{DataDual}} object
+#' @param x the [Samples] object
+#' @param y the [DualEndpoint] object
+#' @param data the [DataDual] object
 #' @param extrapolate should the biomarker fit be extrapolated to the whole
 #' dose grid? (default)
 #' @param showLegend should the legend be shown? (not default)
@@ -707,10 +1001,8 @@ setMethod(
   }
 )
 
+## fit-LogisticIndepBeta ----
 
-## -------------------------------------------------------------------------------------
-## Get fitted dose-tox curve from Samples for 'LogisticIndepBeta' model class
-## ------------------------------------------------------------------------------------
 #' @describeIn fit This method return a data frame with dose, middle lower and upper quantiles
 #' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
 #' @example examples/Samples-method-fitDLE.R
@@ -768,9 +1060,7 @@ setMethod(
   }
 )
 
-## -------------------------------------------------------------------------------------
-## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
-## ------------------------------------------------------------------------------------
+## fit-Effloglog ----
 
 #' @describeIn fit This method returns a data frame with dose, middle, lower, upper quantiles for
 #' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
@@ -828,10 +1118,9 @@ setMethod(
     )
   }
 )
-## ==========================================================================================
-## --------------------------------------------------------------------
-## Get fitted dose-efficacy based on the Efficacy Flexible model
-## -------------------------------------------------------------
+
+## fit-EffFlexi ----
+
 #' @describeIn fit This method returns a data frame with dose, middle, lower and upper
 #' quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
 #' model class
@@ -945,20 +1234,19 @@ setMethod(
     )
   }
 )
-## ==============================================================
-## ----------------------------------------------------------------
-## Get fitted values at all dose levels from gain samples
-## -----------------------------------------------------------------
+
+# fitGain ----
+
 #' Get the fitted values for the gain values at all dose levels based on
 #' a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
 #' and data. This method returns a data frame with dose, middle, lower and upper quantiles
 #' of the gain value samples
 #'
-#' @param DLEmodel the DLE pseudo model of \code{\linkS4class{ModelTox}} class object
-#' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
-#' @param Effmodel the efficacy pseudo model of \code{\linkS4class{ModelEff}} class object
-#' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
-#' @param data the data input of \code{\linkS4class{DataDual}} class object
+#' @param DLEmodel the DLE pseudo model of [ModelTox] class object
+#' @param DLEsamples the DLE samples of [Samples] class object
+#' @param Effmodel the efficacy pseudo model of [ModelEff] class object
+#' @param Effsamples the efficacy samples of [Samples] class object
+#' @param data the data input of [DataDual] class object
 #' @param \dots additional arguments for methods
 #'
 #' @export
@@ -1042,14 +1330,14 @@ setMethod(
     )
   }
 )
-## ---------------------------------------------------------------------------------
-## Plot the fitted dose-DLE curve with pseudo DLE model with samples
-## -------------------------------------------------------------------------------
-#' Plot the fitted dose-DLE curve using a \code{\linkS4class{ModelTox}} class model with samples
+
+## plot-ModelTox ----
+
+#' Plot the fitted dose-DLE curve using a [ModelTox] class model with samples
 #'
-#' @param x the \code{\linkS4class{Samples}} object
-#' @param y the \code{\linkS4class{ModelTox}} model class object
-#' @param data the \code{\linkS4class{Data}} object
+#' @param x the [Samples] object
+#' @param y the [ModelTox] model class object
+#' @param data the [Data] object
 #' @param xlab the x axis label
 #' @param ylab the y axis label
 #' @param showLegend should the legend be shown? (default)
@@ -1144,15 +1432,14 @@ setMethod(
 )
 
 
-# --------------------------------------------------------------------------------------------
-## Plot the fitted dose-efficacy curve using a pseudo efficacy model with samples
-## -------------------------------------------------------------------------------------------
-#' Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
+## plot-ModelEff ----
+
+#' Plot the fitted dose-efficacy curve using a model from [ModelEff] class
 #' with samples
 #'
-#' @param x the \code{\linkS4class{Samples}} object
-#' @param y the \code{\linkS4class{ModelEff}} model class object
-#' @param data the \code{\linkS4class{Data}} object
+#' @param x the [Samples] object
+#' @param y the [ModelEff] model class object
+#' @param data the [Data] object
 #' @param xlab the x axis label
 #' @param ylab the y axis label
 #' @param showLegend should the legend be shown? (default)
@@ -1246,13 +1533,12 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------
-## Plot of fitted dose-DLE curve based on a pseudo DLE model without sample
-## -------------------------------------------------------------------------------------
+## plot-ModelToxNoSamples ----
+
 #' Plot of the fitted dose-tox based with a given pseudo DLE model and data without samples
 #'
-#' @param x the data of \code{\linkS4class{Data}} class object
-#' @param y the model of the \code{\linkS4class{ModelTox}} class object
+#' @param x the data of [Data] class object
+#' @param y the model of the [ModelTox] class object
 #' @param xlab the x axis label
 #' @param ylab the y axis label
 #' @param showLegend should the legend be shown? (default)
@@ -1342,13 +1628,12 @@ setMethod(
 )
 
 
-## ---------------------------------------------------------------------------------------------
-## Plot the fitted dose-efficacy curve given a pseudo efficacy model without samples
-## ----------------------------------------------------------------------------------
+## plot-ModelEff-NoSamples ----
+
 #' Plot of the fitted dose-efficacy based with a given pseudo efficacy model and data without samples
 #'
-#' @param x the data of \code{\linkS4class{DataDual}} class object
-#' @param y the model of the \code{\linkS4class{ModelEff}} class object
+#' @param x the data of [DataDual] class object
+#' @param y the model of the [ModelEff] class object
 #' @param xlab the x axis label
 #' @param ylab the y axis label
 #' @param showLegend should the legend be shown? (default)
@@ -1413,17 +1698,16 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------------------------
-## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model with samples
-## ----------------------------------------------------------------------------------------------------
+# plotGain ----
+
 #' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
 #' a DLE sample, a given efficacy pseudo model and an efficacy sample
 #'
-#' @param DLEmodel the dose-DLE model of \code{\linkS4class{ModelTox}} class object
-#' @param DLEsamples the DLE sample of \code{\linkS4class{Samples}} class object
-#' @param Effmodel the dose-efficacy model of \code{\linkS4class{ModelEff}} class object
-#' @param Effsamples the efficacy sample of of \code{\linkS4class{Samples}} class object
-#' @param data the data input of \code{\linkS4class{DataDual}} class object
+#' @param DLEmodel the dose-DLE model of [ModelTox] class object
+#' @param DLEsamples the DLE sample of [Samples] class object
+#' @param Effmodel the dose-efficacy model of [ModelEff] class object
+#' @param Effsamples the efficacy sample of of [Samples] class object
+#' @param data the data input of [DataDual] class object
 #' @param \dots not used
 #' @return This returns the \code{\link[ggplot2]{ggplot}}
 #' object for the plot
@@ -1515,9 +1799,8 @@ setMethod(
   }
 )
 
-## ----------------------------------------------------------------------------------------------------
-## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
-## ----------------------------------------------------------------------------------------------------
+## plotGain-NoSamples ----
+
 #' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
 #' and a given efficacy pseudo model
 #'
@@ -1739,19 +2022,17 @@ setMethod(
       )
   }
 )
-## ==========================================================================================
 
-## -------------------------------------------------------------------------------
-## Plot of the DLE and efficacy curve sides by side with samples
-## -----------------------------------------------------------------------------
+# plotDualResponses ----
+
 #' Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
 #' a DLE sample, an efficacy pseudo model and a given efficacy sample
 #'
-#' @param DLEmodel the pseudo DLE model of \code{\linkS4class{ModelTox}} class object
-#' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
-#' @param Effmodel the pseudo efficacy model of \code{\linkS4class{ModelEff}} class object
-#' @param Effsamples the Efficacy samples of \code{\linkS4class{Samples}} class object
-#' @param data the data input of \code{\linkS4class{DataDual}} class object
+#' @param DLEmodel the pseudo DLE model of [ModelTox] class object
+#' @param DLEsamples the DLE samples of [Samples] class object
+#' @param Effmodel the pseudo efficacy model of [ModelEff] class object
+#' @param Effsamples the Efficacy samples of [Samples] class object
+#' @param data the data input of [DataDual] class object
 #' @param extrapolate should the biomarker fit be extrapolated to the whole
 #' dose grid? (default)
 #' @param showLegend should the legend be shown? (not default)
@@ -1945,9 +2226,8 @@ setMethod(
   }
 )
 
-## ------------------------------------------------------------------------------
-## Plot of the DLE and efficacy curve sides by side without  samples
-## -----------------------------------------------------------------------------
+# plotDualResponses-NoSamples ----
+
 #' Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
 #' and a given pseudo efficacy model without DLE and efficacy samples
 #'
@@ -2044,18 +2324,15 @@ setMethod(
     gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
   }
 )
-## =======================================================================================================
 
-## ----------------------------------------------------------------
-## Get fitted DLT free survival (piecewise exponential model) based on
-## the DA-CRM model
-## -----------------------------------------------------------------
+# fitPEM ----
+
 #' Get the fitted DLT free survival (piecewise exponential model).
 #' This function returns a data frame with dose, middle, lower and upper
 #' quantiles for the `PEM` curve. If hazard=TRUE,
 #' @param object mcmc samples
 #' @param model the mDA-CRM model
-#' @param data the data input, a \code{\linkS4class{DataDA}} class object
+#' @param data the data input, a [DataDA] class object
 #' @param quantiles the quantiles to be calculated (default: 0.025 and
 #' 0.975)
 #' @param middle the function for computing the middle point. Default:
@@ -2141,11 +2418,9 @@ DLTLikelihood <- function(lambda, Tmax) {
   pDLT
 }
 
-## --------------------------------------------------------------------
-## Get fitted DLT free survival (piecewise exponential model) based on
-## the DA-CRM model
-## -------------------------------------------------------------
-#' @describeIn fitPEM This method works for the \code{\linkS4class{DALogisticLogNormal}}
+# fitPEM-DALogisticLogNormal ----
+
+#' @describeIn fitPEM This method works for the [DALogisticLogNormal]
 #' model class.
 #' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
 setMethod(
@@ -2211,18 +2486,14 @@ setMethod(
   }
 )
 
-## =======================================================================================================
-
-## --------------------------------------------------
-## Plot survival curve fit over time
-## --------------------------------------------------
+## plot-DALogisticLogNormal ----
 
 ## todo: add example file
 #' Plotting dose-toxicity model fits
 #'
-#' @param x the \code{\linkS4class{Samples}} object
-#' @param y the \code{\linkS4class{DALogisticLogNormal}} object
-#' @param data the \code{\linkS4class{DataDA}} object
+#' @param x the [Samples] object
+#' @param y the [DALogisticLogNormal] object
+#' @param data the [DataDA] object
 #' @param hazard see \code{\link{fitPEM}} for the explanation
 #' @param \dots not used
 #' @param showLegend should the legend be shown? (default)
@@ -2347,5 +2618,45 @@ setMethod(
     names(rv) <- c("data", "options")
     rv <- rv %>% h_tidy_class(x)
     rv
+  }
+)
+
+## tidy-HierarchicalSamples ----
+
+#' @rdname tidy
+#' @aliases tidy-HierarchicalSamples
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalSamples"),
+  definition = function(x, ...) {
+    rv <- list(
+      data = lapply(
+        names(x@data),
+        function(nm) {
+          tibble::as_tibble(get(x, nm))
+        }
+      ) %>%
+        dplyr::bind_rows() %>%
+        tidyr::pivot_wider(
+          names_from = Parameter,
+          values_from = value
+        ) %>%
+        dplyr::bind_cols(h_handle_attributes(get(x, names(x@data)[1L]))),
+      options = tidy(x@options)
+    )
+    rv$arm_samples <- lapply(
+      names(x@arm_samples),
+      function(arm_name) {
+        samples <- x@arm_samples[[arm_name]]
+        tibble::tibble(
+          Arm = arm_name,
+          Parameter = names(samples),
+          Sample = unname(samples)
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+    rv %>% h_tidy_class(x)
   }
 )

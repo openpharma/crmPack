@@ -1,0 +1,1023 @@
+#' @include Design-methods.R
+#' @include HierarchicalDesign-class.R
+#' @include helpers.R
+#' @include mcmc.R
+NULL
+
+## show-HierarchicalDesign ----
+
+#' Show `HierarchicalDesign` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalDesign`] object.
+#'
+#' @param object (`HierarchicalDesign`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalDesign
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalDesign"),
+  def = function(object) {
+    arm_names <- names(object@arms)
+    active <- vapply(object@arms, function(arm) arm@active, logical(1L))
+    pool_names <- names(object@model@parameter_pools)
+
+    cat(
+      "An object of class 'HierarchicalDesign'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    cat(
+      "Active arms: ",
+      h_show_hierarchical_names(arm_names[active]),
+      "\n",
+      "Inactive arms: ",
+      h_show_hierarchical_names(arm_names[!active]),
+      "\n",
+      sep = ""
+    )
+    cat(
+      "Exchangeable parameter pools (",
+      length(pool_names),
+      "): ",
+      h_show_hierarchical_names(pool_names),
+      "\n",
+      sep = ""
+    )
+
+    invisible(object)
+  }
+)
+
+# tidy ----
+
+## tidy-HierarchicalDesign ----
+
+#' @rdname tidy
+#' @aliases tidy-HierarchicalDesign
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalDesign"),
+  definition = function(x, ...) {
+    arms <- lapply(
+      names(x@arms),
+      function(arm_name) {
+        arm <- x@arms[[arm_name]]
+        tibble::tibble(
+          Arm = arm_name,
+          Active = arm@active,
+          Borrow = arm@borrow,
+          OpenWhenClass = class(arm@open_when)[1L],
+          OpenWhen = list(tidy(arm@open_when)),
+          DesignClass = class(arm@design)[1L],
+          Design = list(tidy(arm@design))
+        )
+      }
+    ) %>%
+      dplyr::bind_rows()
+
+    list(
+      arms = arms,
+      data = tidy(x@data),
+      model = tidy(x@model)
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-ArmConditionList ----
+
+#' @rdname tidy
+#' @aliases tidy-ArmConditionList
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "ArmConditionList"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      Condition = seq_along(x@condition_list),
+      ConditionClass = vapply(
+        x@condition_list,
+        function(condition) class(condition)[1L],
+        character(1L)
+      ),
+      ConditionValue = lapply(x@condition_list, tidy)
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+## tidy-DesignArm ----
+
+#' @rdname tidy
+#' @aliases tidy-DesignArm
+#'
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DesignArm"),
+  definition = function(x, ...) {
+    tibble::tibble(
+      Arm = x@name,
+      Active = x@active,
+      Borrow = x@borrow,
+      OpenWhenClass = class(x@open_when)[1L],
+      OpenWhen = list(tidy(x@open_when)),
+      DesignClass = class(x@design)[1L],
+      Design = list(tidy(x@design))
+    ) %>%
+      h_tidy_class(x)
+  }
+)
+
+
+## HierarchicalDesign ----
+
+#' Helper function to get the samples used for decision rules in a hierarchical design
+#'
+#' In a hierarchical design, the samples used for decision rules in each arm may either be the overall
+#' samples from the hierarchical model (if borrowing is allowed)
+#' or the arm-specific samples (if no borrowing).
+#'
+#' @param samples the overall samples from the hierarchical model.
+#' @param arm_name the name of the arm for which we want to get the samples for decision rules.
+#' @param arm the `DesignArm` object for this arm.
+#' @param arm_data the data for this arm.
+#' @param mcmcOptions the MCMC options to use if we need to fit an arm-specific model.
+#' @return the samples to be used for decision rules for this arm.
+#'
+#' @keywords internal
+h_hierarchical_get_decision_samples <- function(
+  samples,
+  arm_name,
+  arm,
+  arm_data,
+  mcmcOptions
+) {
+  if (arm@borrow) {
+    armSamples(samples, arm_name)
+  } else {
+    mcmc(
+      data = arm_data,
+      model = arm@design@model,
+      options = mcmcOptions
+    )
+  }
+}
+
+## openArm ----
+
+## generic ----
+
+#' Open a hierarchical design arm?
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param condition (`ArmCondition`)\cr opening condition to be applied.
+#' @param data (`HierarchicalData`)\cr current hierarchical trial data.
+#' @param ... further arguments passed to condition-specific methods.
+#'
+#' @return `TRUE` if this arm can be opened, `FALSE` otherwise.
+#'
+#' @export
+setGeneric(
+  name = "openArm",
+  def = function(condition, data, ...) {
+    standardGeneric("openArm")
+  },
+  valueClass = "logical"
+)
+
+## NoArmCondition ----
+
+#' @describeIn openArm method for `NoArmCondition` class, which always opens
+#'   the arm.
+#'
+#' @aliases openArm-NoArmCondition
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "NoArmCondition"),
+  definition = function(condition, data, ...) {
+    TRUE
+  }
+)
+
+## ArmFinishedCondition ----
+
+#' @describeIn openArm method for `ArmFinishedCondition` class.
+#'
+#' @aliases openArm-ArmFinishedCondition
+#'
+#' @param finished_arms (`logical`)\cr named vector indicating which arms have
+#'   finished dose escalation.
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmFinishedCondition"),
+  definition = function(condition, data, finished_arms, ...) {
+    assert_logical(finished_arms, any.missing = FALSE, names = "named")
+    assert_names(names(data@arms), must.include = condition@arm_name)
+    assert_names(names(finished_arms), must.include = condition@arm_name)
+    isTRUE(finished_arms[[condition@arm_name]])
+  }
+)
+
+## ArmMinDoseCondition ----
+
+#' @describeIn openArm method for `ArmMinDoseCondition` class.
+#'
+#' @aliases openArm-ArmMinDoseCondition
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmMinDoseCondition"),
+  definition = function(condition, data, ...) {
+    assert_names(names(data@arms), must.include = condition@arm_name)
+    arm_data <- data@arms[[condition@arm_name]]
+
+    if (arm_data@nObs == 0L) {
+      return(FALSE)
+    }
+
+    if (is.matrix(arm_data@x)) {
+      assert_true(length(condition@min_dose) %in% c(1L, ncol(arm_data@x)))
+      min_dose <- rep(condition@min_dose, length.out = ncol(arm_data@x))
+      any(rowSums(sweep(arm_data@x, 2L, min_dose, `>=`)) == ncol(arm_data@x))
+    } else {
+      assert_numeric(condition@min_dose, len = 1L)
+      any(arm_data@x >= condition@min_dose)
+    }
+  }
+)
+
+## ArmConditionList ----
+
+#' @describeIn openArm method for `ArmConditionList` class.
+#'
+#' @aliases openArm-ArmConditionList
+#'
+#' @param summary_fun (`function`)\cr to apply to the list of results
+#'   (e.g. `all` or `any`). Only used for `ArmConditionList` and its
+#'   subclasses.
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmConditionList"),
+  definition = function(condition, data, summary_fun, ...) {
+    list_results <- vapply(
+      condition@condition_list,
+      FUN = function(cond) openArm(cond, data, ...),
+      FUN.VALUE = logical(1L)
+    )
+    summary_fun(list_results)
+  }
+)
+
+## ArmConditionAll ----
+
+#' @describeIn openArm method for `ArmConditionAll` class. Returns `TRUE` if
+#'   ALL arm opening criteria are satisfied.
+#'
+#' @aliases openArm-ArmConditionAll
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmConditionAll"),
+  definition = function(condition, data, ...) {
+    callNextMethod(condition, data, summary_fun = all, ...)
+  }
+)
+
+## ArmConditionAny ----
+
+#' @describeIn openArm method for `ArmConditionAny` class. Returns `TRUE` if
+#'   ANY arm opening criterion is satisfied.
+#'
+#' @aliases openArm-ArmConditionAny
+#'
+#' @export
+setMethod(
+  f = "openArm",
+  signature = c(condition = "ArmConditionAny"),
+  definition = function(condition, data, ...) {
+    callNextMethod(condition, data, summary_fun = any, ...)
+  }
+)
+
+## & operator ----
+
+#' Logical AND Operator for ArmCondition Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Combines two [`ArmCondition`] objects with AND logic using the `&` operator.
+#' This creates an [`ArmConditionAll`] object.
+#'
+#' @param e1 (`ArmCondition`)\cr the first arm condition object.
+#' @param e2 (`ArmCondition`)\cr the second arm condition object.
+#'
+#' @return An [`ArmConditionAll`] object combining `e1` and `e2`.
+#'
+#' @export
+#' @name and,ArmCondition,ArmCondition-method
+#' @aliases &,ArmCondition,ArmCondition-method
+setMethod(
+  f = "&",
+  signature = c(e1 = "ArmCondition", e2 = "ArmCondition"),
+  definition = function(e1, e2) {
+    .ArmConditionAll(condition_list = list(e1, e2))
+  }
+)
+
+## | operator ----
+
+#' Logical OR Operator for ArmCondition Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Combines two [`ArmCondition`] objects with OR logic using the `|` operator.
+#' This creates an [`ArmConditionAny`] object.
+#'
+#' @param e1 (`ArmCondition`)\cr the first arm condition object.
+#' @param e2 (`ArmCondition`)\cr the second arm condition object.
+#'
+#' @return An [`ArmConditionAny`] object combining `e1` and `e2`.
+#'
+#' @export
+#' @name or,ArmCondition,ArmCondition-method
+#' @aliases |,ArmCondition,ArmCondition-method
+setMethod(
+  f = "|",
+  signature = c(e1 = "ArmCondition", e2 = "ArmCondition"),
+  definition = function(e1, e2) {
+    .ArmConditionAny(condition_list = list(e1, e2))
+  }
+)
+
+h_hierarchical_next_dose <- function(arm_design, arm_data, arm_samples) {
+  dose_limit <- maxDose(arm_design@increments, data = arm_data)
+  if (arm_data@nObs == 0L) {
+    arm_design@startingDose
+  } else {
+    nextBest(
+      arm_design@nextBest,
+      doselimit = dose_limit,
+      samples = arm_samples,
+      model = arm_design@model,
+      data = arm_data
+    )$value
+  }
+}
+
+#' Simulate outcomes from a hierarchical CRM design
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param object the [`HierarchicalDesign`] object we want to simulate data from.
+#' @param nsim (`count`)\cr the number of simulations.
+#' @param seed see [set_seed()].
+#' @param truth (`function` or named `list` of `function`)\cr true DLT
+#'   probability function(s). If a list is supplied, names must match the
+#'   hierarchical arms.
+#' @param truthResponse (`function` or named `list` of `function`)\cr true
+#'   response probability function(s).
+#' @param args (`data.frame`)\cr arguments for the truth functions.
+#' @inheritParams simulate,Design-method
+#'
+#' @return an object of class [`HierarchicalSimulations`].
+#'
+#' @export
+setMethod(
+  f = "simulate",
+  signature = signature(
+    object = "HierarchicalDesign",
+    nsim = "ANY",
+    seed = "ANY"
+  ),
+  definition = function(
+    object,
+    nsim = 1L,
+    seed = NULL,
+    truth,
+    truthResponse = plogis,
+    args = NULL,
+    firstSeparate = FALSE,
+    mcmcOptions = McmcOptions(),
+    parallel = FALSE,
+    nCores = min(parallel::detectCores(), 5),
+    derive = list(),
+    ...
+  ) {
+    nsim <- as.integer(nsim)
+    assert_count(nsim, positive = TRUE)
+    assert_flag(firstSeparate)
+    assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
+    assert_count(nCores, positive = TRUE)
+    assert_list(derive)
+
+    arm_names <- names(object@arms)
+    active_arms <- arm_names[vapply(
+      object@arms,
+      function(arm) arm@active,
+      logical(1L)
+    )]
+    assert_character(active_arms, min.len = 1L)
+
+    if (is.function(truth)) {
+      # If a single function is supplied, use it for all arms.
+      truth <- stats::setNames(rep(list(truth), length(arm_names)), arm_names)
+    } else {
+      assert_list(truth, types = "function", any.missing = FALSE)
+      assert_names(names(truth), must.include = arm_names)
+      truth <- truth[arm_names]
+    }
+
+    if (is.function(truthResponse)) {
+      # If a single function is supplied, use it for all arms.
+      truthResponse <- stats::setNames(
+        rep(list(truthResponse), length(arm_names)),
+        arm_names
+      )
+    } else {
+      assert_list(truthResponse, types = "function", any.missing = FALSE)
+      assert_names(names(truthResponse), must.include = arm_names)
+      truthResponse <- truthResponse[arm_names]
+    }
+
+    uses_backfill <- vapply(
+      object@arms,
+      function(arm) !is(arm@design@backfill@opening, "OpeningNone"),
+      logical(1L)
+    )
+
+    args <- as.data.frame(args)
+    n_args <- max(nrow(args), 1L)
+    rng_state <- set_seed(seed)
+    sim_seeds <- sample.int(n = 2147483647, size = as.integer(nsim))
+
+    call_truth <- function(fun, dose, current_args) {
+      do.call(fun, c(list(dose), as.list(current_args)))
+    }
+
+    run_sim <- function(iter_sim) {
+      set.seed(sim_seeds[iter_sim])
+
+      current_args <- args[(iter_sim - 1) %% n_args + 1, , drop = FALSE]
+      data <- object@data
+
+      # Initialize storage for simulation results.
+      stopped <- stats::setNames(!arm_names %in% active_arms, arm_names)
+      opened <- stats::setNames(rep(FALSE, length(arm_names)), arm_names)
+      doses <- stats::setNames(vector("list", length(arm_names)), arm_names)
+      fits <- stats::setNames(vector("list", length(arm_names)), arm_names)
+      stop_reasons <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      stop_report <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      additional_stats <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      backfill_cohorts <- stats::setNames(
+        vector("list", length(arm_names)),
+        arm_names
+      )
+      backfill_patients <- stats::setNames(
+        rep(0L, length(arm_names)),
+        arm_names
+      )
+
+      stop_reasons[stopped] <- "Historical arm: not enrolling."
+      samples <- NULL
+
+      # As long as there are active arms that have not yet stopped, keep
+      # opening, enrolling and updating them.
+      while (!all(stopped)) {
+        # Get overall samples from the hierarchical model on the current data.
+        samples <- mcmc(
+          data = data,
+          model = object@model,
+          options = mcmcOptions
+        )
+
+        for (arm_name in arm_names[!opened & !stopped]) {
+          arm <- object@arms[[arm_name]]
+          if (openArm(
+            condition = arm@open_when,
+            data = data,
+            finished_arms = stopped
+          )) {
+            opened[[arm_name]] <- TRUE
+          }
+        }
+
+        if (!any(opened & !stopped)) {
+          pending_arms <- arm_names[!opened & !stopped]
+          stop(
+            "No active arm is currently open and the pending arm opening ",
+            "conditions are not fulfilled: ",
+            h_show_hierarchical_names(pending_arms)
+          )
+        }
+
+        # Go through each open enrolling arm and update it separately.
+        for (arm_name in arm_names[opened & !stopped]) {
+          arm <- object@arms[[arm_name]]
+          arm_design <- arm@design
+          arm_data <- data@arms[[arm_name]]
+          arm_samples <- h_hierarchical_get_decision_samples(
+            samples = samples,
+            arm_name = arm_name,
+            arm = arm,
+            arm_data = arm_data,
+            mcmcOptions = mcmcOptions
+          )
+
+          next_dose <- h_hierarchical_next_dose(
+            arm_design = arm_design,
+            arm_data = arm_data,
+            arm_samples = arm_samples
+          )
+          doses[[arm_name]] <- next_dose
+
+          should_stop <- stopTrial(
+            arm_design@stopping,
+            dose = next_dose,
+            samples = arm_samples,
+            model = arm_design@model,
+            data = arm_data
+          )
+          stop_report[[arm_name]] <- h_unpack_stopit(should_stop)
+          stop_reason <- attr(should_stop, "message")
+
+          if (anyNA(next_dose) && !isTRUE(should_stop)) {
+            stop_reason <- paste(
+              "Next dose is NA , i.e., no active dose is safe enough",
+              "according to the NextBest rule."
+            )
+            should_stop <- TRUE
+          }
+
+          if (isTRUE(should_stop)) {
+            stopped[[arm_name]] <- TRUE
+            stop_reasons[[arm_name]] <- stop_reason
+            fits[[arm_name]] <- fit(
+              object = arm_samples,
+              model = arm_design@model,
+              data = arm_data
+            )
+            if (
+              length(derive) > 0L &&
+                !is(arm_design@model, "TwoDrugsCombo")
+            ) {
+              target_dose_samples <- dose(
+                mean(arm_design@nextBest@target),
+                model = arm_design@model,
+                samples = arm_samples
+              )
+              additional_stats[[arm_name]] <- lapply(
+                derive,
+                function(f) f(target_dose_samples)
+              )
+            }
+            next
+          }
+
+          prob <- call_truth(truth[[arm_name]], next_dose, current_args)
+          prob_response <- call_truth(
+            truthResponse[[arm_name]],
+            next_dose,
+            current_args
+          )
+          assert_number(prob, lower = 0, upper = 1)
+          assert_number(prob_response, lower = 0, upper = 1)
+
+          cohort_size <- size(
+            arm_design@cohort_size,
+            dose = next_dose,
+            data = arm_data
+          )
+
+          if (is(arm_data, "Data") && arm_data@placebo) {
+            placebo_dose <- arm_data@doseGrid[1L]
+            prob_placebo <- call_truth(
+              truth[[arm_name]],
+              placebo_dose,
+              current_args
+            )
+            prob_response_placebo <- call_truth(
+              truthResponse[[arm_name]],
+              placebo_dose,
+              current_args
+            )
+            cohort_size_placebo <- size(
+              arm_design@pl_cohort_size,
+              dose = next_dose,
+              data = arm_data
+            )
+          } else {
+            prob_placebo <- NULL
+            prob_response_placebo <- NULL
+            cohort_size_placebo <- NULL
+          }
+
+          if (firstSeparate && cohort_size > 1L) {
+            dlts <- rbinom(n = 1L, size = 1L, prob = prob)
+            response <- rbinom(n = 1L, size = 1L, prob = prob_response)
+            if (dlts == 0L) {
+              dlts <- c(
+                dlts,
+                rbinom(n = cohort_size - 1L, size = 1L, prob = prob)
+              )
+              response <- c(
+                response,
+                rbinom(
+                  n = cohort_size - 1L,
+                  size = 1L,
+                  prob = prob_response
+                )
+              )
+            }
+          } else {
+            dlts <- rbinom(n = cohort_size, size = 1L, prob = prob)
+            response <- rbinom(n = cohort_size, size = 1L, prob = prob_response)
+          }
+
+          if (
+            is(arm_data, "Data") && arm_data@placebo && cohort_size_placebo > 0L
+          ) {
+            dlts_placebo <- rbinom(
+              n = cohort_size_placebo,
+              size = 1L,
+              prob = prob_placebo
+            )
+            response_placebo <- rbinom(
+              n = cohort_size_placebo,
+              size = 1L,
+              prob = prob_response_placebo
+            )
+            data <- update(
+              object = data,
+              arm = arm_name,
+              x = placebo_dose,
+              y = dlts_placebo,
+              response = response_placebo,
+              check = FALSE
+            )
+            data <- update(
+              object = data,
+              arm = arm_name,
+              x = next_dose,
+              y = dlts,
+              response = response,
+              new_cohort = FALSE
+            )
+          } else {
+            data <- update(
+              object = data,
+              arm = arm_name,
+              x = next_dose,
+              y = dlts,
+              response = response
+            )
+          }
+
+          if (uses_backfill[[arm_name]]) {
+            arm_data <- data@arms[[arm_name]]
+            backfill_cohorts[[arm_name]] <- h_update_backfill_queue(
+              backfill_cohorts = backfill_cohorts[[arm_name]],
+              data = arm_data,
+              dose = next_dose,
+              backfill = arm_design@backfill
+            )
+
+            arm_truth <- truth[[arm_name]]
+            arm_truth_response <- truthResponse[[arm_name]]
+            enrollment_result <- h_enroll_backfill_patients(
+              backfill_cohorts = backfill_cohorts[[arm_name]],
+              data = arm_data,
+              backfill = arm_design@backfill,
+              cohort_size = cohort_size,
+              backfill_patients = backfill_patients[[arm_name]],
+              current_args = current_args,
+              truth = function(dose, ...) {
+                call_truth(arm_truth, dose, current_args)
+              },
+              truthResponse = function(dose) {
+                call_truth(arm_truth_response, dose, current_args)
+              }
+            )
+
+            data@arms[[arm_name]] <- enrollment_result$data
+            validObject(data)
+            backfill_cohorts[[arm_name]] <-
+              enrollment_result$backfill_cohorts
+            backfill_patients[[arm_name]] <-
+              enrollment_result$backfill_patients
+          }
+        }
+      }
+
+      # Just to be sure for the case where all arms are stopped from the beginning ...
+      if (is.null(samples)) {
+        samples <- mcmc(
+          data = data,
+          model = object@model,
+          options = mcmcOptions
+        )
+      }
+
+      # Update arm specific fits.
+      for (arm_name in arm_names) {
+        if (is.null(fits[[arm_name]])) {
+          arm <- object@arms[[arm_name]]
+          arm_design <- arm@design
+          arm_samples <- h_hierarchical_get_decision_samples(
+            samples = samples,
+            arm_name = arm_name,
+            arm = arm,
+            arm_data = data@arms[[arm_name]],
+            mcmcOptions = mcmcOptions
+          )
+          fits[[arm_name]] <- fit(
+            object = arm_samples,
+            model = arm_design@model,
+            data = data@arms[[arm_name]]
+          )
+        }
+      }
+
+      list(
+        data = data,
+        doses = doses,
+        samples = samples,
+        fit = fits,
+        stop = stop_reasons,
+        report_results = stop_report,
+        additional_stats = additional_stats
+      )
+    }
+
+    result_list <- get_result_list(
+      fun = run_sim,
+      nsim = nsim,
+      vars = c(
+        "sim_seeds",
+        "args",
+        "n_args",
+        "firstSeparate",
+        "truth",
+        "truthResponse",
+        "object",
+        "mcmcOptions",
+        "derive",
+        "arm_names",
+        "active_arms",
+        "uses_backfill"
+      ),
+      parallel = parallel,
+      n_cores = nCores
+    )
+
+    HierarchicalSimulations(
+      data = lapply(result_list, "[[", "data"),
+      doses = lapply(result_list, "[[", "doses"),
+      samples = lapply(result_list, "[[", "samples"),
+      fit = lapply(result_list, "[[", "fit"),
+      stop_report = lapply(result_list, "[[", "report_results"),
+      stop_reasons = lapply(result_list, "[[", "stop"),
+      additional_stats = lapply(result_list, "[[", "additional_stats"),
+      seed = rng_state
+    )
+  }
+)
+
+# scenario ----
+
+## HierarchicalDesign ----
+
+h_hierarchical_scenario_next_dose <- function(next_dose, arm_data) {
+  if (is(arm_data, "DataCombo")) {
+    if (is.matrix(next_dose)) {
+      dose_value <- as.numeric(next_dose[1L, ])
+      names(dose_value) <- colnames(next_dose)
+      return(dose_value)
+    }
+    if (length(next_dose) == 1L && is.na(next_dose)) {
+      dose_value <- rep(NA_real_, length(arm_data@drugNames))
+      names(dose_value) <- arm_data@drugNames
+      return(dose_value)
+    }
+    dose_value <- as.numeric(next_dose)
+    if (length(dose_value) == length(arm_data@drugNames)) {
+      names(dose_value) <- arm_data@drugNames
+    }
+    return(dose_value)
+  }
+
+  next_dose
+}
+
+#' @describeIn scenario Evaluate a hypothetical scenario for a hierarchical CRM
+#'   design.
+#'
+#' @aliases scenario-HierarchicalDesign
+#'
+#' @example examples/design-method-scenario-HierarchicalDesign.R
+#'
+#' @export
+setMethod(
+  f = "scenario",
+  signature = signature(
+    object = "HierarchicalDesign",
+    data = "HierarchicalData",
+    mcmcOptions = "McmcOptions"
+  ),
+  definition = function(object, data, mcmcOptions = McmcOptions(), ...) {
+    arm_names <- names(object@arms)
+    assert_names(names(data@arms), identical.to = arm_names)
+
+    samples <- mcmc(
+      data = data,
+      model = object@model,
+      options = mcmcOptions
+    )
+
+    dose_limit <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    next_best <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    next_dose <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    cohort_size <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    placebo_cohort_size <- stats::setNames(
+      vector("list", length(arm_names)),
+      arm_names
+    )
+    stop <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    stop_report <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    stop_reason <- stats::setNames(vector("list", length(arm_names)), arm_names)
+    fit_result <- stats::setNames(vector("list", length(arm_names)), arm_names)
+
+    stopped <- stats::setNames(
+      !vapply(object@arms, function(arm) arm@active, logical(1L)),
+      arm_names
+    )
+    opened <- stats::setNames(rep(FALSE, length(arm_names)), arm_names)
+    evaluated <- stats::setNames(rep(FALSE, length(arm_names)), arm_names)
+
+    stop[stopped] <- TRUE
+    stop_reason[stopped] <- "Historical arm: not enrolling."
+
+    repeat {
+      for (arm_name in arm_names[!opened & !stopped]) {
+        arm <- object@arms[[arm_name]]
+        if (openArm(
+          condition = arm@open_when,
+          data = data,
+          finished_arms = stopped
+        )) {
+          opened[[arm_name]] <- TRUE
+        }
+      }
+
+      arms_to_evaluate <- arm_names[opened & !evaluated & !stopped]
+      if (length(arms_to_evaluate) == 0L) {
+        break
+      }
+
+      for (arm_name in arms_to_evaluate) {
+        arm <- object@arms[[arm_name]]
+        arm_design <- arm@design
+        arm_data <- data@arms[[arm_name]]
+        arm_samples <- h_hierarchical_get_decision_samples(
+          samples = samples,
+          arm_name = arm_name,
+          arm = arm,
+          arm_data = arm_data,
+          mcmcOptions = mcmcOptions
+        )
+
+        dose_limit[[arm_name]] <- maxDose(arm_design@increments, data = arm_data)
+        next_best[[arm_name]] <- nextBest(
+          arm_design@nextBest,
+          doselimit = dose_limit[[arm_name]],
+          samples = arm_samples,
+          model = arm_design@model,
+          data = arm_data,
+          ...
+        )
+        next_dose[[arm_name]] <- h_hierarchical_scenario_next_dose(
+          next_best[[arm_name]]$value,
+          arm_data
+        )
+
+        should_stop <- stopTrial(
+          arm_design@stopping,
+          dose = next_dose[[arm_name]],
+          samples = arm_samples,
+          model = arm_design@model,
+          data = arm_data,
+          ...
+        )
+        stop[[arm_name]] <- should_stop
+        stop_report[[arm_name]] <- h_unpack_stopit(should_stop)
+        stop_reason[[arm_name]] <- attr(should_stop, "message")
+
+        if (anyNA(next_dose[[arm_name]]) && !isTRUE(should_stop)) {
+          stop_reason[[arm_name]] <- paste(
+            "Next dose is NA , i.e., no active dose is safe enough",
+            "according to the NextBest rule."
+          )
+          stop[[arm_name]] <- TRUE
+          stopped[[arm_name]] <- TRUE
+        } else {
+          stopped[[arm_name]] <- isTRUE(should_stop)
+        }
+
+        cohort_size[[arm_name]] <- if (anyNA(next_dose[[arm_name]])) {
+          NA_integer_
+        } else {
+          size(
+            arm_design@cohort_size,
+            dose = next_dose[[arm_name]],
+            data = arm_data
+          )
+        }
+
+        placebo_cohort_size[arm_name] <- list(if (
+          is(arm_data, "Data") &&
+            arm_data@placebo &&
+            !anyNA(next_dose[[arm_name]])
+        ) {
+          size(
+            arm_design@pl_cohort_size,
+            dose = next_dose[[arm_name]],
+            data = arm_data
+          )
+        } else {
+          NULL
+        })
+
+        evaluated[[arm_name]] <- TRUE
+      }
+    }
+
+    for (arm_name in arm_names[!opened & !stopped]) {
+      stop[[arm_name]] <- NA
+      stop_reason[[arm_name]] <- "Arm is not currently open."
+    }
+
+    for (arm_name in arm_names) {
+      arm <- object@arms[[arm_name]]
+      arm_design <- arm@design
+      arm_data <- data@arms[[arm_name]]
+      arm_samples <- h_hierarchical_get_decision_samples(
+        samples = samples,
+        arm_name = arm_name,
+        arm = arm,
+        arm_data = arm_data,
+        mcmcOptions = mcmcOptions
+      )
+      fit_result[[arm_name]] <- fit(
+        object = arm_samples,
+        model = arm_design@model,
+        data = arm_data,
+        ...
+      )
+    }
+
+    list(
+      data = data,
+      samples = samples,
+      fit = fit_result,
+      dose_limit = dose_limit,
+      next_best = next_best,
+      next_dose = next_dose,
+      cohort_size = cohort_size,
+      placebo_cohort_size = placebo_cohort_size,
+      stop = stop,
+      stop_report = stop_report,
+      stop_reason = stop_reason
+    )
+  }
+)

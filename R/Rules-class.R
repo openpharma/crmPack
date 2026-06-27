@@ -1091,6 +1091,109 @@ setClass(
   ))
 }
 
+# IncrementsComboOneDrugOnly ----
+
+## class ----
+
+#' `IncrementsComboOneDrugOnly`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsComboOneDrugOnly`] is the class for increments control in combination
+#' trials when only one drug is allowed to be escalated.
+#'
+#' @details Under this rule, when escalating drug 1 to a dose above the last
+#'   administered drug 1 dose, drug 2 must remain at or below its last
+#'   administered dose, and vice versa. In other words, at most one drug may be
+#'   escalated in any given cohort. No parameters are required; the rule is
+#'   fully defined by the "one drug only" principle.
+#'
+#' @aliases IncrementsComboOneDrugOnly
+#' @export
+#'
+.IncrementsComboOneDrugOnly <- setClass(
+  Class = "IncrementsComboOneDrugOnly",
+  contains = "Increments"
+)
+
+## constructor ----
+
+#' @rdname IncrementsComboOneDrugOnly-class
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsComboOneDrugOnly.R
+#'
+IncrementsComboOneDrugOnly <- function() {
+  .IncrementsComboOneDrugOnly()
+}
+
+## default constructor ----
+
+#' @rdname IncrementsComboOneDrugOnly-class
+#' @note Typically, end users will not use the `.DefaultIncrementsComboOneDrugOnly()` function.
+#' @export
+.DefaultIncrementsComboOneDrugOnly <- function() {
+  IncrementsComboOneDrugOnly()
+}
+
+# IncrementsComboCartesian ----
+
+## class ----
+
+#' `IncrementsComboCartesian`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsComboCartesian`] is the class for increments control in
+#' combination trials where separate increment rules are defined for each drug
+#' and applied independently.
+#'
+#' @details Under this rule, the maximum admissible dose for each drug is first
+#'   computed from the corresponding one-dimensional increment rule. The
+#'   resulting two-dimensional admissible region is then represented in a
+#'   matrix form compatible with combination `maxDose` methods.
+#'
+#' @slot drug1 (`Increments`)
+#'   increment rule for the first drug.
+#' @slot drug2 (`Increments`)
+#'   increment rule for the second drug.
+#'
+#' @aliases IncrementsComboCartesian
+#' @export
+#'
+.IncrementsComboCartesian <- setClass(
+  Class = "IncrementsComboCartesian",
+  contains = "Increments",
+  slots = c(drug1 = "Increments", drug2 = "Increments")
+)
+
+## constructor ----
+
+#' @rdname IncrementsComboCartesian-class
+#'
+#' @param drug1 (`Increments`)
+#'   see slot definition.
+#' @param drug2 (`Increments`)
+#'   see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsComboCartesian.R
+#'
+IncrementsComboCartesian <- function(drug1, drug2) {
+  .IncrementsComboCartesian(drug1 = drug1, drug2 = drug2)
+}
+
+## default constructor ----
+
+#' @rdname IncrementsComboCartesian-class
+#' @note Typically, end users will not use the `.DefaultIncrementsComboCartesian()` function.
+#' @export
+.DefaultIncrementsComboCartesian <- function() {
+  IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)),
+    drug2 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+  )
+}
 
 # IncrementsRelative ----
 
@@ -1788,7 +1891,8 @@ StoppingMissingDose <- function(report_label = NA_character_) {
 #'
 #' @slot nCohorts (`number`)\cr number of required cohorts.
 #' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
-#'   within the next best dose the cohorts must lie.
+#'   within the next best dose the cohorts must lie. This is applied
+#'   for each of the two doses for `DataCombo` objects.
 #'
 #' @aliases StoppingCohortsNearDose
 #' @export
@@ -2523,7 +2627,7 @@ StoppingTargetBiomarker <- function(
   Class = "StoppingSpecificDose",
   slots = c(
     rule = "Stopping",
-    dose = "positive_number"
+    dose = "numeric"
   ),
   contains = "Stopping"
 )
@@ -2533,7 +2637,7 @@ StoppingTargetBiomarker <- function(
 #' @rdname StoppingSpecificDose-class
 #'
 #' @param rule (`Stopping`)\cr see slot definition.
-#' @param dose (`number`)\cr see slot definition.
+#' @param dose (`numeric`)\cr see slot definition.
 #' @param report_label (`string` or `NA`) \cr see slot definition.
 #'
 #' @export
@@ -2546,12 +2650,12 @@ StoppingSpecificDose <- function(
 ) {
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste0("Dose ", dose, " used for testing a stopping rule")
+    paste0("Dose ", toString(dose), " used for testing a stopping rule")
   )
 
   .StoppingSpecificDose(
     rule = rule,
-    dose = positive_number(dose),
+    dose = as.numeric(dose),
     report_label = report_label
   )
 }
@@ -2564,7 +2668,7 @@ StoppingSpecificDose <- function(
 .DefaultStoppingSpecificDose <- function() {
   StoppingSpecificDose(
     rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = positive_number(80)
+    dose = 80
   )
 }
 

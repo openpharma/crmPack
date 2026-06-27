@@ -15,11 +15,11 @@
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object}
+\item{x}{the \link{Samples} object}
 
-\item{y}{the \code{\linkS4class{GeneralModel}} object}
+\item{y}{the \link{GeneralModel} object}
 
-\item{data}{the \code{\linkS4class{Data}} object}
+\item{data}{the \link{Data} object}
 
 \item{\dots}{not used}
 

@@ -197,6 +197,111 @@ test_that("nextBest-NextBestNCRM can accept additional arguments and pass them t
   expect_identical(result$value, NA_real_)
 })
 
+test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
+  set.seed(123)
+  data <- h_get_data_combo()
+  model <- h_get_two_drugs_combo()
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  increments <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(0, 0.5),
+    drug2 = IncrementsRelative(0, 1)
+  )
+  doselimit <- maxDose(increments, data)
+  doselimit[3, 2] <- 20
+  result <- nextBest(
+    nb_ncrm,
+    doselimit,
+    samples,
+    model,
+    data
+  )
+  expect_equal(result$value, c(drug1 = 10, drug2 = 20))
+  expect_named(
+    result$probs,
+    c("drug1", "drug2", "target_prob", "overdose_prob", "not_eligible")
+  )
+  probs <- data.frame(
+    drug1 = c(10, 20, 30, 10, 20, 30),
+    drug2 = c(20, 20, 20, 40, 40, 40),
+    target_prob = c(0.6, 0.2, 0.2, 0.1, 0.2, NA),
+    overdose_prob = c(0.1, 0.2, 0.2, 0.3, 0.1, NA),
+    not_eligible = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE)
+  )
+  expect_equal(result$probs, probs)
+  expect_s3_class(result$plot, "gtable")
+  expect_list(result$singlePlots)
+  expect_s3_class(result$singlePlots$plot1, "ggplot")
+  expect_s3_class(result$singlePlots$plot2, "ggplot")
+})
+
+test_that("nextBest-NextBestNCRM-DataCombo uses configured drug names in probs", {
+  set.seed(123)
+  data <- DataCombo(
+    doseGrid = list(compound_a = c(10, 20, 30), compound_b = c(20, 40)),
+    x = cbind(
+      compound_a = c(10, 10, 10, 20, 20, 20),
+      compound_b = c(20, 20, 20, 20, 20, 20)
+    ),
+    y = c(0L, 0L, 1L, 0L, 0L, 0L),
+    ID = 1L:6L,
+    cohort = c(1L, 1L, 1L, 2L, 2L, 2L)
+  )
+  model <- TwoDrugsCombo(list(
+    compound_a = .DefaultLogisticLogNormal(),
+    compound_b = .DefaultLogisticLogNormal()
+  ))
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(
+    nb_ncrm,
+    maxDose(
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(0, 0.5),
+        drug2 = IncrementsRelative(0, 1)
+      ),
+      data
+    ),
+    samples,
+    model,
+    data
+  )
+
+  expect_named(
+    result$probs,
+    c(
+      "compound_a",
+      "compound_b",
+      "target_prob",
+      "overdose_prob",
+      "not_eligible"
+    )
+  )
+  expect_true(all(
+    result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1
+  ))
+  expect_true(all(
+    result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1
+  ))
+})
+
 ## NextBestNCRM-DataParts ----
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects", {
@@ -1141,6 +1246,95 @@ test_that("nextBest-NextBestOrdinal works correctly", {
 # maxDose ----
 
 ## IncrementsRelative ----
+## IncrementsComboOneDrugOnly ----
+
+test_that("maxDose-IncrementsComboOneDrugOnly returns Inf for drug2 when data is empty", {
+  increments <- IncrementsComboOneDrugOnly()
+  data <- DataCombo(
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_true(all(is.infinite(result[, 2])))
+})
+
+test_that("maxDose-IncrementsComboOneDrugOnly caps drug2 when drug1 is escalated", {
+  increments <- IncrementsComboOneDrugOnly()
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  # drug1 = 10 is not an escalation, so drug2 is unrestricted
+  expect_true(is.infinite(result[result[, 1] == 10, 2]))
+  # drug1 = 20 or 30 would escalate drug1, so drug2 capped at last drug2 = 20
+  expect_equal(unname(result[result[, 1] == 20, 2]), 20)
+  expect_equal(unname(result[result[, 1] == 30, 2]), 20)
+})
+
+test_that("maxDose-IncrementsComboOneDrugOnly caps drug2 correctly for intermediate last dose", {
+  increments <- IncrementsComboOneDrugOnly()
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 20, 20), drug2 = c(20, 20, 20, 20)),
+    y = c(0L, 0L, 0L, 0L),
+    ID = 1L:4L,
+    cohort = c(1L, 1L, 2L, 2L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+  # Last observed dose: drug1 = 20, drug2 = 20
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  # drug1 = 10 or 20 are not escalations of drug1, so drug2 is unrestricted
+  expect_true(is.infinite(result[result[, 1] == 10, 2]))
+  expect_true(is.infinite(result[result[, 1] == 20, 2]))
+  # drug1 = 30 escalates drug1, so drug2 is capped at 20
+  expect_equal(unname(result[result[, 1] == 30, 2]), 20)
+})
+
+## IncrementsComboCartesian ----
+
+test_that("maxDose-IncrementsComboCartesian returns Inf for both drugs when data is empty", {
+  increments <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+    drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+  )
+  data <- DataCombo(
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_true(all(is.infinite(result[, 2])))
+})
+
+test_that("maxDose-IncrementsComboCartesian applies independent single-drug rules", {
+  increments <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+    drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+  )
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_equal(unname(result[result[, 1] == 10, 2]), 40)
+  expect_equal(unname(result[result[, 1] == 20, 2]), 40)
+  expect_true(is.na(unname(result[result[, 1] == 30, 2])))
+})
+
+## IncrementsRelative ----
 
 test_that("maxDose-IncrementsRelative works correctly for last dose in 1st interval", {
   increments <- IncrementsRelative(
@@ -1911,7 +2105,49 @@ test_that("maxDose-IncrementsMinOrdinal works correctly when incr2 is minimum", 
   expect_equal(result, 150)
 })
 
-## IncrementsOrdinal
+test_that("maxDose-IncrementsMin-DataCombo takes row-wise minimum", {
+  incr1 <- IncrementsComboOneDrugOnly()
+  incr2 <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0), increments = c(2)),
+    drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_equal(result[, 2], c(40, 20, 20))
+})
+
+test_that("maxDose-IncrementsMin-DataCombo propagates NA from any rule", {
+  incr1 <- IncrementsComboOneDrugOnly()
+  incr2 <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+    drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+  )
+  increments <- IncrementsMin(increments_list = list(incr1, incr2))
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10, 10), drug2 = c(20, 20, 20)),
+    y = c(0L, 0L, 0L),
+    ID = 1L:3L,
+    cohort = c(1L, 1L, 1L),
+    doseGrid = list(drug1 = c(10, 20, 30), drug2 = c(20, 40, 60))
+  )
+
+  result <- maxDose(increments, data)
+  expect_matrix(result, ncols = 2L, nrows = 3L)
+  expect_equal(result[, 1], c(10, 20, 30))
+  expect_equal(result[, 2], c(40, 20, NA))
+})
+
+## IncrementsOrdinal ----
 
 test_that("maxDose-IncrementsOrdinal works correctly", {
   inc <- .DefaultIncrementsOrdinal()
@@ -1967,6 +2203,19 @@ test_that("StoppingMissingDose works correctly", {
       report_label = "Stopped because of missing dose"
     )
   )
+})
+
+test_that("StoppingMissingDose works correctly also with DataCombo", {
+  stopping <- StoppingMissingDose()
+
+  result <- stopTrial(
+    stopping,
+    dose = NA_real_,
+    data = DataCombo(
+      doseGrid = list(drug1 = c(0, 1), drug2 = c(0, 1))
+    )
+  )
+  expect_true(result)
 })
 
 ## StoppingCohortsNearDose ----
@@ -2278,6 +2527,30 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose", {
   )
 })
 
+test_that("stopTrial works correctly for StoppingCohortsNearDose with DataCombo", {
+  stopRule <- StoppingCohortsNearDose(nCohorts = 2, percentage = 50)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "3 cohorts lie within 50% of the next best dose 1, 2. This reached the required 2 cohorts",
+      report_label = "≥ 2 cohorts dosed in 50 % dose range around NBD"
+    )
+  )
+})
+
 ## StoppingPatientsNearDose ----
 
 test_that("StoppingPatientsNearDose can handle when dose is NA", {
@@ -2349,6 +2622,30 @@ test_that("StoppingPatientsNearDose correctly excludes backfill patients if requ
   expect_identical(result, expected)
 })
 
+test_that("stopTrial works correctly for StoppingPatientsNearDose with DataCombo", {
+  stopRule <- StoppingPatientsNearDose(nPatients = 3, percentage = 50)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "6 patients lie within 50% of the next best dose 1, 2. This reached the required 3 patients",
+      report_label = "≥ 3 patients dosed in 50 % dose range around NBD"
+    )
+  )
+})
+
 ## StoppingMinCohorts ----
 
 test_that("StoppingMinCohorts works correctly if next dose is NA", {
@@ -2395,6 +2692,30 @@ test_that("StoppingMinCohorts works correctly in edge cases", {
     list(
       message = "Number of cohorts is 3 and thus reached the prespecified minimum number 1",
       report_label = "≥ 1 cohorts dosed"
+    )
+  )
+})
+
+test_that("stopTrial works correctly for StoppingMinCohorts with DataCombo", {
+  stopRule <- StoppingMinCohorts(nCohorts = 3)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "Number of cohorts is 3 and thus reached the prespecified minimum number 3",
+      report_label = "≥ 3 cohorts dosed"
     )
   )
 })
@@ -2491,6 +2812,30 @@ test_that("stopTrial works correctly for StoppingMinPatients", {
   )
 })
 
+test_that("stopTrial works correctly for StoppingMinPatients with DataCombo", {
+  stopRule <- StoppingMinPatients(nPatients = 4)
+  data <- DataCombo(
+    x = cbind(drug1 = c(1, 1, 1, 1, 1, 1), drug2 = c(1, 1, 2, 2, 3, 3)),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = seq_len(6),
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2, 3))
+  )
+  rv <- stopTrial(
+    stopping = stopRule,
+    dose = c(1, 2),
+    data = data
+  )
+  expect_true(rv)
+  expect_equal(
+    attributes(rv),
+    list(
+      message = "Number of patients is 6 and thus reached the prespecified minimum number 4",
+      report_label = "≥ 4 patients dosed"
+    )
+  )
+})
+
 ## StoppingTargetProb ----
 
 test_that("StoppingTargetProb can handle when dose is NA", {
@@ -2583,6 +2928,31 @@ test_that("stopTrial-StoppingTargetProb can accept additional arguments and pass
     group = "combo"
   )
   expect_false(result)
+})
+
+test_that("stopTrial with StoppingTargetProb works correctly with DataCombo", {
+  my_data <- h_get_data_combo()
+  my_model <- h_get_two_drugs_combo()
+  my_options <- h_get_mcmc_options(samples = 100)
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    my_options
+  )
+  stopping <- StoppingTargetProb(target = c(0.05, 0.5), prob = 0.3)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = c(drug1 = 1, drug2 = 2),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 51 % for dose 1, 2 and thus above the required 30 %",
+    report_label = "P(0.05 ≤ prob(DLE | NBD) ≤ 0.5) ≥ 0.3"
+  )
+  expect_identical(result, expected)
 })
 
 ## StoppingMTDdistribution ----
@@ -2934,6 +3304,33 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
     report_label = "Pβ(lowest dose > P(DLE) = 0.3) > 0.1"
   )
   expect_identical(result, expected) # First active dose not applied.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly with DataCombo", {
+  my_data <- h_get_data_combo()
+  my_model <- h_get_two_drugs_combo()
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 100, burnin = 100)
+  )
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = c(drug1 = 1, drug2 = 2),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = paste(
+      "Probability that the lowest active dose of 10, 20 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 65% and thus above the required 10% threshold."
+    ),
+    report_label = "Pβ(lowest dose > P(DLE) = 0.3) > 0.1"
+  )
+  expect_identical(result, expected)
 })
 
 ## StoppingTargetBiomarker ----
@@ -3327,6 +3724,29 @@ test_that("StoppingSpecificDose correctly replaces next best string with specifi
   expect_identical(result, expected)
 })
 
+test_that("StoppingSpecificDose also works with DataCombo", {
+  my_stopping <- StoppingSpecificDose(
+    rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
+    dose = c(drug1 = 20, drug2 = 20)
+  )
+  my_samples <- 1
+  my_data <- h_get_data_combo()
+  my_model <- 1
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = c(drug1 = 20, drug2 = 20),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "3 patients lie within 5% of the specific dose 20, 20. This is below the required 9 patients",
+    report_label = "Dose 20, 20 used for testing a stopping rule"
+  )
+  expect_identical(result, expected)
+})
+
 ## StoppingHighestDose ----
 
 test_that("StoppingHighestDose works correctly if next dose is NA", {
@@ -3346,6 +3766,26 @@ test_that("StoppingHighestDose works correctly if next dose is NA", {
     message = paste(
       "Next best dose is NA and thus not the highest dose"
     ),
+    report_label = "NBD is the highest dose"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingHighestDose also works with DataCombo", {
+  my_stopping <- StoppingHighestDose()
+  my_samples <- 1
+  my_data <- h_get_data_combo()
+  my_model <- 1
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = c(drug1 = 30, drug2 = 40),
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Next best dose is 30, 40 and thus the highest dose",
     report_label = "NBD is the highest dose"
   )
   expect_identical(result, expected)
@@ -4807,6 +5247,20 @@ test_that("size works as expected for CohortSizeDLT", {
   }
 })
 
+test_that("size works as expected for CohortSizeDLT with DataCombo", {
+  cohortSize <- CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 1L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 3)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
+})
+
 ## CohortSizeConst ----
 
 test_that("size works as expected for CohortSizeConst", {
@@ -4816,6 +5270,20 @@ test_that("size works as expected for CohortSizeConst", {
   for (dose in 1:5) {
     expect_equal(size(object = cohortSize, dose = dose, data = emptyData), 4)
   }
+})
+
+test_that("size works as expected for CohortSizeConst with DataCombo", {
+  cohortSize <- CohortSizeConst(size = 4)
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 0L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 4)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
 })
 
 ## CohortSizeRandom ----
@@ -4835,6 +5303,23 @@ test_that("size works as expected for CohortSizeRandom with valid dose", {
     expect_true(result >= 2 && result <= 4)
     expect_true(is.integer(result))
   }
+})
+
+test_that("size works as expected for CohortSizeRandom with DataCombo", {
+  cohortSize <- CohortSizeRandom(min_size = 2, max_size = 4)
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 0L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  set.seed(123)
+  result <- size(cohortSize, c(10, 20), data)
+  expect_true(result >= 2 && result <= 4)
+  expect_true(is.integer(result))
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
 })
 
 ## CohortSizeRange ----
@@ -4887,6 +5372,25 @@ test_that("size works as expected for CohortSizeMax", {
   }
 })
 
+test_that("size works as expected for CohortSizeMax with DataCombo", {
+  cohortSize <- CohortSizeMax(
+    cohort_sizes = list(
+      CohortSizeConst(size = 2),
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+    )
+  )
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 1L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 3)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
+})
+
 test_that("maxSize works as expected", {
   size1 <- CohortSizeRange(intervals = c(0, 3), cohort_size = 1:2)
   size2 <- CohortSizeDLT(intervals = 0:2, cohort_size = c(1, 3, 6))
@@ -4927,6 +5431,25 @@ test_that("size works as expected for CohortSizeMin", {
       ifelse(dose < 3, 1, 2)
     )
   }
+})
+
+test_that("size works as expected for CohortSizeMin with DataCombo", {
+  cohortSize <- CohortSizeMin(
+    cohort_sizes = list(
+      CohortSizeConst(size = 2),
+      CohortSizeDLT(intervals = c(0, 1), cohort_size = c(1, 3))
+    )
+  )
+  data <- DataCombo(
+    x = cbind(drug1 = c(10, 10), drug2 = c(20, 20)),
+    y = c(0L, 1L),
+    cohort = c(1L, 1L),
+    ID = 1:2,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 30))
+  )
+
+  expect_equal(size(cohortSize, c(10, 20), data), 2)
+  expect_equal(size(cohortSize, c(NA, NA), data), 0)
 })
 
 test_that("size works as expected for CohortSizeMin", {

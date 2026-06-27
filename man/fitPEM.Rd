@@ -32,7 +32,7 @@ fitPEM(
 
 \item{model}{the mDA-CRM model}
 
-\item{data}{the data input, a \code{\linkS4class{DataDA}} class object}
+\item{data}{the data input, a \link{DataDA} class object}
 
 \item{quantiles}{the quantiles to be calculated (default: 0.025 and
 0.975)}
@@ -52,7 +52,7 @@ quantiles for the \code{PEM} curve. If hazard=TRUE,
 }
 \section{Functions}{
 \itemize{
-\item \code{fitPEM(object = Samples, model = DALogisticLogNormal, data = DataDA)}: This method works for the \code{\linkS4class{DALogisticLogNormal}}
+\item \code{fitPEM(object = Samples, model = DALogisticLogNormal, data = DataDA)}: This method works for the \link{DALogisticLogNormal}
 model class.
 
 }}

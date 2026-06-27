@@ -6,5 +6,9 @@
     "[quarto]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "quarto.quarto"
+    },
+    "chat.tools.terminal.autoApprove": {
+        "Rscript": true,
+        "R": true
     }
 }
