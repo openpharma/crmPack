@@ -652,7 +652,7 @@ setMethod(
 
     precision <- matrix(rep(0, 4), nrow = 2, ncol = 2)
 
-    for (i in seq_len(length(this_model@binDLE))) {
+    for (i in seq_along(this_model@binDLE)) {
       precision_mat <- scalar_i[i] *
         matrix(
           c(

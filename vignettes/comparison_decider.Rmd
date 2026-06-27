@@ -44,10 +44,10 @@ This is the data from the historical Arm C:
 
 ```{r}
 historical_data <- list(
-  dose1 = c( 0,    0,    0,    0,    0),
-  dose2 = c( 2,    4,    8,    12,   16),
-  n.pat = c( 3,    3,    3,    9,    12),
-  n.dlt = c( 0,    0,    0,    1,    2),
+  dose1 = c(0, 0, 0, 0, 0),
+  dose2 = c(2, 4, 8, 12, 16),
+  n.pat = c(3, 3, 3, 9, 12),
+  n.dlt = c(0, 0, 0, 1, 2),
   trial = c("H1", "H1", "H1", "H1", "H1")
 )
 ```
@@ -67,9 +67,9 @@ d2 <- c(8, 12)
 The overall dose grid for combination Arm B is therefore:
 
 ```{r}
-doses_of_interest <- rbind( 
-    c(d1,                  rep(d1, times=length(d2))),
-    c(rep(0, length(d1)),  rep(d2, each=length(d1))) 
+doses_of_interest <- rbind(
+    c(d1, rep(d1, times = length(d2))),
+    c(rep(0, length(d1)), rep(d2, each = length(d1)))
 )
 ```
 
@@ -83,8 +83,8 @@ dose_ref2 <- 12
 We further need to specify the arms and types of the arms as follows:
 
 ```{r}
-trials_of_interest = c("A",     "B")
-types_of_interest =  c("mono1", "combi")
+trials_of_interest <- c("A", "B")
+types_of_interest <- c("mono1", "combi")
 ```
 
 The prior for the hypermeans is specified like this:
@@ -100,17 +100,17 @@ prior_mu <- list(mu_a1  =  c(logit(0.33), 2),
 
 The prior mean for $\mu_{\alpha_{1}}$ is set to $\text{logit}(0.33)$, which implies that we assume the reference dose has a prior median DLT rate of 33%.
 
-Note that we use a normal prior here on the interaction parameter $\eta$, thus allowing both positive and negative interactions. The standard deviation is set such that $\exp(1.96 \cdot 1.121) \approx 9$, thus allowing for a 95% prior interval of $[1/9, 9]$ for the odds changes for a DLT at the reference dose. So $1.121 = \log(9)/z_{0.975}$.
+Note that we use a normal prior here on the interaction parameter $\eta$, thus allowing both positive and negative interactions. The standard deviation is set such that $\exp(1.96 \cdot 1.121) \approx 9$, thus allowing for a 95% prior interval of $[1 / 9, 9]$ for the odds changes for a DLT at the reference dose. So $1.121 = \log(9) / z_{0.975}$.
 
 The prior for the between-trial heterogeneity parameters is specified like this:
 
 ```{r}
 #                 Parameter    Mean        SD
-prior_tau <- list(tau_a1  =  c(log(0.25),  log(2)/1.96),
-                  tau_b1  =  c(log(0.125), log(2)/1.96),
-                  tau_a2  =  c(log(0.25),  log(2)/1.96),
-                  tau_b2  =  c(log(0.125), log(2)/1.96),
-                  tau_eta =  c(log(0.125), log(2)/1.96))
+prior_tau <- list(tau_a1  =  c(log(0.25),  log(2) / 1.96),
+                  tau_b1  =  c(log(0.125), log(2) / 1.96),
+                  tau_a2  =  c(log(0.25),  log(2) / 1.96),
+                  tau_b2  =  c(log(0.125), log(2) / 1.96),
+                  tau_eta =  c(log(0.125), log(2) / 1.96))
 ```
 
 These are all the log normal prior parameters for the corresponding $\tau$ parameters. These are all "moderate" degrees of heterogeneity, according to @Neuenschwander2015.
@@ -119,10 +119,10 @@ Then we look at the following scenario, where two cohorts of patients are availa
 
 ```{r}
 scenario1 <- list(
-  dose1 = c( 0.1,  0.2),
-  dose2 = c( 0,    0),
-  n.pat = c( 3,    3),
-  n.dlt = c( 0,    1),
+  dose1 = c(0.1, 0.2),
+  dose2 = c(0, 0),
+  n.pat = c(3, 3),
+  n.dlt = c(0, 1),
   trial = c("A",  "A")
 )
 ```
@@ -219,7 +219,7 @@ We are going to use simple rules here (they are not relevant for the current sce
 ```{r}
 my_stopping <- StoppingMinPatients(nPatients = 50)
 my_increments <- IncrementsRelative(0, 2)
-my_nextBest <- NextBestNCRM(
+myNextBest <- NextBestNCRM(
     target = c(0.16, 0.33), 
     overdose = c(0.33, 1), 
     max_overdose_prob = 0.25
@@ -231,7 +231,7 @@ my_increments_combo <- IncrementsComboOneDrugOnly()
 Then we define the design arms accordingly:
 
 ```{r}
-design_armA <- DesignArm(
+designArmA <- DesignArm(
     "A",
     design = Design(
         data = Data(doseGrid = d1),
@@ -239,12 +239,12 @@ design_armA <- DesignArm(
         model = mono_model1,
         stopping = my_stopping,
         increments = my_increments,
-        nextBest = my_nextBest,
+        nextBest = myNextBest,
         cohort_size = my_cohort_size
     )
 )
 
-design_armB <- DesignArm(
+designArmB <- DesignArm(
     "B",
     design = DesignCombo(
         data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
@@ -252,13 +252,13 @@ design_armB <- DesignArm(
         model = combo_model,
         stopping = my_stopping,
         increments = my_increments_combo,
-        nextBest = my_nextBest,
+        nextBest = myNextBest,
         cohort_size = my_cohort_size
     ),
     open_when = ArmMinDoseCondition("A", min_dose = d1[2])
 )
 
-design_armC <- HistoricalArm(
+designArmC <- HistoricalArm(
     "C",
     data = hist_data_comp2,
     model = mono_model2
@@ -269,9 +269,9 @@ Now we can define the hierarchical design:
 
 ```{r}
 design_hierarchical <- HierarchicalDesign(
-    design_armA,
-    design_armB,
-    design_armC,
+    designArmA,
+    designArmB,
+    designArmC,
     exchangeable_parameters = list(
         comp1_intercept = list(
             A = "alpha0",
@@ -328,17 +328,17 @@ scenario_hierarchical <- HierarchicalData(
     A = Data(
         x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
         y = c(0, 0, 0, 0, 0, 1),
-        doseGrid = design_armA@design@data@doseGrid
+        doseGrid = designArmA@design@data@doseGrid
     ),
-    B = design_armB@design@data,
-    C = design_armC@design@data
+    B = designArmB@design@data,
+    C = designArmC@design@data
 )
 ```
 
 And then we can use the `scenario()` function:
 
 ```{r}
-result1_crmPack <- scenario(
+result1CrmPack <- scenario(
     design_hierarchical,
     data = scenario_hierarchical,
     mcmcOptions = McmcOptions()
@@ -348,14 +348,14 @@ result1_crmPack <- scenario(
 We can look at the fit results:
 
 ```{r}
-result1_crmPack$fit
+result1CrmPack$fit
 ```
 
 We can also check the probabilities to be in target and overdosing intervals:
 
 ```{r}
-result1_crmPack$next_best$A$probs
-result1_crmPack$next_best$B$probs
+result1CrmPack$next_best$A$probs
+result1CrmPack$next_best$B$probs
 ```
 
 ## Comparison of fit
@@ -365,36 +365,38 @@ Based on this we can first compare the fit results.
 Let's look at the results for Arm A:
 
 ```{r}
-fit_trialA_decider <- result1$`trial-A` |> as.data.frame()
-fit_trialA_crmPack <- result1_crmPack$fit$A
-probs_trialA_crmPack <- result1_crmPack$next_best$A$probs |> as.data.frame()
-diff_trialA <- data.frame(
-    dose = fit_trialA_crmPack$dose,
-    center = fit_trialA_decider$mean - fit_trialA_crmPack$middle,
-    lower = fit_trialA_decider$`q.2.5%` - fit_trialA_crmPack$lower,
-    upper = fit_trialA_decider$`q.97.5%` - fit_trialA_crmPack$upper,
-    target = fit_trialA_decider$`P([0.16,0.33))` - probs_trialA_crmPack$target,
-    overdose = fit_trialA_decider$`P([0.33,1])` - probs_trialA_crmPack$overdose
+fitTrialADecider <- result1$`trial-A` |> as.data.frame()
+fitTrialACrmPack <- result1CrmPack$fit$A
+probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
+diffTrialA <- data.frame(
+    dose = fitTrialACrmPack$dose,
+    center = fitTrialADecider$mean - fitTrialACrmPack$middle,
+    lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
+    upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
+    target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
+    overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
 )
-diff_trialA
+diffTrialA
 ```
 
 And then the results for Arm B:
 
 ```{r}
-fit_trialB_decider <- result1$`trial-B` |> as.data.frame()
-fit_trialB_crmPack <- result1_crmPack$fit$B |> dplyr::filter(compound2 > 0)
-probs_trialB_crmPack <- result1_crmPack$next_best$B$probs |> as.data.frame() |> dplyr::filter(compound2 > 0) 
-diff_trialB <- data.frame(
-    dose1 = fit_trialB_crmPack$compound1,
-    dose2 = fit_trialB_crmPack$compound2,
-    center = fit_trialB_decider$mean - fit_trialB_crmPack$middle,
-    lower = fit_trialB_decider$`q.2.5%` - fit_trialB_crmPack$lower,
-    upper = fit_trialB_decider$`q.97.5%` - fit_trialB_crmPack$upper,
-    target = fit_trialB_decider$`P([0.16,0.33))` - probs_trialB_crmPack$target,
-    overdose = fit_trialB_decider$`P([0.33,1])` - probs_trialB_crmPack$overdose
+fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
+fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
+probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
+    as.data.frame() |>
+    dplyr::filter(compound2 > 0)
+diffTrialB <- data.frame(
+    dose1 = fitTrialBCrmPack$compound1,
+    dose2 = fitTrialBCrmPack$compound2,
+    center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
+    lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
+    upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
+    target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
+    overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
 )
-diff_trialB
+diffTrialB
 ```
 
 So these differences look relatively small, and there does not seem to be any 

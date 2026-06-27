@@ -1650,10 +1650,11 @@ setMethod(
       }
     )
     if (length(rv) == 1) {
-      return(rv[[1]])
+      rv[[1]]
+    } else {
+      names(rv) <- as.character(grade)
+      rv
     }
-    names(rv) <- as.character(grade)
-    return(rv)
   }
 )
 

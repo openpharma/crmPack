@@ -911,8 +911,11 @@ h_next_best_mgsamples_plot <- function(
 #' Helper function that checks if the doses in a dose matrix are below the dose limit.
 #'
 #' @param dose_matrix (`matrix`)\cr a matrix with the doses of the two compounds (columns).
-#' @param dose_limit (`matrix`)\cr a matrix with two columns: the first column contains the doses for compound 1 and the second column contains the corresponding dose limits for compound 2.
-#' @return A logical vector indicating whether the doses in each row of the dose matrix are below the corresponding dose limits.
+#' @param dose_limit (`matrix`)\cr a matrix with two columns: the first column
+#'   contains the doses for compound 1 and the second column contains the
+#'   corresponding dose limits for compound 2.
+#' @return A logical vector indicating whether the doses in each row of the
+#'   dose matrix are below the corresponding dose limits.
 h_dose_combo_below_limit <- function(dose_matrix, dose_limit) {
   apply(
     dose_matrix,
@@ -925,13 +928,14 @@ h_dose_combo_below_limit <- function(dose_matrix, dose_limit) {
         abs(doses[1L] - dose_limit[, 1L]) < sqrt(.Machine$double.eps)
       )
       if (length(idx) == 0L) {
-        return(FALSE)
-      }
-      assert_length(idx, 1L)
-      if (is.na(dose_limit[idx, 2L])) {
-        return(FALSE)
+        FALSE
       } else {
-        return(doses[2L] <= dose_limit[idx, 2L])
+        assert_length(idx, 1L)
+        if (is.na(dose_limit[idx, 2L])) {
+          FALSE
+        } else {
+          doses[2L] <= dose_limit[idx, 2L]
+        }
       }
     }
   )

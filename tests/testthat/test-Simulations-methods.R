@@ -1012,13 +1012,13 @@ test_that("plot-PseudoSimulationsSummary works correctly", {
     result <- plot(simSummary)
     expect_s3_class(result, "gtable")
 
-    result_nObs <- plot(simSummary, type = "nObs")
-    expect_s3_class(result_nObs, "ggplot")
-    expect_equal(result_nObs$labels$x, "Number of patients in total")
+    resultNObs <- plot(simSummary, type = "nObs")
+    expect_s3_class(resultNObs, "ggplot")
+    expect_equal(resultNObs$labels$x, "Number of patients in total")
 
-    result_d1 <- plot(simSummary, type = "doseSelectedDrug1")
-    expect_s3_class(result_d1, "ggplot")
-    expect_equal(result_d1$labels$x, "Selected dose for drug 1")
+    resultD1 <- plot(simSummary, type = "doseSelectedDrug1")
+    expect_s3_class(resultD1, "ggplot")
+    expect_equal(resultD1$labels$x, "Selected dose for drug 1")
 
     result_d2 <- plot(simSummary, type = "doseSelectedDrug2")
     expect_s3_class(result_d2, "ggplot")

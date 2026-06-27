@@ -95,7 +95,7 @@ local_comparison_decider_hierarchical_design <- function() {
   my_cohort_size <- CohortSizeConst(size = 3)
   my_increments_combo <- IncrementsComboOneDrugOnly()
 
-  design_armA <- DesignArm(
+  designArmA <- DesignArm(
     "A",
     design = Design(
       data = Data(doseGrid = d1),
@@ -108,7 +108,7 @@ local_comparison_decider_hierarchical_design <- function() {
     )
   )
 
-  design_armB <- DesignArm(
+  designArmB <- DesignArm(
     "B",
     design = DesignCombo(
       data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
@@ -122,16 +122,16 @@ local_comparison_decider_hierarchical_design <- function() {
     open_when = ArmMinDoseCondition("A", min_dose = d1[2])
   )
 
-  design_armC <- HistoricalArm(
+  designArmC <- HistoricalArm(
     "C",
     data = hist_data_comp2,
     model = mono_model2
   )
 
   design <- HierarchicalDesign(
-    design_armA,
-    design_armB,
-    design_armC,
+    designArmA,
+    designArmB,
+    designArmC,
     exchangeable_parameters = list(
       comp1_intercept = list(
         A = "alpha0",
@@ -178,10 +178,10 @@ local_comparison_decider_hierarchical_design <- function() {
     A = Data(
       x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
       y = c(0, 0, 0, 0, 0, 1),
-      doseGrid = design_armA@design@data@doseGrid
+      doseGrid = designArmA@design@data@doseGrid
     ),
-    B = design_armB@design@data,
-    C = design_armC@design@data
+    B = designArmB@design@data,
+    C = designArmC@design@data
   )
 
   list(
