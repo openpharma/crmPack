@@ -59,7 +59,6 @@ Typically, end users will not use the \code{.DefaultDesignArm()} function.
 design <- .DefaultDesign()
 design_arm <- DesignArm(
   name = "Arm A",
-  active = TRUE,
   design = design
 )
 }
