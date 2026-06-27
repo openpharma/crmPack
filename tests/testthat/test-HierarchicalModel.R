@@ -128,8 +128,8 @@ test_that("HierarchicalModel supports TwoDrugsCombo without alpha parameters", {
       "beta_mean_raw_mono",
       "beta_mean_drug1_raw_combo",
       "beta_mean_drug2_raw_combo",
-      "gamma_raw_combo",
-      "tau_raw_combo"
+      "eta_gamma_raw_combo",
+      "eta_tau_raw_combo"
     ),
     names(result@modelspecs(arms = data@arms, from_prior = FALSE))
   )
@@ -267,17 +267,25 @@ test_that("parallel mono and combo prior compiles generically", {
     fixed = TRUE
   ))
   expect_true(grepl(
-    gsub("\\s+", "", "theta_mono_drug2[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))"),
+    gsub(
+      "\\s+",
+      "",
+      "theta_mono_drug2[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))"
+    ),
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    gsub("\\s+", "", "theta_drug2_combo[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))"),
+    gsub(
+      "\\s+",
+      "",
+      "theta_drug2_combo[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))"
+    ),
     body_priormodel,
     fixed = TRUE
   ))
   expect_true(grepl(
-    gsub("\\s+", "", "eta_combo ~ dnorm(gamma_combo, tau_combo)"),
+    gsub("\\s+", "", "eta_combo ~ dnorm(eta_gamma_combo, eta_tau_combo)"),
     body_priormodel,
     fixed = TRUE
   ))
@@ -288,8 +296,8 @@ test_that("parallel mono and combo prior compiles generically", {
       "mu_drug1_intercept_sd",
       "tau_drug2_slope_meanlog",
       "tau_drug2_slope_sdlog",
-      "gamma_combo",
-      "tau_combo"
+      "eta_gamma_combo",
+      "eta_tau_combo"
     ),
     names(prior_specs)
   )
@@ -396,8 +404,8 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
       "rho_drug2_upper",
       "mu_drug1_intercept_mean",
       "tau_drug2_slope_sdlog",
-      "gamma_combo",
-      "tau_combo"
+      "eta_gamma_combo",
+      "eta_tau_combo"
     ),
     names(prior_specs)
   )
