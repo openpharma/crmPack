@@ -65,6 +65,30 @@ test_that("h_get_quantiles_start_values works with logNormal = TRUE", {
   expect_equal(result, expected, tolerance = 1e-4)
 })
 
+test_that("h_get_quantiles_start_values works with useLogDose = FALSE", {
+  dosegrid <- c(1, 3, 5, 10)
+  refDose <- 5
+  median <- c(0.1, 0.2, 0.3, 0.4)
+
+  result <- h_get_quantiles_start_values(
+    parstart = NULL,
+    median = median,
+    dosegrid = dosegrid,
+    refDose = refDose,
+    logNormal = TRUE,
+    useLogDose = FALSE
+  )
+
+  expected <- c(
+    meanAlpha = -1.16256,
+    meanBeta = -1.68182,
+    sdAlpha = 1,
+    sdBeta = 1,
+    correlation = 0
+  )
+  expect_equal(result, expected, tolerance = 1e-4)
+})
+
 test_that("h_get_quantiles_start_values works with provided parstart", {
   parstart <- c(1, 2, 3, 4, 5)
 
@@ -119,6 +143,32 @@ test_that("h_quantiles_target_function returns a function", {
   expect_true(all(c("mean", "cov", "quantiles") %in% names(attributes(result))))
   expect_length(attr(result, "mean"), 2)
   expect_equal(dim(attr(result, "cov")), c(2, 2))
+  expect_equal(dim(attr(result, "quantiles")), c(3, 3))
+})
+
+test_that("h_quantiles_target_function uses subtractive dose when requested", {
+  dosegrid <- c(1, 3, 5)
+  refDose <- 3
+  lower <- c(0.05, 0.1, 0.15)
+  median <- c(0.1, 0.2, 0.3)
+  upper <- c(0.15, 0.3, 0.45)
+
+  target_fn <- h_quantiles_target_function(
+    dosegrid = dosegrid,
+    refDose = refDose,
+    lower = lower,
+    median = median,
+    upper = upper,
+    level = 0.95,
+    logNormal = TRUE,
+    useLogDose = FALSE,
+    seed = 12345
+  )
+
+  result <- target_fn(c(-2, -3, 1, 0.5, 0))
+
+  expect_type(result, "double")
+  expect_true(result >= 0)
   expect_equal(dim(attr(result, "quantiles")), c(3, 3))
 })
 
@@ -193,6 +243,48 @@ test_that("Quantiles2LogisticNormal works with logNormal = TRUE", {
   expect_s4_class(result$model, "LogisticLogNormal")
 })
 
+test_that("Quantiles2LogisticNormal works with useLogDose = FALSE", {
+  skip_on_cran_but_not_ci()
+
+  dosegrid <- c(1, 3, 5)
+  refDose <- 3
+  lower <- c(0.05, 0.1, 0.15)
+  median <- c(0.1, 0.2, 0.3)
+  upper <- c(0.15, 0.3, 0.45)
+
+  result <- Quantiles2LogisticNormal(
+    dosegrid = dosegrid,
+    refDose = refDose,
+    lower = lower,
+    median = median,
+    upper = upper,
+    logNormal = TRUE,
+    useLogDose = FALSE,
+    seed = 12345,
+    control = list(maxit = 10, max.time = 1)
+  )
+
+  expect_s4_class(result$model, "LogisticLogNormalSub")
+})
+
+test_that("Quantiles2LogisticNormal requires logNormal with useLogDose = FALSE", {
+  dosegrid <- c(1, 3, 5)
+
+  expect_error(
+    Quantiles2LogisticNormal(
+      dosegrid = dosegrid,
+      refDose = 3,
+      lower = c(0.05, 0.1, 0.15),
+      median = c(0.1, 0.2, 0.3),
+      upper = c(0.15, 0.3, 0.45),
+      logNormal = FALSE,
+      useLogDose = FALSE,
+      control = list(maxit = 10, max.time = 1)
+    ),
+    "Must be TRUE"
+  )
+})
+
 # MinimalInformative ----
 
 test_that("MinimalInformative works with basic inputs", {
@@ -232,4 +324,24 @@ test_that("MinimalInformative works with logNormal = TRUE", {
     control = list(maxit = 10, max.time = 1)
   )
   expect_s4_class(result$model, "LogisticLogNormal")
+})
+
+test_that("MinimalInformative works with useLogDose = FALSE", {
+  skip_on_cran_but_not_ci()
+
+  dosegrid <- c(1, 3, 5, 8)
+  refDose <- 0
+
+  result <- MinimalInformative(
+    dosegrid = dosegrid,
+    refDose = refDose,
+    logNormal = TRUE,
+    useLogDose = FALSE,
+    threshmin = 0.1,
+    threshmax = 0.4,
+    probmin = 0.1,
+    probmax = 0.1,
+    control = list(maxit = 10, max.time = 1)
+  )
+  expect_s4_class(result$model, "LogisticLogNormalSub")
 })
