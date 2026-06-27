@@ -262,10 +262,13 @@ h_hierarchical_stochastic_subexpressions <- function(expr, stochastic_roots) {
       return(out)
     }
     for (arg in as.list(expr)[-1L]) {
-      out <- c(out, h_hierarchical_stochastic_subexpressions(
-        arg,
-        stochastic_roots
-      ))
+      out <- c(
+        out,
+        h_hierarchical_stochastic_subexpressions(
+          arg,
+          stochastic_roots
+        )
+      )
     }
   }
   out[!duplicated(names(out))]
@@ -391,10 +394,9 @@ h_hierarchical_remove_pooled_prior_lines <- function(model_fun, pooled_nodes) {
       if (
         is.call(expr) &&
           identical(as.character(expr[[1L]]), "~") &&
-          (
-            h_hierarchical_expr_key(expr[[2L]]) %in% pooled_nodes ||
-              any(h_hierarchical_root_symbols(expr[[2L]]) %in% pooled_roots)
-          )
+          (h_hierarchical_expr_key(expr[[2L]]) %in%
+            pooled_nodes ||
+            any(h_hierarchical_root_symbols(expr[[2L]]) %in% pooled_roots))
       ) {
         return(FALSE)
       }
@@ -402,7 +404,10 @@ h_hierarchical_remove_pooled_prior_lines <- function(model_fun, pooled_nodes) {
     },
     logical(1L)
   )
-  body(model_fun) <- as.call(c(list(as.name("{")), as.list(body_expr)[-1L][keep]))
+  body(model_fun) <- as.call(c(
+    list(as.name("{")),
+    as.list(body_expr)[-1L][keep]
+  ))
   model_fun
 }
 
@@ -427,7 +432,7 @@ h_hierarchical_make_pool_map <- function(parameter_pools) {
     for (arm_name in names(members)) {
       this_key <- paste0(arm_name, "::", members[[arm_name]])
       if (!test_null(pooled_map[[this_key]])) {
-        browser()
+        stop("Duplicate hierarchical parameter reference '", this_key, "'.")
       }
       pooled_map[[this_key]] <- pool_name
     }
