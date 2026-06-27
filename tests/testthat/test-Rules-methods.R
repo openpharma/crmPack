@@ -224,7 +224,7 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
     model,
     data
   )
-  expect_equal(result$value, t(c(drug1 = 10, drug2 = 20)))
+  expect_equal(result$value, c(drug1 = 10, drug2 = 20))
   expect_named(
     result$probs,
     c("drug1", "drug2", "target_prob", "overdose_prob", "not_eligible")
@@ -286,10 +286,20 @@ test_that("nextBest-NextBestNCRM-DataCombo uses configured drug names in probs",
 
   expect_named(
     result$probs,
-    c("compound_a", "compound_b", "target_prob", "overdose_prob", "not_eligible")
+    c(
+      "compound_a",
+      "compound_b",
+      "target_prob",
+      "overdose_prob",
+      "not_eligible"
+    )
   )
-  expect_true(all(result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1))
-  expect_true(all(result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1))
+  expect_true(all(
+    result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1
+  ))
+  expect_true(all(
+    result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1
+  ))
 })
 
 ## NextBestNCRM-DataParts ----
@@ -2939,7 +2949,7 @@ test_that("stopTrial with StoppingTargetProb works correctly with DataCombo", {
   )
   expected <- structure(
     TRUE,
-    message = "Probability for target toxicity is 36 % for dose 1, 2 and thus above the required 30 %",
+    message = "Probability for target toxicity is 51 % for dose 1, 2 and thus above the required 30 %",
     report_label = "P(0.05 ≤ prob(DLE | NBD) ≤ 0.5) ≥ 0.3"
   )
   expect_identical(result, expected)

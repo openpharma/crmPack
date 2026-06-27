@@ -5,6 +5,6 @@
     Output
       An object of class 'HierarchicalModel'
       Arms (2): mono, combo
-      Arm models: mono = LogisticLogNormal, combo = LogisticLogNormalCombo
+      Arm models: mono = LogisticLogNormal, combo = TwoDrugsCombo
       Exchangeable parameter pools (2): mono_intercept, mono_slope
 

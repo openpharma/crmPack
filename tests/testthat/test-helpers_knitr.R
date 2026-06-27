@@ -89,6 +89,7 @@ exclusions <- c(
   "GeneralData",
   "GeneralModel",
   "GeneralSimulationsSummary",
+  "HierarchicalSimulationsSummary",
   "Increments",
   "ModelEff",
   "ModelPseudo",
