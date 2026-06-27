@@ -85,6 +85,8 @@ Samples <- function(data, options) {
 
 #' @rdname HierarchicalSamples-class
 #'
+#' @param data see slot definition.
+#' @param options see slot definition.
 #' @param arm_samples see slot definition.
 #'
 #' @export

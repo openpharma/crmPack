@@ -10,6 +10,10 @@
 HierarchicalSamples(data, options, arm_samples)
 }
 \arguments{
+\item{data}{see slot definition.}
+
+\item{options}{see slot definition.}
+
 \item{arm_samples}{see slot definition.}
 }
 \description{
@@ -26,4 +30,3 @@ sample names.
 Each entry is a named character vector mapping arm-level parameter names
 such as \code{"alpha0"} to the corresponding sample names stored in \code{data}.}
 }}
-
