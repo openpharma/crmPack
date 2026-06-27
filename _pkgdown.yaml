@@ -48,6 +48,8 @@ articles:
       - simulations
       - rolling-crm
       - ordinal-crm
+      - combo_designs
+      - comparison_decider
   - title: Tools
     navbar: Tools
     contents:
