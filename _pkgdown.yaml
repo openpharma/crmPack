@@ -101,6 +101,7 @@ reference:
       - EffFlexi
       - DALogisticLogNormal
       - TITELogisticLogNormal
+      - TITELogisticLogNormalSub
       - OneParLogNormalPrior
       - OneParExpPrior
       - FractionalCRM

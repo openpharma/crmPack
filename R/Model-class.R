@@ -2974,6 +2974,120 @@ DALogisticLogNormal <- function(
   )
 }
 
+#' Build the common JAGS likelihood for TITE logistic CRM models.
+#'
+#' @param dose_term (`name` or `call`)\cr expression defining the dose
+#'   transformation used in the linear predictor.
+#'
+#' @return A function implementing the shared zero-trick JAGS likelihood.
+#'
+#' @keywords internal
+h_tite_logistic_datamodel <- function(dose_term) {
+  eval(substitute(
+    function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * TERM
+
+        # The piecewise exponential likelihood. Notice that:
+        # when y=1             -> DLT=1 and u=<T;
+        # when y=0 & T<t (u=T) -> DLT=0;
+        # when y=0 & T>t (u<T) -> DLT=NA/missing;
+        # when indx=0 -> censored, i.e u<T and event=0;
+        # when indx=1 -> not censored, i.e. u>=T or event=1;
+        L[i] <- pow(p[i], y[i]) * pow((1 - w[i] * p[i]), (1 - y[i]))
+
+        # Apply zero trick in JAGS.
+        phi[i] <- -log(L[i]) + cadj
+        zeros[i] ~ dpois(phi[i])
+      }
+    },
+    list(TERM = dose_term)
+  ))
+}
+
+#' Calculate weights for TITE logistic CRM models.
+#'
+#' @param u (`numeric`)\cr follow-up times.
+#' @param Tmax (`number`)\cr DLT assessment window.
+#' @param y (`integer`)\cr DLT indicators.
+#' @param weight_method (`string`)\cr either `"linear"` or `"adaptive"`.
+#'
+#' @return A numeric vector of observation weights.
+#'
+#' @keywords internal
+h_tite_logistic_weights <- function(u, Tmax, y, weight_method) {
+  if (weight_method == "linear") {
+    w <- u / Tmax
+  } else if (sum(y) > 0) {
+    nDLT <- sum(y)
+    u_dlt <- sort(u[y == 1])
+    w <- sapply(u, function(u_i) {
+      m <- sum(u_i >= u_dlt)
+      w_i <- if (m == 0) {
+        u_i / u_dlt[1]
+      } else if (m < nDLT) {
+        m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
+      } else {
+        # m == nDLT. nolintr
+        m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
+      }
+      w_i / (nDLT + 1)
+    })
+  } else {
+    w <- u / Tmax
+  }
+
+  w[y == 1] <- 1
+  w[u == Tmax] <- 1
+  w
+}
+
+#' Build the shared JAGS data list for TITE logistic CRM models.
+#'
+#' @param model (`GeneralModel`)\cr a logistic TITE model with `params` and
+#'   `ref_dose` slots.
+#' @param weight_method (`string`)\cr either `"linear"` or `"adaptive"`.
+#' @param nObs (`integer`)\cr number of observations.
+#' @param u (`numeric`)\cr follow-up times.
+#' @param Tmax (`number`)\cr DLT assessment window.
+#' @param y (`integer`)\cr DLT indicators.
+#' @param from_prior (`flag`)\cr whether prior-only specifications are
+#'   requested.
+#'
+#' @return A named list passed to JAGS.
+#'
+#' @keywords internal
+h_tite_logistic_modelspecs <- function(
+  model,
+  weight_method,
+  nObs,
+  u,
+  Tmax,
+  y,
+  from_prior
+) {
+  ms <- list(prec = model@params@prec, mean = model@params@mean)
+
+  if (!from_prior && nObs > 0L) {
+    ms <- c(
+      list(
+        ref_dose = model@ref_dose,
+        zeros = rep(0, nObs),
+        cadj = 1e10,
+        w = h_tite_logistic_weights(
+          u = u,
+          Tmax = Tmax,
+          y = y,
+          weight_method = weight_method
+        )
+      ),
+      ms
+    )
+  }
+
+  ms
+}
+
 # TITELogisticLogNormal ----
 
 ## class ----
@@ -2997,7 +3111,7 @@ DALogisticLogNormal <- function(
 #'   In addition, with more DLTs, the adaptive weights become more extreme
 #'   and different from the linear weights.
 #'
-#' @seealso [`DALogisticLogNormal`].
+#' @seealso [DALogisticLogNormal], [TITELogisticLogNormalSub].
 #'
 #' @aliases TITELogisticLogNormal
 #' @references
@@ -3032,71 +3146,21 @@ TITELogisticLogNormal <- function(weight_method = "linear", ...) {
 
   start <- LogisticLogNormal(...)
 
-  datamodel <- function() {
-    for (i in 1:nObs) {
-      logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
-
-      # The piecewise exponential likelihood. Notice that:
-      # when y=1             -> DLT=1 and u=<T;
-      # when y=0 & T<t (u=T) -> DLT=0;
-      # when y=0 & T>t (u<T) -> DLT=NA/missing;
-      # when indx=0 -> censored, i.e u<T and event=0;
-      # when indx=1 -> not censored, i.e. u>=T or event=1;
-      L[i] <- pow(p[i], y[i]) * pow((1 - w[i] * p[i]), (1 - y[i]))
-
-      # Apply zero trick in JAGS.
-      phi[i] <- -log(L[i]) + cadj
-      zeros[i] ~ dpois(phi[i])
-    }
-  }
-
-  modelspecs <- function(nObs, u, Tmax, y, from_prior) {
-    ms <- list(prec = start@params@prec, mean = start@params@mean)
-    # Calculate weights `w` based on the input data.
-    if (!from_prior && nObs > 0L) {
-      if (weight_method == "linear") {
-        w <- u / Tmax
-      } else if (weight_method == "adaptive") {
-        nDLT <- sum(y)
-        if (nDLT > 0) {
-          u_dlt <- sort(u[y == 1])
-          w <- sapply(u, function(u_i) {
-            m <- sum(u_i >= u_dlt)
-            w_i <- if (m == 0) {
-              u_i / u_dlt[1]
-            } else if (m < nDLT) {
-              m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
-            } else {
-              # m == nDLT. nolintr
-              m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
-            }
-            w_i / (nDLT + 1)
-          })
-        } else {
-          w <- u / Tmax
-        }
-      }
-      w[y == 1] <- 1
-      w[u == Tmax] <- 1
-
-      ms <- c(
-        list(
-          ref_dose = start@ref_dose,
-          zeros = rep(0, nObs),
-          cadj = 1e10,
-          w = w
-        ),
-        ms
-      )
-    }
-    ms
-  }
-
   .TITELogisticLogNormal(
     start,
     weight_method = weight_method,
-    datamodel = datamodel,
-    modelspecs = modelspecs,
+    datamodel = h_tite_logistic_datamodel(quote(log(x[i] / ref_dose))),
+    modelspecs = function(nObs, u, Tmax, y, from_prior) {
+      h_tite_logistic_modelspecs(
+        model = start,
+        weight_method = weight_method,
+        nObs = nObs,
+        u = u,
+        Tmax = Tmax,
+        y = y,
+        from_prior = from_prior
+      )
+    },
     datanames = c("nObs", "y", "x")
   )
 }
@@ -3111,6 +3175,93 @@ TITELogisticLogNormal <- function(weight_method = "linear", ...) {
     mean = c(0, 1),
     cov = diag(2),
     ref_dose = 1,
+    weight_method = "linear"
+  )
+}
+
+# TITELogisticLogNormalSub ----
+
+## class ----
+
+#' `TITELogisticLogNormalSub`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TITELogisticLogNormalSub`] is the class for TITE-CRM based on a logistic
+#' regression model with subtractive dose standardization and a bivariate
+#' normal prior on the intercept and log slope parameters.
+#'
+#' This class inherits from [`LogisticLogNormalSub`].
+#'
+#' @slot weight_method (`string`)\cr the weight function method: either linear
+#'   or adaptive; see \insertCite{LiuYinYuan2013;textual}{crmPack}.
+#'
+#' @inherit TITELogisticLogNormal details
+#'
+#' @seealso [TITELogisticLogNormal], [DALogisticLogNormal].
+#'
+#' @aliases TITELogisticLogNormalSub
+#' @references
+#'   \insertAllCited{}
+#' @export
+#'
+.TITELogisticLogNormalSub <- setClass(
+  Class = "TITELogisticLogNormalSub",
+  slots = c(weight_method = "character"),
+  prototype = prototype(weight_method = "linear"),
+  contains = "LogisticLogNormalSub",
+  validity = v_model_tite_logistic_log_normal # Can use the same here.
+)
+
+## constructor ----
+
+#' @rdname TITELogisticLogNormalSub-class
+#'
+#' @param weight_method (`string`)\cr see the slot description.
+#' @inheritDotParams LogisticLogNormalSub
+#'
+#' @export
+#' @example examples/Model-class-TITELogisticLogNormalSub.R
+#'
+TITELogisticLogNormalSub <- function(weight_method = "linear", ...) {
+  assert_character(
+    weight_method,
+    min.len = 1L,
+    max.len = 2L,
+    any.missing = FALSE
+  )
+
+  start <- LogisticLogNormalSub(...)
+
+  .TITELogisticLogNormalSub(
+    start,
+    weight_method = weight_method,
+    datamodel = h_tite_logistic_datamodel(quote(x[i] - ref_dose)),
+    modelspecs = function(nObs, u, Tmax, y, from_prior) {
+      h_tite_logistic_modelspecs(
+        model = start,
+        weight_method = weight_method,
+        nObs = nObs,
+        u = u,
+        Tmax = Tmax,
+        y = y,
+        from_prior = from_prior
+      )
+    },
+    datanames = c("nObs", "y", "x")
+  )
+}
+
+## default constructor ----
+
+#' @rdname TITELogisticLogNormalSub-class
+#' @note Typically, end users will not use the `.DefaultTITELogisticLogNormalSub()` function.
+#' @export
+.DefaultTITELogisticLogNormalSub <- function() {
+  TITELogisticLogNormalSub(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 50,
     weight_method = "linear"
   )
 }
