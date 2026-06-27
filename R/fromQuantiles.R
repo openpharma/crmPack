@@ -207,7 +207,6 @@ Quantiles2LogisticNormal <- function(
   )
   assert_true(all(dosegrid > 0))
   assert_number(refDose, finite = TRUE)
-  assert_true(refDose > 0)
   assert_numeric(lower, len = length(dosegrid), any.missing = FALSE)
   assert_numeric(
     median,
@@ -412,7 +411,6 @@ MinimalInformative <- function(
   )
   assert_number(refDose, finite = TRUE)
   assert_true(all(dosegrid > 0))
-  assert_true(refDose > 0)
   assert_probability(threshmin, bounds_closed = FALSE)
   assert_probability(threshmax, bounds_closed = FALSE)
   assert_probability(probmin, bounds_closed = FALSE)
@@ -437,6 +435,7 @@ MinimalInformative <- function(
 
   # Determine the medians of all beta distributions
   doseCovariate <- if (useLogDose) {
+    assert_true(refDose > 0)
     log(dosegrid / refDose)
   } else {
     dosegrid - refDose

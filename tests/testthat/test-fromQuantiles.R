@@ -329,8 +329,8 @@ test_that("MinimalInformative works with logNormal = TRUE", {
 test_that("MinimalInformative works with useLogDose = FALSE", {
   skip_on_cran_but_not_ci()
 
-  dosegrid <- c(1, 3, 5)
-  refDose <- 3
+  dosegrid <- c(1, 3, 5, 8)
+  refDose <- 0
 
   result <- MinimalInformative(
     dosegrid = dosegrid,
