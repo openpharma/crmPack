@@ -368,8 +368,8 @@ h_get_min_inf_beta <- function(p, q) {
 #' [`LogisticLogNormal`] or [`LogisticLogNormalSub`]) model. Note that the reference dose
 #' is not required for these computations.
 #'
-#' @param dosegrid (`numeric`)\cr the dose grid.
-#' @param refDose (`number`)\cr the reference dose.
+#' @param dosegrid (`numeric`)\cr the dose grid, only positive sorted values are allowed.
+#' @param refDose (`number`)\cr the reference dose. Must be positive if `useLogDose = TRUE`.
 #' @param threshmin (`number`)\cr any toxicity probability above this threshold
 #'   would be very unlikely (see `probmin`) at the minimum dose.
 #' @param threshmax (`number`)\cr any toxicity probability below this threshold

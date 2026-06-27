@@ -16,9 +16,9 @@ MinimalInformative(
 )
 }
 \arguments{
-\item{dosegrid}{(\code{numeric})\cr the dose grid.}
+\item{dosegrid}{(\code{numeric})\cr the dose grid, only positive sorted values are allowed.}
 
-\item{refDose}{(\code{number})\cr the reference dose.}
+\item{refDose}{(\code{number})\cr the reference dose. Must be positive if \code{useLogDose = TRUE}.}
 
 \item{threshmin}{(\code{number})\cr any toxicity probability above this threshold
 would be very unlikely (see \code{probmin}) at the minimum dose.}
