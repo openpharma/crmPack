@@ -30,6 +30,8 @@ testthat::local_mocked_bindings(
 # End of mocks
 
 test_that("tidy methods exist for all relevant classes", {
+  skip_on_cran()
+
   crmpack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
     "ArmCondition",

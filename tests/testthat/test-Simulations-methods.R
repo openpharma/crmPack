@@ -130,6 +130,8 @@ test_that("plot-ComboSimulations works correctly", {
 })
 
 test_that("plot-ComboSimulations trajectory2D works with 20 simulated trials", {
+  skip_on_cran()
+
   design <- .DefaultDesignCombo()
   # Loosen stopping/recommendation settings so simulated paths contain
   # multiple combination steps and yield visible 2D transitions.

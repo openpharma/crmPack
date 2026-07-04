@@ -985,6 +985,8 @@ test_that("fit-Samples-Effloglog fails gracefully with bad input", {
 ## Samples-EffFlexi ----
 
 test_that("fit-Samples-EffFlexi works correctly", {
+  skip_on_cran()
+
   data <- DataDual(
     x = c(25, 50, 25, 50, 75, 300, 250, 150),
     y = c(0, 0, 0, 0, 0, 1, 1, 0),
@@ -1936,6 +1938,8 @@ test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad i
 ## Samples-DALogisticLogNormal-DataDA ----
 
 test_that("fitPEM-Samples-DALogisticLogNormal-DataDA works correctly", {
+  skip_on_cran()
+
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 1, 1, 0, 0, 1, 0),

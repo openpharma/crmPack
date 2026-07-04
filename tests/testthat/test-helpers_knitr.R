@@ -116,6 +116,8 @@ exclusions <- c(
 crmpack_class_list <- setdiff(crmpack_class_list, exclusions)
 
 test_that("knit_print methods exist for all relevant classes and produce consistent output", {
+  skip_on_cran()
+
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       # If the default knit_print method has been overridden, test it
@@ -167,6 +169,8 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 })
 
 test_that("asis parameter works correctly for all implemented methods", {
+  skip_on_cran()
+
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       startTime <- Sys.time()
@@ -230,6 +234,8 @@ test_that("asis parameter works correctly for all implemented methods", {
 })
 
 test_that("knit_print output is suffixed by two newlines for all implemented methods", {
+  skip_on_cran()
+
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       obj <- do.call(paste0(".Default", cls), list())

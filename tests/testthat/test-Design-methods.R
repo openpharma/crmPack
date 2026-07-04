@@ -214,6 +214,8 @@ test_that("Test if simulate generate the expected output.", {
 })
 
 test_that("Backfilling works in a simple design", {
+  skip_on_cran()
+
   design <- h_get_design_data_backfill()
 
   myTruth <- probFunction(design@model, alpha0 = 4, alpha1 = 4)
@@ -1779,6 +1781,8 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
 })
 
 test_that("simulate for DesignGrouped uses DLT probabilities and cohort sizes correctly", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
