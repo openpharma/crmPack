@@ -38,3 +38,4 @@ lib
 ^vignettes/rolling-crm\.Rmd\.orig$
 ^vignettes/trial_sanity_checks\.Rmd\.orig$
 ^AGENTS\.md$
+tools/
