@@ -89,6 +89,19 @@ test_that("NextBestNCRMLoss object can be created with user constructor", {
   expect_identical(result@losses, c(1, 0, 1, 2))
 })
 
+test_that("NextBestNCRMLoss checks that the intervals are not leaving a gap", {
+  expect_error(
+    NextBestNCRMLoss(
+      c(0.2, 0.35),
+      c(0.36, 0.6),
+      c(0.6, 1),
+      0.25,
+      c(1, 0, 1, 2)
+    ),
+    "The intervals for target, overdose and unacceptable must be contiguous"
+  )
+})
+
 ## NextBestThreePlusThree ----
 
 test_that(".NextBestThreePlusThree works as expected", {

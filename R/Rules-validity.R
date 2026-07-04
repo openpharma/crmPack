@@ -56,8 +56,9 @@ v_next_best_ncrm <- function(object) {
 #'   contains valid objects.
 v_next_best_ncrm_loss <- function(object) {
   v <- Validate()
+  is_target_ok <- test_probability_range(object@target, bounds_closed = FALSE)
   v$check(
-    test_probability_range(object@target, bounds_closed = FALSE),
+    is_target_ok,
     "target has to be a probability range excluding 0 and 1"
   )
 
@@ -77,6 +78,16 @@ v_next_best_ncrm_loss <- function(object) {
     v$check(
       object@overdose[2] <= object@unacceptable[1],
       "lower bound of unacceptable has to be >= than upper bound of overdose"
+    )
+  }
+  if (is_target_ok &&
+    is_overdose_ok &&
+    is_unacceptable_ok &&
+    object@overdose[2] <= object@unacceptable[1]) {
+    v$check(
+      isTRUE(all.equal(object@target[2], object@overdose[1])) &&
+        isTRUE(all.equal(object@overdose[2], object@unacceptable[1])),
+      "The intervals for target, overdose and unacceptable must be contiguous"
     )
   }
   if (is_unacceptable_ok) {
