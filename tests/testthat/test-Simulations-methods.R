@@ -661,6 +661,8 @@ test_that("show-GeneralSimulationsSummary works correctly", {
 ## show-SimulationsSummary ----
 
 test_that("show-SimulationsSummary works correctly with backfill cohorts", {
+  skip_on_cran()
+
   emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
@@ -754,6 +756,8 @@ test_that("show-DualSimulationsSummary works correctly", {
 ## plot-GeneralSimulationsSummary ----
 
 test_that("plot-GeneralSimulationsSummary works correctly", {
+  skip_on_cran()
+
   emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
@@ -823,6 +827,8 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
 ## plot-SimulationsSummary ----
 
 test_that("plot-SimulationsSummary works correctly", {
+  skip_on_cran()
+
   emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),

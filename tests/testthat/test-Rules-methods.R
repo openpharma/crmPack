@@ -2982,6 +2982,8 @@ test_that("StoppingMTDdistribution can handle when dose is NA", {
 })
 
 test_that("stopTrial works correctly for StoppingMTDdistribution", {
+  skip_on_cran()
+
   # Observed data is irrelevant in this case.  provide an empty Data object
   emptyData <- Data(doseGrid = 1:5)
   # Define a model
@@ -4995,6 +4997,8 @@ test_that("StoppingTDCIRatio works correctly when dose is NA", {
 })
 
 test_that("stopTrial works correctly for StoppingTDCIRatio when samples are provided", {
+  skip_on_cran()
+
   # Observed data is irrelevant in this case.  provide an empty Data object
   emptyData <- Data(doseGrid = seq(25, 300, 25))
   # Define a model
@@ -5071,6 +5075,8 @@ test_that("stopTrial works correctly for StoppingTDCIRatio when samples are prov
 })
 
 test_that("stopTrial works correctly for StoppingTDCIRatio when samples are not provided", {
+  skip_on_cran()
+
   # Observed data is irrelevant in this case.  provide an empty Data object
   emptyData <- Data(doseGrid = seq(25, 300, 25))
   # Define a model

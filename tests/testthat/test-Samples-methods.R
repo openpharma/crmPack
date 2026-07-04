@@ -534,6 +534,8 @@ test_that("fit-Samples-LogisticLogNormalOrdinal fails gracefully with bad input"
 ## Samples-GeneralModel ----
 
 test_that("Samples-approximate works correctly", {
+  skip_on_cran()
+
   data <- Data(
     x = c(3, 6, 10, 10, 10),
     y = c(0, 0, 0, 1, 0),
@@ -1876,6 +1878,8 @@ test_that("plotDualResponses-ModelTox-Missing-ModelEff-Missing works as expected
 ## Samples-DALogisticLogNormal-DataDA ----
 
 test_that("fitPEM-Samples-DALogisticLogNormal-DataDA fails gracefully with bad input", {
+  skip_on_cran()
+
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 1, 1, 0, 0, 1, 0),
@@ -2040,6 +2044,8 @@ test_that("plot-Samples-DALogisticNormal fails gracefully with bad input", {
 ## Samples-DALogisticLogNormal-DataDA
 
 test_that("plot-Samples-DALogisticNormal works correctly", {
+  skip_on_cran()
+
   data <- DataDA(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 1, 1, 0, 0, 1, 0),

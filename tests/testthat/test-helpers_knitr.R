@@ -371,6 +371,8 @@ test_that("knit_print.IncrementsComboCartesian works correctly", {
 })
 
 test_that("knit_print.IncrementsRelativeParts works correctly", {
+  skip_on_cran()
+
   testList <- list(
     "knit_print_IncrementsRelativeParts1.html" = IncrementsRelativeParts(
       clean_start = -1,
@@ -432,6 +434,8 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
 # Data ----
 
 test_that("summarise option works correctly for Data classes", {
+  skip_on_cran()
+
   testList <- list(
     "knit_print_Data_summarise.html" = .DefaultData(),
     "knit_print_DataDA_summarise.html" = .DefaultDataDA(),
