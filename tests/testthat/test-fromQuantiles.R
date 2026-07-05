@@ -175,6 +175,7 @@ test_that("h_quantiles_target_function uses subtractive dose when requested", {
 # Quantiles2LogisticNormal ----
 
 test_that("Quantiles2LogisticNormal works with basic inputs", {
+  skip_on_cran()
   skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5, 10)
@@ -221,6 +222,7 @@ test_that("Quantiles2LogisticNormal works with basic inputs", {
 })
 
 test_that("Quantiles2LogisticNormal works with logNormal = TRUE", {
+  skip_on_cran()
   skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5)
@@ -244,6 +246,7 @@ test_that("Quantiles2LogisticNormal works with logNormal = TRUE", {
 })
 
 test_that("Quantiles2LogisticNormal works with useLogDose = FALSE", {
+  skip_on_cran()
   skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5)
@@ -288,6 +291,7 @@ test_that("Quantiles2LogisticNormal requires logNormal with useLogDose = FALSE",
 # MinimalInformative ----
 
 test_that("MinimalInformative works with basic inputs", {
+  skip_on_cran()
   skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5, 10)
@@ -308,6 +312,7 @@ test_that("MinimalInformative works with basic inputs", {
 })
 
 test_that("MinimalInformative works with logNormal = TRUE", {
+  skip_on_cran()
   skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5)
@@ -327,6 +332,7 @@ test_that("MinimalInformative works with logNormal = TRUE", {
 })
 
 test_that("MinimalInformative works with useLogDose = FALSE", {
+  skip_on_cran()
   skip_on_cran_but_not_ci()
 
   dosegrid <- c(1, 3, 5, 8)

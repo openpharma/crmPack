@@ -214,6 +214,8 @@ test_that("Test if simulate generate the expected output.", {
 })
 
 test_that("Backfilling works in a simple design", {
+  skip_on_cran()
+
   design <- h_get_design_data_backfill()
 
   myTruth <- probFunction(design@model, alpha0 = 4, alpha1 = 4)
@@ -333,6 +335,8 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
 ## stop_reasons integration test ----
 
 test_that("stop_reasons can be NA with certain stopping rule settings", {
+  skip_on_cran()
+
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_normal()
   increments <- h_increments_relative()
@@ -1011,6 +1015,8 @@ test_that("simulate-TDDesign with sentinel patient and placebo patients produces
 ## DualResponsesDesign ----
 
 test_that("simulate-DualResponsesDesign produces consistent results", {
+  skip_on_cran()
+
   design <- h_get_design_dualresponses()
   myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
   myTruthEff <- efficacyFunction(
@@ -1038,6 +1044,8 @@ test_that("simulate-DualResponsesDesign produces consistent results", {
 })
 
 test_that("simulate-DualResponsesDesign with sentinel patient and placebo patients produces consistent results", {
+  skip_on_cran()
+
   design <- h_get_design_dualresponses(placebo = TRUE)
   myTruthDLE <- probFunction(design@model, phi1 = -53.66584, phi2 = 10.50499)
   myTruthEff <- efficacyFunction(
@@ -1279,6 +1287,8 @@ test_that("simulate-DualResponsesSamplesDesign with EffFlexi model produces cons
 ## DesignGrouped ----
 
 test_that("simulate for DesignGrouped works as expected", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1330,6 +1340,8 @@ test_that("simulate for DesignGrouped works as expected", {
 })
 
 test_that("simulate for DesignGrouped works as expected with different doses, parallel first cohort", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1380,6 +1392,8 @@ test_that("simulate for DesignGrouped works as expected with different doses, pa
 })
 
 test_that("simulate for DesignGrouped works when first patient is dosed separately, different combo design", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1450,6 +1464,8 @@ test_that("simulate for DesignGrouped works when first patient is dosed separate
 })
 
 test_that("simulate for DesignGrouped works with different starting doses and first mono", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1647,6 +1663,8 @@ test_that("simulate for DesignGrouped reports correctly when mono is not stopped
 })
 
 test_that("simulate for DesignGrouped works with parallel start when first cohort mono only", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1714,6 +1732,8 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
 })
 
 test_that("simulate for DesignGrouped works with parallel start when first cohort mono and combo", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1779,6 +1799,8 @@ test_that("simulate for DesignGrouped works with parallel start when first cohor
 })
 
 test_that("simulate for DesignGrouped uses DLT probabilities and cohort sizes correctly", {
+  skip_on_cran()
+
   object <- DesignGrouped(
     model = LogisticLogNormalGrouped(
       mean = rep(-1, 4),
@@ -1842,6 +1864,8 @@ test_that("simulate for DesignGrouped uses DLT probabilities and cohort sizes co
 ## DADesign ----
 
 test_that("simulate for DADesign works consistently", {
+  skip_on_cran()
+
   design <- h_get_design_da()
 
   myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
@@ -1867,6 +1891,8 @@ test_that("simulate for DADesign works consistently", {
 })
 
 test_that("simulate for DADesign with placebo and deescalation works consistently", {
+  skip_on_cran()
+
   design <- h_get_design_da(placebo = TRUE)
 
   myTruth <- probFunction(design@model, alpha0 = 2, alpha1 = 3)
@@ -1897,6 +1923,8 @@ test_that("simulate for DADesign with placebo and deescalation works consistentl
 ## DADesign ----
 
 test_that("examine for DADesign works as expected", {
+  skip_on_cran()
+
   t_max <- 60
 
   emptydata <- DataDA(
@@ -1988,6 +2016,8 @@ test_that("examine for DADesign works as expected", {
 ## Design ----
 
 test_that("examine produces consistent results", {
+  skip_on_cran()
+
   design <- h_get_design_data()
   options <- h_get_mcmc_options()
 
@@ -1997,6 +2027,8 @@ test_that("examine produces consistent results", {
 })
 
 test_that("examine produces consistent results with placebo data", {
+  skip_on_cran()
+
   design <- h_get_design_data(TRUE)
   options <- h_get_mcmc_options()
 

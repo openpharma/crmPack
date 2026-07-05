@@ -8,12 +8,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+<!-- trial_definition.Rmd is generated from trial_definition.Rmd.orig Please edit that file -->
+
+
 
 ## Defining the design
 A CRM study consists of six basic elements:
@@ -30,7 +27,8 @@ A CRM study consists of six basic elements:
 There are many, many possible choices for each element.  In this introduction, we make simple choices for the value of each element.
 
 We start by loading the `crmPack` package ...
-```{r}
+
+``` r
 library(crmPack)
 ```
 
@@ -38,7 +36,8 @@ library(crmPack)
 
 ### The dose grid
 First, we list the doses that *might* be used during the trial.
-```{r}
+
+``` r
 # Define the dose grid.
 empty_data <- Data(doseGrid = c(1, 3, 9, 20, 30, 45, 60, 80, 100))
 ```
@@ -49,7 +48,8 @@ Additional doses can be added whilst the trial is running.  This will not affect
 
 ### The dose toxicity model
 Next, define the dose toxicity model.
-```{r}
+
+``` r
 # Initialize the CRM model.
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
@@ -95,7 +95,8 @@ $$
 
 It is easy to obtain a visual representation of the prior:
 
-```{r, fig.width=5, fig.alt = "A visual representation of the prior.  The prior mean estimate of toxicity rises form almost zero for a dose of 0 to just under 0.75 for a dose of 100.  The confidence intervals are wide."}
+
+``` r
 vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
 prior_samples <- mcmc(
   data = empty_data,
@@ -105,10 +106,16 @@ prior_samples <- mcmc(
 plot(prior_samples, model, empty_data)
 ```
 
+<div class="figure">
+<img src="./trial_definition-figures/unnamed-chunk-5-1.png" alt="A visual representation of the prior.  The prior mean estimate of toxicity rises form almost zero for a dose of 0 to just under 0.75 for a dose of 100.  The confidence intervals are wide." width="100%" />
+<p class="caption">plot of chunk unnamed-chunk-5</p>
+</div>
+
 ### The escalation rules
 #### The maximum increment
 Now, we define the maximum possible increment between the dose used in current cohort and the dose used in the next, regardless of likely toxicity.
-```{r}
+
+``` r
 # Choose the rule for dose increments.
 my_increments <- IncrementsRelative(
   intervals = c(0, 30),
@@ -138,7 +145,8 @@ So, if the highest dose used so far is `9`, the highest dose in the dose grid th
 Next, we define the rule for choosing the *best* dose for the *next* cohort
 
 #### The NextBest rule for recommending the best dose for the next cohort
-```{r}
+
+``` r
 # Choose the rule for selecting the next dose.
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
@@ -156,7 +164,8 @@ Now, we define the rule for choosing the size of the next cohort.
 
 We elect to define the cohort size using a compound rule.  Both the dose to be used and the number of DLTs so far observed contribute to the decision.  The first part of the compound rule (`my_size_1`), based on the dose to be used, permits the use a single patient run-in up to and including a dose of `20`.  For doses above `20`, the minimum cohort size is `3`. The second part of the compound rule (`my_size_2`) also permits a single patient run-in, so long as no DLTs have so far been observed.  As soon as the first DLT is reported, the minimum cohort size is `3`.  To determine the *actual* size of the next cohort, the larger number required by the two parts of the compound rule is used.
 
-```{r}
+
+``` r
 # Choose the rule for the cohort size.
 my_size_1 <- CohortSizeRange(
   intervals = c(0, 30),
@@ -181,7 +190,8 @@ The success rule requires both of the following conditions to have been met:
 
 The trial will stop of either the futility rule or *both* components of the success rule are satisfied.
 
-```{r}
+
+``` r
 # Choose the rule for stopping.
 my_stopping_1 <- StoppingMinCohorts(nCohorts = 3)
 my_stopping_2 <- StoppingTargetProb(
@@ -195,7 +205,8 @@ my_stopping <- (my_stopping_1 & my_stopping_2) | my_stopping_3
 ### The overall trial design
 Finally, we combine all six elements of the design, together with the starting dose, to define the trial.
 
-```{r}
+
+``` r
 # Initialize the design.
 design <- Design(
   model = model,

@@ -225,7 +225,13 @@ no_tox_below_50_data <- Data(
   cohort = c(1L:7L, rep(8L:9L, each = 3))
 )
 
-default_mcmc_options <- McmcOptions(burnin = 1000, step = 2, samples = 1000)
+default_mcmc_options <- McmcOptions(
+  burnin = 1000, 
+  step = 2, 
+  samples = 1000, 
+  rng_kind = "Mersenne-Twister", 
+  rng_seed = 3819
+)
 no_tox_50_samples <- mcmc(no_tox_below_50_data, initial_model, default_mcmc_options)
 recommended_dose <- nextBest(
   next_best,

@@ -78,6 +78,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
 
     # Does this design use backfill cohorts? If no we can skip the corresponding
@@ -530,6 +533,9 @@ setMethod(
     assert_function(truth)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_class(object, "RuleDesign")
 
@@ -662,6 +668,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_class(object, "DualDesign")
     assert_list(derive)
@@ -988,6 +997,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_class(object, "TDsamplesDesign")
 
@@ -1269,6 +1281,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_class(object, "TDDesign")
 
@@ -1558,6 +1573,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_class(object, "DualResponsesDesign")
 
@@ -2956,6 +2974,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
 
     # Check if special case applies
@@ -3079,6 +3100,9 @@ setMethod(
     assert_flag(firstSeparate)
     assert_count(nsim, positive = TRUE)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
     assert_class(object@backfill@opening, "OpeningNone")
 
@@ -3732,6 +3756,9 @@ setMethod(
     assert_count(nsim, positive = TRUE)
     assert_flag(firstSeparate)
     assert_flag(parallel)
+    if (is.na(nCores)) {
+      nCores <- 1L
+    }
     assert_count(nCores, positive = TRUE)
 
     n_args <- max(nrow(args), 1L)

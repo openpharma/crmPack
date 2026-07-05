@@ -33,3 +33,6 @@ README.html
 /.quarto/
 **/*.quarto_ipynb
 *.png
+!man/figures/*.png
+!vignettes/*.png
+!vignettes/*-figures/*.png

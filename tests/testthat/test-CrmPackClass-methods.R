@@ -30,6 +30,8 @@ testthat::local_mocked_bindings(
 # End of mocks
 
 test_that("tidy methods exist for all relevant classes", {
+  skip_on_cran()
+
   crmpack_class_list <- getClasses(asNamespace("crmPack"))
   exclusions <- c(
     "ArmCondition",
@@ -88,6 +90,8 @@ test_that("tidy methods exist for all relevant classes", {
 
 # Related: https://github.com/openpharma/crmPack/issues/759
 test_that("tidy methods return non-empty value for all classes", {
+  skip_on_cran()
+
   crmpack_class_list <- getClasses(asNamespace("crmPack"))
   # The default constructors of the following classes correctly return a list
   # with some elements of length zero

@@ -116,6 +116,8 @@ exclusions <- c(
 crmpack_class_list <- setdiff(crmpack_class_list, exclusions)
 
 test_that("knit_print methods exist for all relevant classes and produce consistent output", {
+  skip_on_cran()
+
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       # If the default knit_print method has been overridden, test it
@@ -167,6 +169,8 @@ test_that("knit_print methods exist for all relevant classes and produce consist
 })
 
 test_that("asis parameter works correctly for all implemented methods", {
+  skip_on_cran()
+
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       startTime <- Sys.time()
@@ -230,6 +234,8 @@ test_that("asis parameter works correctly for all implemented methods", {
 })
 
 test_that("knit_print output is suffixed by two newlines for all implemented methods", {
+  skip_on_cran()
+
   for (cls in crmpack_class_list) {
     if (!isClassUnion(cls)) {
       obj <- do.call(paste0(".Default", cls), list())
@@ -365,6 +371,8 @@ test_that("knit_print.IncrementsComboCartesian works correctly", {
 })
 
 test_that("knit_print.IncrementsRelativeParts works correctly", {
+  skip_on_cran()
+
   testList <- list(
     "knit_print_IncrementsRelativeParts1.html" = IncrementsRelativeParts(
       clean_start = -1,
@@ -426,6 +434,8 @@ test_that("knit_print.IncrementsRelativeParts works correctly", {
 # Data ----
 
 test_that("summarise option works correctly for Data classes", {
+  skip_on_cran()
+
   testList <- list(
     "knit_print_Data_summarise.html" = .DefaultData(),
     "knit_print_DataDA_summarise.html" = .DefaultDataDA(),
