@@ -55,8 +55,12 @@ df <- data.frame(
 tree <- as.Node(df)
 SetNodeStyle(tree, shape = "box")
 plot(tree)
-#> Error in loadNamespace(name): there is no package called 'webshot'
 ```
+
+![GeneralData is the grand parent, Data the child and DataDual the grand
+child.](example-figures/datastruct-1.png)
+
+Data classes structure
 
 We have three data classes for this package. The parent class is the
 `GeneralData` class. The `Data` class is inheriting from the
@@ -166,7 +170,10 @@ which are the `ModelTox` class include all DLT (the occurrence of a
 dose-limiting toxicity) class models, and class `ModelEff` which
 includes all efficacy class models.
 
-    #> Error in loadNamespace(name): there is no package called 'webshot'
+![A dedrogram showing the inheritance structure for descendants of
+AllModels.](example-figures/model-classes-1.png)
+
+Model classes structure
 
 ## Model setup
 
@@ -218,16 +225,16 @@ str(model)
 #>   .. .. ..@ .Data: num 56
 #>   ..@ datamodel      :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 290 17 295 5 17 5 290 295
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ priormodel     :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 146 18 150 5 18 5 146 150
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ modelspecs     :function (from_prior)  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ init           :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ datanames      : chr [1:3] "nObs" "y" "x"
 #>   ..@ datanames_prior: chr(0) 
 #>   ..@ sample         : chr [1:2] "alpha0" "alpha1"
@@ -355,16 +362,18 @@ str(DLTmodel)
 #>   .. ..- attr(*, "dimnames")=List of 2
 #>   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"
 #>   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"
-#>   ..@ data      :Formal class 'Data' [package "crmPack"] with 9 slots
-#>   .. .. ..@ x       : num(0) 
-#>   .. .. ..@ y       : int(0) 
-#>   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
-#>   .. .. ..@ nGrid   : int 12
-#>   .. .. ..@ xLevel  : int(0) 
-#>   .. .. ..@ placebo : logi FALSE
-#>   .. .. ..@ ID      : int(0) 
-#>   .. .. ..@ cohort  : int(0) 
-#>   .. .. ..@ nObs    : int 0
+#>   ..@ data      :Formal class 'Data' [package "crmPack"] with 11 slots
+#>   .. .. ..@ x         : num(0) 
+#>   .. .. ..@ y         : int(0) 
+#>   .. .. ..@ doseGrid  : num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
+#>   .. .. ..@ nGrid     : int 12
+#>   .. .. ..@ xLevel    : int(0) 
+#>   .. .. ..@ placebo   : logi FALSE
+#>   .. .. ..@ backfilled: logi(0) 
+#>   .. .. ..@ response  : int(0) 
+#>   .. .. ..@ ID        : int(0) 
+#>   .. .. ..@ cohort    : int(0) 
+#>   .. .. ..@ nObs      : int 0
 ```
 
 There are in total 10 slots and their names are given. Remember that
@@ -415,14 +424,20 @@ minInfModel <- MinimalInformative(
     ),
   seed = 432
 )
-#> It: 1, obj value (lsEnd): 0.4445658375 indTrace: 1
-#> It: 4, obj value (lsEnd): 0.4002825478 indTrace: 4
-#> It: 14, obj value (lsEnd): 0.114847608 indTrace: 14
-#> Emini is: 0.114847608
+#> It: 1, obj value (lsEnd): 0.445156546 indTrace: 1
+#> It: 4, obj value (lsEnd): 0.3925370602 indTrace: 4
+#> It: 46, obj value (lsEnd): 0.3744556993 indTrace: 46
+#> It: 66, obj value (lsEnd): 0.2418512802 indTrace: 66
+#> It: 67, obj value (lsEnd): 0.1971230397 indTrace: 67
+#> It: 68, obj value (lsEnd): 0.1841176649 indTrace: 68
+#> It: 96, obj value (lsEnd): 0.06428445449 indTrace: 96
+#> It: 177, obj value (lsEnd): 0.0610906796 indTrace: 177
+#> It: 191, obj value (lsEnd): 0.05912244288 indTrace: 191
+#> Emini is: 0.05912244288
 #> xmini are:
-#> 1.004919453 1.023914845 1.873799323 0.1222736022 -0.6253169547 
-#> Totally it used 24.994 secs
-#> No. of function call is: 4862
+#> 0.5995305301 0.6542658519 1.344683068 0.003274296776 0.04149785291 
+#> Totally it used 16.361409 secs
+#> No. of function call is: 10483
 #> Algorithm reached max number of iterations.
 ```
 
@@ -478,7 +493,7 @@ and the maximum distance between any red and blue point is:
 ``` r
 
 minInfModel$distance
-#> [1] 0.1148476
+#> [1] 0.05912244
 ```
 
 Therefore usually we would let the computations take longer (by removing
@@ -491,24 +506,24 @@ the red points, is contained in the `model` list element:
 str(minInfModel$model)
 #> Formal class 'LogisticNormal' [package "crmPack"] with 9 slots
 #>   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots
-#>   .. .. ..@ mean: Named num [1:2] 1 1.02
+#>   .. .. ..@ mean: Named num [1:2] 0.6 0.654
 #>   .. .. .. ..- attr(*, "names")= chr [1:2] "meanAlpha" "meanBeta"
-#>   .. .. ..@ cov : num [1:2, 1:2] 3.511 -0.143 -0.143 0.015
-#>   .. .. ..@ prec: num [1:2, 1:2] 0.468 4.482 4.482 109.833
+#>   .. .. ..@ cov : num [1:2, 1:2] 1.81 1.83e-04 1.83e-04 1.07e-05
+#>   .. .. ..@ prec: num [1:2, 1:2] 0.554 -9.441 -9.441 93435.615
 #>   ..@ ref_dose       :Formal class 'positive_number' [package "crmPack"] with 1 slot
 #>   .. .. ..@ .Data: num 50
 #>   ..@ datamodel      :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 220 17 225 5 17 5 220 225
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ priormodel     :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 226 18 230 5 18 5 226 230
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ modelspecs     :function (from_prior)  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ init           :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x0000028310554460> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ datanames      : chr [1:3] "nObs" "y" "x"
 #>   ..@ datanames_prior: chr(0) 
 #>   ..@ sample         : chr [1:2] "alpha0" "alpha1"
@@ -548,7 +563,9 @@ class. The MCMC sampling can be controlled with an object of class
 options <- McmcOptions(
   burnin = 100,
   step = 2,
-  samples = 2000
+  samples = 2000,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 4991
 )
 ```
 
@@ -559,8 +576,11 @@ sample every `2` iterations. Note that these numbers are too low for
 actual production use and are only used for illustrating purposes here;
 normally you would specify at least the default parameters of the
 initialization function `mcmcOptions`: `10000` burn-in iterations and
-`10000` samples saved every 2^(nd) iteration. You can look these up in
-help browser under the link `McmcOptions`.
+`10000` samples saved every 2^(nd) iteration. In order to make the
+results reproducible, you also need to specify the `rng_kind` and
+`rng_seed`. Otherwise you will experience differences in the MCMC
+sampling, and therefore results. You can look these up in help browser
+under the link `McmcOptions`.
 
 After having set up the options, you can proceed to MCMC sampling by
 calling the `mcmc` function:
@@ -592,14 +612,14 @@ interpretation of the parameters)
 str(samples)
 #> Formal class 'Samples' [package "crmPack"] with 2 slots
 #>   ..@ data   :List of 2
-#>   .. ..$ alpha0: num [1:2000] 1.289 1.289 1.289 -0.428 -0.428 ...
-#>   .. ..$ alpha1: num [1:2000] 1.69 1.69 1.69 2.27 2.27 ...
+#>   .. ..$ alpha0: num [1:2000] 0.321 0.321 0.321 0.208 0.208 ...
+#>   .. ..$ alpha1: num [1:2000] 1.97 1.97 1.97 0.778 0.778 ...
 #>   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots
 #>   .. .. ..@ iterations: int 4100
 #>   .. .. ..@ burnin    : int 100
 #>   .. .. ..@ step      : int 2
-#>   .. .. ..@ rng_kind  : chr NA
-#>   .. .. ..@ rng_seed  : int NA
+#>   .. .. ..@ rng_kind  : chr "base::Mersenne-Twister"
+#>   .. .. ..@ rng_seed  : int 4991
 ## now extract the alpha0 samples (intercept of the regression model)
 alpha0samples <- get(samples, "alpha0")
 ```
@@ -804,7 +824,10 @@ pages `Increments-class`, `NextBest-class`, `CohortSize-class` and
 Figure @ref(fig:increments) shows the structure of the `Increments`
 classes:
 
-    #> Error in loadNamespace(name): there is no package called 'webshot'
+![A dendrogram showing the inheritance structure of the Increments
+classes.](example-figures/increments-1.png)
+
+Increments classes structure
 
 The `Increments` class is the basis for all maximum increments rule
 classes within this package. There are three subclasses, the
@@ -870,7 +893,11 @@ instead of the last dose.
 Figure @ref(fig:rules) show the structure of the next best dose
 recommendation rules currently implemented in `crmPack`.
 
-    #> Error in loadNamespace(name): there is no package called 'webshot'
+![A dendrogram showing the inheritance structure of the NextBest
+classes. Next Best is the parent class. All other NextBest classes are
+children of NextBest.](example-figures/rules-1.png)
+
+Escalation classes structure
 
 All classes of escalation rules are contained in the `nextBest` class.
 There are two main types of escalation rules: either only the binary DLT
@@ -1138,8 +1165,11 @@ df <- data.frame(
 tree <- as.Node(df)
 SetNodeStyle(tree, shape = "box", fig.alt = "A dendrogram showing the inheritance stricture of the CohortSize classes.  CohortSie is the parent class.  All other classes are children of CohortSize.")
 plot(tree)
-#> Error in loadNamespace(name): there is no package called 'webshot'
 ```
+
+![CohortSize classes structure](example-figures/cohort-size-1.png)
+
+CohortSize classes structure
 
 % All classes related to cohort size in this package are contains within
 `CohortSize` class.
@@ -1303,7 +1333,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -1317,7 +1347,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -1330,7 +1360,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -1366,7 +1396,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "95% CI is (0.000611274483577986, 10459.1345133638), Ratio = 17110373.1537 is greater than target_ratio = 5"
+#> [1] "95% CI is (0.000611274483578011, 10459.1345133637), Ratio = 17110373.1537 is greater than target_ratio = 5"
 #> attr(,"report_label")
 #> [1] "TD 5 for 0.3 target prob"
 
@@ -1396,7 +1426,13 @@ size and a starting dose.
 The structure of the design classes in this package is shown in figure
 @ref(fig:Design).
 
-    #> Error in loadNamespace(name): there is no package called 'webshot'
+![A dendrogram showing the inheritance structure of the Design classes.
+RuleDesign is the grandparent. Design, TDDesign and TDSampesDesign are
+its children and DualDeaign, DualResponsesDesign and
+DualResponsesTDSamplesDesign its
+grandchildren.](example-figures/Design-1.png)
+
+Design classes structure
 
 It might seem strange at first sight that we have to supply starting
 data to the design, but we will show below that this makes sense. First,
@@ -1484,7 +1520,7 @@ set.seed(23)
 examine(design)
 #>    dose DLTs nextDose  stop increment
 #> 1     3    0      6.0 FALSE       100
-#> 2     3    1      3.0 FALSE         0
+#> 2     3    1      6.0 FALSE       100
 #> 3     3    2      0.1 FALSE       -97
 #> 4     3    3       NA FALSE        NA
 #> 5     6    0     12.0 FALSE       100
@@ -1501,8 +1537,8 @@ examine(design)
 #> 16   24    3     18.0 FALSE       -25
 #> 17   30    0     38.0 FALSE        27
 #> 18   30    1     38.0 FALSE        27
-#> 19   30    2     34.0 FALSE        13
-#> 20   30    3     26.0 FALSE       -13
+#> 19   30    2     36.0 FALSE        20
+#> 20   30    3     28.0 FALSE        -7
 #> 21   38    0     50.0 FALSE        32
 #> 22   38    1     50.0 FALSE        32
 #> 23   38    2     42.0 FALSE        11
@@ -1589,11 +1625,11 @@ time <- system.time(mySims <- simulate(design,
 ))[3]
 time
 #> elapsed 
-#>   121.6
+#>  45.932
 ```
 
 We have wrapped the call to `simulate` in a `system.time` to obtain the
-required time for the simulations (about 122 seconds in this case). The
+required time for the simulations (about 46 seconds in this case). The
 argument `args` could contain additional arguments for the `truth`
 function, which we did not require here and therefore let it at the
 default `NULL`. We specify the number of simulations with `nsim` and the
@@ -1620,6 +1656,8 @@ From the help page
 ``` r
 
 help("Simulations-class", help = "html")
+#> No documentation for 'Simulations-class' in specified packages and libraries:
+#> you could try '??Simulations-class'
 ```
 
 we see that this class is a subclass of the `GeneralSimulations` class.
@@ -1637,8 +1675,8 @@ print(plot(mySims@data[[3]]))
 ![A graph summarising dose allocations for the third trial in the
 simulation. Patient number runs along the x axis, dose administered
 along the y axis. Red triangle indicate patients who reported a DLT,
-black circles those who did not. DLTs were reported by patients 10, 11,
-12, 16 and 18, all at a dose of 24. No other patients reported
+black circles those who did not. DLTs were reported by patients 12, 16,
+17, 18, 20 and 21. No other patients reported
 DLTs.](example-figures/third-trial-1.png)
 
 plot of chunk third-trial
@@ -1658,14 +1696,14 @@ and the stopping reason was
 mySims@stop_reasons[[3]]
 #> [[1]]
 #> [[1]][[1]]
-#> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
+#> [1] "Number of cohorts is 7 and thus reached the prespecified minimum number 3"
 #> 
 #> [[1]][[2]]
-#> [1] "Probability for target toxicity is 51 % for dose 22 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 52 % for dose 22 and thus above the required 50 %"
 #> 
 #> 
 #> [[2]]
-#> [1] "Number of patients is 18 and thus below the prespecified minimum number 20"
+#> [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"
 ```
 
 Furthermore, with this object, we can apply two methods. First, we can
@@ -1709,19 +1747,19 @@ summary(mySims,
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
 #> Number of patients overall : mean 19 (18, 21) 
-#> Number of patients treated above target tox interval : mean 7 (6, 9) 
+#> Number of patients treated above target tox interval : mean 8 (6, 12) 
 #> Proportions of DLTs in the trials : mean 26 % (22 %, 33 %) 
-#> Mean toxicity risks for the patients on active : mean 26 % (16 %, 36 %) 
-#> Doses selected as MTD : mean 20.7 (16, 24.2) 
-#> True toxicity at doses selected : mean 31 % (5 %, 57 %) 
-#> Proportion of trials selecting target MTD: 22 %
-#> Dose most often selected as MTD: 18 
-#> Observed toxicity rate at dose most often selected: 11 %
-#> Fitted toxicity rate at dose most often selected : mean 24 % (20 %, 28 %) 
+#> Mean toxicity risks for the patients on active : mean 26 % (17 %, 35 %) 
+#> Doses selected as MTD : mean 20.6 (16, 24) 
+#> True toxicity at doses selected : mean 31 % (5 %, 56 %) 
+#> Proportion of trials selecting target MTD: 24 %
+#> Dose most often selected as MTD: 20 
+#> Observed toxicity rate at dose most often selected: 21 %
+#> Fitted toxicity rate at dose most often selected : mean 26 % (23 %, 33 %) 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  96 %
-#>  ≥ 20 patients dosed :  41 %
+#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
+#>  ≥ 20 patients dosed :  48 %
 ```
 
 Note that sometimes the observed toxicity rate at the dose most often
@@ -1748,12 +1786,12 @@ provided in the paragraph below.](example-figures/sim-sum-plot-1.png)
 plot of chunk sim-sum-plot
 
 The top left panel shows the distribution of the sample size across the
-simulated trials. In this case the trials had between 15 and 21
+simulated trials. In this case the trials had between 18 and 21
 patients. The top right panel shows the distribution of the final MTD
 estimate / recommended dose across the simulated trials. The middle left
 panel shows the distribution across the simulations of the DLT
 proportions observed in the patients dosed. Here in most trials between
-20 and 30% of the patients had DLTs. The middle right panel shows the
+22 and 33% of the patients had DLTs. The middle right panel shows the
 distribution across simulations of the number of patients treated above
 the target toxicity window (here we used the default from 20% to 35%).
 Finally, in the bottom panel we see a comparison of the true
@@ -2015,27 +2053,27 @@ samples in order to reduce the runtime for this example:
 
 postSamples <- as.data.frame(samples@data)[(1:20) * 50, ]
 postSamples
-#>            alpha0    alpha1
-#> 50    0.695299465 0.8733989
-#> 100   0.242365900 0.2919931
-#> 150   0.097567739 1.4674529
-#> 200  -0.381162693 0.8607228
-#> 250   0.002811076 2.3787228
-#> 300  -0.488011988 0.7904999
-#> 350   0.193239874 3.0284607
-#> 400  -0.224671354 1.5766281
-#> 450  -0.174586799 0.6269332
-#> 500  -0.875658079 1.3458226
-#> 550   0.148783871 2.3489434
-#> 600   1.015454082 1.7576347
-#> 650  -0.841267361 2.9162000
-#> 700  -0.421833904 0.8812350
-#> 750  -0.785097094 0.8227093
-#> 800   0.389585876 1.0958372
-#> 850  -0.097983082 3.8501000
-#> 900  -0.718133798 1.3214675
-#> 950  -0.591148227 0.6041364
-#> 1000 -0.623243550 1.0894726
+#>          alpha0    alpha1
+#> 50   -1.0642746 0.9880961
+#> 100  -1.3205596 1.2035031
+#> 150  -0.2787745 1.1420241
+#> 200  -0.6736342 1.9538039
+#> 250  -0.3450108 1.6705798
+#> 300  -0.5117568 1.0511386
+#> 350   0.2383558 1.0875325
+#> 400   0.7832575 1.4880692
+#> 450   0.1441964 0.4854883
+#> 500   0.3672222 1.1369901
+#> 550   0.5250996 0.7058702
+#> 600   0.2357070 1.2774505
+#> 650  -0.7399773 0.4011145
+#> 700  -0.2415685 0.4412713
+#> 750  -0.1679610 1.1685310
+#> 800   0.4211765 0.5613394
+#> 850   0.4369553 1.3116985
+#> 900   0.5305816 1.4328609
+#> 950  -0.5691799 0.4664936
+#> 1000 -1.2305607 1.4746557
 ```
 
 Therefore, each simulated trial will come from a posterior sample of our
@@ -2088,7 +2126,7 @@ time <- system.time(futureSims <- simulate(
 ))[3]
 time
 #> elapsed 
-#>   15.97
+#>   5.276
 ```
 
 And now, exactly in the same way as above for the operating
@@ -2120,20 +2158,20 @@ summary(futureSims,
 #> Target dose interval corresponding to this was 19.6, 21.6 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 18 (17, 20) 
+#> Number of patients overall : mean 19 (17, 20) 
 #> Number of patients treated above target tox interval : mean 4 (0, 9) 
-#> Proportions of DLTs in the trials : mean 20 % (12 %, 29 %) 
-#> Mean toxicity risks for the patients on active : mean 22 % (4 %, 43 %) 
-#> Doses selected as MTD : mean 24.4 (9.6, 38.4) 
-#> True toxicity at doses selected : mean 51 % (0 %, 98 %) 
-#> Proportion of trials selecting target MTD: 20 %
-#> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 26 %
-#> Fitted toxicity rate at dose most often selected : mean 26 % (14 %, 39 %) 
+#> Proportions of DLTs in the trials : mean 22 % (10 %, 31 %) 
+#> Mean toxicity risks for the patients on active : mean 20 % (5 %, 41 %) 
+#> Doses selected as MTD : mean 22.4 (9.6, 38.4) 
+#> True toxicity at doses selected : mean 40 % (0 %, 98 %) 
+#> Proportion of trials selecting target MTD: 10 %
+#> Dose most often selected as MTD: 16 
+#> Observed toxicity rate at dose most often selected: 11 %
+#> Fitted toxicity rate at dose most often selected : mean 23 % (11 %, 36 %) 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  90 %
-#>  ≥ 20 patients dosed :  50 %
+#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  80 %
+#>  ≥ 20 patients dosed :  75 %
 ```
 
 We see here e.g. that the estimated number of patients overall is 19, so
@@ -2332,7 +2370,9 @@ application, this would need to be at least 25 times longer!
 options <- McmcOptions(
   burnin = 100,
   step = 2,
-  samples = 2000
+  samples = 2000,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 3819
 )
 ```
 
@@ -2564,7 +2604,9 @@ mySims <- simulate(design,
     McmcOptions(
       burnin = 1000,
       step = 1,
-      samples = 3000
+      samples = 3000,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 3819
     )
 )
 ```
@@ -2612,7 +2654,7 @@ sumOut
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 0.1 
 #> Observed toxicity rate at dose most often selected: 0 %
-#> Fitted toxicity rate at dose most often selected : mean 2 % (1 %, 2 %) 
+#> Fitted toxicity rate at dose most often selected : mean 1 % (1 %, 2 %) 
 #> Stop reason triggered:
 #>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
 #>  ≥ 40 patients dosed :  100 %
@@ -2769,17 +2811,19 @@ str(Effmodel)
 #>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
 #>   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"
 #>   ..@ const    : num 0
-#>   ..@ data     :Formal class 'DataDual' [package "crmPack"] with 10 slots
-#>   .. .. ..@ w       : num(0) 
-#>   .. .. ..@ x       : num(0) 
-#>   .. .. ..@ y       : int(0) 
-#>   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
-#>   .. .. ..@ nGrid   : int 12
-#>   .. .. ..@ xLevel  : int(0) 
-#>   .. .. ..@ placebo : logi FALSE
-#>   .. .. ..@ ID      : int(0) 
-#>   .. .. ..@ cohort  : int(0) 
-#>   .. .. ..@ nObs    : int 0
+#>   ..@ data     :Formal class 'DataDual' [package "crmPack"] with 12 slots
+#>   .. .. ..@ w         : num(0) 
+#>   .. .. ..@ x         : num(0) 
+#>   .. .. ..@ y         : int(0) 
+#>   .. .. ..@ doseGrid  : num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
+#>   .. .. ..@ nGrid     : int 12
+#>   .. .. ..@ xLevel    : int(0) 
+#>   .. .. ..@ placebo   : logi FALSE
+#>   .. .. ..@ backfilled: logi(0) 
+#>   .. .. ..@ response  : int(0) 
+#>   .. .. ..@ ID        : int(0) 
+#>   .. .. ..@ cohort    : int(0) 
+#>   .. .. ..@ nObs      : int 0
 ```
 
 There are 15 slots, which can be accessed with the `@` operator. From
@@ -2858,17 +2902,19 @@ str(Effmodel2)
 #>   ..@ X          : int [1:2, 1:12] 1 0 0 0 0 0 0 0 0 0 ...
 #>   ..@ RW         : num [1:12, 1:12] 1 -2 1 0 0 0 0 0 0 0 ...
 #>   ..@ RW_rank    : int 10
-#>   ..@ data       :Formal class 'DataDual' [package "crmPack"] with 10 slots
-#>   .. .. ..@ w       : num(0) 
-#>   .. .. ..@ x       : num(0) 
-#>   .. .. ..@ y       : int(0) 
-#>   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
-#>   .. .. ..@ nGrid   : int 12
-#>   .. .. ..@ xLevel  : int(0) 
-#>   .. .. ..@ placebo : logi FALSE
-#>   .. .. ..@ ID      : int(0) 
-#>   .. .. ..@ cohort  : int(0) 
-#>   .. .. ..@ nObs    : int 0
+#>   ..@ data       :Formal class 'DataDual' [package "crmPack"] with 12 slots
+#>   .. .. ..@ w         : num(0) 
+#>   .. .. ..@ x         : num(0) 
+#>   .. .. ..@ y         : int(0) 
+#>   .. .. ..@ doseGrid  : num [1:12] 25 50 75 100 125 150 175 200 225 250 ...
+#>   .. .. ..@ nGrid     : int 12
+#>   .. .. ..@ xLevel    : int(0) 
+#>   .. .. ..@ placebo   : logi FALSE
+#>   .. .. ..@ backfilled: logi(0) 
+#>   .. .. ..@ response  : int(0) 
+#>   .. .. ..@ ID        : int(0) 
+#>   .. .. ..@ cohort    : int(0) 
+#>   .. .. ..@ nObs      : int 0
 ```
 
 The slot and the names are shown which can be accessed with the `@`
@@ -3193,7 +3239,7 @@ doseRecGainSamples <- nextBest(GainsamplesNextBest,
   samples_eff = Effpostsamples,
   data = data4
 )
-#> [1] "Estimated TD 30 = 18.6611868271307 not within dose grid"
+#> [1] "Estimated TD 30 = 18.6611868271306 not within dose grid"
 ```
 
 The list of numerical results given in the output will be the same as

@@ -154,7 +154,7 @@ show(summary(
 #> Proportion of trials selecting target MTD: 0 %
 #> Dose most often selected as MTD: 1 
 #> Observed toxicity rate at dose most often selected: 0 %
-#> Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
+#> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
 #> Stop reason triggered:
 #>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
 #>  ≥ 10 patients dosed :  100 %

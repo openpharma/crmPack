@@ -99,7 +99,7 @@ examine(design) %>% kable()
 |    3 |    0 |        5 | FALSE |        67 |
 |    3 |    1 |       NA | FALSE |        NA |
 |    5 |    0 |       10 | FALSE |       100 |
-|    5 |    1 |        5 | FALSE |         0 |
+|    5 |    1 |        3 | FALSE |       -40 |
 |   10 |    0 |       20 | FALSE |       100 |
 |   10 |    1 |       10 | FALSE |         0 |
 |   20 |    0 |       25 | FALSE |        25 |
@@ -299,7 +299,13 @@ no_tox_below_50_data <- Data(
   cohort = c(1L:7L, rep(8L:9L, each = 3))
 )
 
-default_mcmc_options <- McmcOptions(burnin = 1000, step = 2, samples = 1000)
+default_mcmc_options <- McmcOptions(
+  burnin = 1000,
+  step = 2,
+  samples = 1000,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 3819
+)
 no_tox_50_samples <- mcmc(no_tox_below_50_data, initial_model, default_mcmc_options)
 recommended_dose <- nextBest(
   next_best,
@@ -318,11 +324,11 @@ recommended_dose$probs
 #>  [4,]   10  0.000    0.000
 #>  [5,]   15  0.000    0.000
 #>  [6,]   20  0.001    0.000
-#>  [7,]   25  0.002    0.000
-#>  [8,]   40  0.027    0.001
-#>  [9,]   50  0.122    0.016
-#> [10,]   80  0.145    0.797
-#> [11,]  100  0.071    0.911
+#>  [7,]   25  0.003    0.000
+#>  [8,]   40  0.054    0.002
+#>  [9,]   50  0.145    0.016
+#> [10,]   80  0.158    0.803
+#> [11,]  100  0.043    0.939
 
 maxDose(revised_increment_rule, no_tox_below_50_data)
 #> [1] 83.5
@@ -330,7 +336,7 @@ maxDose(revised_increment_rule, no_tox_below_50_data)
 
 Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.797, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.803, well above the limit of 0.25 defined in the dose
 recommendation rule (`next_best`).
 
 Again, we have several options. We can introduce intermediate doses,
@@ -414,10 +420,12 @@ examine(revised_design1) %>% kable()
 |   10 |    1 |        5 | FALSE |       -50 |
 |   10 |    0 |       15 | FALSE |        50 |
 |   10 |    1 |        5 | FALSE |       -50 |
+|   15 |    0 |       15 | FALSE |         0 |
+|   15 |    1 |       10 | FALSE |       -33 |
 |   15 |    0 |       20 | FALSE |        33 |
 |   15 |    1 |       10 | FALSE |       -33 |
 |   20 |    0 |       25 | FALSE |        25 |
-|   20 |    1 |       10 | FALSE |       -50 |
+|   20 |    1 |       15 | FALSE |       -25 |
 |   25 |    0 |       25 | FALSE |         0 |
 |   25 |    1 |       15 | FALSE |       -40 |
 |   25 |    0 |       25 | FALSE |         0 |
@@ -434,10 +442,10 @@ examine(revised_design1) %>% kable()
 |   50 |    1 |       50 | FALSE |         0 |
 |   50 |    2 |       40 | FALSE |       -20 |
 |   50 |    3 |       25 | FALSE |       -50 |
-|   80 |    0 |      100 | FALSE |        25 |
-|   80 |    1 |       50 | FALSE |       -38 |
-|   80 |    2 |       50 | FALSE |       -38 |
-|   80 |    3 |       40 | FALSE |       -50 |
+|   80 |    0 |      100 | TRUE  |        25 |
+|   80 |    1 |       50 | TRUE  |       -38 |
+|   80 |    2 |       50 | TRUE  |       -38 |
+|   80 |    3 |       40 | TRUE  |       -50 |
 
 Yes, it does. We can now escalate to dose 80, but there are few plateaux
 as we do so. First, two toxicity-free participants, rather than just
@@ -478,10 +486,10 @@ recommended_dose$probs
 #>  [5,]   15  0.000    0.000
 #>  [6,]   20  0.000    0.000
 #>  [7,]   25  0.000    0.000
-#>  [8,]   40  0.015    0.000
-#>  [9,]   50  0.048    0.000
-#> [10,]   80  0.356    0.027
-#> [11,]  100  0.465    0.095
+#>  [8,]   40  0.000    0.000
+#>  [9,]   50  0.004    0.000
+#> [10,]   80  0.191    0.000
+#> [11,]  100  0.347    0.012
 
 stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model, no_tox_data)
 #> [1] TRUE
@@ -491,7 +499,7 @@ stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model,
 #> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 46 % for dose 100 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -505,7 +513,7 @@ stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model,
 #> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 46 % for dose 100 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -518,7 +526,7 @@ stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model,
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 46 % for dose 100 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 

@@ -70,12 +70,6 @@ model class:
 ``` r
 
 library(crmPack)
-#> Loading required package: ggplot2
-#> Registered S3 method overwritten by 'crmPack':
-#>   method       from  
-#>   print.gtable gtable
-#> Type crmPackHelp() to open help browser
-#> Type crmPackExample() to open example
 
 combo_model <- TwoDrugsCombo(
   single_models = list(
@@ -168,7 +162,10 @@ sims_combo <- simulate(
 plot(sims_combo)
 ```
 
-![](combo_designs_files/figure-html/unnamed-chunk-4-1.png)
+![plot of chunk
+unnamed-chunk-4](combo_designs-figures/unnamed-chunk-4-1.png)
+
+plot of chunk unnamed-chunk-4
 
 ``` r
 
@@ -196,7 +193,10 @@ We can also look at the trajectory more closely:
 plot(sims_combo, type = "trajectory2D")
 ```
 
-![](combo_designs_files/figure-html/unnamed-chunk-5-1.png)
+![plot of chunk
+unnamed-chunk-5](combo_designs-figures/unnamed-chunk-5-1.png)
+
+plot of chunk unnamed-chunk-5
 
 ### Other single agent models
 
@@ -276,7 +276,7 @@ combo_model2@datamodel
 #>         y[i] ~ dbern(p[i])
 #>     }
 #> }
-#> <environment: 0x55878f8ac8f0>
+#> <environment: 0x93966f0a8>
 ```
 
 The prior is as follows:
@@ -300,7 +300,7 @@ combo_model2@priormodel
 #>     log_eta ~ dnorm(eta_gamma, eta_tau)
 #>     eta <- exp(log_eta)
 #> }
-#> <environment: 0x5587906384b8>
+#> <environment: 0x93b97ebd8>
 ```
 
 So everything looks as expected. Note that for the interaction term
@@ -492,7 +492,7 @@ hierarchical_model@datamodel
 #>         y_combo[i] ~ dbern(p_combo[i])
 #>     }
 #> }
-#> <environment: 0x5587817d9fc8>
+#> <environment: 0x93800b700>
 ```
 
 The prior is as follows:
@@ -560,7 +560,7 @@ hierarchical_model@priormodel
 #>     tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, 
 #>         -2))
 #> }
-#> <environment: 0x55878f944f30>
+#> <environment: 0x93cfc58f8>
 ```
 
 ### Design implementation
@@ -746,7 +746,10 @@ arm_mono_drug1_sims <- get_arm_simulations(hierarchical_sims, "mono_drug1")
 plot(arm_mono_drug1_sims)
 ```
 
-![](combo_designs_files/figure-html/unnamed-chunk-15-1.png)
+![plot of chunk
+unnamed-chunk-15](combo_designs-figures/unnamed-chunk-15-1.png)
+
+plot of chunk unnamed-chunk-15
 
 ### Customizations
 
@@ -771,8 +774,6 @@ historical_data_mono_drug2 <- Data(
   y = c(0, 0, 0, 0, 1, 0),
   doseGrid = design_mono_drug2@data@doseGrid
 )
-#> Used default patient IDs!
-#> Used best guess cohort indices!
 
 design_arm_historical_mono_drug2 <- HistoricalArm(
   name = "historical_mono_drug2",

@@ -59,7 +59,9 @@ model <- DALogisticLogNormal(
 options <- McmcOptions(
   burnin = 10,
   step = 2,
-  samples = 1e2
+  samples = 1e2,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 3819
 )
 
 set.seed(94)
@@ -233,7 +235,7 @@ myTruth <- probFunction(model, alpha0 = 2, alpha1 = 3)
 curve(myTruth(x), from = 0, to = 100, ylim = c(0, 1))
 ```
 
-![A logistic dose response curverising from 0 at dose 0 to almost 100%
+![A logistic dose response curve rising from 0 at dose 0 to almost 100%
 for a dose of 100.](rolling-crm-figures/Truth-1.png)
 
 plot of chunk Truth
@@ -281,14 +283,14 @@ plot(b)
 
 ![Two graphs in a single column, summarising the results of a single
 simulated trial. The upper one plots patient number on the x axis and
-dose andministered on the y axis. Different symbols indicate whether or
+dose administered on the y axis. Different symbols indicate whether or
 not each participant reported a toxicity. Sixteen patients were
 enrolled, four of which reported toxicities. The points rise and fall
 like waves in response to changes in the model's recommended dose. The
 lower one plots time on the x axis and patient number on the y axis. For
 each patient, a horizontal line runs from their enrolment time to the
 time at which they reported a toxicity, completed their safety
-evaluatiuon window or (at the end of the trial) were censored. Different
+evaluation window or (at the end of the trial) were censored. Different
 coloured and shaped symbols at the right hand end of each line indicate
 whether or not the participant reported a
 toxicity.](rolling-crm-figures/Interpret-1.png)
@@ -300,10 +302,10 @@ plot of chunk Interpret
 
 mySims@stop_reasons[[2]]
 #> [[1]]
-#> [1] "Probability for target toxicity is 68 % for dose 34 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 58 % for dose 32 and thus above the required 50 %"
 #> 
 #> [[2]]
-#> [1] "Number of patients is 17 and thus below the prespecified minimum number 50"
+#> [1] "Number of patients is 19 and thus below the prespecified minimum number 50"
 
 # nolint end
 ```

@@ -301,6 +301,10 @@ Defined by highest dose administered so far {.table}
 
 Placebo will not be administered in the trial.
 
+### Backfill cohorts
+
+No backfill cohorts at all will be opened.
+
 ### Dose recommendation
 
 The dose recommended for the next cohort will be chosen in the following
@@ -516,25 +520,37 @@ way.
 
 ## Class coverage
 
-`crmPack` defines 125 classes. Custom `knit_print` methods exist for 92
-of them. Of the remaining 33 classes, 22 are virtual classes that will
-never be directly instantiated by end users. That leaves 11 classes for
+`crmPack` defines 160 classes. Custom `knit_print` methods exist for 110
+of them. Of the remaining 50 classes, 27 are virtual classes that will
+never be directly instantiated by end users. That leaves 23 classes for
 which `knit_print` methods may be useful. These classes are listed
 below.
 
-| Class                  |
-|:-----------------------|
-| DualSimulationsSummary |
-| NextBestEWOC           |
-| Simulations            |
-| StoppingExternal       |
-| DualSimulations        |
-| GeneralSimulations     |
-| Samples                |
-| DASimulations          |
-| IncrementsMaxToxProb   |
-| EffFlexi               |
-| McmcOptions            |
+| Class                   |
+|:------------------------|
+| HierarchicalSimulations |
+| GeneralSimulations      |
+| Simulations             |
+| ComboSimulations        |
+| HierarchicalDesign      |
+| ArmConditionAny         |
+| ArmConditionAll         |
+| McmcOptions             |
+| HierarchicalSamples     |
+| IncrementsMaxToxProb    |
+| StoppingExternal        |
+| ArmFinishedCondition    |
+| Samples                 |
+| DesignArm               |
+| HierarchicalData        |
+| DualSimulationsSummary  |
+| DualSimulations         |
+| EffFlexi                |
+| NoArmCondition          |
+| DASimulations           |
+| ArmMinDoseCondition     |
+| ArmConditionList        |
+| NextBestEWOC            |
 
 The majority of these classes relate to simulation of the operating
 characteristics of CRM trials. Reporting of this information is likely

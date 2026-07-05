@@ -22,12 +22,6 @@ We start by loading the `crmPack` package …
 ``` r
 
 library(crmPack)
-#> Loading required package: ggplot2
-#> Registered S3 method overwritten by 'crmPack':
-#>   method       from  
-#>   print.gtable gtable
-#> Type crmPackHelp() to open help browser
-#> Type crmPackExample() to open example
 ```
 
 … and defining each element in turn.
@@ -125,7 +119,9 @@ plot(prior_samples, model, empty_data)
 ![A visual representation of the prior. The prior mean estimate of
 toxicity rises form almost zero for a dose of 0 to just under 0.75 for a
 dose of 100. The confidence intervals are
-wide.](trial_definition_files/figure-html/unnamed-chunk-5-1.png)
+wide.](trial_definition-figures/unnamed-chunk-5-1.png)
+
+plot of chunk unnamed-chunk-5
 
 ### The escalation rules
 

@@ -3,12 +3,6 @@
 ``` r
 
 library(crmPack)
-#> Loading required package: ggplot2
-#> Registered S3 method overwritten by 'crmPack':
-#>   method       from  
-#>   print.gtable gtable
-#> Type crmPackHelp() to open help browser
-#> Type crmPackExample() to open example
 ```
 
 ## Introduction
@@ -75,7 +69,9 @@ and black triangles for no reported toxicities. Patients 1 to 4 are
 dosed at 10, 20, 30 and 40, with no toxicitis reported. patients 5 to 7
 are dosed at 50, with patient 6 reporting a sub-toxic AE. Patients 8 to
 10 are treated at 60. Patient 9 reports a sub-toxic AE and patient 10 a
-DLT.](ordinal-crm_files/figure-html/data-ordinal-2-1.png)
+DLT.](ordinal-crm-figures/data-ordinal-2-1.png)
+
+plot of chunk data-ordinal-2
 
 ### The `LogisticLogNormalOrdinal` class
 
@@ -161,28 +157,28 @@ toxicity are required:
 
 fit(samples, ordinal_model, ordinal_data, grade = 1L)
 #>    dose     middle        lower     upper
-#> 1    10 0.03757509 8.808111e-10 0.2324697
-#> 2    20 0.07662228 5.000699e-06 0.3292114
-#> 3    30 0.13526606 4.777141e-04 0.4317737
-#> 4    40 0.22455124 1.698640e-02 0.5380950
-#> 5    50 0.35693490 1.309090e-01 0.6726502
-#> 6    60 0.51100717 2.033077e-01 0.8469914
-#> 7    70 0.62226339 2.317663e-01 0.9593036
-#> 8    80 0.69230859 2.554949e-01 0.9917041
-#> 9    90 0.73850407 2.836625e-01 0.9980443
-#> 10  100 0.77095993 2.969208e-01 0.9993942
+#> 1    10 0.03949875 1.678645e-09 0.2524038
+#> 2    20 0.07877838 5.976959e-06 0.3340645
+#> 3    30 0.13636343 7.118218e-04 0.4199528
+#> 4    40 0.22500425 1.692400e-02 0.5353312
+#> 5    50 0.35880628 1.227114e-01 0.6862388
+#> 6    60 0.51082063 1.845117e-01 0.8539336
+#> 7    70 0.61810151 2.183949e-01 0.9624345
+#> 8    80 0.68519241 2.406894e-01 0.9930275
+#> 9    90 0.72995711 2.575656e-01 0.9980367
+#> 10  100 0.76181500 2.686993e-01 0.9993682
 fit(samples, ordinal_model, ordinal_data, grade = 2L)
 #>    dose     middle        lower     upper
-#> 1    10 0.01958754 4.676088e-10 0.1496995
-#> 2    20 0.03973961 1.816564e-06 0.1962088
-#> 3    30 0.07115961 2.045863e-04 0.2546096
-#> 4    40 0.12276743 5.358321e-03 0.3265867
-#> 5    50 0.20914990 5.287884e-02 0.4463613
-#> 6    60 0.33848781 9.655578e-02 0.6561935
-#> 7    70 0.46243237 1.243080e-01 0.8977101
-#> 8    80 0.55056846 1.413728e-01 0.9746332
-#> 9    90 0.61193936 1.552403e-01 0.9939308
-#> 10  100 0.65641036 1.673972e-01 0.9984498
+#> 1    10 0.02194408 8.680902e-10 0.1580412
+#> 2    20 0.04261980 2.818773e-06 0.2177480
+#> 3    30 0.07384473 2.263737e-04 0.2657173
+#> 4    40 0.12485995 5.559757e-03 0.3504994
+#> 5    50 0.21098713 4.667764e-02 0.4624503
+#> 6    60 0.33830274 8.781944e-02 0.6846460
+#> 7    70 0.45914459 1.061435e-01 0.8980023
+#> 8    80 0.54481657 1.283684e-01 0.9732507
+#> 9    90 0.60472086 1.427195e-01 0.9932776
+#> 10  100 0.64843645 1.610623e-01 0.9979508
 ```
 
 The `cumulative` flag can be used to request grade-specific
@@ -192,28 +188,28 @@ probabilities.
 
 fit(samples, ordinal_model, ordinal_data, grade = 1L, cumulative = FALSE)
 #>    dose     middle        lower     upper
-#> 1    10 0.01798755 4.081900e-10 0.1276538
-#> 2    20 0.03688267 1.400734e-06 0.2004795
-#> 3    30 0.06410645 1.594413e-04 0.2888179
-#> 4    40 0.10178381 1.864623e-03 0.3761141
-#> 5    50 0.14778500 5.114458e-03 0.4430690
-#> 6    60 0.17251935 6.610945e-03 0.4903974
-#> 7    70 0.15983102 6.071507e-03 0.4698607
-#> 8    80 0.14174013 3.577338e-03 0.4586513
-#> 9    90 0.12656471 1.184151e-03 0.4495504
-#> 10  100 0.11454958 3.681314e-04 0.4317883
+#> 1    10 0.01755467 6.060484e-10 0.1201824
+#> 2    20 0.03615858 2.203459e-06 0.2028914
+#> 3    30 0.06251869 2.095851e-04 0.2637984
+#> 4    40 0.10014431 2.143267e-03 0.3444481
+#> 5    50 0.14781915 4.894673e-03 0.4402163
+#> 6    60 0.17251789 6.392095e-03 0.4803180
+#> 7    70 0.15895692 5.651918e-03 0.4643434
+#> 8    80 0.14037584 2.972841e-03 0.4414463
+#> 9    90 0.12523625 1.100144e-03 0.4281609
+#> 10  100 0.11337855 4.782504e-04 0.4235453
 fit(samples, ordinal_model, ordinal_data, grade = 2L, cumulative = FALSE)
 #>    dose     middle        lower     upper
-#> 1    10 0.01958754 4.676088e-10 0.1496995
-#> 2    20 0.03973961 1.816564e-06 0.1962088
-#> 3    30 0.07115961 2.045863e-04 0.2546096
-#> 4    40 0.12276743 5.358321e-03 0.3265867
-#> 5    50 0.20914990 5.287884e-02 0.4463613
-#> 6    60 0.33848781 9.655578e-02 0.6561935
-#> 7    70 0.46243237 1.243080e-01 0.8977101
-#> 8    80 0.55056846 1.413728e-01 0.9746332
-#> 9    90 0.61193936 1.552403e-01 0.9939308
-#> 10  100 0.65641036 1.673972e-01 0.9984498
+#> 1    10 0.02194408 8.680902e-10 0.1580412
+#> 2    20 0.04261980 2.818773e-06 0.2177480
+#> 3    30 0.07384473 2.263737e-04 0.2657173
+#> 4    40 0.12485995 5.559757e-03 0.3504994
+#> 5    50 0.21098713 4.667764e-02 0.4624503
+#> 6    60 0.33830274 8.781944e-02 0.6846460
+#> 7    70 0.45914459 1.061435e-01 0.8980023
+#> 8    80 0.54481657 1.283684e-01 0.9732507
+#> 9    90 0.60472086 1.427195e-01 0.9932776
+#> 10  100 0.64843645 1.610623e-01 0.9979508
 ```
 
 > Note that, for `grade == K - 1`, the cumulative and grade-specific
@@ -231,7 +227,9 @@ dose. The mean probability of toxicity is barely above 0% at a dose of
 zero and rises in a sigmoidal curve to around 65% at a dose of 100. The
 confidence interval is relatively narrow for low doses but widens
 considerably for doses over 60, extending from around 15% to 100% for a
-dose of 100.](ordinal-crm_files/figure-html/plot1-1.png)
+dose of 100.](ordinal-crm-figures/plot1-1.png)
+
+plot of chunk plot1
 
 ``` r
 
@@ -243,8 +241,9 @@ AE or DLT) against dose. The mean probability of toxicity is barely
 above 0% at a dose of zero and rises in a sigmoidal curve to around 75%
 at a dose of 100. The confidence interval is relatively narrow for low
 doses but widens considerably for doses over 60, extending from around
-30% to 100% for a dose of
-100.](ordinal-crm_files/figure-html/plot2-1.png)
+30% to 100% for a dose of 100.](ordinal-crm-figures/plot2-1.png)
+
+plot of chunk plot2
 
 ``` r
 
@@ -256,7 +255,9 @@ mean probability of toxicity is barely above 0% at a dose of zero, rises
 to a peak of about 18% at a dose of 60 before falling to around 12% at a
 dose of 100. The confidence interval is relatively narrow for low doses
 but widens considerably for doses over 60, extending from around 30% to
-100% for a dose of 100.](ordinal-crm_files/figure-html/plot3-1.png)
+100% for a dose of 100.](ordinal-crm-figures/plot3-1.png)
+
+plot of chunk plot3
 
 ### `Rules` classes for ordinal models
 
@@ -448,55 +449,56 @@ like to contribute, please do so.
 
 ## Environment
 
-    #> R version 4.5.2 (2025-10-31)
-    #> Platform: x86_64-pc-linux-gnu
-    #> Running under: Ubuntu 24.04.4 LTS
+    #> R version 4.6.1 (2026-06-24)
+    #> Platform: aarch64-apple-darwin23
+    #> Running under: macOS Tahoe 26.5.1
     #> 
     #> Matrix products: default
-    #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-    #> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+    #> BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+    #> LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     #> 
     #> locale:
-    #>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-    #>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-    #>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-    #>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-    #>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    #> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+    #> [1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
     #> 
-    #> time zone: Etc/UTC
-    #> tzcode source: system (glibc)
+    #> time zone: Asia/Taipei
+    #> tzcode source: internal
     #> 
     #> attached base packages:
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] crmPack_2.1.0.9000 ggplot2_4.0.3     
+    #> [1] crmPack_2.2.0  testthat_3.3.2 ggplot2_4.0.3 
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] sass_0.4.10          generics_0.1.4       xml2_1.6.0          
-    #>  [4] futile.options_1.0.1 lattice_0.22-9       stringi_1.8.7       
-    #>  [7] digest_0.6.39        magrittr_2.0.5       evaluate_1.0.5      
-    #> [10] grid_4.5.2           RColorBrewer_1.1-3   mvtnorm_1.4-1       
-    #> [13] fastmap_1.2.0        jsonlite_2.0.0       backports_1.5.1     
-    #> [16] formatR_1.14         gridExtra_2.3.1      viridisLite_0.4.3   
-    #> [19] scales_1.4.0         textshaping_1.0.5    jquerylib_0.1.4     
-    #> [22] Rdpack_2.6.6         cli_3.6.6            rlang_1.2.0         
-    #> [25] rbibutils_2.4.1      futile.logger_1.4.9  parallelly_1.47.0   
-    #> [28] withr_3.0.3          cachem_1.1.0         yaml_2.3.12         
-    #> [31] otel_0.2.0           parallel_4.5.2       tools_4.5.2         
-    #> [34] coda_0.19-4.1        checkmate_2.3.4      dplyr_1.2.1         
-    #> [37] lambda.r_1.2.4       kableExtra_1.4.0     vctrs_0.7.3         
-    #> [40] R6_2.6.1             lifecycle_1.0.5      stringr_1.6.0       
-    #> [43] GenSA_1.1.15         fs_2.1.0             htmlwidgets_1.6.4   
-    #> [46] ragg_1.5.2           rjags_4-17           pkgconfig_2.0.3     
-    #> [49] desc_1.4.3           pkgdown_2.2.0        pillar_1.11.1       
-    #> [52] bslib_0.11.0         gtable_0.3.6         glue_1.8.1          
-    #> [55] systemfonts_1.3.2    xfun_0.59            tibble_3.3.1        
-    #> [58] tidyselect_1.2.1     rstudioapi_0.19.0    knitr_1.51          
-    #> [61] dichromat_2.0-0.1    farver_2.1.2         htmltools_0.5.9     
-    #> [64] labeling_0.4.3       svglite_2.2.2        rmarkdown_2.31      
-    #> [67] compiler_4.5.2       S7_0.2.2
+    #>  [1] tidyselect_1.2.1     viridisLite_0.4.3    dplyr_1.2.1         
+    #>  [4] farver_2.1.2         R.utils_2.13.0       rjags_4-17          
+    #>  [7] S7_0.2.2             fastmap_1.2.0        webshot2_0.1.2      
+    #> [10] promises_1.5.0       digest_0.6.39        lifecycle_1.0.5     
+    #> [13] ellipsis_0.3.3       survival_3.8-6       processx_3.9.0      
+    #> [16] magrittr_2.0.5       compiler_4.6.1       rlang_1.2.0         
+    #> [19] tools_4.6.1          knitr_1.51           lambda.r_1.2.4      
+    #> [22] labeling_0.4.3       pkgbuild_1.4.8       xml2_1.6.0          
+    #> [25] RColorBrewer_1.1-3   pkgload_1.5.3        websocket_1.4.4     
+    #> [28] R.cache_0.17.0       withr_3.0.3          purrr_1.2.2         
+    #> [31] R.oo_1.27.1          desc_1.4.3           grid_4.6.1          
+    #> [34] scales_1.4.0         cli_3.6.6            mvtnorm_1.4-1       
+    #> [37] rmarkdown_2.31       ragg_1.5.2           generics_0.1.4      
+    #> [40] otel_0.2.0           rstudioapi_0.19.0    sessioninfo_1.2.4   
+    #> [43] cachem_1.1.0         chromote_0.5.1       stringr_1.6.0       
+    #> [46] splines_4.6.1        parallel_4.6.1       formatR_1.14        
+    #> [49] vctrs_0.7.3          devtools_2.5.2       Matrix_1.7-5        
+    #> [52] jsonlite_2.0.0       GenSA_1.1.15         systemfonts_1.3.2   
+    #> [55] glue_1.8.1           parallelly_1.47.0    codetools_0.2-20    
+    #> [58] stringi_1.8.7        gtable_0.3.6         futile.logger_1.4.9 
+    #> [61] later_1.4.8          tibble_3.3.1         styler_1.11.0       
+    #> [64] pillar_1.11.1        htmltools_0.5.9      brio_1.1.5          
+    #> [67] R6_2.6.1             textshaping_1.0.5    Rdpack_2.6.6        
+    #> [70] rprojroot_2.1.1      evaluate_1.0.5       kableExtra_1.4.0    
+    #> [73] lattice_0.22-9       R.methodsS3_1.8.2    futile.options_1.0.1
+    #> [76] rbibutils_2.4.1      backports_1.5.1      memoise_2.0.1       
+    #> [79] Rcpp_1.1.1-1.1       svglite_2.2.2        coda_0.19-4.1       
+    #> [82] gridExtra_2.3.1      checkmate_2.3.4      xfun_0.59           
+    #> [85] fs_2.1.0             usethis_3.2.1        pkgconfig_2.0.3
 
 ## References
 

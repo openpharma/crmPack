@@ -116,12 +116,12 @@ show(summary(mySims, truth = myTruth))
 #> Number of patients overall : mean 20 (20, 20) 
 #> Number of patients treated above target tox interval : mean 7 (7, 7) 
 #> Proportions of DLTs in the trials : mean 30 % (30 %, 30 %) 
-#> Mean toxicity risks for the patients on active : mean 29 % (29 %, 29 %) 
+#> Mean toxicity risks for the patients on active : mean 30 % (30 %, 30 %) 
 #> Doses selected as MTD : mean 20 (20, 20) 
 #> True toxicity at doses selected : mean 22 % (22 %, 22 %) 
 #> Proportion of trials selecting target MTD: 100 %
 #> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 17 %
+#> Observed toxicity rate at dose most often selected: 14 %
 #> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %

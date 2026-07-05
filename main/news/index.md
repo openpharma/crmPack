@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 2.1.0.9000
+## Version 2.2.0
+
+CRAN release: 2026-07-05
 
 #### New Features
 
@@ -18,6 +20,9 @@
 
 - The `knit_print` method for `LogisticNormalMixture` did not render
   correctly previously; this is fixed now.
+- The intervals in `NextBestNCRMLoss` could be non-contiguous without
+  the user being notified; this is fixed now, the construction will fail
+  and ensure contiguous intervals.
 
 ## Version 2.1.0
 

@@ -43,19 +43,6 @@ reference dose from the dose level in the regression model.
 ``` r
 
 library(crmPack)
-```
-
-    ## Loading required package: ggplot2
-
-    ## Registered S3 method overwritten by 'crmPack':
-    ##   method       from  
-    ##   print.gtable gtable
-
-    ## Type crmPackHelp() to open help browser
-    ## Type crmPackExample() to open example
-
-``` r
-
 t_max <- 42
 
 model <- TITELogisticLogNormal(
