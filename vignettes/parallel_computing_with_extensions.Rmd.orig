@@ -13,7 +13,19 @@ vignette: >
 
 <!-- parallel_computing_with_extensions.Rmd is generated from parallel_computing_with_extensions.Rmd.orig Please edit that file -->
 
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dev = "ragg_png",
+  tidy = "styler",
+  fig.path = "./parallel_computing_with_extensions-figures/",
+  fig.width = 6,
+  out.width = "100%"
+)
+```
 
 ## Introduction
 
@@ -34,8 +46,7 @@ To use user written extension with parallel computing and `crmPack`, the user wr
 
 The following code show at a high level, how the option is utilized.
 
-
-``` r
+```{r high level showcase, eval=FALSE}
 options(
   crmpack_extensions = function() {
     # ..... user code .....
@@ -62,8 +73,7 @@ It is expected as a good practice, that any new written extension is first teste
 Let us assume we want to utilize a two-parameter logistic regression model, where the slope parameter should have only positive values, with a normal prior that is truncated for the slope parameter, so that the slope can have only positive values. In this case we want to set the prior distribution of the slope parameter to be a truncated normal distribution bounded by zero on the lower end. This model representation is not part of the `crmPack` package but can easily be added as shown below.
 Please note that for this example the extra code is directly inserted into the option `crmpack_extensions` as a function. As mentioned before, user should write and test their code first without embedding it into a function which is set equal to the option `crmpack_extensions`, to assure that no errors occur during the whole execution and the results are as expected.
 
-
-``` r
+```{r LogisticNormalTruncPrior Definition, eval = FALSE}
 library(crmPack)
 
 my_own_extension <- function() {
@@ -206,24 +216,21 @@ After the new code is defined and embedded into a function, we can store the fun
 
 Please note that `<<-`operator is used to assign the `LogisticNormalTruncPrior` function to the global environment. The assertion functions from the package `checkmate` are referenced by the double colon operator in this example. In case that the package `checkmate` is attached within the function, i.e., the statement `library(checkmate)` is used in the code above, the direct reference `checkmate::` can be removed. Either way works with parallel computing as this makes sure that the functions can be used in the current environment and at the workers when parallel study simulations are performed.
 
-
-``` r
+```{r , eval = FALSE}
 # Store the function into the global option crmpack_extensions.
 options(crmpack_extensions = my_own_extension)
 ```
 
 Now we are able to use the newly created model `LogisticNormalTruncPrior` to set up a study. First, we get the value from the global option `crmpack_extensions`, which is the function that we have defined above. Then we execute the function within the global environment, so that the constructor function and the corresponding classes and methods for `prob` and `dose` become available.
 
-
-``` r
+```{r make user written code available, eval = FALSE}
 # Execute the user written extensions.
 getOption("crmpack_extensions")()
 ```
 
 Next we can set up the study with the new model and desired design features.
 
-
-``` r
+```{r initial study setup, eval = FALSE}
 # Create the dose grid.
 emptydata <- Data(
   doseGrid = c(
@@ -306,8 +313,7 @@ my_design <- Design(
 
 After setting up the model and the design features, it is very useful to check the model decisions in case that no DLT is observed until a certain dose level before any study simulations are performed. This check can also serve as additional test for the new written code.
 
-
-``` r
+```{r examine the design, eval = FALSE}
 # Examine the design.
 examine(my_design, my_options)
 ```
@@ -316,8 +322,7 @@ When examine runs as expected, study simulations can be performed. To demonstrat
 
 With regard to run times in this example, please see the [note] at the end of the vignette.
 
-
-``` r
+```{r perform study simulations, eval = FALSE}
 # Set up scenarios
 scenario_setup <- function(intercept, mtd_prob, mtd_dose) {
   probFunction(
@@ -382,8 +387,7 @@ time_no_parallel <- system.time({
 
 When simulations with single core processing are running successful, the full operation characteristics utilizing parallel computing can be derived.
 
-
-``` r
+```{r perform study simulations multiple cores, eval = FALSE}
 # Get full operation characteristics utilizing parallel computing.
 time <- system.time({
   start_time <- Sys.time()
@@ -417,8 +421,7 @@ time <- system.time({
 
 As an alternative it may be more convenient to store the user extensions in an external file and source the file in the wrapper function. This has the advantage, that the `<<-` operator is not necessary for user constructor functions and can be replaced by the usual assignment `<-`.
 
-
-``` r
+```{r user code stored in external file}
 if (FALSE) {
   # Store code example form above in external file and
   # remove the wrapper function structure.

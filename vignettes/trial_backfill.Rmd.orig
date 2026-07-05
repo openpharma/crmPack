@@ -10,7 +10,19 @@ bibliography: vignettes.bib
 
 <!-- trial_backfill.Rmd is generated from trial_backfill.Rmd.orig Please edit that file -->
 
-
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dev = "ragg_png",
+  tidy = "styler",
+  fig.path = "./trial_backfill-figures/",
+  fig.width = 6,
+  out.width = "100%"
+)
+```
 
 ## Introduction
 
@@ -57,8 +69,7 @@ For reference, we describe the algorithm used in the `simulate` method for `Desi
 
 We start with the standard components of a CRM design, which are not changed by the backfilling framework - except that for the `StoppingPatientsNearDose` rule we can now choose whether to include backfill patients or not.
 
-
-``` r
+```{r}
 library(crmPack)
 
 # Define the dose-grid.
@@ -103,8 +114,7 @@ myIncrements <- IncrementsRelative(
 
 First we can define a design without backfill cohorts, which is the default behaviour when no backfill details are specified:
 
-
-``` r
+```{r}
 design_no_backfill <- Design(
     model = model,
     nextBest = myNextBest,
@@ -117,18 +127,13 @@ design_no_backfill <- Design(
 design_no_backfill@backfill
 ```
 
-No backfill cohorts at all will be opened.
-
-
-
 > **Note:** This concise statement is produced by dedicated `knit_print` methods for the `Backfill` class, which help with the consistent reporting of `crmPack` design details in vignettes and reports. 
 
 ### Simple backfill cohorts
 
 Let's continue with the simplest case of backfill cohorts. Here we define backfill cohorts of size 3 patients each, with a maximum of 12 backfill patients in total. Backfill cohorts can be opened at any time (i.e. immediately), and recruitment into backfill cohorts is immediate (i.e. as fast as dose escalation cohorts). When multiple backfill cohorts are open, then the lowest dose level is recruited into first.
 
-
-``` r
+```{r}
 backfill_simple <- Backfill(
     cohort_size = CohortSizeConst(3),
     max_size = 12,
@@ -139,25 +144,9 @@ backfill_simple <- Backfill(
 backfill_simple
 ```
 
-**Cohort size**: A constant size of 3 participants.
-
-
-**Opening rule**: If 1 or more cohorts have been treated in total.
-
-
-**Recruitment**: Unlimited recruitment of backfill patients is allowed.
-
-
-**Total number of backfill patients**: 12 backfill patients.
-
-**Priority of higher vs. lower dose backfill cohorts**: lowest dose.
-
-
-
 We can now add this backfill specification to the design:
 
-
-``` r
+```{r}
 design_simple_backfill <- design_no_backfill
 design_simple_backfill@backfill <- backfill_simple
 ```
@@ -166,8 +155,7 @@ design_simple_backfill@backfill <- backfill_simple
 
 Now let's make things a bit more complex. We define a random number of patients for each backfill cohort, with a minimum of 1 patient and a maximum of 6 patients. Backfill cohorts can only be opened once at least 3 dose escalation cohorts have been completed. Note that this will lead to a delayed opening of cohorts 1, 2, and 3 for simultaneous backfilling. In addition, at least one response must have been observed at the cohort's dose level or a lower dose level before it could be opened for backfill. For example, if there is no response observed in cohort 1 at the lowest dose level, then it will not be opened for backfilling at all. We will be able to specify the assumed dose-response probability function in the `simulate` method call later. Recruitment into backfill cohorts is slower than dose escalation cohorts, with a ratio of 1 backfill patient for every 2 dose escalation patients. When multiple backfill cohorts are open, then the highest dose level is recruited into first. The total maximum number of backfill patients is set to 20.
 
-
-``` r
+```{r}
 backfill_complex <- Backfill(
     cohort_size = CohortSizeRandom(min_size = 1, max_size = 6),
     opening = OpeningMinCohorts(min_cohorts = 3) &
@@ -182,34 +170,11 @@ backfill_complex <- Backfill(
 backfill_complex
 ```
 
-**Cohort size**: A random cohort size drawn uniformly between 1 and 6 participants.
-
-
-**Opening rule**: If both of the following rules are satisfied:
-
--  If 3 or more cohorts have been treated in total.
-
-
--  If 1 or more responses have been observed at this dose or lower.
-
-
-
-
-**Recruitment**: Backfill patients are recruited at a ratio of 0.5 per patient in the main trial cohort.
-
-
-**Total number of backfill patients**: 20 backfill patients.
-
-**Priority of higher vs. lower dose backfill cohorts**: highest dose.
-
-
-
 Note how we can combine multiple opening rules using the `&` operator. This is analogous to how stopping rules can be combined. Indeed, it is also possible to use the `|` operator to combine opening rules with an "or" logic.
 
 Again we add this backfill specification to the design:
 
-
-``` r
+```{r}
 design_complex_backfill <- design_no_backfill
 design_complex_backfill@backfill <- backfill_complex
 ```
@@ -219,8 +184,7 @@ design_complex_backfill@backfill <- backfill_complex
 Now we can run trial simulations including backfill cohorts. Here we illustrate this with both the simple and the complex backfill cohort designs defined above. For the complex backfill design we also need to specify the assumed dose-response probability function.
 Similarly as for the dose-toxicity function, it might be worth to consider a few different scenarios in practice.
 
-
-``` r
+```{r}
 # Assumed dose-response probability function.
 mytruthResponse <- function(dose) {
     plogis(- 4 + 0.2 * dose) / 4
@@ -234,15 +198,9 @@ curve(myTruth(x), from = 0, to = max(emptydata@doseGrid),
       add = TRUE, col = "red")
 ```
 
-<div class="figure">
-<img src="./trial_backfill-figures/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" width="100%" />
-<p class="caption">plot of chunk unnamed-chunk-8</p>
-</div>
-
 Now we can run the simulations for this particular scenario:
 
-
-``` r
+```{r}
 # For real applications, use e.g. McmcOptions() with defaults.
 mcmcOptions <- McmcOptions(
     burnin = 10, 
@@ -274,7 +232,7 @@ sims_complex <- simulate(
     parallel = FALSE,
     firstSeparate = FALSE
 )
-```
+```   
 
 We can see that it is still very simple and straightforward to run simulations including backfill cohorts.
 
@@ -284,29 +242,17 @@ The data for each simulated trial is available in the list in the `data` slot of
 
 For example, the 3rd simulated trial with the simple backfill design looks like this:
 
-
-``` r
+```{r}
 plot(sims_simple@data[[3]], mark_backfill = TRUE)
 ```
-
-<div class="figure">
-<img src="./trial_backfill-figures/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" width="100%" />
-<p class="caption">plot of chunk unnamed-chunk-10</p>
-</div>
 
 We can see from the patient IDs, which are assigned sequentially in time, when the backfill patients were recruited (those with an empty shape). For example, we see that the highest dose which was backfilled is 15, after which the maximum of 12 backfill patients was reached.
 
 Similarly we can also plot the data from a simulated trial with the complex backfill design. Here we show the 5th simulated trial, and because the backfill cohort rule is also based on responses, we also mark the response data (using blue squares around the points with a response):
 
-
-``` r
+```{r}
 plot(sims_complex@data[[5]], mark_backfill = TRUE, mark_response = TRUE)
 ```
-
-<div class="figure">
-<img src="./trial_backfill-figures/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11" width="100%" />
-<p class="caption">plot of chunk unnamed-chunk-11</p>
-</div>
 
 Here we can see that the starting dose cohort at dose 3 as well as the next one at dose 5 did not produce any responses, hence no backfill cohorts could be opened at these dose levels. Only after dose escalation reached dose 10 in cohort 3 and two responses were observed there, a backfill cohort could be started there and at the higher dose 20 (because we assumed a monotone dose-response relationship, and include lower doses in our response assessment in the backfill cohort opening rule). 
 
@@ -314,29 +260,21 @@ Here we can see that the starting dose cohort at dose 3 as well as the next one 
 
 We can do some manual investigations of the simulation results to see how many backfill patients were recruited in each simulation:
 
-
-``` r
+```{r}
 get_backfill_counts <- function(sims) {
     sapply(sims@data, \(d) sum(d@backfilled))
 }
 backfill_counts_simple <- get_backfill_counts(sims_simple)
 backfill_counts_complex <- get_backfill_counts(sims_complex)
 table(backfill_counts_simple)
-#> backfill_counts_simple
-#>  9 12 
-#>  1  9
 table(backfill_counts_complex)
-#> backfill_counts_complex
-#>  0  2  3  6 10 
-#>  6  1  1  1  1
 ```
 
 So we see that for all except one simulation in the simple design, the maximum number of 12 backfill patients was recruited. For the 10 simulations of the complex design the situation is more varied: In 6 of the 10 simulations no backfill patients were recruited at all e.g., but in some including the trial no. 5 we looked at above we saw 6 or more backfill patients.
 
 Let's also look at the dose distribution of the backfill patients. We can extract the backfill doses from each simulated trial like this:
 
-
-``` r
+```{r}
 get_backfill_doses <- function(sims) {
     lapply(sims@data, \(d) d@x[d@backfilled])
 }
@@ -346,67 +284,26 @@ backfill_doses_complex <- get_backfill_doses(sims_complex)
 
 For example, the first 3 trials simulated with the simple backfill design had the following backfill doses:
 
-
-``` r
+```{r}
 head(backfill_doses_simple, 3)
-#> [[1]]
-#>  [1]  3  3  3  5  5  5 10 10 10 10 10 10
-#> 
-#> [[2]]
-#>  [1]  3  3  3  5  5  5 10 10 10 15 15 15
-#> 
-#> [[3]]
-#>  [1]  3  3  3  5  5  5 10 10 10 15 15 15
 ```
 
 We can e.g. create a table showing the distribution of the backfill doses across all simulations:
 
-
-``` r
+```{r}
 all_backfill_doses_simple <- unlist(backfill_doses_simple)
 table(all_backfill_doses_simple)
-#> all_backfill_doses_simple
-#>  3  5 10 15 
-#> 30 30 42 15
 
 all_backfill_doses_complex <- unlist(backfill_doses_complex)
 table(all_backfill_doses_complex)
-#> all_backfill_doses_complex
-#> 10 15 20 
-#> 14  3  4
 ```
 
-So we see e.g. that all backfill patients in the complex design were recruited at doses 10, 15, 20.
+So we see e.g. that all backfill patients in the complex design were recruited at doses `r toString(sort(unique(all_backfill_doses_complex)))`.
 
 We can also get basic summary statistics with the `summary` method for `Simulations` objects:
 
-
-``` r
+```{r}
 summary(sims_simple, truth = myTruth)
-#> Summary of 10 simulations
-#> 
-#> Target toxicity interval was 20, 35 %
-#> Target dose interval corresponding to this was 13, 16.8 
-#> Intervals are corresponding to 10 and 90 % quantiles
-#> 
-#> Number of patients overall : mean 37 (33, 42) 
-#> Number of patients treated above target tox interval : mean 7 (3, 9) 
-#> Proportions of DLTs in the trials : mean 16 % (12 %, 20 %) 
-#> Mean toxicity risks for the patients on active : mean 19 % (16 %, 22 %) 
-#> Doses selected as MTD : mean 18 (15, 20) 
-#> True toxicity at doses selected : mean 40 % (28 %, 48 %) 
-#> Proportion of trials selecting target MTD: 40 %
-#> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 50 %
-#> Number of backfill patients : mean 12 (12, 12) 
-#> Doses for backfill patients: 3: 25.6%, 5: 25.6%, 10: 35.9%, 15: 12.8% 
-#> Fitted toxicity rate at dose most often selected : mean 31 % (25 %, 39 %) 
-#> Stop reason triggered:
-#>  ≥ 3 cohorts dosed :  100 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
-#>  ≥ 10 patients dosed in 30 % dose range around NBD :  90 %
-#>  ≥ 40 patients dosed :  30 %
-#>  Stopped because of missing dose :  0 %
 ```
 
 If backfill cohorts are used in the design, and there are actually backfill patients in any of the simulated trials then we see:

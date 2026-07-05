@@ -9,7 +9,19 @@ vignette: >
 
 <!-- trial_simulation.Rmd is generated from trial_simulation.Rmd.orig Please edit that file -->
 
-
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  dev = "ragg_png",
+  tidy = "styler",
+  fig.path = "./trial_simulation-figures/",
+  fig.width = 6,
+  out.width = "100%"
+)
+```
 
 
 ## Example
@@ -18,8 +30,7 @@ This is a basic example which shows how to run simulations from a CRM with
 a 2-parameter logistic regression model, using a log normal prior distribution,
 and custom cohort size, stopping and maximum increments rules:
 
-
-``` r
+```{r example, message = FALSE}
 library(crmPack)
 
 # Define the dose grid.
