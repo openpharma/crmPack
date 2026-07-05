@@ -216,12 +216,16 @@ We define the historical data which is already available:
 ```{r}
 hist_data_comp2 <- Data(
     x = rep(historical_data$dose2, historical_data$n.pat),
-    y = c(
-        rep(0, sum(historical_data$n.pat) - sum(historical_data$n.dlt)), 
-        rep(1, sum(historical_data$n.dlt))
-    ),
+    y = unlist(Map(
+        function(n_pat, n_dlt) {
+            c(rep(0, n_pat - n_dlt), rep(1, n_dlt))
+        },
+        historical_data$n.pat,
+        historical_data$n.dlt
+    )),
     doseGrid = historical_data$dose2
 )
+hist_data_comp2
 ```
 
 We are going to use simple rules here (they are not relevant for the current scenario comparison):
