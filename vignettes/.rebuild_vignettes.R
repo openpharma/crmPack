@@ -1,5 +1,9 @@
 # Before each CRAN release, we need to rebuild the precomputed vignettes,
 # by executing this script.
+#
+# Important: The webshot package needs to be installed and
+# webshot::install_phantomjs()
+# needs to be run to be able to compile the example.Rmd vignette successfully.
 
 rm(list = ls())
 
