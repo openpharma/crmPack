@@ -3,6 +3,11 @@ AEs
 AllModels
 Analysing
 ArmCondition
+ArmConditionAll
+ArmConditionAny
+ArmConditionList
+ArmFinishedCondition
+ArmMinDoseCondition
 BLRM
 Backfill
 Backfilling
@@ -19,6 +24,7 @@ CohortSize
 CohortSizeDLT
 CohortSizeRange
 ComboLogistic
+ComboSimulations
 Customizations
 DASimulations
 DLE
@@ -53,6 +59,10 @@ GmbH
 Goebel
 Gstar
 HMTL
+HierarchicalData
+HierarchicalDesign
+HierarchicalSamples
+HierarchicalSimulations
 HighestDoseUsed
 Hmmm
 Hoffmann
@@ -92,6 +102,7 @@ NextBest
 NextBestDualEndpoint
 NextBestEWOC
 NextBestNCRM
+NoArmCondition
 ORCID
 PLcohortSize
 PMDA
