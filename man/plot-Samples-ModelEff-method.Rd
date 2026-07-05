@@ -2,7 +2,7 @@
 % Please edit documentation in R/Samples-methods.R
 \name{plot,Samples,ModelEff-method}
 \alias{plot,Samples,ModelEff-method}
-\title{Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
+\title{Plot the fitted dose-efficacy curve using a model from \link{ModelEff} class
 with samples}
 \usage{
 \S4method{plot}{Samples,ModelEff}(
@@ -16,11 +16,11 @@ with samples}
 )
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object}
+\item{x}{the \link{Samples} object}
 
-\item{y}{the \code{\linkS4class{ModelEff}} model class object}
+\item{y}{the \link{ModelEff} model class object}
 
-\item{data}{the \code{\linkS4class{Data}} object}
+\item{data}{the \link{Data} object}
 
 \item{\dots}{not used}
 
@@ -35,7 +35,7 @@ This returns the \code{\link[ggplot2]{ggplot}}
 object for the dose-efficacy model fit
 }
 \description{
-Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
+Plot the fitted dose-efficacy curve using a model from \link{ModelEff} class
 with samples
 }
 \examples{

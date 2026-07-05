@@ -1314,6 +1314,88 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   expect_snap(result@data)
 })
 
+# TITELogisticLogNormalSub ----
+
+## constructor ----
+
+test_that("TITELogisticLogNormalSub object can be created with user constructor (linear weight)", {
+  result <- expect_silent(h_get_tite_logistic_log_normal_sub("linear"))
+  expect_valid(result, "TITELogisticLogNormalSub")
+})
+
+test_that("TITELogisticLogNormalSub object can be created with user constructor (adaptive weight)", {
+  result <- expect_silent(h_get_tite_logistic_log_normal_sub("adaptive"))
+  expect_valid(result, "TITELogisticLogNormalSub")
+})
+
+test_that(".DefaultTITELogisticLogNormalSub object can be created with user constructor (linear weight)", {
+  expect_equal(
+    .DefaultTITELogisticLogNormalSub(),
+    TITELogisticLogNormalSub(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 50,
+      weight_method = "linear"
+    )
+  )
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear)", {
+  data <- h_get_data_da()
+  model <- h_get_tite_logistic_log_normal_sub("linear")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snap(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear, data 2)", {
+  data <- h_get_data_da_2()
+  model <- h_get_tite_logistic_log_normal_sub("linear")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snap(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (linear, empty data)", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_tite_logistic_log_normal_sub("linear")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snap(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive)", {
+  data <- h_get_data_da()
+  model <- h_get_tite_logistic_log_normal_sub("adaptive")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snap(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive, data 2)", {
+  data <- h_get_data_da_2()
+  model <- h_get_tite_logistic_log_normal_sub("adaptive")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snap(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormalSub model (adaptive, empty data)", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_tite_logistic_log_normal_sub("adaptive")
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snap(result@data)
+})
+
 # OneParLogNormalPrior ----
 
 ## constructor ----

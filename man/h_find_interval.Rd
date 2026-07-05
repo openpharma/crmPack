@@ -7,30 +7,7 @@
 h_find_interval(..., replacement = -Inf)
 }
 \arguments{
-\item{...}{
-  Arguments passed on to \code{\link[base:findInterval]{base::findInterval}}
-  \describe{
-    \item{\code{x}}{numeric.}
-    \item{\code{vec}}{numeric, sorted (weakly) increasingly, of length \code{N},
-    say.}
-    \item{\code{rightmost.closed}}{logical; if true, the rightmost interval,
-    \code{vec[N-1] .. vec[N]} is treated as \emph{closed}, see below.}
-    \item{\code{all.inside}}{logical; if true, the returned indices are coerced
-    into \code{1,\dots,N-1}, i.e., \code{0} is mapped to \code{1}
-    and \code{N} to \code{N-1}.}
-    \item{\code{left.open}}{logical; if true all the intervals are open at left
-    and closed at right; in the formulas below, \eqn{\le} should be
-    swapped with \eqn{<} (and \eqn{>} with \eqn{\ge}), and
-    \code{rightmost.closed} means \sQuote{leftmost is closed}.  This may
-    be useful, e.g., in survival analysis computations.}
-    \item{\code{checkSorted}}{logical indicating if \code{vec} should be checked,
-    i.e., \code{\link[base]{is.unsorted}(vec)} is asserted to be false.  Setting
-    this to \code{FALSE} skips the check gaining speed, but may return
-    nonsense results in case \code{vec} is not sorted.}
-    \item{\code{checkNA}}{logical indicating if each \code{x[i]} should be checked
-    as with \code{\link[base]{is.na}(.)}.  Setting this to \code{FALSE} in case
-    of \code{NA}'s in \code{x[]} may result in platform dependent nonsense.}
-  }}
+\item{...}{further arguments passed to \code{\link[base:findInterval]{base::findInterval()}} function.}
 
 \item{replacement}{(\code{number})\cr a custom number to be used as a replacement
 for \eqn{0}. Default to \code{-Inf}.}
@@ -38,8 +15,8 @@ for \eqn{0}. Default to \code{-Inf}.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A simple wrapper of \code{\link[=findInterval]{findInterval()}} function that invokes
-\code{\link[=findInterval]{findInterval()}}, takes its output and replaces all the
+A simple wrapper of \code{\link[base:findInterval]{base::findInterval()}} function that invokes
+\code{\link[base:findInterval]{base::findInterval()}}, takes its output and replaces all the
 elements with \eqn{0} value to a custom number as specified in \code{replacement}
 argument.
 }

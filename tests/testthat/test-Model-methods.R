@@ -1,3 +1,9 @@
+# show-HierarchicalModel ----
+
+test_that("show-HierarchicalModel works correctly", {
+  expect_snapshot(show(.DefaultHierarchicalModel()))
+})
+
 # doseFunction ----
 
 ## GeneralModel ----
@@ -374,6 +380,33 @@ test_that("probFunction-LogisticLogNormalGrouped works as expected", {
   expect_error(prob_fun(1), "argument \"group\" is missing, with no default")
   result <- expect_silent(prob_fun(10, group = "mono"))
   expect_equal(result, 0.8958, tolerance = 1e-4)
+})
+
+## TwoDrugsCombo ----
+
+test_that("probFunction-TwoDrugsCombo works as expected", {
+  model <- h_get_two_drugs_combo()
+
+  prob_fun <- expect_silent(probFunction(
+    model,
+    alpha0 = matrix(
+      c(-2.5, -3.0),
+      nrow = 1,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2),
+      nrow = 1,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = 0.3
+  ))
+  prob_fun <- h_covr_detrace(prob_fun)
+
+  expect_function(prob_fun, args = c("dose", "..."), null.ok = FALSE)
+  result <- expect_silent(prob_fun(c(drug1 = 20, drug2 = 40)))
+  expect_true(is.numeric(result))
+  expect_length(result, 1L)
 })
 
 # LogisticLogNormalOrdinal ----
@@ -1623,6 +1656,247 @@ test_that("prob-LogisticLogNormalGrouped works as expected for vectors", {
 
   result <- prob(c(1, 30), model, samples, group = c("mono", "combo"))
   expect_equal(result, c(0.7311, 0.9962), tolerance = 1e-4)
+})
+
+## TwoDrugsCombo ----
+
+test_that("prob-TwoDrugsCombo works as expected", {
+  model <- h_get_two_drugs_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+
+  dose <- c(drug1 = 20, drug2 = 40)
+  p1 <- plogis(
+    samples@data$alpha0[, 1] +
+      samples@data$alpha1[, 1] * log(dose[1] / model@ref_dose[1])
+  )
+  p2 <- plogis(
+    samples@data$alpha0[, 2] +
+      samples@data$alpha1[, 2] * log(dose[2] / model@ref_dose[2])
+  )
+  p0 <- p1 + p2 - p1 * p2
+  expected_odds <- (p0 / (1 - p0)) *
+    exp(samples@data$eta * prod(dose / model@ref_dose))
+  expected <- expected_odds / (1 + expected_odds)
+
+  result <- prob(dose, model, samples)
+  expect_equal(result, expected, tolerance = 1e-7)
+})
+
+test_that("prob-TwoDrugsCombo works as expected for multiple dose combinations", {
+  model <- h_get_two_drugs_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  doses <- rbind(
+    c(drug1 = 10, drug2 = 20),
+    c(drug1 = 30, drug2 = 40)
+  )
+
+  result <- prob(doses, model, samples)
+  expect_equal(dim(result), c(2L, 2L))
+  expect_true(all(result >= 0 & result <= 1))
+})
+
+test_that("h_prob_two_drugs_combo_single_samples extracts drug-specific samples", {
+  model <- h_get_two_drugs_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+
+  drug1_samples <- h_prob_two_drugs_combo_single_samples(samples, model, 1L)
+  drug2_samples <- h_prob_two_drugs_combo_single_samples(samples, model, 2L)
+
+  expect_s4_class(drug1_samples, "Samples")
+  expect_named(drug1_samples@data, c("alpha0", "alpha1"))
+  expect_equal(drug1_samples@data$alpha0, samples@data$alpha0[, 1])
+  expect_equal(drug1_samples@data$alpha1, samples@data$alpha1[, 1])
+  expect_equal(drug2_samples@data$alpha0, samples@data$alpha0[, 2])
+  expect_equal(drug2_samples@data$alpha1, samples@data$alpha1[, 2])
+  expect_equal(size(drug1_samples), size(samples))
+})
+
+test_that("h_prob_two_drugs_combo_normalized_dose follows single-agent models", {
+  log_model <- h_get_two_drugs_combo()
+  raw_model <- h_get_two_drugs_combo_no_alpha_no_ref()
+  sub_model <- h_get_two_drugs_combo_sub()
+  dose <- c(10, 20)
+
+  expect_equal(
+    h_prob_two_drugs_combo_normalized_dose(dose, log_model@single_models[[1]]),
+    dose / log_model@ref_dose[1]
+  )
+  expect_equal(
+    h_prob_two_drugs_combo_normalized_dose(dose, raw_model@single_models[[1]]),
+    dose
+  )
+  expect_equal(
+    h_prob_two_drugs_combo_normalized_dose(dose, sub_model@single_models[[1]]),
+    dose - sub_model@ref_dose[1]
+  )
+})
+
+test_that("prob-TwoDrugsCombo uses single-agent probabilities and dose normalizations", {
+  model <- h_get_two_drugs_combo_sub()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-2.0, -3.0, -2.5, -3.5),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(0.02, 0.03, 0.04, 0.05),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.1, 0.2)
+  ))
+  dose <- c(drug1 = 12, drug2 = 25)
+  drug1_samples <- h_as_samples(list(
+    alpha0 = samples@data$alpha0[, 1],
+    alpha1 = samples@data$alpha1[, 1]
+  ))
+  drug2_samples <- h_as_samples(list(
+    alpha0 = samples@data$alpha0[, 2],
+    alpha1 = samples@data$alpha1[, 2]
+  ))
+
+  p1 <- prob(rep(dose[1], size(samples)), model@single_models[[1]], drug1_samples)
+  p2 <- prob(rep(dose[2], size(samples)), model@single_models[[2]], drug2_samples)
+  p0 <- p1 + p2 - p1 * p2
+  interaction <- (unname(dose[1]) - model@ref_dose[1]) *
+    (unname(dose[2]) - model@ref_dose[2])
+  expected_odds <- (p0 / (1 - p0)) * exp(samples@data$eta * interaction)
+  expected <- expected_odds / (1 + expected_odds)
+
+  expect_equal(prob(dose, model, samples), unname(expected), tolerance = 1e-7)
+})
+
+test_that("prob-TwoDrugsCombo preserves non-logit single-agent links", {
+  model <- TwoDrugsCombo(
+    single_models = list(
+      drug1 = ProbitLogNormal(
+        mean = c(-0.85, 1),
+        cov = diag(2),
+        ref_dose = 10
+      ),
+      drug2 = ProbitLogNormal(
+        mean = c(-0.7, 0.8),
+        cov = diag(2),
+        ref_dose = 20
+      )
+    ),
+    gamma = 0,
+    tau = 1
+  )
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  dose <- c(drug1 = 20, drug2 = 40)
+
+  result <- prob(dose, model, samples)
+  old_logit_p1 <- plogis(
+    samples@data$alpha0[, 1] +
+      samples@data$alpha1[, 1] * log(dose[1] / model@ref_dose[1])
+  )
+  expected_p1 <- pnorm(
+    samples@data$alpha0[, 1] +
+      samples@data$alpha1[, 1] * log(dose[1] / model@ref_dose[1])
+  )
+
+  expect_false(isTRUE(all.equal(old_logit_p1, expected_p1)))
+  expect_equal(
+    result,
+    {
+      p2 <- pnorm(
+        samples@data$alpha0[, 2] +
+          samples@data$alpha1[, 2] * log(dose[2] / model@ref_dose[2])
+      )
+      p0 <- expected_p1 + p2 - expected_p1 * p2
+      expected_odds <- (p0 / (1 - p0)) *
+        exp(samples@data$eta * prod(dose / model@ref_dose))
+      expected_odds / (1 + expected_odds)
+    },
+    tolerance = 1e-7
+  )
+})
+
+test_that("fit-TwoDrugsCombo works as expected", {
+  model <- h_get_two_drugs_combo()
+  data <- h_get_data_combo()
+  samples <- h_as_samples(list(
+    alpha0 = matrix(
+      c(-3.0, -3.5, -2.5, -3.0),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    alpha1 = matrix(
+      c(1.0, 1.2, 0.8, 1.1),
+      nrow = 2L,
+      byrow = TRUE,
+      dimnames = list(NULL, model@drug_names)
+    ),
+    eta = c(0.0, 0.2)
+  ))
+  points <- rbind(c(drug1 = 10, drug2 = 20), c(drug1 = 20, drug2 = 40))
+
+  result <- fit(samples, model, data, points = points, middle = mean)
+
+  expect_named(result, c("drug1", "drug2", "middle", "lower", "upper"))
+  expect_equal(nrow(result), 2L)
+  expect_true(all(result$middle >= 0 & result$middle <= 1))
 })
 
 ## LogisticKadane ----

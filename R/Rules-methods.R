@@ -20,13 +20,14 @@ NULL
 #' the underlying `data`.
 #'
 #' @param nextBest (`NextBest`)\cr the rule for the next best dose.
-#' @param doselimit (`number`)\cr the maximum allowed next dose. If it is an
+#' @param doselimit (`number` or `matrix`)\cr the maximum allowed next dose. If it is
 #'   infinity (default), then essentially no dose limit will be applied in the
-#'   course of dose recommendation calculation.
+#'   course of dose recommendation calculation. A `matrix` must be
+#'   used for two drug combinations.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
 #' @param model (`GeneralModel`)\cr model that was used to generate the samples.
-#' @param data (`Data`)\cr data that was used to generate the samples.
+#' @param data (`Data` or `DataCombo`)\cr data that was used to generate the samples.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A list with the next best dose recommendation  (element named `value`)
@@ -42,7 +43,13 @@ setGeneric(
   name = "nextBest",
   def = function(nextBest, doselimit, samples, model, data, ...) {
     if (!missing(doselimit)) {
-      assert_number(doselimit, lower = 0, finite = FALSE)
+      if (is.vector(doselimit)) {
+        assert_number(doselimit, lower = 0, finite = FALSE)
+      } else if (is.matrix(doselimit)) {
+        assert_matrix(doselimit, ncols = 2, mode = "numeric")
+      } else {
+        stop("doselimit must be either a number or a matrix.")
+      }
     }
     standardGeneric("nextBest")
   },
@@ -250,12 +257,16 @@ setMethod(
 
     # Estimates of posterior probabilities that are based on the prob. samples
     # which are within overdose/target interval.
-    prob_overdose <- colMeans(h_in_range(
-      prob_samples,
-      nextBest@overdose,
-      bounds_closed = c(FALSE, TRUE)
-    ))
-    prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
+    prob_overdose <- colMeans(
+      h_in_range(
+        prob_samples,
+        nextBest@overdose,
+        bounds_closed = c(FALSE, TRUE)
+      )
+    )
+    prob_target <- colMeans(
+      h_in_range(prob_samples, nextBest@target)
+    )
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- h_next_best_eligible_doses(
@@ -352,6 +363,183 @@ setMethod(
         target = prob_target,
         overdose = prob_overdose
       )
+    )
+  }
+)
+
+## NextBestNCRM-DataCombo ----
+
+#' @describeIn nextBest find the next best dose combination based on the NCRM method.
+#'
+#' @aliases nextBest-NextBestNCRM
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestNCRM-DataCombo.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestNCRM",
+    doselimit = "matrix",
+    samples = "Samples",
+    model = "TwoDrugsCombo",
+    data = "DataCombo"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    drug_names <- data@drugNames
+
+    # Generate all doses for the combination which are inside the area
+    # defined by the dose limit matrix. We don't want to calculate
+    # probabilities for doses above the dose limit curve
+    # as this will just take unnecessary time.
+    all_dose_matrix <- as.matrix(expand.grid(data@doseGrid))
+    is_below_limit <- h_dose_combo_below_limit(all_dose_matrix, doselimit)
+    dose_matrix <- all_dose_matrix[is_below_limit, , drop = FALSE]
+
+    # Matrix with samples from the dose-tox curve at the dose grid points (rows: samples, cols: doses).
+    prob_samples <- apply(
+      dose_matrix,
+      MARGIN = 1L,
+      prob,
+      model = model,
+      samples = samples,
+      ...
+    )
+
+    # Estimates of posterior probabilities that are based on the prob. samples
+    # which are within overdose/target interval.
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
+    prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
+
+    # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
+    is_dose_eligible <- (prob_overdose <= nextBest@max_overdose_prob)
+
+    next_doses <- if (any(is_dose_eligible)) {
+      # If maximum target probability is higher than some numerical threshold,
+      # then take that level, otherwise stick to the maximum level that is OK.
+      # next_best_level is relative to eligible doses.
+      next_best_level <- ifelse(
+        test = any(prob_target[is_dose_eligible] > 0.05),
+        yes = which.max(prob_target[is_dose_eligible]),
+        no = sum(is_dose_eligible) # This selects the one
+        # with highest first dose and then highest second dose among
+        # the eligible ones.
+      )
+      dose_matrix[is_dose_eligible, , drop = FALSE][
+        next_best_level,
+        ,
+        drop = TRUE # We want to return a numeric vector, not a matrix!
+      ]
+    } else {
+      NA_real_
+    }
+
+    # Build plots, first for the target probability.
+
+    # Show target probability as tiles, and doses that were above
+    # the dose limit should stay black.
+    all_target_prob <- rep(NA, nrow(all_dose_matrix))
+    all_target_prob[is_below_limit] <- prob_target
+    all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
+    all_overdose_prob[is_below_limit] <- prob_overdose
+    all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
+    all_not_eligible[is_below_limit] <- !is_dose_eligible
+
+    plot_data <- setNames(
+      data.frame(
+        all_dose_matrix[, 1L],
+        all_dose_matrix[, 2L],
+        all_target_prob,
+        all_overdose_prob,
+        all_not_eligible
+      ),
+      c(
+        drug_names,
+        "target_prob",
+        "overdose_prob",
+        "not_eligible"
+      )
+    )
+    p1 <- ggplot() +
+      geom_tile(
+        data = plot_data,
+        aes(
+          x = .data[[drug_names[1L]]],
+          y = .data[[drug_names[2L]]],
+          fill = .data$target_prob
+        )
+      ) +
+      scale_fill_gradient(
+        low = "white",
+        high = "darkgreen",
+        na.value = "black",
+        limits = c(0, 1),
+        name = "Target probability"
+      ) +
+      xlab(names(data@doseGrid)[1]) +
+      ylab(names(data@doseGrid)[2]) +
+      geom_point(
+        data = plot_data[plot_data$not_eligible, , drop = FALSE],
+        aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
+        shape = 4,
+        size = 10,
+        colour = "red"
+      )
+
+    if (any(is_dose_eligible)) {
+      p1 <- p1 +
+        # And a blue circle on the next best dose.
+        geom_point(
+          data = data.frame(
+            setNames(as.list(next_doses[1:2]), drug_names)
+          ),
+          aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
+          size = 10,
+          shape = 19,
+          colour = "blue",
+          fill = "blue"
+        )
+    }
+
+    # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_tile(
+        data = plot_data,
+        aes(
+          x = .data[[drug_names[1L]]],
+          y = .data[[drug_names[2L]]],
+          fill = .data$overdose_prob
+        )
+      ) +
+      scale_fill_gradient(
+        low = "white",
+        high = "red",
+        na.value = "black",
+        limits = c(0, 1),
+        name = "Overdose probability"
+      ) +
+      xlab(names(data@doseGrid)[1]) +
+      ylab(names(data@doseGrid)[2]) +
+      geom_point(
+        data = plot_data[plot_data$not_eligible, , drop = FALSE],
+        aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
+        shape = 4,
+        size = 10,
+        colour = "red"
+      )
+
+    # Place them below each other.
+    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+
+    list(
+      value = next_doses,
+      plot = plot_joint,
+      singlePlots = list(plot1 = p1, plot2 = p2),
+      probs = plot_data
     )
   }
 )
@@ -1838,8 +2026,79 @@ setGeneric(
   def = function(increments, data, ...) {
     standardGeneric("maxDose")
   },
-  valueClass = "numeric"
+  valueClass = c("numeric", "matrix")
 )
+
+## IncrementsComboOneDrugOnly ----
+
+#' @describeIn maxDose determine the maximum possible next dose
+#'   levels for a two drug combination, based on the rule that
+#'   only one drug can be escalated at a time.
+#'
+#' @aliases maxDose-IncrementsComboOneDrugOnly
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsComboOneDrugOnly.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsComboOneDrugOnly",
+    data = "DataCombo"
+  ),
+  definition = function(increments, data, ...) {
+    dose_grid_one <- data@doseGrid[[1L]]
+    dose_grid_two <- data@doseGrid[[2L]]
+    if (data@nObs == 0L) {
+      # In this case any combinations are possible.
+      return(cbind(dose_grid_one, Inf))
+    }
+    last_dose <- data@x[data@nObs, ]
+    dose_for_second_drug <- ifelse(
+      dose_grid_one > last_dose[1],
+      last_dose[2],
+      Inf
+    )
+    cbind(dose_grid_one, dose_for_second_drug)
+  }
+)
+
+## IncrementsComboCartesian ----
+
+#' @describeIn maxDose determine the maximum possible next dose
+#'  levels for a two drug combination, based on the drug specific
+#'  increment rules which are applied independently.
+#'
+#' @aliases maxDose-IncrementsComboCartesian
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsComboCartesian.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsComboCartesian",
+    data = "DataCombo"
+  ),
+  definition = function(increments, data, ...) {
+    data_drug1 <- singleDrugData(data, data@drugNames[1])
+    data_drug2 <- singleDrugData(data, data@drugNames[2])
+
+    max_dose_one <- maxDose(increments@drug1, data_drug1)
+    max_dose_two <- maxDose(increments@drug2, data_drug2)
+
+    dose_grid_one <- data@doseGrid[[1L]]
+    dose_grid_two <- data@doseGrid[[2L]]
+
+    dose_for_second_drug <- ifelse(
+      dose_grid_one <= max_dose_one,
+      max_dose_two,
+      NA
+    )
+    cbind(dose_grid_one, dose_for_second_drug)
+  }
+)
+
 
 ## IncrementsRelative ----
 
@@ -2101,6 +2360,53 @@ setMethod(
       ...
     )
     min(individual_results)
+  }
+)
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   multiple increment rules, taking the minimum across individual increments.
+#'
+#' @aliases maxDose-IncrementsMin
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsMin-DataCombo.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsMin",
+    data = "DataCombo"
+  ),
+  definition = function(increments, data, ...) {
+    individual_results <- lapply(
+      increments@increments_list,
+      maxDose,
+      data = data,
+      ...
+    )
+
+    first_column <- individual_results[[1]][, 1]
+    same_first_column <- vapply(
+      individual_results,
+      function(x) identical(x[, 1], first_column),
+      logical(1)
+    )
+    if (!all(same_first_column)) {
+      stop(
+        "All increments in IncrementsMin must return the same first column for DataCombo."
+      )
+    }
+
+    second_columns <- do.call(
+      cbind,
+      lapply(individual_results, function(x) x[, 2])
+    )
+
+    has_na <- apply(second_columns, 1, anyNA)
+    min_second_column <- apply(second_columns, 1, min, na.rm = TRUE)
+    min_second_column[has_na] <- NA_real_
+
+    cbind(first_column, min_second_column)
   }
 )
 
@@ -2478,10 +2784,14 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
-    do_stop <- is.na(dose) || (data@placebo && dose == min(data@doseGrid))
+    na_dose <- all(is.na(dose))
+    placebo_dose <- .hasSlot(data, "placebo") &&
+      data@placebo &&
+      dose == min(data@doseGrid)
+    do_stop <- na_dose || placebo_dose
 
     msg <- paste(
       "Next dose is",
@@ -2489,7 +2799,7 @@ setMethod(
         do_stop,
         paste(
           ifelse(
-            data@placebo && dose == min(data@doseGrid),
+            placebo_dose,
             "placebo dose",
             "NA"
           ),
@@ -2696,7 +3006,7 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Determine the range where the cohorts must lie in.
@@ -2704,7 +3014,17 @@ setMethod(
     upper <- (100 + stopping@percentage) / 100 * dose
 
     # Which patients lie there?
-    index_patients <- which((data@x >= lower) & (data@x <= upper))
+    patients_within_bounds <- if (is(data, "Data") || is(data, "DataOrdinal")) {
+      (data@x >= lower) & (data@x <= upper)
+    } else if (is(data, "DataCombo")) {
+      (data@x[, 1] >= lower[1]) &
+        (data@x[, 1] <= upper[1]) &
+        (data@x[, 2] >= lower[2]) &
+        (data@x[, 2] <= upper[2])
+    } else {
+      stop("Unsupported data type for StoppingCohortsNearDose.")
+    }
+    index_patients <- which(patients_within_bounds)
 
     # How many cohorts?
     n_cohorts <- length(unique(data@cohort[index_patients]))
@@ -2718,7 +3038,7 @@ setMethod(
       " cohorts lie within ",
       stopping@percentage,
       "% of the next best dose ",
-      dose,
+      toString(dose),
       ". This ",
       ifelse(do_stop, "reached", "is below"),
       " the required ",
@@ -2754,7 +3074,7 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Determine the range where the cohorts must lie in.
@@ -2763,15 +3083,31 @@ setMethod(
 
     # Get patients' dose levels.
     doses <- data@x
+    is_combo_data <- is(data, "DataCombo")
     if (!stopping@include_backfill) {
-      doses <- doses[!data@backfilled]
+      doses <- if (is_combo_data) {
+        doses[!data@backfilled, ]
+      } else {
+        doses[!data@backfilled]
+      }
     }
 
     # How many patients lie there?
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    patients_within_bounds <- if (is_data_or_ordinal) {
+      (doses >= lower) & (doses <= upper)
+    } else if (is_combo_data) {
+      (doses[, 1] >= lower[1]) &
+        (doses[, 1] <= upper[1]) &
+        (doses[, 2] >= lower[2]) &
+        (doses[, 2] <= upper[2])
+    } else {
+      stop("Unsupported data type for StoppingPatientsNearDose.")
+    }
     n_patients <- ifelse(
-      is.na(dose),
+      isTRUE(is.na(dose)),
       0,
-      sum((doses >= lower) & (doses <= upper))
+      sum(patients_within_bounds)
     )
 
     # So can we stop?
@@ -2788,7 +3124,7 @@ setMethod(
       "lie within ",
       stopping@percentage,
       "% of the next best dose ",
-      dose,
+      toString(dose),
       ". This ",
       ifelse(do_stop, "reached", "is below"),
       " the required ",
@@ -2822,7 +3158,7 @@ setMethod(
     dose = "ANY",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Determine number of cohorts.
@@ -2868,7 +3204,7 @@ setMethod(
     dose = "ANY",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # So can we stop?
@@ -2912,7 +3248,7 @@ setMethod(
   definition = function(stopping, dose, samples, model, data, ...) {
     # Compute probability to be in target interval.
     prob_target <- ifelse(
-      is.na(dose),
+      isTRUE(is.na(dose)),
       0,
       mean(
         prob(dose = dose, model, samples, ...) >= stopping@target[1] &
@@ -2926,7 +3262,7 @@ setMethod(
       "Probability for target toxicity is",
       round(prob_target * 100),
       "% for dose",
-      dose,
+      toString(dose),
       "and thus",
       ifelse(do_stop, "above", "below"),
       "the required",
@@ -2959,7 +3295,7 @@ setMethod(
     dose = "numeric",
     samples = "Samples",
     model = "GeneralModel",
-    data = "ANY"
+    data = "Data"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # First, generate the MTD samples.
@@ -3081,16 +3417,33 @@ setMethod(
   signature = signature(
     stopping = "StoppingLowestDoseHSRBeta",
     dose = "numeric",
-    samples = "Samples"
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     # Actual number of patients at first active dose.
-    n <- sum(data@x == data@doseGrid[data@placebo + 1])
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    is_combo_data <- is(data, "DataCombo")
+    lowest_dose <- if (is_data_or_ordinal) {
+      data@doseGrid[data@placebo + 1]
+    } else if (is_combo_data) {
+      c(data@doseGrid[[1]][1], data@doseGrid[[2]][1])
+    } else {
+      stop("Unsupported data type for StoppingLowestDoseHSRBeta.")
+    }
+    has_lowest_dose <- if (is_data_or_ordinal) {
+      data@x == lowest_dose
+    } else if (is_combo_data) {
+      data@x[, 1] == lowest_dose[1] &
+        data@x[, 2] == lowest_dose[2]
+    }
+    n <- sum(has_lowest_dose)
 
     # Determine toxicity probability of the first active dose.
     tox_prob_first_dose <-
       if (n > 0) {
-        x <- sum(data@y[which(data@x == data@doseGrid[data@placebo + 1])])
+        x <- sum(data@y[which(has_lowest_dose)])
         pbeta(
           stopping@target,
           x + stopping@a,
@@ -3109,7 +3462,7 @@ setMethod(
     } else {
       paste(
         "Probability that the lowest active dose of ",
-        data@doseGrid[data@placebo + 1],
+        toString(lowest_dose),
         " being toxic based on posterior Beta distribution using a Beta(",
         stopping@a,
         ",",
@@ -3262,11 +3615,20 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    is_combo_data <- is(data, "DataCombo")
     # Specific dose must be a part of the dose grid.
-    assert_subset(x = stopping@dose@.Data, choices = data@doseGrid)
+    if (is_data_or_ordinal) {
+      assert_subset(x = stopping@dose@.Data, choices = data@doseGrid)
+    } else if (is_combo_data) {
+      assert_subset(x = stopping@dose@.Data[1], choices = data@doseGrid[[1]])
+      assert_subset(x = stopping@dose@.Data[2], choices = data@doseGrid[[2]])
+    } else {
+      stop("Unsupported data type for StoppingSpecificDose.")
+    }
 
     # Evaluate the original (wrapped) stopping rule at the specific dose.
     result <- stopTrial(
@@ -3308,19 +3670,28 @@ setMethod(
     dose = "numeric",
     samples = "ANY",
     model = "ANY",
-    data = "Data"
+    data = "GeneralData"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
+    is_data_or_ordinal <- is(data, "Data") || is(data, "DataOrdinal")
+    is_combo_data <- is(data, "DataCombo")
     is_highest_dose <- ifelse(
-      is.na(dose),
+      isTRUE(is.na(dose)),
       FALSE,
-      (dose == data@doseGrid[data@nGrid])
+      if (is_data_or_ordinal) {
+        dose == data@doseGrid[data@nGrid]
+      } else if (is_combo_data) {
+        dose[1] == c(data@doseGrid[[1]][data@nGrid[1]]) &&
+          dose[2] == c(data@doseGrid[[2]][data@nGrid[2]])
+      } else {
+        stop("Unsupported data type for StoppingHighestDose.")
+      }
     )
     structure(
       is_highest_dose,
       message = paste(
         "Next best dose is",
-        dose,
+        toString(dose),
         "and thus",
         ifelse(is_highest_dose, "the", "not the"),
         "highest dose"
@@ -3995,7 +4366,7 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
     assert_class(data, "Data")
@@ -4024,10 +4395,10 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
-    assert_class(data, "Data")
+    assert_multi_class(data, c("Data", "DataCombo"))
 
     # Determine how many DLTs have occurred so far.
     dlt_happened <- sum(data@y)
@@ -4056,10 +4427,10 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
+    assert_multi_class(data, c("Data", "DataCombo", "DataOrdinal"))
 
     # Evaluate the individual cohort size rules in the list.
     individual_results <- sapply(
@@ -4091,10 +4462,10 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       return(0L)
     }
-    assert_multi_class(data, c("Data", "DataOrdinal"))
+    assert_multi_class(data, c("Data", "DataCombo", "DataOrdinal"))
 
     # Evaluate the individual cohort size rules in the list.
     individual_results <- sapply(
@@ -4125,7 +4496,7 @@ setMethod(
   ),
   definition = function(object, dose, ...) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       0L
     } else {
       object@size
@@ -4150,7 +4521,7 @@ setMethod(
   ),
   definition = function(object, dose, ...) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       0L
     } else {
       as.integer(sample(
@@ -4178,7 +4549,7 @@ setMethod(
   ),
   definition = function(object, dose, data) {
     # If the recommended next dose is NA, don't check it and return 0.
-    if (is.na(dose)) {
+    if (all(is.na(dose))) {
       0L
     } else {
       assert_class(data, "DataParts")

@@ -16,7 +16,7 @@ TITELogisticLogNormal(weight_method = "linear", ...)
 \item{weight_method}{(\code{string})\cr see the slot description.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=LogisticLogNormal]{LogisticLogNormal}}
+  Arguments passed on to \code{\link{LogisticLogNormal}}
   \describe{
     \item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
     \item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
@@ -70,5 +70,5 @@ my_model1 <- TITELogisticLogNormal(
 \insertAllCited{}
 }
 \seealso{
-\code{\link{DALogisticLogNormal}}.
+\link{DALogisticLogNormal}, \link{TITELogisticLogNormalSub}.
 }

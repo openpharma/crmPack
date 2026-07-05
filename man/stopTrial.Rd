@@ -2,7 +2,7 @@
 % Please edit documentation in R/Rules-methods.R
 \name{stopTrial}
 \alias{stopTrial}
-\alias{stopTrial,StoppingMissingDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingMissingDose,numeric,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingMissingDose}
 \alias{stopTrial,StoppingList,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial-StoppingList}
@@ -10,27 +10,27 @@
 \alias{stopTrial-StoppingAll}
 \alias{stopTrial,StoppingAny,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial-StoppingAny}
-\alias{stopTrial,StoppingCohortsNearDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingCohortsNearDose,numeric,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingCohortsNearDose}
-\alias{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingPatientsNearDose}
-\alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingMinCohorts}
-\alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingMinPatients}
 \alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingTargetProb}
-\alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}
+\alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,Data-method}
 \alias{stopTrial-StoppingMTDdistribution}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
-\alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
+\alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,GeneralModel,GeneralData-method}
 \alias{stopTrial-StoppingLowestDoseHSRBeta}
 \alias{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}
 \alias{stopTrial-StoppingTargetBiomarker}
-\alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingSpecificDose}
-\alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,GeneralData-method}
 \alias{stopTrial-StoppingHighestDose}
 \alias{stopTrial,StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal-method}
 \alias{stopTrial-StoppingOrdinal}
@@ -47,7 +47,7 @@
 \usage{
 stopTrial(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMissingDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMissingDose,numeric,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingList,ANY,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -55,27 +55,27 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingAny,ANY,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingCohortsNearDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingCohortsNearDose,numeric,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingPatientsNearDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingPatientsNearDose,numeric,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMinCohorts,ANY,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMinCohorts,ANY,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMinPatients,ANY,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMinPatients,ANY,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingTargetProb,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,GeneralModel,Data}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMTDCV,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingLowestDoseHSRBeta,numeric,Samples,GeneralModel,GeneralData}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingSpecificDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingSpecificDose,numeric,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingHighestDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingHighestDose,numeric,ANY,ANY,GeneralData}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingOrdinal,numeric,ANY,LogisticLogNormalOrdinal,DataOrdinal}(stopping, dose, samples, model, data, ...)
 
@@ -197,7 +197,7 @@ based on DLT probability.
   dose = numeric,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: Stop based on value returned by next best dose.
 
 \item \code{stopTrial(
@@ -230,7 +230,7 @@ rules.
   dose = numeric,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: Stop based on number of cohorts near to next best
 dose.
 
@@ -239,7 +239,7 @@ dose.
   dose = numeric,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: Stop based on number of patients near to next best
 dose.
 
@@ -248,7 +248,7 @@ dose.
   dose = ANY,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: Stop based on minimum number of cohorts.
 
 \item \code{stopTrial(
@@ -256,7 +256,7 @@ dose.
   dose = ANY,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: Stop based on minimum number of patients.
 
 \item \code{stopTrial(
@@ -272,7 +272,7 @@ dose.
   dose = numeric,
   samples = Samples,
   model = GeneralModel,
-  data = ANY
+  data = Data
 )}: Stop based on MTD distribution.
 
 \item \code{stopTrial(
@@ -288,7 +288,7 @@ dose.
   dose = numeric,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: if Stopping rule is met for specific dose of the planned
 dose grid and not just for the default next best dose.
 
@@ -297,7 +297,7 @@ dose grid and not just for the default next best dose.
   dose = numeric,
   samples = ANY,
   model = ANY,
-  data = Data
+  data = GeneralData
 )}: Stop when the highest dose is reached.
 
 \item \code{stopTrial(

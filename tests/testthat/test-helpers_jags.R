@@ -40,6 +40,24 @@ test_that("h_jags_add_dummy works for GeneralData too", {
   expect_identical(result, gen_data)
 })
 
+test_that("h_jags_add_dummy preserves matrix slots", {
+  data <- DataCombo(
+    x = cbind(drug1 = 10, drug2 = 20),
+    y = 1L,
+    ID = 1L,
+    cohort = 1L,
+    doseGrid = list(drug1 = c(10, 20), drug2 = c(20, 40))
+  )
+
+  result <- h_jags_add_dummy(data, where = c("x", "y"))
+  expect_equal(
+    result@x,
+    rbind(c(drug1 = 10, drug2 = 20), c(drug1 = 0, drug2 = 0))
+  )
+  expect_identical(result@y, c(1L, 0L))
+  expect_equal(result@nObs, 1L)
+})
+
 test_that("h_jags_add_dummy throws the error for wrong slot name", {
   data <- Data(x = 0.1, y = 0, doseGrid = c(0.1, 0.5), ID = 1, cohort = 1)
   expect_error(

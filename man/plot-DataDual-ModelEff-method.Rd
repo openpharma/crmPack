@@ -14,9 +14,9 @@
 )
 }
 \arguments{
-\item{x}{the data of \code{\linkS4class{DataDual}} class object}
+\item{x}{the data of \link{DataDual} class object}
 
-\item{y}{the model of the \code{\linkS4class{ModelEff}} class object}
+\item{y}{the model of the \link{ModelEff} class object}
 
 \item{\dots}{not used}
 

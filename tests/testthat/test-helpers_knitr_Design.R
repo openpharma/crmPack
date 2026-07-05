@@ -205,6 +205,27 @@ test_that("knit_print-Design works correctly", {
   expect_equal(actual, expected)
 })
 
+test_that("knit_print-DesignCombo works correctly", {
+  x <- knit_print(.DefaultDesignCombo(), asis = FALSE)
+  expectedSections <- c(
+    "nextBest" = "Dose recommendation",
+    "cohort_size" = "Cohort size",
+    "data" = "Observed combination data",
+    "increments" = "Escalation rule",
+    "stopping" = "Stopping rule",
+    "model" = "Dose toxicity model",
+    "backfill" = "Backfill cohorts",
+    "startingDose" = "Starting dose combination"
+  )
+
+  expect_true(stringr::str_detect(x, "## Design"))
+  expect_true(all(stringr::str_detect(x, paste0("### ", expectedSections))))
+  expect_true(stringr::str_detect(
+    x,
+    "The starting dose combination is drug1 = 10 and drug2 = 20\\."
+  ))
+})
+
 test_that("knit_print-Design works correctly with backfill", {
   x <- .DefaultDesign()
   x@backfill <- Backfill(

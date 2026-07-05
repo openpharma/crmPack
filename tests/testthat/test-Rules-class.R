@@ -89,6 +89,19 @@ test_that("NextBestNCRMLoss object can be created with user constructor", {
   expect_identical(result@losses, c(1, 0, 1, 2))
 })
 
+test_that("NextBestNCRMLoss checks that the intervals are not leaving a gap", {
+  expect_error(
+    NextBestNCRMLoss(
+      c(0.2, 0.35),
+      c(0.36, 0.6),
+      c(0.6, 1),
+      0.25,
+      c(1, 0, 1, 2)
+    ),
+    "The intervals for target, overdose and unacceptable must be contiguous"
+  )
+})
+
 ## NextBestThreePlusThree ----
 
 test_that(".NextBestThreePlusThree works as expected", {
@@ -332,6 +345,60 @@ test_that(".DefaultNextBestOrdinal works as expected", {
 })
 
 # Increments ----
+
+## IncrementsRelative ----
+## IncrementsComboOneDrugOnly ----
+
+test_that(".IncrementsComboOneDrugOnly works as expected", {
+  result <- expect_silent(.IncrementsComboOneDrugOnly())
+  expect_valid(result, "IncrementsComboOneDrugOnly")
+})
+
+test_that("IncrementsComboOneDrugOnly object can be created with user constructor", {
+  result <- expect_silent(IncrementsComboOneDrugOnly())
+  expect_valid(result, "IncrementsComboOneDrugOnly")
+  expect_s4_class(result, "IncrementsComboOneDrugOnly")
+})
+
+test_that(".DefaultIncrementsComboOneDrugOnly works as expected", {
+  expect_equal(
+    .DefaultIncrementsComboOneDrugOnly(),
+    IncrementsComboOneDrugOnly()
+  )
+})
+
+## IncrementsComboCartesian ----
+
+test_that(".IncrementsComboCartesian works as expected", {
+  result <- expect_silent(.IncrementsComboCartesian())
+  expect_valid(result, "IncrementsComboCartesian")
+})
+
+test_that("IncrementsComboCartesian object can be created with user constructor", {
+  drug1_rule <- IncrementsRelative(intervals = c(0, 10), increments = c(1, 0.5))
+  drug2_rule <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(0.8, 0.4)
+  )
+  result <- expect_silent(
+    IncrementsComboCartesian(drug1 = drug1_rule, drug2 = drug2_rule)
+  )
+
+  expect_valid(result, "IncrementsComboCartesian")
+  expect_s4_class(result, "IncrementsComboCartesian")
+  expect_identical(result@drug1, drug1_rule)
+  expect_identical(result@drug2, drug2_rule)
+})
+
+test_that(".DefaultIncrementsComboCartesian works as expected", {
+  expect_equal(
+    .DefaultIncrementsComboCartesian(),
+    IncrementsComboCartesian(
+      drug1 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33)),
+      drug2 = IncrementsRelative(intervals = c(0, 20), increments = c(1, 0.33))
+    )
+  )
+})
 
 ## IncrementsRelative ----
 

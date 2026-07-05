@@ -10,15 +10,16 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+<!-- simulations.Rmd is generated from simulations.Rmd.orig Please edit that file -->
+
+
 
 ## Simulation setting
 
 Here the simulation study setting is defined.
 
-```{r simulation setting}
+
+``` r
 id <- 1
 onset <- 3
 a0 <- 2
@@ -46,9 +47,12 @@ if (onset == 30) {
 
 ## Design definition
 
-Here the the dose escalation designs are defined: in this example the TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM.
+Here the the dose escalation designs are defined: in this example the TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM which is implemented in `DALogisticLogNormal`.
+Note that another alternative is `TITELogisticLogNormalSub` which is a submodel of `LogisticLogNormalSub`, which uses again the subtraction of the reference dose from the dose level
+in the regression model.
 
-```{r dose_definition}
+
+``` r
 library(crmPack)
 t_max <- 42
 
@@ -96,7 +100,8 @@ design <- DADesign(
 
 In order to obtain stable results, increase the simulation parameters appropriately (step, samples, nsim).
 
-```{r simulation run}
+
+``` r
 options <- McmcOptions(
   burnin = 20,
   step = 1,

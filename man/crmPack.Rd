@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Daniel Sabanés Bové \email{daniel.sabanes_bove@rconis.com} (\href{https://orcid.org/0000-0002-0176-9239}{ORCID})
   \item Wai Yin Yeung \email{winnie.yeung@roche.com}
   \item Burak Kuersad Guenhan \email{burakgunhan@gmail.com}
   \item Giuseppe Palermo \email{giuseppe.palermo@roche.com}

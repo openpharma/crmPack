@@ -59,6 +59,7 @@ h_knit_print_set_headers <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
+#' @exportS3Method h_knit_print_set_headers GeneralData
 #' @noRd
 h_knit_print_set_headers.GeneralData <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
@@ -75,6 +76,7 @@ h_knit_print_set_headers.GeneralData <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
+#' @exportS3Method h_knit_print_set_headers DataDA
 #' @noRd
 h_knit_print_set_headers.DataDA <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
@@ -99,6 +101,7 @@ h_knit_print_set_headers.DataDA <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
+#' @exportS3Method h_knit_print_set_headers DataGrouped
 #' @noRd
 h_knit_print_set_headers.DataGrouped <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
@@ -120,6 +123,7 @@ h_knit_print_set_headers.DataGrouped <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
+#' @exportS3Method h_knit_print_set_headers DataParts
 #' @noRd
 h_knit_print_set_headers.DataParts <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
@@ -135,6 +139,8 @@ h_knit_print_set_headers.DataParts <- function(x, param, summarise, ...) {
 }
 
 #' @description `r lifecycle::badge("experimental")`
+#' @rdname knit_print_set_headers
+#' @exportS3Method h_knit_print_set_headers DataOrdinal
 #' @noRd
 h_knit_print_set_headers.DataOrdinal <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
@@ -156,6 +162,7 @@ h_knit_print_set_headers.DataOrdinal <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_set_headers
+#' @exportS3Method h_knit_print_set_headers DataDual
 #' @noRd
 h_knit_print_set_headers.DataDual <- function(x, param, summarise, ...) {
   if (!("col.names" %in% names(param))) {
@@ -184,6 +191,7 @@ h_knit_print_select_columns <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns GeneralData
 #' @noRd
 h_knit_print_select_columns.GeneralData <- function(x, ...) {
   x %>%
@@ -193,6 +201,7 @@ h_knit_print_select_columns.GeneralData <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns Data
 #' @noRd
 h_knit_print_select_columns.Data <- function(x, ...) {
   x %>%
@@ -202,6 +211,7 @@ h_knit_print_select_columns.Data <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns DataParts
 #' @noRd
 h_knit_print_select_columns.DataParts <- function(x, ...) {
   x %>%
@@ -211,6 +221,7 @@ h_knit_print_select_columns.DataParts <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns DataOrdinal
 #' @noRd
 h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
   x %>%
@@ -220,6 +231,7 @@ h_knit_print_select_columns.DataOrdinal <- function(x, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns DataDA
 #' @noRd
 h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
   x %>%
@@ -229,6 +241,7 @@ h_knit_print_select_columns.DataDA <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns DataGrouped
 #' @noRd
 h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
   x %>%
@@ -238,6 +251,7 @@ h_knit_print_select_columns.DataGrouped <- function(x, param, summarise, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_select_columns
+#' @exportS3Method h_knit_print_select_columns DataDual
 #' @noRd
 h_knit_print_select_columns.DataDual <- function(x, param, summarise, ...) {
   x %>%
@@ -261,6 +275,7 @@ h_knit_print_summarise <- function(x, summarise, full_grid, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_summarise
+#' @exportS3Method h_knit_print_summarise GeneralData
 #' @noRd
 h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
@@ -282,6 +297,7 @@ h_knit_print_summarise.GeneralData <- function(x, summarise, full_grid, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_summarise
+#' @exportS3Method h_knit_print_summarise DataOrdinal
 #' @noRd
 h_knit_print_summarise.DataOrdinal <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
@@ -312,6 +328,7 @@ h_knit_print_summarise.DataOrdinal <- function(x, summarise, full_grid, ...) {
 
 #' @description `r lifecycle::badge("experimental")`
 #' @rdname knit_print_summarise
+#' @exportS3Method h_knit_print_summarise DataGrouped
 #' @noRd
 h_knit_print_summarise.DataGrouped <- function(x, summarise, full_grid, ...) {
   xTidy <- x %>% tidy()
@@ -458,6 +475,63 @@ knit_print.DataParts <- function(
     ),
     paste0("\n\nThe next part is Part ", x@nextPart, ".\n\n")
   )
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+#' @export
+#' @method knit_print DataCombo
+#' @rdname knit_print
+knit_print.DataCombo <- function(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants"),
+  units = NA,
+  fmt = NA
+) {
+  assert_flag(asis)
+  label <- h_prepare_labels(label)
+  param <- list(...)
+
+  if (nrow(x@x) > 0) {
+    xTidy <- data.frame(
+      ID = x@ID,
+      Cohort = x@cohort,
+      Drug1 = x@x[, 1],
+      Drug2 = x@x[, 2],
+      Tox = as.logical(x@y),
+      Response = x@response,
+      Backfilled = x@backfilled,
+      check.names = FALSE
+    )
+
+    if (!("caption" %in% names(param))) {
+      param[["caption"]] <- paste("Evaluable", label[2], "to-date")
+    }
+    param[["x"]] <- xTidy
+    rv <- paste(
+      (do.call(knitr::kable, param)) %>% h_knit_format_func(),
+      collapse = "\n"
+    )
+  } else {
+    rv <- paste("No", label[2], "are yet evaluable.\n\n")
+  }
+
+  rv <- paste0(
+    rv,
+    "\n\nThe dose grid for ",
+    x@drugNames[1],
+    " is ",
+    h_get_formatted_dosegrid(x@doseGrid[[1]], units = units, fmt = fmt),
+    "\nThe dose grid for ",
+    x@drugNames[2],
+    " is ",
+    h_get_formatted_dosegrid(x@doseGrid[[2]], units = units, fmt = fmt)
+  )
+
   if (asis) {
     rv <- knitr::asis_output(rv)
   }

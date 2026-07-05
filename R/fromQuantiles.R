@@ -11,6 +11,7 @@ NULL
 #' @param dosegrid (`numeric`)\cr dose grid.
 #' @param refDose (`number`)\cr reference dose.
 #' @param logNormal (`flag`)\cr use log-normal prior?
+#' @param useLogDose (`flag`)\cr use `log(dosegrid / refDose)` as dose covariate?
 #'
 #' @return Numeric vector of starting values.
 #' @keywords internal
@@ -19,11 +20,17 @@ h_get_quantiles_start_values <- function(
   median,
   dosegrid,
   refDose,
-  logNormal
+  logNormal,
+  useLogDose = TRUE
 ) {
   if (is.null(parstart)) {
     # Find approximate means for alpha and slope beta from fitting logistic model to medians.
-    startAlphaBeta <- coef(lm(I(logit(median)) ~ I(log(dosegrid / refDose))))
+    doseCovariate <- if (useLogDose) {
+      log(dosegrid / refDose)
+    } else {
+      dosegrid - refDose
+    }
+    startAlphaBeta <- coef(lm(I(logit(median)) ~ I(doseCovariate)))
 
     c(
       meanAlpha = unname(startAlphaBeta[1]),
@@ -48,6 +55,7 @@ h_get_quantiles_start_values <- function(
 #' @param upper (`numeric`)\cr upper quantiles.
 #' @param level (`number`)\cr credible level.
 #' @param logNormal (`flag`)\cr use log-normal prior?
+#' @param useLogDose (`flag`)\cr use `log(dosegrid / refDose)` as dose covariate?
 #' @param seed (`count`)\cr random seed.
 #'
 #' @return Function that computes target value for optimization.
@@ -60,8 +68,15 @@ h_quantiles_target_function <- function(
   upper,
   level,
   logNormal,
-  seed
+  seed,
+  useLogDose = TRUE
 ) {
+  doseCovariate <- if (useLogDose) {
+    log(dosegrid / refDose)
+  } else {
+    dosegrid - refDose
+  }
+
   function(param) {
     # Form the mean vector and covariance matrix
     mean <- param[1:2]
@@ -103,7 +118,7 @@ h_quantiles_target_function <- function(
     for (i in seq_along(dosegrid)) {
       # Create samples of the probability
       probSamples <- plogis(
-        alphaSamples + betaSamples * log(dosegrid[i] / refDose)
+        alphaSamples + betaSamples * doseCovariate[i]
       )
 
       # Compute lower, median and upper quantile
@@ -138,6 +153,9 @@ h_quantiles_target_function <- function(
 #'   Default is 0.95.
 #' @param logNormal (`flag`)\cr use the log-normal prior? If `FALSE` (default),
 #'   the normal prior for the logistic regression coefficients is used.
+#' @param useLogDose (`flag`)\cr use `log(dosegrid / refDose)` as dose covariate?
+#'   If `FALSE`, `logNormal` must be `TRUE` and a [`LogisticLogNormalSub`]
+#'   model is returned.
 #' @param parstart (`numeric` or `NULL`)\cr starting values for the parameters.
 #'   By default, these are determined from the medians supplied.
 #' @param parlower (`numeric`)\cr lower bounds on the parameters (intercept alpha
@@ -149,7 +167,8 @@ h_quantiles_target_function <- function(
 #'   see [GenSA::GenSA()] for more details.
 #'
 #' @return A list with the best approximating `model`
-#'   ([`LogisticNormal`] or [`LogisticLogNormal`]), the resulting `quantiles`,
+#'   ([`LogisticNormal`], [`LogisticLogNormal`], or [`LogisticLogNormalSub`]),
+#'   the resulting `quantiles`,
 #'   the `required` quantiles and the `distance` to the required quantiles,
 #'   as well as the final `parameters` (which could be used for running the
 #'   algorithm a second time).
@@ -175,16 +194,18 @@ Quantiles2LogisticNormal <- function(
     maxit = 50000,
     temperature = 50000,
     max.time = 600
-  )
+  ),
+  useLogDose = TRUE
 ) {
   # Argument validation
   assert_numeric(
     dosegrid,
-    min.len = 1,
+    min.len = 2, # Need length 2 otherwise the slope calculation fails.
     any.missing = FALSE,
     sorted = TRUE,
     unique = TRUE
   )
+  assert_true(all(dosegrid > 0))
   assert_number(refDose, finite = TRUE)
   assert_numeric(lower, len = length(dosegrid), any.missing = FALSE)
   assert_numeric(
@@ -196,6 +217,7 @@ Quantiles2LogisticNormal <- function(
   assert_numeric(upper, len = length(dosegrid), any.missing = FALSE)
   assert_probability(level, bounds_closed = FALSE)
   assert_flag(logNormal)
+  assert_flag(useLogDose)
   assert_numeric(parstart, len = 5, null.ok = TRUE)
   assert_numeric(parlower, len = 5, any.missing = FALSE)
   assert_numeric(parupper, len = 5, any.missing = FALSE)
@@ -207,6 +229,12 @@ Quantiles2LogisticNormal <- function(
   assert_true(all(lower < median))
   assert_true(all(median < upper))
   assert_true(all(parlower < parupper))
+  if (!useLogDose) {
+    assert_true(logNormal)
+  } else {
+    assert_true(all(dosegrid > 0))
+    assert_true(refDose > 0)
+  }
   if (!is.null(parstart)) {
     assert_true(all(parlower < parstart))
     assert_true(all(parstart < parupper))
@@ -220,7 +248,8 @@ Quantiles2LogisticNormal <- function(
     median = median,
     dosegrid = dosegrid,
     refDose = refDose,
-    logNormal = logNormal
+    logNormal = logNormal,
+    useLogDose = useLogDose
   )
 
   target <- h_quantiles_target_function(
@@ -231,6 +260,7 @@ Quantiles2LogisticNormal <- function(
     upper = upper,
     level = level,
     logNormal = logNormal,
+    useLogDose = useLogDose,
     seed = seed
   )
 
@@ -248,8 +278,14 @@ Quantiles2LogisticNormal <- function(
   targetRes <- target(pars)
 
   # Construct the model
-  model <- if (logNormal) {
+  model <- if (logNormal && useLogDose) {
     LogisticLogNormal(
+      mean = attr(targetRes, "mean"),
+      cov = attr(targetRes, "cov"),
+      ref_dose = refDose
+    )
+  } else if (logNormal && !useLogDose) {
+    LogisticLogNormalSub(
       mean = attr(targetRes, "mean"),
       cov = attr(targetRes, "cov"),
       ref_dose = refDose
@@ -325,14 +361,15 @@ h_get_min_inf_beta <- function(p, q) {
 #' controlled with the arguments `probmin` and `probmax`, respectively.
 #' Subsequently, for all doses supplied in the
 #' `dosegrid` argument, beta distributions are set up from the assumption
-#' that the prior medians are linear in log-dose on the logit scale, and
+#' that the prior medians are linear in log-dose (or dose if
+#' `useLogDose = FALSE`) on the logit scale, and
 #' [Quantiles2LogisticNormal()] is used to transform the resulting
 #' quantiles into an approximating [`LogisticNormal`] (or
-#' [`LogisticLogNormal`]) model. Note that the reference dose
+#' [`LogisticLogNormal`] or [`LogisticLogNormalSub`]) model. Note that the reference dose
 #' is not required for these computations.
 #'
-#' @param dosegrid (`numeric`)\cr the dose grid.
-#' @param refDose (`number`)\cr the reference dose.
+#' @param dosegrid (`numeric`)\cr the dose grid, only positive sorted values are allowed.
+#' @param refDose (`number`)\cr the reference dose. Must be positive if `useLogDose = TRUE`.
 #' @param threshmin (`number`)\cr any toxicity probability above this threshold
 #'   would be very unlikely (see `probmin`) at the minimum dose.
 #' @param threshmax (`number`)\cr any toxicity probability below this threshold
@@ -341,6 +378,9 @@ h_get_min_inf_beta <- function(p, q) {
 #'   at the minimum dose.
 #' @param probmax (`number`)\cr the prior probability of being below `threshmax`
 #'   at the maximum dose.
+#' @param useLogDose (`flag`)\cr use `log(dosegrid / refDose)` as dose covariate?
+#'   If `FALSE`, pass `logNormal = TRUE` via `...` to obtain a
+#'   [`LogisticLogNormalSub`] model.
 #' @param ... additional arguments for computations, see
 #'   [Quantiles2LogisticNormal()], e.g. `refDose` and
 #'   `logNormal=TRUE` to obtain a minimal informative log normal prior.
@@ -358,7 +398,8 @@ MinimalInformative <- function(
   threshmax = 0.3,
   probmin = 0.05,
   probmax = 0.05,
-  ...
+  ...,
+  useLogDose = TRUE
 ) {
   # Argument validation
   assert_numeric(
@@ -369,14 +410,14 @@ MinimalInformative <- function(
     unique = TRUE
   )
   assert_number(refDose, finite = TRUE)
+  assert_true(all(dosegrid > 0))
   assert_probability(threshmin, bounds_closed = FALSE)
   assert_probability(threshmax, bounds_closed = FALSE)
   assert_probability(probmin, bounds_closed = FALSE)
   assert_probability(probmax, bounds_closed = FALSE)
+  assert_flag(useLogDose)
 
   nDoses <- length(dosegrid)
-  xmin <- dosegrid[1]
-  xmax <- dosegrid[nDoses]
 
   # Derive the beta distributions at the lowest and highest dose
   betaAtMin <- h_get_min_inf_beta(
@@ -393,9 +434,16 @@ MinimalInformative <- function(
   medianMax <- with(betaAtMax, qbeta(p = 0.5, a, b))
 
   # Determine the medians of all beta distributions
-  beta <- (logit(medianMax) - logit(medianMin)) / (log(xmax) - log(xmin))
-  alpha <- logit(medianMax) - beta * log(xmax / refDose)
-  medianDosegrid <- plogis(alpha + beta * log(dosegrid / refDose))
+  doseCovariate <- if (useLogDose) {
+    assert_true(refDose > 0)
+    log(dosegrid / refDose)
+  } else {
+    dosegrid - refDose
+  }
+  beta <- (logit(medianMax) - logit(medianMin)) /
+    (doseCovariate[nDoses] - doseCovariate[1L])
+  alpha <- logit(medianMax) - beta * doseCovariate[nDoses]
+  medianDosegrid <- plogis(alpha + beta * doseCovariate)
 
   # Calculate 95% credible interval bounds (lower and upper) for all doses
   lower <- upper <- dosegrid
@@ -419,6 +467,7 @@ MinimalInformative <- function(
     median = medianDosegrid,
     upper = upper,
     level = 0.95,
+    useLogDose = useLogDose,
     ...
   )
 }

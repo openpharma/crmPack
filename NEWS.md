@@ -1,3 +1,16 @@
+# Version 2.2.0
+
+### New Features
+
+* Combination designs are supported via `DesignCombo` and `HierarchicalDesign`. Please see the new vignette `combo_designs` for details.
+* `MinimalInformative` and `Quantiles2LogisticNormal` now also support producing `LogisticLogNormalSub` models, i.e. using the subtraction of a reference dose on the natural dose scale in the regression model.
+* Added `TITELogisticLogNormalSub` model which inherits from `LogisticLogNormalSub` and can be used for TITE designs, via `DADesign`.
+
+### Bugfixes
+
+* The `knit_print` method for `LogisticNormalMixture` did not render correctly previously; this is fixed now.
+* The intervals in `NextBestNCRMLoss` could be non-contiguous without the user being notified; this is fixed now, the construction will fail and ensure contiguous intervals.
+
 # Version 2.1.0
 
 * This release marks yet another major update of the package: Backfill cohort simulations are now supported in the `Design` class, powered by the new `Backfill` class. This also leads to breaking changes in the `Data` and `GeneralSimulationsSummary` classes, which gains new slots, too. Please regenerate any existing `Data `or `Design `as well as resulting `SimulationsSummary` objects; serialized objects from previous versions will not be compatible.

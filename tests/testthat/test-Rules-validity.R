@@ -225,6 +225,7 @@ test_that("v_next_best_ncrm_loss returns message for wrong losses", {
 
   # Changing `losses` so that it is of wrong length.
   object@unacceptable <- c(1, 1)
+  object@overdose <- c(0.35, 1)
   object@losses <- c(1, 2, 4, 6)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })

@@ -139,6 +139,382 @@ v_model_logistic_log_normal_mix <- function(object) {
   v$result()
 }
 
+#' @describeIn v_model_objects validates that [`TwoDrugsCombo`] slots are valid.
+v_model_two_drugs_combo <- function(object) {
+  v <- Validate()
+  single_models_are_general <- all(
+    sapply(object@single_models, test_class, "GeneralModel")
+  ) &&
+    identical(length(object@single_models), 2L)
+  v$check(
+    single_models_are_general,
+    "single_models must be a list of length 2 with GeneralModel objects"
+  )
+
+  if (single_models_are_general) {
+    single_models_valid_result <- sapply(
+      object@single_models,
+      validObject,
+      test = TRUE
+    )
+    single_models_valid <- sapply(single_models_valid_result, isTRUE)
+    v$check(
+      all(single_models_valid),
+      paste(
+        "single_models must contain valid GeneralModel objects",
+        paste(
+          unlist(single_models_valid_result[!single_models_valid]),
+          collapse = ", "
+        ),
+        collapse = ", ",
+        sep = ", "
+      )
+    )
+    v$check(
+      all(vapply(
+        object@single_models,
+        function(model) {
+          setequal(model@datanames, c("nObs", "y", "x"))
+        },
+        logical(1L)
+      )),
+      "single_models must use nObs, y, and x as datanames"
+    )
+    v$check(
+      all(vapply(
+        object@single_models,
+        function(model) {
+          length(formalArgs(model@init)) == 0L
+        },
+        logical(1L)
+      )),
+      "single_models must have init functions without arguments"
+    )
+    v$check(
+      all(vapply(
+        object@single_models,
+        function(model) {
+          setequal(
+            setdiff(formalArgs(model@modelspecs), "from_prior"),
+            character()
+          )
+        },
+        logical(1L)
+      )),
+      "single_models modelspecs functions must have no arguments except from_prior"
+    )
+  }
+  v$check(
+    test_character(
+      object@drug_names,
+      len = 2L,
+      unique = TRUE,
+      any.missing = FALSE
+    ),
+    "drug_names must be a character vector of length 2 with unique entries"
+  )
+  v$check(
+    identical(names(object@single_models), object@drug_names),
+    "single_models must be a named list with names equal to drug_names"
+  )
+  v$check(
+    test_numeric(
+      object@ref_dose,
+      len = 2L,
+      finite = TRUE,
+      any.missing = TRUE
+    ),
+    "ref_dose must be a numeric vector of length 2"
+  )
+  v$check(
+    test_number(object@gamma, finite = TRUE),
+    "gamma must be a finite scalar"
+  )
+  v$check(
+    test_number(object@tau, lower = .Machine$double.xmin, finite = TRUE),
+    "tau must be a positive finite scalar"
+  )
+  v$check(
+    test_flag(object@log_normal_eta),
+    "log_normal_eta must be TRUE or FALSE"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`HierarchicalModel`] slots are valid.
+v_hierarchical_model <- function(object) {
+  v <- Validate()
+  models_to_arms <- object@models_to_arms
+  parameter_pools <- object@parameter_pools
+  pool_correlations <- object@pool_correlations
+  pool_priors <- object@pool_priors
+
+  v$check(
+    test_list(models_to_arms, any.missing = FALSE),
+    "models_to_arms must be a list without missings"
+  )
+  v$check(
+    test_names(names(models_to_arms), type = "unique"),
+    "models_to_arms must be a named list with unique names"
+  )
+
+  if (isTRUE(test_list(models_to_arms, any.missing = FALSE))) {
+    supported_models <- vapply(
+      models_to_arms,
+      function(model) {
+        h_hierarchical_is_single_model(model) || is(model, "TwoDrugsCombo")
+      },
+      logical(1L)
+    )
+    v$check(
+      all(supported_models),
+      "models_to_arms entries must be compatible single-agent binary outcome or TwoDrugsCombo objects"
+    )
+  }
+
+  v$check(
+    test_list(parameter_pools, any.missing = FALSE, null.ok = TRUE),
+    "parameter_pools must be a list without missings"
+  )
+  v$check(
+    length(parameter_pools) == 0L ||
+      test_names(names(parameter_pools), type = "unique"),
+    "parameter_pools must be a named list with unique names"
+  )
+  v$check(
+    test_list(pool_correlations, any.missing = FALSE, null.ok = TRUE),
+    "pool_correlations must be a list without missings"
+  )
+  v$check(
+    length(pool_correlations) == 0L ||
+      test_names(names(pool_correlations), type = "unique"),
+    "pool_correlations must be a named list with unique names"
+  )
+  v$check(
+    test_list(pool_priors, any.missing = FALSE, null.ok = TRUE),
+    "pool_priors must be a list without missings"
+  )
+  v$check(
+    length(pool_priors) == 0L ||
+      test_names(names(pool_priors), type = "unique"),
+    "pool_priors must be a named list with unique names"
+  )
+  v$check(
+    length(pool_priors) == 0L ||
+      all(names(pool_priors) %in% names(parameter_pools)),
+    "pool_priors names must be exchangeable parameter pool names"
+  )
+
+  if (
+    length(parameter_pools) > 0L &&
+      isTRUE(test_names(
+        names(models_to_arms),
+        type = "unique"
+      ))
+  ) {
+    for (pool_name in names(parameter_pools)) {
+      pool <- parameter_pools[[pool_name]]
+      v$check(
+        test_list(pool, types = "character", any.missing = FALSE, min.len = 2L),
+        paste0(
+          "parameter pool '",
+          pool_name,
+          "' must be a named list of at least two character references"
+        )
+      )
+
+      if (
+        !isTRUE(test_list(
+          pool,
+          types = "character",
+          any.missing = FALSE,
+          min.len = 2L
+        ))
+      ) {
+        next
+      }
+
+      v$check(
+        test_names(names(pool), type = "unique"),
+        paste0("parameter pool '", pool_name, "' must have unique arm names")
+      )
+
+      pool_arms <- names(pool)
+      v$check(
+        all(pool_arms %in% names(models_to_arms)),
+        paste0(
+          "parameter pool '",
+          pool_name,
+          "' refers to unknown hierarchical arms"
+        )
+      )
+      if (!all(pool_arms %in% names(models_to_arms))) {
+        next
+      }
+
+      kinds <- vapply(
+        seq_along(pool),
+        function(i) {
+          arm_name <- pool_arms[i]
+          ref <- pool[[i]]
+          model <- models_to_arms[[arm_name]]
+          supported_refs <- h_hierarchical_supported_refs(model)
+          v$check(
+            ref %in% supported_refs,
+            paste0(
+              "parameter reference '",
+              ref,
+              "' in pool '",
+              pool_name,
+              "' is not supported for arm '",
+              arm_name,
+              "'"
+            )
+          )
+          if (ref %in% supported_refs) {
+            h_hierarchical_parse_ref(model, arm_name, ref)$kind
+          } else {
+            NA_character_
+          }
+        },
+        character(1L)
+      )
+
+      valid_kinds <- kinds[!is.na(kinds)]
+      if (length(valid_kinds) > 0L) {
+        v$check(
+          length(unique(valid_kinds)) == 1L,
+          paste0(
+            "all references in parameter pool '",
+            pool_name,
+            "' must target the same parameter family"
+          )
+        )
+      }
+    }
+  }
+
+  if (length(pool_correlations) > 0L) {
+    for (correlation_name in names(pool_correlations)) {
+      pair <- pool_correlations[[correlation_name]]
+      v$check(
+        is.character(pair) && length(pair) == 2L && !anyNA(pair),
+        paste0(
+          "pool correlation '",
+          correlation_name,
+          "' must be a character vector of two parameter pool names"
+        )
+      )
+      if (!is.character(pair) || length(pair) != 2L || anyNA(pair)) {
+        next
+      }
+      v$check(
+        all(pair %in% names(parameter_pools)),
+        paste0(
+          "pool correlation '",
+          correlation_name,
+          "' refers to unknown parameter pools"
+        )
+      )
+      if (!all(pair %in% names(parameter_pools))) {
+        next
+      }
+      first_pool <- parameter_pools[[pair[[1L]]]]
+      second_pool <- parameter_pools[[pair[[2L]]]]
+      v$check(
+        setequal(names(first_pool), names(second_pool)),
+        paste0(
+          "pool correlation '",
+          correlation_name,
+          "' must pair pools with the same hierarchical arms"
+        )
+      )
+    }
+    correlated_pools <- unlist(pool_correlations, use.names = FALSE)
+    v$check(
+      anyDuplicated(correlated_pools) == 0L,
+      "a parameter pool can appear in at most one pool correlation"
+    )
+  }
+
+  if (length(pool_priors) > 0L) {
+    for (prior_name in names(pool_priors)) {
+      prior <- pool_priors[[prior_name]]
+      v$check(
+        test_list(prior, names = "unique", any.missing = FALSE),
+        paste0(
+          "pool prior '",
+          prior_name,
+          "' must be a named list without missings"
+        )
+      )
+      if (!isTRUE(test_list(prior, names = "unique", any.missing = FALSE))) {
+        next
+      }
+      v$check(
+        all(names(prior) %in% c("mu", "tau")),
+        paste0(
+          "pool prior '",
+          prior_name,
+          "' can only contain 'mu' and 'tau' entries"
+        )
+      )
+      if (!is.null(prior$mu)) {
+        v$check(
+          test_numeric(prior$mu, len = 2L, any.missing = FALSE, finite = TRUE),
+          paste0(
+            "pool prior '",
+            prior_name,
+            "' mu must be a finite length-2 numeric vector"
+          )
+        )
+        v$check(
+          is.numeric(prior$mu) && length(prior$mu) == 2L && prior$mu[[2L]] > 0,
+          paste0("pool prior '", prior_name, "' mu SD must be positive")
+        )
+        if (!is.null(names(prior$mu))) {
+          v$check(
+            setequal(names(prior$mu), c("mean", "sd")),
+            paste0(
+              "pool prior '",
+              prior_name,
+              "' mu names must be 'mean' and 'sd'"
+            )
+          )
+        }
+      }
+      if (!is.null(prior$tau)) {
+        v$check(
+          test_numeric(prior$tau, len = 2L, any.missing = FALSE, finite = TRUE),
+          paste0(
+            "pool prior '",
+            prior_name,
+            "' tau must be a finite length-2 numeric vector"
+          )
+        )
+        v$check(
+          is.numeric(prior$tau) &&
+            length(prior$tau) == 2L &&
+            prior$tau[[2L]] > 0,
+          paste0("pool prior '", prior_name, "' tau log-SD must be positive")
+        )
+        if (!is.null(names(prior$tau))) {
+          v$check(
+            setequal(names(prior$tau), c("meanlog", "sdlog")),
+            paste0(
+              "pool prior '",
+              prior_name,
+              "' tau names must be 'meanlog' and 'sdlog'"
+            )
+          )
+        }
+      }
+    }
+  }
+
+  v$result()
+}
+
 #' @describeIn v_model_objects validates that [`DualEndpoint`] class slots are valid.
 v_model_dual_endpoint <- function(object) {
   rmin <- .Machine$double.xmin

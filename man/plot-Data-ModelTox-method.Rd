@@ -14,9 +14,9 @@
 )
 }
 \arguments{
-\item{x}{the data of \code{\linkS4class{Data}} class object}
+\item{x}{the data of \link{Data} class object}
 
-\item{y}{the model of the \code{\linkS4class{ModelTox}} class object}
+\item{y}{the model of the \link{ModelTox} class object}
 
 \item{xlab}{the x axis label}
 

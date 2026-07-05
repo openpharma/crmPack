@@ -11,7 +11,7 @@ test_that("v_opening_min_dose passes for valid object", {
 })
 
 test_that("v_opening_min_dose returns message for non-valid min_dose", {
-  err_msg <- "min_dose needs to be a non-negative numeric scalar"
+  err_msg <- "min_dose needs to be a non-negative numeric vector"
   object <- OpeningMinDose(min_dose = 10)
 
   # Changing `min_dose` so that it is negative.
@@ -22,8 +22,8 @@ test_that("v_opening_min_dose returns message for non-valid min_dose", {
   object@min_dose <- NA_real_
   expect_equal(v_opening_min_dose(object), err_msg)
 
-  # Changing `min_dose` so that it is not a scalar.
-  object@min_dose <- c(1, 5)
+  # Changing `min_dose` so that it is non-finite.
+  object@min_dose <- c(Inf, 0)
   expect_equal(v_opening_min_dose(object), err_msg)
 })
 

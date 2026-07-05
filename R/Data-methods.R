@@ -1,4 +1,50 @@
 #' @include helpers_data.R
+NULL
+
+# show ----
+
+## show-HierarchicalData ----
+
+#' Show `HierarchicalData` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Display a brief representation of the [`HierarchicalData`] object.
+#'
+#' @param object (`HierarchicalData`)\cr the object we want to print.
+#'
+#' @return Invisibly returns the object itself.
+#'
+#' @aliases show-HierarchicalData
+#' @export
+setMethod(
+  f = "show",
+  signature = signature(object = "HierarchicalData"),
+  def = function(object) {
+    arm_names <- names(object@arms)
+    n_obs <- vapply(object@arms, function(arm) arm@nObs, integer(1L))
+
+    cat(
+      "An object of class 'HierarchicalData'\n",
+      "Arms (",
+      length(arm_names),
+      "): ",
+      h_show_hierarchical_names(arm_names),
+      "\n",
+      sep = ""
+    )
+    if (length(n_obs) > 0L) {
+      cat(
+        "Observations by arm: ",
+        paste(paste0(names(n_obs), " = ", n_obs), collapse = ", "),
+        "\n",
+        sep = ""
+      )
+    }
+
+    invisible(object)
+  }
+)
 
 # subsetting ----
 
@@ -68,6 +114,69 @@ setMethod(
 )
 
 # plot ----
+
+## HierarchicalData ----
+
+#' Plot Method for the [`HierarchicalData`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a combined plot for a [`HierarchicalData`] object by
+#' arranging the arm-specific [`Data`] and [`DataCombo`] plots.
+#'
+#' @param x (`HierarchicalData`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
+#' @param ncol (`count` or `NULL`)\cr number of columns in the combined plot.
+#'   If `NULL`, a compact layout is chosen automatically.
+#' @param ... passed to the arm-specific `plot` methods.
+#'
+#' @return A `gtable` object combining the arm-specific plots, or `NULL` if no
+#'   arm plot is available.
+#'
+#' @aliases plot-HierarchicalData
+#' @export
+setMethod(
+  f = "plot",
+  signature = signature(x = "HierarchicalData", y = "missing"),
+  definition = function(x, y, ncol = NULL, ...) {
+    assert_int(ncol, lower = 1L, null.ok = TRUE)
+
+    if (length(x@arms) == 0L) {
+      return()
+    }
+
+    arm_plots <- Map(
+      f = function(arm, arm_name) {
+        arm_plot <- plot(arm, ...)
+        if (is.null(arm_plot)) {
+          return(NULL)
+        }
+
+        gridExtra::arrangeGrob(
+          arm_plot,
+          top = grid::textGrob(
+            arm_name,
+            gp = grid::gpar(fontface = "bold")
+          )
+        )
+      },
+      x@arms,
+      names(x@arms)
+    )
+    arm_plots <- Filter(Negate(is.null), arm_plots)
+
+    if (length(arm_plots) == 0L) {
+      return()
+    }
+
+    if (is.null(ncol)) {
+      ncol <- ceiling(sqrt(length(arm_plots)))
+    }
+
+    do.call(gridExtra::arrangeGrob, c(arm_plots, list(ncol = ncol)))
+  }
+)
 
 ## Data ----
 
@@ -463,6 +572,244 @@ setMethod(
   }
 )
 
+## DataCombo ----
+
+#' Plot Method for the [`DataCombo`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that creates a plot for [`DataCombo`] object.
+#'
+#' @param x (`DataCombo`)
+#' @param y (`missing`)
+#' @param legend (`flag`)
+#'   whether legends should be displayed.
+#' @param ... not used.
+#'
+#' @return A `gtable` object combining two [`ggplot2`] plots.
+#'
+#' @aliases plot-DataCombo
+#' @export
+#' @example examples/Data-method-plot-DataCombo.R
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataCombo", y = "missing"),
+  definition = function(x, y, legend = TRUE, ...) {
+    assert_flag(legend)
+
+    if (x@nObs == 0L) {
+      return()
+    }
+
+    drug1 <- x@drugNames[1]
+    drug2 <- x@drugNames[2]
+
+    df <- data.frame(
+      patient = seq_len(x@nObs),
+      cohort = x@cohort,
+      ID = paste(" ", x@ID),
+      dose1 = x@x[, 1],
+      dose2 = x@x[, 2],
+      toxicity = ifelse(x@y == 1L, "Yes", "No")
+    )
+
+    grid_df <- expand.grid(
+      dose1 = x@doseGrid[[drug1]],
+      dose2 = x@doseGrid[[drug2]]
+    )
+
+    summary_n <- stats::aggregate(
+      patient ~ dose1 + dose2,
+      data = df,
+      FUN = length
+    )
+    names(summary_n)[3] <- "n_patients"
+    summary_dlt <- stats::aggregate(
+      (toxicity == "Yes") ~ dose1 + dose2,
+      data = df,
+      FUN = sum
+    )
+    names(summary_dlt)[3] <- "n_dlt"
+    summary_df <- merge(
+      summary_n,
+      summary_dlt,
+      by = c("dose1", "dose2"),
+      sort = TRUE
+    )
+    summary_df$dlt_rate <- summary_df$n_dlt / summary_df$n_patients
+    summary_df$label <- paste0(summary_df$n_dlt, "/", summary_df$n_patients)
+
+    plot1 <- ggplot(grid_df, aes(x = .data$dose1, y = .data$dose2)) +
+      geom_point(shape = 4, size = 3, colour = "grey85") +
+      scale_x_continuous(breaks = x@doseGrid[[drug1]], minor_breaks = NULL) +
+      scale_y_continuous(breaks = x@doseGrid[[drug2]], minor_breaks = NULL) +
+      xlab(drug1) +
+      ylab(drug2) +
+      ggtitle("Treated Combinations")
+
+    plot1 <- plot1 +
+      geom_point(
+        data = summary_df,
+        aes(size = .data$n_patients, fill = .data$dlt_rate),
+        shape = 21,
+        colour = "black",
+        stroke = 0.6,
+        show.legend = legend
+      ) +
+      scale_fill_gradient(
+        name = "Observed DLT rate",
+        low = "grey95",
+        high = "red3",
+        limits = c(0, 1)
+      )
+
+    plot1 <- plot1 +
+      geom_text(
+        data = summary_df,
+        aes(label = .data$label),
+        size = 3,
+        colour = "black",
+        vjust = -1
+      ) +
+      scale_size_continuous(
+        name = "Patients",
+        breaks = sort(unique(summary_df$n_patients))
+      )
+
+    cohort_df <- df[!duplicated(df$cohort), c("cohort", "dose1", "dose2")]
+    cohort_n <- stats::aggregate(patient ~ cohort, data = df, FUN = length)
+    names(cohort_n)[2] <- "n_patients"
+    cohort_dlt <- stats::aggregate(
+      (toxicity == "Yes") ~ cohort,
+      data = df,
+      FUN = sum
+    )
+    names(cohort_dlt)[2] <- "n_dlt"
+    cohort_df <- merge(cohort_df, cohort_n, by = "cohort", sort = TRUE)
+    cohort_df <- merge(cohort_df, cohort_dlt, by = "cohort", sort = TRUE)
+    cohort_df$status <- ifelse(cohort_df$n_dlt > 0L, "DLT", "No DLT")
+
+    plot2 <- ggplot(grid_df, aes(x = .data$dose1, y = .data$dose2)) +
+      geom_point(shape = 4, size = 3, colour = "grey85") +
+      scale_x_continuous(breaks = x@doseGrid[[drug1]], minor_breaks = NULL) +
+      scale_y_continuous(breaks = x@doseGrid[[drug2]], minor_breaks = NULL) +
+      xlab(drug1) +
+      ylab(drug2) +
+      ggtitle("Cohort Path")
+
+    if (nrow(cohort_df) > 1L) {
+      segment_df <- data.frame(
+        x = cohort_df$dose1[-nrow(cohort_df)],
+        y = cohort_df$dose2[-nrow(cohort_df)],
+        xend = cohort_df$dose1[-1],
+        yend = cohort_df$dose2[-1]
+      )
+      plot2 <- plot2 +
+        geom_segment(
+          data = segment_df,
+          aes(
+            x = .data$x,
+            y = .data$y,
+            xend = .data$xend,
+            yend = .data$yend
+          ),
+          inherit.aes = FALSE,
+          linewidth = 0.7,
+          colour = "grey45",
+          arrow = grid::arrow(length = grid::unit(2.5, "mm"), type = "closed")
+        )
+    }
+
+    plot2 <- plot2 +
+      geom_point(
+        data = cohort_df,
+        aes(fill = .data$status),
+        shape = 21,
+        size = 6,
+        colour = "black",
+        stroke = 0.6,
+        show.legend = legend
+      ) +
+      scale_fill_manual(
+        name = "Cohort outcome",
+        values = c("DLT" = "red3", "No DLT" = "grey85")
+      )
+
+    plot2 <- plot2 +
+      geom_text(
+        data = cohort_df,
+        aes(label = .data$cohort),
+        colour = "black",
+        size = 3
+      )
+
+    if (!legend) {
+      plot1 <- plot1 + theme(legend.position = "none")
+      plot2 <- plot2 + theme(legend.position = "none")
+    }
+
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+  }
+)
+
+# singleDrugData ----
+
+## generic ----
+
+#' Extracting Single-Drug Data from Combination Data
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that extracts one drug-specific [`Data`] object from a
+#' two-drug [`DataCombo`] object.
+#'
+#' @param object (`DataCombo`)
+#'   object from which single-drug data are extracted.
+#' @param drug (`string`)
+#'   name of the drug to extract. Must be one of `object@drugNames`.
+#' @param ... not used.
+#'
+#' @return A [`Data`] object containing dose, dose grid and patient-level
+#'   outcomes corresponding to the selected drug.
+#'
+#' @export
+#'
+setGeneric(
+  name = "singleDrugData",
+  def = function(object, drug, ...) {
+    standardGeneric("singleDrugData")
+  },
+  valueClass = "Data"
+)
+
+## DataCombo ----
+
+#' @rdname singleDrugData
+#'
+#' @aliases singleDrugData-DataCombo
+#' @export
+#' @example examples/Data-method-singleDrugData.R
+setMethod(
+  f = "singleDrugData",
+  signature = signature(object = "DataCombo"),
+  definition = function(object, drug) {
+    assert_string(drug, min.chars = 1L)
+    assert_choice(drug, object@drugNames)
+
+    drug_index <- match(drug, object@drugNames)
+
+    Data(
+      x = object@x[, drug_index],
+      y = object@y,
+      ID = object@ID,
+      cohort = object@cohort,
+      doseGrid = object@doseGrid[[drug_index]],
+      backfilled = object@backfilled,
+      response = object@response
+    )
+  }
+)
+
 # update ----
 
 ## Data ----
@@ -784,6 +1131,193 @@ setMethod(
 
     # Update the biomarker information.
     object@w <- c(object@w, w)
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
+## DataCombo ----
+
+#' Updating `DataCombo` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates existing [`DataCombo`] object with new data.
+#'
+#' @param object (`DataCombo`)
+#' @param x (`numeric`)
+#'   named dose combination with one entry for each drug.
+#'   Names must match `object@drugNames`.
+#' @param y (`integer`)
+#'   the DLT vector (0/1 vector) for all patients in this cohort.
+#' @param response (`integer`)
+#'   the efficacy response vector (0/1 vector). May contain `NA`.
+#' @param ID (`integer`)
+#'   the patient IDs.
+#' @param new_cohort (`flag`)
+#'   if `TRUE` (default) the new data are assigned to a new cohort.
+#' @param check (`flag`)
+#'   whether the validation of the updated object should be conducted.
+#' @param backfill (`flag`)
+#'   whether the new patients being added are from a backfill cohort.
+#' @param cohort (`int`)
+#'   if provided, the new patients will be assigned to this cohort index.
+#'   If `NULL` (default), the cohort index will be determined based on the
+#'   `new_cohort` parameter.
+#' @param ... not used.
+#'
+#' @return The new, updated [`DataCombo`] object.
+#'
+#' @aliases update-DataCombo
+#' @export
+#' @example examples/Data-method-update-DataCombo.R
+setMethod(
+  f = "update",
+  signature = signature(object = "DataCombo"),
+  definition = function(
+    object,
+    x,
+    y,
+    response = rep(NA_integer_, length(y)),
+    ID = length(object@ID) + seq_along(y),
+    new_cohort = TRUE,
+    check = TRUE,
+    backfill = FALSE,
+    cohort = NULL,
+    ...
+  ) {
+    assert_numeric(x, min.len = 0, max.len = 2, any.missing = FALSE)
+    assert_true(length(y) == 0L || length(x) == 2L)
+    if (length(x) > 0L) {
+      assert_character(names(x), len = 2L, unique = TRUE, any.missing = FALSE)
+      assert_true(identical(names(x), object@drugNames))
+    }
+    assert_integerish(y, lower = 0, upper = 1, any.missing = FALSE)
+    assert_integerish(
+      response,
+      len = length(y),
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    )
+    assert_integerish(ID, len = length(y), any.missing = FALSE)
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
+    assert_flag(check)
+    assert_flag(backfill)
+    assert_int(cohort, lower = 1, null.ok = TRUE)
+
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
+
+    if (n > 0L) {
+      grid_level <- vapply(
+        seq_along(object@drugNames),
+        function(index) {
+          match_within_tolerance(x[index], object@doseGrid[[index]])
+        },
+        integer(1L)
+      )
+
+      object@xLevel <- rbind(
+        object@xLevel,
+        matrix(
+          grid_level,
+          nrow = n,
+          ncol = 2L,
+          byrow = TRUE,
+          dimnames = list(NULL, object@drugNames)
+        )
+      )
+
+      object@x <- rbind(
+        object@x,
+        matrix(
+          unname(rep(as.numeric(x), times = n)),
+          nrow = n,
+          ncol = 2L,
+          byrow = TRUE,
+          dimnames = list(NULL, object@drugNames)
+        )
+      )
+    }
+
+    # Add DLT data.
+    object@y <- c(object@y, as.integer(y))
+
+    # Add response data.
+    object@response <- c(object@response, as.integer(response))
+
+    # Add ID.
+    object@ID <- c(object@ID, as.integer(ID))
+
+    # Add cohort number.
+    new_cohort_id <- if (!is.null(cohort)) {
+      cohort
+    } else if (object@nObs == 0L) {
+      1L
+    } else {
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
+
+    # Increment sample size.
+    object@nObs <- object@nObs + n
+
+    # Add backfill information.
+    object@backfilled <- c(object@backfilled, rep(backfill, n))
+
+    # We might need to sort again when we supplied a cohort index.
+    if (!is.null(cohort)) {
+      ord <- order(object@cohort, object@ID)
+      object@x <- object@x[ord, , drop = FALSE]
+      object@y <- object@y[ord]
+      object@response <- object@response[ord]
+      object@ID <- object@ID[ord]
+      object@xLevel <- object@xLevel[ord, , drop = FALSE]
+      object@cohort <- object@cohort[ord]
+      object@backfilled <- object@backfilled[ord]
+    }
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
+## HierarchicalData ----
+
+#' Updating `HierarchicalData` Objects
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that updates one arm in a [`HierarchicalData`] object with new data.
+#'
+#' @param object (`HierarchicalData`)\cr object you want to update.
+#' @param arm (`string`)\cr name of the arm to update.
+#' @param ... arguments passed to the selected arm's `update` method.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted.
+#'
+#' @return The new, updated [`HierarchicalData`] object.
+#'
+#' @aliases update-HierarchicalData
+#' @export
+setMethod(
+  f = "update",
+  signature = signature(object = "HierarchicalData"),
+  definition = function(object, arm, ..., check = TRUE) {
+    assert_string(arm)
+    assert_choice(arm, names(object@arms))
+    assert_flag(check)
+
+    object@arms[[arm]] <- update(object@arms[[arm]], ..., check = check)
 
     if (check) {
       validObject(object)
@@ -1307,5 +1841,97 @@ setMethod(
     }
     y <- y %>% h_tidy_class(x)
     y
+  }
+)
+
+## DataCombo ----
+
+#' Tidy Method for the [`DataCombo`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`DataCombo`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-DataCombo
+#' @rdname tidy
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "DataCombo"),
+  definition = function(x, ...) {
+    if (x@nObs == 0L) {
+      return(
+        tibble::tibble(
+          ID = integer(),
+          Cohort = integer(),
+          Tox = logical(),
+          Response = integer(),
+          Backfilled = logical(),
+          NObs = integer(),
+          NGrid = list(),
+          DoseGrid = list()
+        ) %>%
+          h_tidy_class(x)
+      )
+    }
+
+    dose_data <- tibble::as_tibble(x@x)
+    names(dose_data) <- paste0("Dose_", x@drugNames)
+    level_data <- tibble::as_tibble(x@xLevel)
+    names(level_data) <- paste0("XLevel_", x@drugNames)
+
+    tibble::tibble(
+      ID = x@ID,
+      Cohort = x@cohort,
+      Tox = as.logical(x@y),
+      Response = x@response,
+      Backfilled = x@backfilled,
+      NObs = x@nObs,
+      NGrid = list(x@nGrid),
+      DoseGrid = list(x@doseGrid)
+    ) %>%
+      dplyr::bind_cols(dose_data, level_data) %>%
+      h_tidy_class(x)
+  }
+)
+
+## HierarchicalData ----
+
+#' Tidy Method for the [`HierarchicalData`] Class
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A method that tidies a [`HierarchicalData`] object.
+#'
+#' @return The [`tibble`] object.
+#'
+#' @aliases tidy-HierarchicalData
+#' @rdname tidy
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "HierarchicalData"),
+  definition = function(x, ...) {
+    if (length(x@arms) == 0L) {
+      return(tibble::tibble(Arm = character()) %>% h_tidy_class(x))
+    }
+
+    lapply(
+      names(x@arms),
+      function(arm_name) {
+        arm_data <- tidy(x@arms[[arm_name]])
+        for (column in c("NGrid", "DoseGrid")) {
+          if (column %in% names(arm_data) && !is.list(arm_data[[column]])) {
+            arm_data[[column]] <- lapply(arm_data[[column]], identity)
+          }
+        }
+        arm_data %>%
+          tibble::add_column(Arm = arm_name, .before = 1L)
+      }
+    ) %>%
+      dplyr::bind_rows() %>%
+      h_tidy_class(x)
   }
 )

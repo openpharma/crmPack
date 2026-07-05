@@ -18,7 +18,8 @@ Quantiles2LogisticNormal(
   seed = 12345,
   verbose = TRUE,
   control = list(threshold.stop = 0.01, maxit = 50000, temperature = 50000, max.time =
-    600)
+    600),
+  useLogDose = TRUE
 )
 }
 \arguments{
@@ -52,10 +53,15 @@ and the slope beta, the corresponding standard deviations and the correlation).}
 
 \item{control}{(\code{list})\cr additional options for the optimisation routine,
 see \code{\link[GenSA:GenSA]{GenSA::GenSA()}} for more details.}
+
+\item{useLogDose}{(\code{flag})\cr use \code{log(dosegrid / refDose)} as dose covariate?
+If \code{FALSE}, \code{logNormal} must be \code{TRUE} and a \code{\link{LogisticLogNormalSub}}
+model is returned.}
 }
 \value{
 A list with the best approximating \code{model}
-(\code{\link{LogisticNormal}} or \code{\link{LogisticLogNormal}}), the resulting \code{quantiles},
+(\code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, or \code{\link{LogisticLogNormalSub}}),
+the resulting \code{quantiles},
 the \code{required} quantiles and the \code{distance} to the required quantiles,
 as well as the final \code{parameters} (which could be used for running the
 algorithm a second time).

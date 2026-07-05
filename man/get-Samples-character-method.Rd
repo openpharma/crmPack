@@ -7,7 +7,7 @@
 \S4method{get}{Samples,character}(x, pos = -1L, envir = NULL, mode = NULL, inherits = NULL)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Samples}} object}
+\item{x}{the \link{Samples} object}
 
 \item{pos}{the name of the parameter}
 
@@ -24,7 +24,7 @@ the data frame suitable for use with \code{\link[ggmcmc]{ggmcmc}}
 }
 \description{
 Here you have to specify with \code{pos} which
-parameter you would like to extract from the \code{\linkS4class{Samples}}
+parameter you would like to extract from the \link{Samples}
 object
 }
 \examples{

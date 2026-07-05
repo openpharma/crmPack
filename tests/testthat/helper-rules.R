@@ -31,8 +31,8 @@ h_next_best_ncrm_loss <- function(edge_case = 0L) {
     unacceptable <- c(1, 1)
     losses <- c(1, 0, 1)
   } else if (edge_case == 2L) {
-    overdose <- c(0, 0)
-    unacceptable <- c(0, 1)
+    overdose <- c(0.35, 0.35)
+    unacceptable <- c(0.35, 1)
     losses <- c(1, 0, 1, 2)
   } else {
     overdose <- c(0.35, 0.6)

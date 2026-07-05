@@ -36,7 +36,16 @@ h_jags_add_dummy <- function(object, where, dummy = 0) {
   if (object@nObs == 1L) {
     for (i in where) {
       # Add dummy value and preserve the class.
-      slot(object, i) <- as(c(slot(object, i), dummy), class(slot(object, i)))
+      slot_value <- slot(object, i)
+      slot(object, i) <- if (is.matrix(slot_value)) {
+        rbind(
+          slot_value,
+          rep(dummy, ncol(slot_value)),
+          deparse.level = 0
+        )
+      } else {
+        as(c(slot_value, dummy), class(slot_value))
+      }
     }
   }
   object

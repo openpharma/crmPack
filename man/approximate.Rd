@@ -20,11 +20,11 @@ approximate(object, model, data, ...)
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{Samples}} object}
+\item{object}{the \link{Samples} object}
 
-\item{model}{the \code{\linkS4class{GeneralModel}} object}
+\item{model}{the \link{GeneralModel} object}
 
-\item{data}{the \code{\linkS4class{Data}} object}
+\item{data}{the \link{Data} object}
 
 \item{\dots}{additional arguments (see methods)}
 

@@ -67,6 +67,27 @@ positive_number <- setClass(
   }
 )
 
+#' Format Hierarchical Arm or Pool Names for Console Output
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper for concise `show()` methods on hierarchical objects. It joins names
+#' with commas and uses `"<none>"` for empty inputs.
+#'
+#' @param x (`character`)\cr names to format.
+#'
+#' @return A single string.
+#'
+#' @keywords internal
+#' @noRd
+h_show_hierarchical_names <- function(x) {
+  if (length(x) == 0L) {
+    "<none>"
+  } else {
+    paste(x, collapse = ", ")
+  }
+}
+
 # match_within_tolerance ----
 
 #' Helper Function for Value Matching with Tolerance
@@ -917,12 +938,12 @@ h_in_range <- function(x, range = c(0, 1), bounds_closed = TRUE) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A simple wrapper of [`findInterval()`] function that invokes
-#' [`findInterval()`], takes its output and replaces all the
+#' A simple wrapper of [base::findInterval()] function that invokes
+#' [base::findInterval()], takes its output and replaces all the
 #' elements with \eqn{0} value to a custom number as specified in `replacement`
 #' argument.
 #'
-#' @inheritDotParams base::findInterval
+#' @param ... further arguments passed to [base::findInterval()] function.
 #' @param replacement (`number`)\cr a custom number to be used as a replacement
 #'   for \eqn{0}. Default to `-Inf`.
 #'

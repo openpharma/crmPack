@@ -38,11 +38,11 @@ specific parameters.
 }
 \section{Functions}{
 \itemize{
-\item \code{doseFunction(GeneralModel)}: 
+\item \code{doseFunction(GeneralModel)}: Return a dose function for a \code{GeneralModel}.
 
-\item \code{doseFunction(ModelPseudo)}: 
+\item \code{doseFunction(ModelPseudo)}: Return a dose function for a \code{ModelPseudo}.
 
-\item \code{doseFunction(LogisticLogNormalOrdinal)}: 
+\item \code{doseFunction(LogisticLogNormalOrdinal)}: Return a grade-specific dose function for a \code{LogisticLogNormalOrdinal} model.
 
 }}
 \examples{

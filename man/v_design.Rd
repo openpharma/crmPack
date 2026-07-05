@@ -4,12 +4,15 @@
 \alias{v_design}
 \alias{v_rule_design}
 \alias{v_rule_design_ordinal}
+\alias{v_design_combo}
 \alias{v_design_grouped}
 \title{Internal Helper Functions for Validation of \code{\link{RuleDesign}} Objects}
 \usage{
 v_rule_design(object)
 
 v_rule_design_ordinal(object)
+
+v_design_combo(object)
 
 v_design_grouped(object)
 }
@@ -41,6 +44,9 @@ contains valid \code{startingDose}.
 
 \item \code{v_rule_design_ordinal()}: validates that the \code{\link{RuleDesignOrdinal}} object
 contains valid \code{starting_dose}.
+
+\item \code{v_design_combo()}: validates that the \code{\link{DesignCombo}} object
+contains valid \code{startingDose}.
 
 \item \code{v_design_grouped()}: validates that the \code{\link{DesignGrouped}} object
 contains valid flags.

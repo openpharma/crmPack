@@ -290,6 +290,46 @@ test_that("v_model_logistic_log_normal_mix returns message for wrong share_weigh
   expect_equal(v_model_logistic_log_normal_mix(object), err_msg)
 })
 
+# v_model_two_drugs_combo ----
+
+test_that("v_model_two_drugs_combo passes for valid object", {
+  object <- h_get_two_drugs_combo()
+  expect_true(v_model_two_drugs_combo(object))
+})
+
+test_that("v_model_two_drugs_combo returns message for wrong datanames", {
+  object <- h_get_two_drugs_combo()
+  object@single_models[[1]]@datanames <- c("nObs", "y", "x", "group")
+
+  expect_equal(
+    v_model_two_drugs_combo(object),
+    "single_models must use nObs, y, and x as datanames"
+  )
+})
+
+test_that("v_model_two_drugs_combo returns message for wrong drug_names", {
+  object <- h_get_two_drugs_combo()
+  object@drug_names <- c("drug1", "drug1")
+
+  expect_equal(
+    v_model_two_drugs_combo(object),
+    c(
+      "drug_names must be a character vector of length 2 with unique entries",
+      "single_models must be a named list with names equal to drug_names"
+    )
+  )
+})
+
+test_that("v_model_two_drugs_combo returns message for wrong tau", {
+  object <- h_get_two_drugs_combo()
+  object@tau <- 0
+
+  expect_equal(
+    v_model_two_drugs_combo(object),
+    "tau must be a positive finite scalar"
+  )
+})
+
 # v_model_dual_endpoint ----
 
 test_that("v_model_dual_endpoint passes for valid object", {

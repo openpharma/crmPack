@@ -24,7 +24,7 @@ setGeneric(
     # For any opening rule, if the dose of the cohort to be opened
     # is higher than or equal to the recommended dose, do not open it.
     cohort_dose <- h_get_dose_for_cohort(data, cohort)
-    if (is.na(cohort_dose) || cohort_dose >= dose) {
+    if (all(is.na(cohort_dose)) || all(cohort_dose >= dose)) {
       return(FALSE)
     }
     standardGeneric("openCohort")
@@ -45,8 +45,8 @@ setMethod(
   signature = c(opening = "OpeningMinDose"),
   definition = function(opening, cohort, data, dose, ...) {
     cohort_dose <- h_get_dose_for_cohort(data, cohort)
-    (!is.na(cohort_dose) &&
-      cohort_dose >= opening@min_dose)
+    (!all(is.na(cohort_dose)) &&
+      all(cohort_dose >= opening@min_dose))
   }
 )
 
@@ -99,14 +99,24 @@ setMethod(
     cohort_dose <- h_get_dose_for_cohort(data, cohort)
 
     # Count responses based on include_lower_doses flag
-    if (opening@include_lower_doses) {
+    include_in_count <- if (opening@include_lower_doses) {
       # Count responses at cohort_dose and all lower doses
-      response_count <- sum(data@response[data@x <= cohort_dose], na.rm = TRUE)
+      if (is.matrix(data@x)) {
+        data@x[, 1, drop = FALSE] <= cohort_dose[1] &
+          data@x[, 2, drop = FALSE] <= cohort_dose[2]
+      } else {
+        data@x <= cohort_dose
+      }
     } else {
       # Count responses only at cohort_dose
-      response_count <- sum(data@response[data@x == cohort_dose], na.rm = TRUE)
+      if (is.matrix(data@x)) {
+        data@x[, 1, drop = FALSE] == cohort_dose[1] &
+          data@x[, 2, drop = FALSE] == cohort_dose[2]
+      } else {
+        data@x == cohort_dose
+      }
     }
-
+    response_count <- sum(data@response[include_in_count], na.rm = TRUE)
     response_count >= opening@min_responses
   }
 )

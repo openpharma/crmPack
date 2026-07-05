@@ -4,7 +4,14 @@
 \alias{h_get_quantiles_start_values}
 \title{Get Starting Values for Quantiles Optimization}
 \usage{
-h_get_quantiles_start_values(parstart, median, dosegrid, refDose, logNormal)
+h_get_quantiles_start_values(
+  parstart,
+  median,
+  dosegrid,
+  refDose,
+  logNormal,
+  useLogDose = TRUE
+)
 }
 \arguments{
 \item{parstart}{(\code{numeric} or \code{NULL})\cr starting parameter values.}
@@ -16,6 +23,8 @@ h_get_quantiles_start_values(parstart, median, dosegrid, refDose, logNormal)
 \item{refDose}{(\code{number})\cr reference dose.}
 
 \item{logNormal}{(\code{flag})\cr use log-normal prior?}
+
+\item{useLogDose}{(\code{flag})\cr use \code{log(dosegrid / refDose)} as dose covariate?}
 }
 \value{
 Numeric vector of starting values.

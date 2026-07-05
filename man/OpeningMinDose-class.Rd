@@ -25,8 +25,9 @@ Note that the next recommended dose is not taken into account.
 \section{Slots}{
 
 \describe{
-\item{\code{min_dose}}{(\code{number})\cr the minimum dose at which backfill
-cohorts can be opened.}
+\item{\code{min_dose}}{(\code{numeric})\cr the minimum dose at which backfill
+cohorts can be opened. For combination trials, this can be
+a vector of minimum doses for each agent.}
 }}
 
 \note{

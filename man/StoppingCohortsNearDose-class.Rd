@@ -35,7 +35,8 @@ cohorts near to next best dose.
 \item{\code{nCohorts}}{(\code{number})\cr number of required cohorts.}
 
 \item{\code{percentage}}{(\code{number})\cr percentage (between and including 0 and 100)
-within the next best dose the cohorts must lie.}
+within the next best dose the cohorts must lie. This is applied
+for each of the two doses for \code{DataCombo} objects.}
 }}
 
 \note{

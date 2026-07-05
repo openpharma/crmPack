@@ -26,7 +26,7 @@ efficacy for a given dose level, based on the model specific parameters.
 }
 \section{Functions}{
 \itemize{
-\item \code{efficacyFunction(ModelEff)}: 
+\item \code{efficacyFunction(ModelEff)}: Return an efficacy function for a \code{ModelEff}.
 
 }}
 \examples{

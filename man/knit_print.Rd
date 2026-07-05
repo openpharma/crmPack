@@ -19,6 +19,7 @@
 \alias{knit_print.StartingDose}
 \alias{knit_print.RuleDesign}
 \alias{knit_print.Design}
+\alias{knit_print.DesignCombo}
 \alias{knit_print.DualDesign}
 \alias{knit_print.DADesign}
 \alias{knit_print.TDDesign}
@@ -30,9 +31,11 @@
 \alias{knit_print.RuleDesignOrdinal}
 \alias{knit_print.GeneralData}
 \alias{knit_print.DataParts}
+\alias{knit_print.DataCombo}
 \alias{knit_print.DualEndpoint}
 \alias{knit_print.ModelParamsNormal}
 \alias{knit_print.GeneralModel}
+\alias{knit_print.HierarchicalModel}
 \alias{knit_print.LogisticKadane}
 \alias{knit_print.LogisticKadaneBetaGamma}
 \alias{knit_print.LogisticLogNormal}
@@ -43,6 +46,7 @@
 \alias{knit_print.OneParLogNormalPrior}
 \alias{knit_print.OneParExpPrior}
 \alias{knit_print.LogisticLogNormalGrouped}
+\alias{knit_print.TwoDrugsCombo}
 \alias{knit_print.LogisticLogNormalOrdinal}
 \alias{knit_print.LogisticIndepBeta}
 \alias{knit_print.Effloglog}
@@ -51,6 +55,8 @@
 \alias{knit_print.IncrementsDoseLevels}
 \alias{knit_print.IncrementsHSRBeta}
 \alias{knit_print.IncrementsMin}
+\alias{knit_print.IncrementsComboOneDrugOnly}
+\alias{knit_print.IncrementsComboCartesian}
 \alias{knit_print.IncrementsOrdinal}
 \alias{knit_print.IncrementsRelativeParts}
 \alias{knit_print.IncrementsRelativeDLTCurrent}
@@ -124,6 +130,8 @@
 
 \method{knit_print}{Design}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
+\method{knit_print}{DesignCombo}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
+
 \method{knit_print}{DualDesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
 
 \method{knit_print}{DADesign}(x, ..., level = 2L, title = "Design", sections = NA, asis = TRUE)
@@ -176,6 +184,15 @@
   format_func = h_knit_format_func
 )
 
+\method{knit_print}{DataCombo}(
+  x,
+  ...,
+  asis = TRUE,
+  label = c("participant", "participants"),
+  units = NA,
+  fmt = NA
+)
+
 \method{knit_print}{DualEndpoint}(
   x,
   ...,
@@ -207,6 +224,8 @@
   fmt = "\%5.2f",
   units = NA
 )
+
+\method{knit_print}{HierarchicalModel}(x, ..., asis = TRUE)
 
 \method{knit_print}{LogisticKadane}(
   x,
@@ -276,6 +295,8 @@
   asis = TRUE
 )
 
+\method{knit_print}{TwoDrugsCombo}(x, ..., use_values = TRUE, fmt = "\%5.2f", asis = TRUE)
+
 \method{knit_print}{LogisticLogNormalOrdinal}(
   x,
   ...,
@@ -319,6 +340,10 @@
 \method{knit_print}{IncrementsHSRBeta}(x, ..., asis = TRUE)
 
 \method{knit_print}{IncrementsMin}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsComboOneDrugOnly}(x, ..., asis = TRUE)
+
+\method{knit_print}{IncrementsComboCartesian}(x, ..., asis = TRUE)
 
 \method{knit_print}{IncrementsOrdinal}(x, ..., asis = TRUE)
 
@@ -560,11 +585,11 @@ participant counts by dose and \code{"cohort"} by cohort.}
 
 \item{format_func}{(\code{function})\cr The function used to format the range table.}
 
-\item{use_values}{(\code{flag})\cr print the values associated with hyperparameters,
-or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.}
-
 \item{fmt}{(\code{character})\cr the \code{sprintf} format string used to render
 numerical values.  Ignored if \code{use_values} is \code{FALSE}.}
+
+\item{use_values}{(\code{flag})\cr print the values associated with hyperparameters,
+or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.}
 
 \item{biomarker_label}{(\code{character})\cr the term used to describe the biomarker}
 
@@ -642,6 +667,16 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of \code{Design}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

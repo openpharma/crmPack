@@ -37,11 +37,11 @@ probabilities for a given dose level, based on the model specific parameters.
 }
 \section{Functions}{
 \itemize{
-\item \code{probFunction(GeneralModel)}: 
+\item \code{probFunction(GeneralModel)}: Return a probability function for a \code{GeneralModel}.
 
-\item \code{probFunction(ModelTox)}: 
+\item \code{probFunction(ModelTox)}: Return a probability function for a \code{ModelTox}.
 
-\item \code{probFunction(LogisticLogNormalOrdinal)}: 
+\item \code{probFunction(LogisticLogNormalOrdinal)}: Return a grade-specific probability function for a \code{LogisticLogNormalOrdinal} model.
 
 }}
 \examples{
