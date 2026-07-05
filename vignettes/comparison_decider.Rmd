@@ -8,19 +8,12 @@ vignette: >
 bibliography: vignettes.bib
 ---
 
-```{r, include = FALSE}
-github_pkg <- "decider"
+<!-- comparison_decider.Rmd is generated from comparison_decider.Rmd.orig Please edit that file -->
 
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  eval = requireNamespace(github_pkg, quietly = TRUE)
-)
-```
+
 
 In this vignette we want to compare the combination design implemented in `crmPack` and explained in this [vignette](combo_designs.Rmd) with the implementation in the [`decider` package](https://boehringer-ingelheim.github.io/decider/) [@Schroeter2023]. 
-Please note that the `decider` package is not available on CRAN, therefore the vignette is only executing
-the code chunks if the package is available on this system.
+Please note that the `decider` package is not available on CRAN, therefore this vignette is precomputed from a source file that runs with `decider` installed.
 
 ## Example
 
@@ -41,13 +34,15 @@ We are going to use the example as described in the `decider` vignette [here](ht
 
 ## Using `decider`
 
-```{r}
+
+``` r
 library(decider)
 ```
 
 This is the data from the historical Arm C:
 
-```{r}
+
+``` r
 historical_data <- list(
   dose1 = c(0, 0, 0, 0, 0),
   dose2 = c(2, 4, 8, 12, 16),
@@ -59,19 +54,22 @@ historical_data <- list(
 
 The monotherapy dose grid for Arm A is:
 
-```{r}
+
+``` r
 d1 <- c(0.1, 0.2, 0.4, 0.8, 1.6, 2.4, 3.6, 5, 6)
 ```
 
 The dose grid for compound 2 in Arm B is more sparse:
 
-```{r}
+
+``` r
 d2 <- c(8, 12)
 ```
 
 The overall dose grid for combination Arm B is therefore:
 
-```{r}
+
+``` r
 doses_of_interest <- rbind(
     c(d1, rep(d1, times = length(d2))),
     c(rep(0, length(d1)), rep(d2, each = length(d1)))
@@ -80,21 +78,24 @@ doses_of_interest <- rbind(
 
 The reference doses to be used in the models are:
 
-```{r}
+
+``` r
 dose_ref1 <- 6
 dose_ref2 <- 12
 ```
 
 We further need to specify the arms and types of the arms as follows:
 
-```{r}
+
+``` r
 trials_of_interest <- c("A", "B")
 types_of_interest <- c("mono1", "combi")
 ```
 
 The prior for the hypermeans is specified like this:
 
-```{r}
+
+``` r
 #                Parameter   Mean         SD
 prior_mu <- list(mu_a1  =  c(logit(0.33), 2),
                  mu_b1  =  c(0,           1), # standard normal
@@ -109,7 +110,8 @@ Note that we use a normal prior here on the interaction parameter $\eta$, thus a
 
 The prior for the between-trial heterogeneity parameters is specified like this:
 
-```{r}
+
+``` r
 #                 Parameter    Mean        SD
 prior_tau <- list(tau_a1  =  c(log(0.25),  log(2) / 1.96),
                   tau_b1  =  c(log(0.125), log(2) / 1.96),
@@ -122,7 +124,8 @@ These are all the log normal prior parameters for the corresponding $\tau$ param
 
 Then we look at the following scenario, where two cohorts of patients are available from Arm A:
 
-```{r}
+
+``` r
 scenario1 <- list(
   dose1 = c(0.1, 0.2),
   dose2 = c(0, 0),
@@ -136,7 +139,8 @@ We note that the `trial` specification here needs to match the name used in `tri
 
 Now we can call the scenario function:
 
-```{r}
+
+``` r
 result1 <- scenario_jointBLRM(
   data = scenario1,
   historical.data = historical_data,
@@ -152,8 +156,70 @@ result1 <- scenario_jointBLRM(
 
 We can look at the results:
 
-```{r}
+
+``` r
 result1
+#> $`trial-A`
+#>          mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
+#> 0.1+0 0.11533 0.10905 0.00315 0.08201 0.40467     0.74066        0.20435
+#> 0.2+0 0.15429 0.12864 0.00694 0.11984 0.48110     0.61625        0.27596
+#> 0.4+0 0.20774 0.15493 0.01330 0.17228 0.58231     0.46928        0.32509
+#> 0.8+0 0.27652 0.18742 0.02276 0.24116 0.70420     0.33097        0.32387
+#> 1.6+0 0.35671 0.22101 0.03450 0.32519 0.82419     0.22573        0.28160
+#> 2.4+0 0.40577 0.23833 0.04218 0.37986 0.88061     0.17927        0.25179
+#> 3.6+0 0.45428 0.25259 0.05038 0.43689 0.92343     0.14399        0.22150
+#> 5+0   0.49219 0.26158 0.05735 0.48379 0.94872     0.12132        0.19773
+#> 6+0   0.51248 0.26556 0.06162 0.50971 0.95928     0.11050        0.18518
+#>       P([0.33,1])
+#> 0.1+0     0.05499
+#> 0.2+0     0.10779
+#> 0.4+0     0.20563
+#> 0.8+0     0.34516
+#> 1.6+0     0.49267
+#> 2.4+0     0.56894
+#> 3.6+0     0.63451
+#> 5+0       0.68095
+#> 6+0       0.70432
+#> 
+#> $`trial-B`
+#>           mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
+#> 0.1+8  0.18557 0.12565 0.02712 0.15586 0.51005     0.51429        0.35803
+#> 0.2+8  0.22030 0.14204 0.03504 0.18851 0.57576     0.41059        0.39297
+#> 0.4+8  0.26739 0.16293 0.04589 0.23364 0.65971     0.30157        0.39740
+#> 0.8+8  0.32850 0.18825 0.05960 0.29472 0.75675     0.20521        0.36125
+#> 1.6+8  0.40165 0.21622 0.07382 0.37231 0.85401     0.13647        0.29601
+#> 2.4+8  0.44739 0.23284 0.08059 0.42396 0.90157     0.11118        0.25301
+#> 3.6+8  0.49277 0.24964 0.08253 0.48023 0.93991     0.09733        0.21350
+#> 5+8    0.52757 0.26409 0.07751 0.52732 0.96327     0.09514        0.18399
+#> 6+8    0.54553 0.27286 0.07198 0.55450 0.97295     0.09756        0.16926
+#> 0.1+12 0.22340 0.12665 0.05161 0.19767 0.53959     0.36391        0.45649
+#> 0.2+12 0.25654 0.14118 0.06042 0.22914 0.60170     0.28027        0.46030
+#> 0.4+12 0.30153 0.16020 0.07224 0.27220 0.68026     0.19876        0.43166
+#> 0.8+12 0.35998 0.18418 0.08630 0.33038 0.77317     0.13276        0.36637
+#> 1.6+12 0.42999 0.21273 0.09724 0.40470 0.86712     0.09267        0.28251
+#> 2.4+12 0.47352 0.23176 0.09654 0.45574 0.91421     0.08445        0.23455
+#> 3.6+12 0.51589 0.25355 0.08666 0.51086 0.95137     0.08747        0.19457
+#> 5+12   0.54701 0.27437 0.06911 0.55842 0.97331     0.09964        0.16702
+#> 6+12   0.56214 0.28748 0.05673 0.58514 0.98245     0.11097        0.15329
+#>        P([0.33,1])
+#> 0.1+8      0.12768
+#> 0.2+8      0.19644
+#> 0.4+8      0.30103
+#> 0.8+8      0.43354
+#> 1.6+8      0.56752
+#> 2.4+8      0.63581
+#> 3.6+8      0.68917
+#> 5+8        0.72087
+#> 6+8        0.73318
+#> 0.1+12     0.17960
+#> 0.2+12     0.25943
+#> 0.4+12     0.36958
+#> 0.8+12     0.50087
+#> 1.6+12     0.62482
+#> 2.4+12     0.68100
+#> 3.6+12     0.71796
+#> 5+12       0.73334
+#> 6+12       0.73574
 ```
 
 For each trial of interest, the posterior toxicities previously designated to be of interest are shown.
@@ -173,7 +239,8 @@ Now we are going to define the same design and scenario in `crmPack`.
 
 We start with the monotherapy model for compound 1:
 
-```{r}
+
+``` r
 library(crmPack)
 
 mono_model1 <- LogisticLogNormal(
@@ -185,7 +252,8 @@ mono_model1 <- LogisticLogNormal(
 
 And for compound 2 the same:
 
-```{r}
+
+``` r
 mono_model2 <- LogisticLogNormal(
     mean = c(logit(0.33), 0),
     cov = diag(c(2, 1)^2),
@@ -195,7 +263,8 @@ mono_model2 <- LogisticLogNormal(
 
 Then we define the combination model:
 
-```{r}
+
+``` r
 combo_model <- TwoDrugsCombo(
     list(
         compound1 = mono_model1,
@@ -208,7 +277,8 @@ combo_model <- TwoDrugsCombo(
 
 We define the historical data which is already available:
 
-```{r}
+
+``` r
 hist_data_comp2 <- Data(
     x = rep(historical_data$dose2, historical_data$n.pat),
     y = c(
@@ -221,7 +291,8 @@ hist_data_comp2 <- Data(
 
 We are going to use simple rules here (they are not relevant for the current scenario comparison):
 
-```{r}
+
+``` r
 my_stopping <- StoppingMinPatients(nPatients = 50)
 my_increments <- IncrementsRelative(0, 2)
 myNextBest <- NextBestNCRM(
@@ -235,7 +306,8 @@ my_increments_combo <- IncrementsComboOneDrugOnly()
 
 Then we define the design arms accordingly:
 
-```{r}
+
+``` r
 designArmA <- DesignArm(
     "A",
     design = Design(
@@ -272,7 +344,8 @@ designArmC <- HistoricalArm(
 
 Now we can define the hierarchical design:
 
-```{r}
+
+``` r
 design_hierarchical <- HierarchicalDesign(
     designArmA,
     designArmB,
@@ -328,7 +401,8 @@ supported.
 
 Then we define the scenario:
 
-```{r}
+
+``` r
 scenario_hierarchical <- HierarchicalData(
     A = Data(
         x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
@@ -342,7 +416,8 @@ scenario_hierarchical <- HierarchicalData(
 
 And then we can use the `scenario()` function:
 
-```{r}
+
+``` r
 result1CrmPack <- scenario(
     design_hierarchical,
     data = scenario_hierarchical,
@@ -352,15 +427,104 @@ result1CrmPack <- scenario(
 
 We can look at the fit results:
 
-```{r}
+
+``` r
 result1CrmPack$fit
+#> $A
+#>   dose    middle       lower     upper
+#> 1  0.1 0.1407995 0.005295787 0.4937883
+#> 2  0.2 0.1826502 0.014432700 0.5464696
+#> 3  0.4 0.2386864 0.028407413 0.6280273
+#> 4  0.8 0.3102918 0.041100361 0.7222728
+#> 5  1.6 0.3942466 0.051212191 0.8182096
+#> 6  2.4 0.4453440 0.056586907 0.8661251
+#> 7  3.6 0.4947799 0.061978937 0.9091248
+#> 8  5.0 0.5321623 0.065890208 0.9357199
+#> 9  6.0 0.5515949 0.067648517 0.9473867
+#> 
+#> $B
+#>    compound1 compound2    middle       lower     upper
+#> 1        0.1         0 0.1440166 0.003121785 0.5266384
+#> 2        0.2         0 0.1844345 0.009268448 0.5942079
+#> 3        0.4         0 0.2380199 0.021178455 0.6697797
+#> 4        0.8         0 0.3066369 0.034340342 0.7600865
+#> 5        1.6         0 0.3886614 0.046396291 0.8446266
+#> 6        2.4         0 0.4397581 0.053031472 0.8855780
+#> 7        3.6         0 0.4899070 0.057805894 0.9187044
+#> 8        5.0         0 0.5281072 0.062530357 0.9401462
+#> 9        6.0         0 0.5480017 0.064903444 0.9505503
+#> 10       0.1         8 0.2002601 0.019947387 0.5545810
+#> 11       0.2         8 0.2380454 0.030704273 0.6182847
+#> 12       0.4         8 0.2882041 0.047395498 0.6920547
+#> 13       0.8         8 0.3526387 0.068013284 0.7785380
+#> 14       1.6         8 0.4300104 0.087493642 0.8595002
+#> 15       2.4         8 0.4781780 0.091900770 0.8991359
+#> 16       3.6         8 0.5249353 0.092564762 0.9347802
+#> 17       5.0         8 0.5595701 0.086014353 0.9581764
+#> 18       6.0         8 0.5768971 0.079647464 0.9692442
+#> 19       0.1        12 0.2421937 0.051671158 0.5872622
+#> 20       0.2        12 0.2781230 0.062404517 0.6415353
+#> 21       0.4        12 0.3258863 0.080055761 0.7074648
+#> 22       0.8        12 0.3873621 0.099882881 0.7941856
+#> 23       1.6        12 0.4611422 0.115575804 0.8720211
+#> 24       2.4        12 0.5066145 0.116182503 0.9118151
+#> 25       3.6        12 0.5496531 0.104022974 0.9462170
+#> 26       5.0        12 0.5799097 0.083169341 0.9716268
+#> 27       6.0        12 0.5940229 0.068708851 0.9814791
+#> 
+#> $C
+#>   dose     middle        lower      upper
+#> 1    2 0.01808136 1.236549e-07 0.09934627
+#> 2    4 0.03024506 1.450462e-05 0.12649290
+#> 3    8 0.06006885 1.977201e-03 0.17212528
+#> 4   12 0.10593455 2.070334e-02 0.24906697
+#> 5   16 0.17961751 3.738200e-02 0.40831621
 ```
 
 We can also check the probabilities to be in target and overdosing intervals:
 
-```{r}
+
+``` r
 result1CrmPack$next_best$A$probs
+#>       dose target overdose
+#>  [1,]  0.1 0.2412   0.0937
+#>  [2,]  0.2 0.3061   0.1498
+#>  [3,]  0.4 0.3481   0.2560
+#>  [4,]  0.8 0.3393   0.4084
+#>  [5,]  1.6 0.2607   0.5842
+#>  [6,]  2.4 0.2160   0.6509
+#>  [7,]  3.6 0.1812   0.7025
+#>  [8,]  5.0 0.1490   0.7454
+#>  [9,]  6.0 0.1413   0.7595
 result1CrmPack$next_best$B$probs
+#>    compound1 compound2 target_prob overdose_prob not_eligible
+#> 1        0.1         0      0.2225        0.1096        FALSE
+#> 2        0.2         0      0.2779        0.1664        FALSE
+#> 3        0.4         0      0.3222        0.2607         TRUE
+#> 4        0.8         0      0.3241        0.3969         TRUE
+#> 5        1.6         0      0.2565        0.5619         TRUE
+#> 6        2.4         0      0.2153        0.6388         TRUE
+#> 7        3.6         0      0.1814        0.6958         TRUE
+#> 8        5.0         0      0.1563        0.7322         TRUE
+#> 9        6.0         0      0.1453        0.7497         TRUE
+#> 10       0.1         8      0.3472        0.1674        FALSE
+#> 11       0.2         8      0.3776        0.2434        FALSE
+#> 12       0.4         8      0.3872        0.3489         TRUE
+#> 13       0.8         8      0.3527        0.4836         TRUE
+#> 14       1.6         8      0.2595        0.6359         TRUE
+#> 15       2.4         8      0.2186        0.6962         TRUE
+#> 16       3.6         8      0.1828        0.7423         TRUE
+#> 17       5.0         8      0.1575        0.7654         TRUE
+#> 18       6.0         8      0.1456        0.7740         TRUE
+#> 19       0.1        12      0.4541        0.2277        FALSE
+#> 20       0.2        12      0.4535        0.3108         TRUE
+#> 21       0.4        12      0.4173        0.4262         TRUE
+#> 22       0.8        12      0.3461        0.5626         TRUE
+#> 23       1.6        12      0.2438        0.6947         TRUE
+#> 24       2.4        12      0.2005        0.7435         TRUE
+#> 25       3.6        12      0.1686        0.7693         TRUE
+#> 26       5.0        12      0.1434        0.7797         TRUE
+#> 27       6.0        12      0.1310        0.7802         TRUE
 ```
 
 ## Comparison of fit
@@ -369,7 +533,8 @@ Based on this we can first compare the fit results.
 
 Let's look at the results for Arm A:
 
-```{r}
+
+``` r
 fitTrialADecider <- result1$`trial-A` |> as.data.frame()
 fitTrialACrmPack <- result1CrmPack$fit$A
 probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
@@ -382,11 +547,22 @@ diffTrialA <- data.frame(
     overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
 )
 diffTrialA
+#>   dose      center        lower        upper   target overdose
+#> 1  0.1 -0.02546952 -0.002145787 -0.089118344 -0.03685 -0.03871
+#> 2  0.2 -0.02836023 -0.007492700 -0.065369561 -0.03014 -0.04201
+#> 3  0.4 -0.03094635 -0.015107413 -0.045717280 -0.02301 -0.05037
+#> 4  0.8 -0.03377181 -0.018340361 -0.018072780 -0.01543 -0.06324
+#> 5  1.6 -0.03753662 -0.016712191  0.005980405  0.02090 -0.09153
+#> 6  2.4 -0.03957402 -0.014406907  0.014484876  0.03579 -0.08196
+#> 7  3.6 -0.04049986 -0.011598937  0.014305245  0.04030 -0.06799
+#> 8  5.0 -0.03997227 -0.008540208  0.013000088  0.04873 -0.06445
+#> 9  6.0 -0.03911485 -0.006028517  0.011893333  0.04388 -0.05518
 ```
 
 And then the results for Arm B:
 
-```{r}
+
+``` r
 fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
 fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
 probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
@@ -402,6 +578,25 @@ diffTrialB <- data.frame(
     overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
 )
 diffTrialB
+#>    dose1 dose2      center         lower         upper  target overdose
+#> 1    0.1     8 -0.01469006  7.172613e-03 -0.0445310228 0.01083 -0.03972
+#> 2    0.2     8 -0.01774541  4.335727e-03 -0.0425246531 0.01537 -0.04696
+#> 3    0.4     8 -0.02081415 -1.505498e-03 -0.0323447242 0.01020 -0.04787
+#> 4    0.8     8 -0.02413869 -8.413284e-03 -0.0217879706 0.00855 -0.05006
+#> 5    1.6     8 -0.02836038 -1.367364e-02 -0.0054901628 0.03651 -0.06838
+#> 6    2.4     8 -0.03078798 -1.131077e-02  0.0024340833 0.03441 -0.06039
+#> 7    3.6     8 -0.03216530 -1.003476e-02  0.0051297502 0.03070 -0.05313
+#> 8    5.0     8 -0.03200013 -8.504353e-03  0.0050936190 0.02649 -0.04453
+#> 9    6.0     8 -0.03136714 -7.667464e-03  0.0037057579 0.02366 -0.04082
+#> 10   0.1    12 -0.01879372 -6.115777e-05 -0.0476722429 0.00239 -0.04810
+#> 11   0.2    12 -0.02158302 -1.984517e-03 -0.0398353436 0.00680 -0.05137
+#> 12   0.4    12 -0.02435635 -7.815761e-03 -0.0272048337 0.01436 -0.05662
+#> 13   0.8    12 -0.02738209 -1.358288e-02 -0.0210155529 0.02027 -0.06173
+#> 14   1.6    12 -0.03115219 -1.833580e-02 -0.0049011289 0.03871 -0.06988
+#> 15   2.4    12 -0.03309447 -1.964250e-02  0.0023948546 0.03405 -0.06250
+#> 16   3.6    12 -0.03376309 -1.736297e-02  0.0051530095 0.02597 -0.05134
+#> 17   5.0    12 -0.03289974 -1.405934e-02  0.0016831618 0.02362 -0.04636
+#> 18   6.0    12 -0.03188293 -1.197885e-02  0.0009709258 0.02229 -0.04446
 ```
 
 So these differences look relatively small, and there does not seem to be any 
@@ -415,27 +610,343 @@ Let's compare the model code used in `decider` and `crmPack`, in order to make s
 
 Here we have the following Stan model:
 
-```{r}
-#| results: "asis"
-#| echo: false
-
-cat("````\n")
-cat(decider:::stanmodels$jointBLRM@model_code)
-cat("\n````")
-```
+````
+/*Stan model for joint BLRM
+--------------------------------------------------------------------------------
+  Implements the joint BLRM as described in Neuenschwander et al., 2016,
+  "On the use of co-data in clinical trials".
+  A non-centered parametrization  is implemented by obtaining
+  multivariate normals via multiplication with cholesky factors.
+  The cholesky decomposition is implemented by hand, as it is
+  available analytically in the required 2x2-case.
+*/
+functions{
+  /*counts mono observations based on input dose levels
+    Note: first input vector signals the component to be counted*/
+  int count_n_mono(vector dose_1, vector dose_2, int n_obs){
+    int res = 0;
+    for(i in 1:n_obs){
+      if(dose_1[i]>0 && dose_2[i]==0){
+        res+=1;
+      }
+    }
+    return res;
+  }
+  /*Computes permutation of input data, so that the first n_obs1 observations
+    are mono1, the subsequent n_obs2 observations are mono2, and the remaining
+    ones are combination therapy.
+    Returns matrix with two rows, first row is the permutation for sorting, and
+    second row contains the inverse permutation (to reverse sorted input to
+    normal order).*/
+  int[,] sort_idx(vector dose_1, vector dose_2,
+                 int n_obs, int n_obs1, int n_obs2)
+  {
+    int res[2, n_obs] = rep_array(0, 2, n_obs);
+    //n_obs1/n_obs2 allow to compute offsets for sorting by counting
+    int cnt1 = 0;
+    int cnt2 = 0;
+    int cnt = 0;
+    //loop over input and save correct placement
+    for(i in 1:n_obs){
+      if(dose_1[i]>0 && dose_2[i]==0){
+        res[1, cnt1+1] = i;
+        res[2, i] = cnt1+1;
+        cnt1 += 1;
+      }else if(dose_1[i]==0 && dose_2[i]>0){
+        res[1, n_obs1 + 1 + cnt2] = i;
+        res[2, i] = n_obs1 + 1 + cnt2;
+        cnt2 += 1;
+      }else if(dose_1[i]>0 && dose_2[i]>0){
+        res[1, n_obs1 + n_obs2 + 1 + cnt] = i;
+        res[2, i] = n_obs1 + n_obs2 + 1 + cnt;
+        cnt += 1;
+      }
+    }
+    return res;
+  }
+}
+data{
+  //number of observations/cohorts
+  int<lower=0> n_obs;
+  //number of studies
+  int<lower=0> n_studies;
+  //number of patients for each cohort
+  int<lower=0> n[n_obs];
+  //number of DLTs for each cohort
+  int<lower=0> r[n_obs];
+  //study number for cohorts
+  int<lower=1> s[n_obs];
+  //indicates whether a MAP prior is computed
+  int<lower=0, upper=1> doMAP;
+  //indicates whether linear or saturating
+  //interaction term is used
+  int<lower=0, upper=1> saturating;
+  //reference doses
+  vector<lower=0>[2] dose_c;
+  //dose levels component 1 and 2 for each cohort
+  vector<lower=0>[n_obs] dose_1;
+  vector<lower=0>[n_obs] dose_2;
+  /*hyper priors
+    Notation and order of entries:
+    mu =  (mu_alpha1,  mu_beta1,  mu_alpha2,  mu_beta2,  mu_eta)
+    tau = (tau_alpha1, tau_beta1, tau_alpha2, tau_beta2, tau_eta)
+  */
+  //mean of hyper SD tau
+  vector[5] mean_tau;
+  //sd's of hyper SD tau
+  vector<lower=0>[5] sd_tau;
+  //mean of hyper mean mu
+  vector[5] mean_mu;
+  //mean of hyper sd mu
+  vector<lower=0>[5] sd_mu;
+}
+transformed data{
+  //internally generates a study without observations for MAP prior
+  int<lower=1> num_s = doMAP? n_studies+1 : n_studies;
+  //count number of mono observations
+  int<lower=0, upper=n_obs> n_obs1 = count_n_mono(dose_1, dose_2, n_obs);
+  int<lower=0, upper=n_obs> n_obs2 = count_n_mono(dose_2, dose_1, n_obs);
+  //compute sort indices (only done once per call to stan for efficiency)
+  int srt_idx[2, n_obs] = sort_idx(dose_1, dose_2, n_obs, n_obs1, n_obs2);
+  //sort by applying computed sorting permutation
+  int n_srt[n_obs] = n[srt_idx[1, 1:n_obs]];
+  int r_srt[n_obs] = r[srt_idx[1, 1:n_obs]];
+  int s_srt[n_obs] = s[srt_idx[1, 1:n_obs]];
+  //doses are also rescaled by reference dose after sorting
+  vector[n_obs] dose_1_srt = dose_1[srt_idx[1, 1:n_obs]]/dose_c[1];
+  vector[n_obs] dose_2_srt = dose_2[srt_idx[1, 1:n_obs]]/dose_c[2];
+  vector[n_obs] ldose_1_srt = log(dose_1_srt);
+  vector[n_obs] ldose_2_srt = log(dose_2_srt);
+}
+parameters{
+  //hyper SDs
+  real<lower=0> tau_1a;
+  real<lower=0> tau_1b;
+  real<lower=0> tau_2a;
+  real<lower=0> tau_2b;
+  real<lower=0> tau_eta;
+  //correlation coefficients
+  real<lower=-1, upper=1> rho12;
+  real<lower=-1, upper=1> rho34;
+  /*For non-centered parametrization:
+    Sample only raw standard normal variables. These are later transformed to
+    bivariate normals by multiplying with cholesky factor*/
+  //matrix for log(alpha_ij), log(beta_ij) and eta_j (for comp i, study j)
+  matrix[num_s, 5] log_ab_raw;
+  //for hyper means
+  real mu_raw[5];
+}
+transformed parameters{
+  real mu_1a;
+  real mu_1b;
+  real mu_2a;
+  real mu_2b;
+  real mu_eta;
+  matrix[num_s,5] log_ab;
+  vector<lower=0, upper=1>[n_obs] p_srt;
+  vector<lower=0, upper=1>[n_obs-n_obs1-n_obs2] p_2;
+  vector<lower=0, upper=1>[n_obs-n_obs1-n_obs2] p_1;
+  vector<lower=0, upper=1>[n_obs-n_obs1-n_obs2] p_0;
+  //transform raw hyper means to correct distribution
+  mu_1a = mean_mu[1] + sd_mu[1]*mu_raw[1];
+  mu_1b = mean_mu[2] + sd_mu[2]*mu_raw[2];
+  mu_2a = mean_mu[3] + sd_mu[3]*mu_raw[3];
+  mu_2b = mean_mu[4] + sd_mu[4]*mu_raw[4];
+  mu_eta = mean_mu[5] + sd_mu[5]*mu_raw[5];
+  /*Hard-coded matrix multiplication with lower cholesky factor
+    of covariance matrix. This can be done without saving the
+    cholesky factor itself, as it is available analytically.
+    The following means:
+    log_ab = mu + L*log_ab_raw,
+    where L is a lower triangular matrix with L*L^T=Sigma,
+    for a covariance matrix Sigma.
+    Note: For general
+    Sigma = tau_1^2           rho*tau_1*tau_2
+            rho*tau_1*tau_2   tau_2^2
+    the lower cholesky factor is
+    L =     tau_1         0
+            tau_2*rho     tau_2*squareroot(1-rho^2)
+    */
+  log_ab[1:num_s,1] = mu_1a + tau_1a*log_ab_raw[1:num_s, 1];
+  log_ab[1:num_s,2] = mu_1b + tau_1b*rho12*log_ab_raw[1:num_s, 1] +
+                      tau_1b*sqrt(1-square(rho12))*log_ab_raw[1:num_s, 2];
+  log_ab[1:num_s,3] = mu_2a + tau_2a*log_ab_raw[1:num_s, 3];
+  log_ab[1:num_s,4] = mu_2b + tau_2b*rho34*log_ab_raw[1:num_s, 3] +
+                      tau_2b*sqrt(1-square(rho34))*log_ab_raw[1:num_s, 4];
+  log_ab[1:num_s,5] = mu_eta + tau_eta*log_ab_raw[1:num_s, 5];
+  //toxicity models for mono and combination treatment are vectorized
+  if(n_obs1>0){
+    //treatments mono 1
+    p_srt[1:n_obs1] = inv_logit(log_ab[s_srt[1:n_obs1],1] +
+                           (exp(log_ab[s_srt[1:n_obs1],2]).*
+                           ldose_1_srt[1:n_obs1]));
+  }
+  if(n_obs2>0){
+    //treatments mono 2
+     p_srt[(n_obs1+1):(n_obs1+n_obs2)] =
+         inv_logit(log_ab[s_srt[(n_obs1+1):(n_obs1 + n_obs2)],3] +
+                   (exp(log_ab[s_srt[(n_obs1+1): (n_obs1 + n_obs2)],4]).*
+                   ldose_2_srt[(n_obs1+1): (n_obs1 + n_obs2)]));
+  }
+  if(n_obs-n_obs1-n_obs2>0){
+    //treatments combination
+    p_2[1 : (n_obs-n_obs1-n_obs2)] =
+        inv_logit(log_ab[s_srt[(n_obs1 + n_obs2 + 1) : n_obs],3] +
+                  (exp(log_ab[s_srt[(n_obs1 + n_obs2 + 1) : n_obs],4]).*
+                  ldose_2_srt[(n_obs1 + n_obs2 + 1) : n_obs]));
+    p_1[1 : (n_obs-n_obs1-n_obs2)] =
+        inv_logit(log_ab[s_srt[(n_obs1 + n_obs2 + 1) : n_obs],1] +
+                  (exp(log_ab[s_srt[(n_obs1 + n_obs2 + 1) : n_obs],2]).*
+                  ldose_1_srt[(n_obs1 + n_obs2 + 1) : n_obs]));
+    p_0[1 :(n_obs-n_obs1-n_obs2)] = p_1[1 : (n_obs-n_obs1-n_obs2)] +
+                                 p_2[1 : (n_obs-n_obs1-n_obs2)] -
+                                 (p_1[1 : (n_obs-n_obs1-n_obs2)] .*
+                                 p_2[1 : (n_obs-n_obs1-n_obs2)]);
+    if(saturating){
+      p_srt[(n_obs1 + n_obs2 + 1) : n_obs] =
+          inv_logit(logit(p_0[1 : (n_obs-n_obs1-n_obs2)]) +
+                    (2*log_ab[s_srt[(n_obs1 + n_obs2 + 1) : n_obs],5].*
+                    (dose_1_srt[(n_obs1 + n_obs2 + 1) : n_obs].*
+                    dose_2_srt[(n_obs1 + n_obs2 + 1) : n_obs] )./
+                    (1 + dose_1_srt[(n_obs1 + n_obs2 + 1) : n_obs].*
+                         dose_2_srt[(n_obs1 + n_obs2 + 1) : n_obs])
+                    ));
+    }else{
+      p_srt[(n_obs1 + n_obs2 + 1) : n_obs] =
+          inv_logit(logit(p_0[1 : (n_obs-n_obs1-n_obs2)]) +
+                    log_ab[s_srt[(n_obs1 + n_obs2 + 1) : n_obs],5].*
+                    dose_1_srt[(n_obs1 + n_obs2 + 1) : n_obs].*
+                    dose_2_srt[(n_obs1 + n_obs2 + 1) : n_obs] );
+    }
+  }
+}
+model{
+  //priors for hyper means (non-centered)
+  mu_raw ~  std_normal();
+  //priors for hyper SD
+  tau_1a ~ lognormal(mean_tau[1], sd_tau[1]);
+  tau_1b ~ lognormal(mean_tau[2], sd_tau[2]);
+  tau_2a ~ lognormal(mean_tau[3], sd_tau[3]);
+  tau_2b ~ lognormal(mean_tau[4], sd_tau[4]);
+  tau_eta ~ lognormal(mean_tau[5], sd_tau[5]);
+  //priors for correlation coefficients
+  rho12 ~ uniform(-1,1);
+  rho34 ~ uniform(-1,1);
+  //priors for regression parameters (non-centered)
+  for(k in 1:num_s){
+    log_ab_raw[k, 1:5] ~ std_normal();
+  }
+  //binomial likelihood
+  r_srt ~ binomial(n_srt, p_srt);
+}
+generated quantities{
+  //just to provide the sorted toxicity parameters as output
+  vector<lower=0, upper=1>[n_obs] p = p_srt[srt_idx[2,1:n_obs]];
+}
+````
 
 ### `crmPack`
 
 Here we have the following JAGS model:
 
-```{r}
-#| results: "asis"
-#| echo: false
-
-cat("````", deparse(body(design_hierarchical@model@datamodel)), "````", sep = "\n")
-
-cat("````", deparse(body(design_hierarchical@model@priormodel)), "````", sep = "\n")
-```
+````
+{
+    for (i in 1:nObs_A) {
+        logit(p_A[i]) <- alpha0_A + alpha1_A * log(x_A[i]/ref_dose_A)
+        y_A[i] ~ dbern(p_A[i])
+    }
+    for (i in 1:nObs_B) {
+        x_drug1_B[i] <- x_B[i, 1L]
+    }
+    for (i in 1:nObs_B) {
+        logit(p_drug1_B[i]) <- alpha0_drug1_B + alpha1_drug1_B * 
+            log(x_drug1_B[i]/ref_dose_drug1_B)
+        p_single_B[i, 1L] <- p_drug1_B[i]
+    }
+    for (i in 1:nObs_B) {
+        x_drug2_B[i] <- x_B[i, 2L]
+    }
+    for (i in 1:nObs_B) {
+        logit(p_drug2_B[i]) <- alpha0_drug2_B + alpha1_drug2_B * 
+            log(x_drug2_B[i]/ref_dose_drug2_B)
+        p_single_B[i, 2L] <- p_drug2_B[i]
+    }
+    for (i in 1:nObs_B) {
+        combo_interaction_B[i] <- x_drug1_B[i]/ref_dose_drug1_B * 
+            (x_drug2_B[i]/ref_dose_drug2_B)
+    }
+    for (i in 1:nObs_B) {
+        p0_B[i] <- p_single_B[i, 1] + p_single_B[i, 2] - p_single_B[i, 
+            1] * p_single_B[i, 2]
+        logit(p_B[i]) <- log(p0_B[i]/(1 - p0_B[i])) + eta_B * 
+            combo_interaction_B[i]
+        y_B[i] ~ dbern(p_B[i])
+    }
+    for (i in 1:nObs_C) {
+        logit(p_C[i]) <- alpha0_C + alpha1_C * log(x_C[i]/ref_dose_C)
+        y_C[i] ~ dbern(p_C[i])
+    }
+}
+{
+    alpha0_A <- theta_A[1]
+    alpha1_A <- exp(theta_A[2])
+    alpha0_drug1_B <- theta_drug1_B[1]
+    alpha1_drug1_B <- exp(theta_drug1_B[2])
+    alpha0_drug2_B <- theta_drug2_B[1]
+    alpha1_drug2_B <- exp(theta_drug2_B[2])
+    alpha0_B[1L] <- alpha0_drug1_B
+    alpha0_B[2L] <- alpha0_drug2_B
+    alpha1_B[1L] <- alpha1_drug1_B
+    alpha1_B[2L] <- alpha1_drug2_B
+    eta_B ~ dnorm(eta_gamma_B, eta_tau_B)
+    alpha0_C <- theta_C[1]
+    alpha1_C <- exp(theta_C[2])
+    theta_A[1:2] ~ dmnorm(mu_comp1_corr[], prec_comp1_corr[, 
+        ])
+    theta_drug1_B[1:2] ~ dmnorm(mu_comp1_corr[], prec_comp1_corr[, 
+        ])
+    mu_comp1_corr[1] <- mu_comp1_intercept
+    mu_comp1_corr[2] <- mu_comp1_slope
+    rho_comp1 ~ dunif(rho_comp1_lower, rho_comp1_upper)
+    prec_comp1_corr[1, 1] <- 1/(pow(tau_comp1_intercept, 2) * 
+        (1 - pow(rho_comp1, 2)))
+    prec_comp1_corr[2, 2] <- 1/(pow(tau_comp1_slope, 2) * (1 - 
+        pow(rho_comp1, 2)))
+    prec_comp1_corr[1, 2] <- -rho_comp1/(tau_comp1_intercept * 
+        tau_comp1_slope * (1 - pow(rho_comp1, 2)))
+    prec_comp1_corr[2, 1] <- prec_comp1_corr[1, 2]
+    mu_comp1_intercept ~ dnorm(mu_comp1_intercept_mean, pow(mu_comp1_intercept_sd, 
+        -2))
+    tau_comp1_intercept ~ dlnorm(tau_comp1_intercept_meanlog, 
+        pow(tau_comp1_intercept_sdlog, -2))
+    mu_comp1_slope ~ dnorm(mu_comp1_slope_mean, pow(mu_comp1_slope_sd, 
+        -2))
+    tau_comp1_slope ~ dlnorm(tau_comp1_slope_meanlog, pow(tau_comp1_slope_sdlog, 
+        -2))
+    theta_drug2_B[1:2] ~ dmnorm(mu_comp2_corr[], prec_comp2_corr[, 
+        ])
+    theta_C[1:2] ~ dmnorm(mu_comp2_corr[], prec_comp2_corr[, 
+        ])
+    mu_comp2_corr[1] <- mu_comp2_intercept
+    mu_comp2_corr[2] <- mu_comp2_slope
+    rho_comp2 ~ dunif(rho_comp2_lower, rho_comp2_upper)
+    prec_comp2_corr[1, 1] <- 1/(pow(tau_comp2_intercept, 2) * 
+        (1 - pow(rho_comp2, 2)))
+    prec_comp2_corr[2, 2] <- 1/(pow(tau_comp2_slope, 2) * (1 - 
+        pow(rho_comp2, 2)))
+    prec_comp2_corr[1, 2] <- -rho_comp2/(tau_comp2_intercept * 
+        tau_comp2_slope * (1 - pow(rho_comp2, 2)))
+    prec_comp2_corr[2, 1] <- prec_comp2_corr[1, 2]
+    mu_comp2_intercept ~ dnorm(mu_comp2_intercept_mean, pow(mu_comp2_intercept_sd, 
+        -2))
+    tau_comp2_intercept ~ dlnorm(tau_comp2_intercept_meanlog, 
+        pow(tau_comp2_intercept_sdlog, -2))
+    mu_comp2_slope ~ dnorm(mu_comp2_slope_mean, pow(mu_comp2_slope_sd, 
+        -2))
+    tau_comp2_slope ~ dlnorm(tau_comp2_slope_meanlog, pow(tau_comp2_slope_sdlog, 
+        -2))
+}
+````
 
 ### Conclusion
 

@@ -6,7 +6,8 @@ source_files <- c(
   "crmPack-jss-paper.Rmd.orig",
   "knit_print.Rmd.orig",
   "rolling-crm.Rmd.orig",
-  "trial_sanity_checks.Rmd.orig"
+  "trial_sanity_checks.Rmd.orig",
+  "comparison_decider.Rmd.orig"
 )
 setwd("vignettes")
 devtools::load_all("..")
