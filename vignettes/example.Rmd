@@ -202,16 +202,16 @@ str(model)
 #>   .. .. ..@ .Data: num 56
 #>   ..@ datamodel      :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 290 17 295 5 17 5 290 295
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ priormodel     :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 146 18 150 5 18 5 146 150
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ modelspecs     :function (from_prior)  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ init           :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ datanames      : chr [1:3] "nObs" "y" "x"
 #>   ..@ datanames_prior: chr(0) 
 #>   ..@ sample         : chr [1:2] "alpha0" "alpha1"
@@ -378,7 +378,7 @@ minInfModel <- MinimalInformative(
 #> Emini is: 0.05912244288
 #> xmini are:
 #> 0.5995305301 0.6542658519 1.344683068 0.003274296776 0.04149785291 
-#> Totally it used 16.387424 secs
+#> Totally it used 16.361409 secs
 #> No. of function call is: 10483
 #> Algorithm reached max number of iterations.
 ```
@@ -452,16 +452,16 @@ str(minInfModel$model)
 #>   .. .. ..@ .Data: num 50
 #>   ..@ datamodel      :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 220 17 225 5 17 5 220 225
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ priormodel     :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 226 18 230 5 18 5 226 230
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ modelspecs     :function (from_prior)  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ init           :function ()  
 #>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160
-#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8ee7f2970> 
+#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> 
 #>   ..@ datanames      : chr [1:3] "nObs" "y" "x"
 #>   ..@ datanames_prior: chr(0) 
 #>   ..@ sample         : chr [1:2] "alpha0" "alpha1"
@@ -1238,8 +1238,8 @@ examine(design)
 #> 16   24    3     18.0 FALSE       -25
 #> 17   30    0     38.0 FALSE        27
 #> 18   30    1     38.0 FALSE        27
-#> 19   30    2     34.0 FALSE        13
-#> 20   30    3     26.0 FALSE       -13
+#> 19   30    2     36.0 FALSE        20
+#> 20   30    3     28.0 FALSE        -7
 #> 21   38    0     50.0 FALSE        32
 #> 22   38    1     50.0 FALSE        32
 #> 23   38    2     42.0 FALSE        11
@@ -1319,11 +1319,11 @@ time <- system.time(mySims <- simulate(design,
 ))[3]
 time
 #> elapsed 
-#>  47.425
+#>  45.932
 ```
 
 We have wrapped the call to `simulate` in a `system.time` to
-obtain the required time for the simulations (about 47 seconds
+obtain the required time for the simulations (about 46 seconds
 in this case). The argument `args` could contain additional arguments for
 the `truth` function, which we did not require here and therefore let it
 at the default `NULL`. We specify the number of simulations with
@@ -1788,7 +1788,7 @@ time <- system.time(futureSims <- simulate(
 ))[3]
 time
 #> elapsed 
-#>   5.295
+#>   5.276
 ```
 
 And now, exactly in the same way as above for the operating characteristics
