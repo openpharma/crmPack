@@ -465,7 +465,7 @@ design <- Design(
 )
 ```
 We can then start by looking at the single trial operating characteristics of the dose escalation design with the function `examine`, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25&nbsp;mg, we would
-need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250&nbsp;mg cohort, the maximum considered dose of 300&nbsp;mg dose can be reached in the next cohort if also no DLTs are observed at 250&nbsp;mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150&nbsp;mg, respectively.
+need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250&nbsp;mg cohort, the maximum considered dose of 300&nbsp;mg dose can be reached in the next cohort if also no DLTs are observed at 250&nbsp;mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 275, 200 and 150&nbsp;mg, respectively.
 
 ``` r
 set.seed(23)
