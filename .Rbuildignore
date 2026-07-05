@@ -33,5 +33,6 @@ tests/testthat/_snaps
 lib
 ^vignettes/\.rebuild_vignettes\.R$
 ^vignettes/.*[.]Rmd[.]orig$
+^vignettes/figure$
 ^AGENTS\.md$
 tools/
