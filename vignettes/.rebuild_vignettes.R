@@ -1,6 +1,8 @@
 # Before each CRAN release, we need to rebuild the precomputed vignettes,
 # by executing this script.
 
+rm(list = ls())
+
 source_files <- c(
   "example.Rmd.orig",
   "crmPack-jss-paper.Rmd.orig",
@@ -9,6 +11,7 @@ source_files <- c(
   "trial_sanity_checks.Rmd.orig",
   "comparison_decider.Rmd.orig"
 )
+
 setwd("vignettes")
 devtools::load_all("..")
 

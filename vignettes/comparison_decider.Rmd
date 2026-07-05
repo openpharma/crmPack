@@ -71,8 +71,8 @@ The overall dose grid for combination Arm B is therefore:
 
 ``` r
 doses_of_interest <- rbind(
-    c(d1, rep(d1, times = length(d2))),
-    c(rep(0, length(d1)), rep(d2, each = length(d1)))
+  c(d1, rep(d1, times = length(d2))),
+  c(rep(0, length(d1)), rep(d2, each = length(d1)))
 )
 ```
 
@@ -97,11 +97,13 @@ The prior for the hypermeans is specified like this:
 
 ``` r
 #                Parameter   Mean         SD
-prior_mu <- list(mu_a1  =  c(logit(0.33), 2),
-                 mu_b1  =  c(0,           1), # standard normal
-                 mu_a2  =  c(logit(0.33), 2),
-                 mu_b2  =  c(0,           1), # standard normal
-                 mu_eta =  c(0,           1.121))
+prior_mu <- list(
+  mu_a1 = c(logit(0.33), 2),
+  mu_b1 = c(0, 1), # standard normal
+  mu_a2 = c(logit(0.33), 2),
+  mu_b2 = c(0, 1), # standard normal
+  mu_eta = c(0, 1.121)
+)
 ```
 
 The prior mean for $\mu_{\alpha_{1}}$ is set to $\text{logit}(0.33)$, which implies that we assume the reference dose has a prior median DLT rate of 33%.
@@ -113,11 +115,13 @@ The prior for the between-trial heterogeneity parameters is specified like this:
 
 ``` r
 #                 Parameter    Mean        SD
-prior_tau <- list(tau_a1  =  c(log(0.25),  log(2) / 1.96),
-                  tau_b1  =  c(log(0.125), log(2) / 1.96),
-                  tau_a2  =  c(log(0.25),  log(2) / 1.96),
-                  tau_b2  =  c(log(0.125), log(2) / 1.96),
-                  tau_eta =  c(log(0.125), log(2) / 1.96))
+prior_tau <- list(
+  tau_a1 = c(log(0.25), log(2) / 1.96),
+  tau_b1 = c(log(0.125), log(2) / 1.96),
+  tau_a2 = c(log(0.25), log(2) / 1.96),
+  tau_b2 = c(log(0.125), log(2) / 1.96),
+  tau_eta = c(log(0.125), log(2) / 1.96)
+)
 ```
 
 These are all the log normal prior parameters for the corresponding $\tau$ parameters. These are all "moderate" degrees of heterogeneity, according to @Neuenschwander2015.
@@ -131,7 +135,7 @@ scenario1 <- list(
   dose2 = c(0, 0),
   n.pat = c(3, 3),
   n.dlt = c(0, 1),
-  trial = c("A",  "A")
+  trial = c("A", "A")
 )
 ```
 
@@ -161,65 +165,65 @@ We can look at the results:
 result1
 #> $`trial-A`
 #>          mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
-#> 0.1+0 0.11533 0.10905 0.00315 0.08201 0.40467     0.74066        0.20435
-#> 0.2+0 0.15429 0.12864 0.00694 0.11984 0.48110     0.61625        0.27596
-#> 0.4+0 0.20774 0.15493 0.01330 0.17228 0.58231     0.46928        0.32509
-#> 0.8+0 0.27652 0.18742 0.02276 0.24116 0.70420     0.33097        0.32387
-#> 1.6+0 0.35671 0.22101 0.03450 0.32519 0.82419     0.22573        0.28160
-#> 2.4+0 0.40577 0.23833 0.04218 0.37986 0.88061     0.17927        0.25179
-#> 3.6+0 0.45428 0.25259 0.05038 0.43689 0.92343     0.14399        0.22150
-#> 5+0   0.49219 0.26158 0.05735 0.48379 0.94872     0.12132        0.19773
-#> 6+0   0.51248 0.26556 0.06162 0.50971 0.95928     0.11050        0.18518
+#> 0.1+0 0.11476 0.10830 0.00307 0.08195 0.40222     0.74258        0.20375
+#> 0.2+0 0.15363 0.12816 0.00678 0.11978 0.47951     0.61792        0.27633
+#> 0.4+0 0.20690 0.15472 0.01321 0.17167 0.57999     0.46960        0.32660
+#> 0.8+0 0.27541 0.18732 0.02266 0.23982 0.70318     0.33433        0.32330
+#> 1.6+0 0.35539 0.22075 0.03441 0.32334 0.82613     0.22663        0.28330
+#> 2.4+0 0.40445 0.23802 0.04223 0.37766 0.88246     0.18081        0.25243
+#> 3.6+0 0.45303 0.25235 0.05015 0.43530 0.92474     0.14508        0.22156
+#> 5+0   0.49104 0.26144 0.05738 0.48150 0.94905     0.12187        0.19911
+#> 6+0   0.51138 0.26549 0.06134 0.50838 0.95930     0.11073        0.18699
 #>       P([0.33,1])
-#> 0.1+0     0.05499
-#> 0.2+0     0.10779
-#> 0.4+0     0.20563
-#> 0.8+0     0.34516
-#> 1.6+0     0.49267
-#> 2.4+0     0.56894
-#> 3.6+0     0.63451
-#> 5+0       0.68095
-#> 6+0       0.70432
+#> 0.1+0     0.05367
+#> 0.2+0     0.10575
+#> 0.4+0     0.20380
+#> 0.8+0     0.34237
+#> 1.6+0     0.49007
+#> 2.4+0     0.56676
+#> 3.6+0     0.63336
+#> 5+0       0.67902
+#> 6+0       0.70228
 #> 
 #> $`trial-B`
 #>           mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
-#> 0.1+8  0.18557 0.12565 0.02712 0.15586 0.51005     0.51429        0.35803
-#> 0.2+8  0.22030 0.14204 0.03504 0.18851 0.57576     0.41059        0.39297
-#> 0.4+8  0.26739 0.16293 0.04589 0.23364 0.65971     0.30157        0.39740
-#> 0.8+8  0.32850 0.18825 0.05960 0.29472 0.75675     0.20521        0.36125
-#> 1.6+8  0.40165 0.21622 0.07382 0.37231 0.85401     0.13647        0.29601
-#> 2.4+8  0.44739 0.23284 0.08059 0.42396 0.90157     0.11118        0.25301
-#> 3.6+8  0.49277 0.24964 0.08253 0.48023 0.93991     0.09733        0.21350
-#> 5+8    0.52757 0.26409 0.07751 0.52732 0.96327     0.09514        0.18399
-#> 6+8    0.54553 0.27286 0.07198 0.55450 0.97295     0.09756        0.16926
-#> 0.1+12 0.22340 0.12665 0.05161 0.19767 0.53959     0.36391        0.45649
-#> 0.2+12 0.25654 0.14118 0.06042 0.22914 0.60170     0.28027        0.46030
-#> 0.4+12 0.30153 0.16020 0.07224 0.27220 0.68026     0.19876        0.43166
-#> 0.8+12 0.35998 0.18418 0.08630 0.33038 0.77317     0.13276        0.36637
-#> 1.6+12 0.42999 0.21273 0.09724 0.40470 0.86712     0.09267        0.28251
-#> 2.4+12 0.47352 0.23176 0.09654 0.45574 0.91421     0.08445        0.23455
-#> 3.6+12 0.51589 0.25355 0.08666 0.51086 0.95137     0.08747        0.19457
-#> 5+12   0.54701 0.27437 0.06911 0.55842 0.97331     0.09964        0.16702
-#> 6+12   0.56214 0.28748 0.05673 0.58514 0.98245     0.11097        0.15329
+#> 0.1+8  0.18499 0.12531 0.02801 0.15503 0.50643     0.51785        0.35590
+#> 0.2+8  0.21960 0.14184 0.03608 0.18705 0.57531     0.41225        0.39285
+#> 0.4+8  0.26650 0.16281 0.04676 0.23220 0.66092     0.30400        0.39922
+#> 0.8+8  0.32726 0.18811 0.06020 0.29267 0.75961     0.20727        0.36418
+#> 1.6+8  0.39993 0.21595 0.07462 0.36931 0.85452     0.13778        0.29682
+#> 2.4+8  0.44536 0.23254 0.08084 0.42106 0.90332     0.11151        0.25587
+#> 3.6+8  0.49040 0.24939 0.08279 0.47581 0.94093     0.09820        0.21560
+#> 5+8    0.52488 0.26395 0.07861 0.52302 0.96410     0.09580        0.18718
+#> 6+8    0.54263 0.27281 0.07317 0.54909 0.97373     0.09792        0.17303
+#> 0.1+12 0.22293 0.12639 0.05296 0.19666 0.53729     0.36570        0.45523
+#> 0.2+12 0.25593 0.14103 0.06224 0.22749 0.60056     0.28249        0.46065
+#> 0.4+12 0.30068 0.16008 0.07415 0.27104 0.68209     0.19995        0.43515
+#> 0.8+12 0.35874 0.18398 0.08805 0.32847 0.77431     0.13340        0.36974
+#> 1.6+12 0.42817 0.21240 0.09848 0.40230 0.86748     0.09293        0.28639
+#> 2.4+12 0.47129 0.23141 0.09834 0.45185 0.91543     0.08393        0.23976
+#> 3.6+12 0.51320 0.25328 0.08802 0.50630 0.95261     0.08737        0.19818
+#> 5+12   0.54391 0.27424 0.07049 0.55326 0.97387     0.10095        0.17097
+#> 6+12   0.55882 0.28745 0.05837 0.57989 0.98262     0.11237        0.15713
 #>        P([0.33,1])
-#> 0.1+8      0.12768
-#> 0.2+8      0.19644
-#> 0.4+8      0.30103
-#> 0.8+8      0.43354
-#> 1.6+8      0.56752
-#> 2.4+8      0.63581
-#> 3.6+8      0.68917
-#> 5+8        0.72087
-#> 6+8        0.73318
-#> 0.1+12     0.17960
-#> 0.2+12     0.25943
-#> 0.4+12     0.36958
-#> 0.8+12     0.50087
-#> 1.6+12     0.62482
-#> 2.4+12     0.68100
-#> 3.6+12     0.71796
-#> 5+12       0.73334
-#> 6+12       0.73574
+#> 0.1+8      0.12625
+#> 0.2+8      0.19490
+#> 0.4+8      0.29678
+#> 0.8+8      0.42855
+#> 1.6+8      0.56540
+#> 2.4+8      0.63262
+#> 3.6+8      0.68620
+#> 5+8        0.71702
+#> 6+8        0.72905
+#> 0.1+12     0.17907
+#> 0.2+12     0.25686
+#> 0.4+12     0.36490
+#> 0.8+12     0.49686
+#> 1.6+12     0.62068
+#> 2.4+12     0.67631
+#> 3.6+12     0.71445
+#> 5+12       0.72808
+#> 6+12       0.73050
 ```
 
 For each trial of interest, the posterior toxicities previously designated to be of interest are shown.
@@ -255,9 +259,9 @@ And for compound 2 the same:
 
 ``` r
 mono_model2 <- LogisticLogNormal(
-    mean = c(logit(0.33), 0),
-    cov = diag(c(2, 1)^2),
-    ref_dose = dose_ref2
+  mean = c(logit(0.33), 0),
+  cov = diag(c(2, 1)^2),
+  ref_dose = dose_ref2
 )
 ```
 
@@ -266,12 +270,12 @@ Then we define the combination model:
 
 ``` r
 combo_model <- TwoDrugsCombo(
-    list(
-        compound1 = mono_model1,
-        compound2 = mono_model2
-    ),
-    gamma = 0, # prior mean for the interaction parameter
-    tau = 1 / (1.121^2) # prior precision for the interaction parameter
+  list(
+    compound1 = mono_model1,
+    compound2 = mono_model2
+  ),
+  gamma = 0, # prior mean for the interaction parameter
+  tau = 1 / (1.121^2) # prior precision for the interaction parameter
 )
 ```
 
@@ -280,12 +284,12 @@ We define the historical data which is already available:
 
 ``` r
 hist_data_comp2 <- Data(
-    x = rep(historical_data$dose2, historical_data$n.pat),
-    y = c(
-        rep(0, sum(historical_data$n.pat) - sum(historical_data$n.dlt)), 
-        rep(1, sum(historical_data$n.dlt))
-    ),
-    doseGrid = historical_data$dose2
+  x = rep(historical_data$dose2, historical_data$n.pat),
+  y = c(
+    rep(0, sum(historical_data$n.pat) - sum(historical_data$n.dlt)),
+    rep(1, sum(historical_data$n.dlt))
+  ),
+  doseGrid = historical_data$dose2
 )
 ```
 
@@ -296,9 +300,9 @@ We are going to use simple rules here (they are not relevant for the current sce
 my_stopping <- StoppingMinPatients(nPatients = 50)
 my_increments <- IncrementsRelative(0, 2)
 myNextBest <- NextBestNCRM(
-    target = c(0.16, 0.33), 
-    overdose = c(0.33, 1), 
-    max_overdose_prob = 0.25
+  target = c(0.16, 0.33),
+  overdose = c(0.33, 1),
+  max_overdose_prob = 0.25
 )
 my_cohort_size <- CohortSizeConst(size = 3)
 my_increments_combo <- IncrementsComboOneDrugOnly()
@@ -309,36 +313,36 @@ Then we define the design arms accordingly:
 
 ``` r
 designArmA <- DesignArm(
-    "A",
-    design = Design(
-        data = Data(doseGrid = d1),
-        startingDose = d1[1],
-        model = mono_model1,
-        stopping = my_stopping,
-        increments = my_increments,
-        nextBest = myNextBest,
-        cohort_size = my_cohort_size
-    )
+  "A",
+  design = Design(
+    data = Data(doseGrid = d1),
+    startingDose = d1[1],
+    model = mono_model1,
+    stopping = my_stopping,
+    increments = my_increments,
+    nextBest = myNextBest,
+    cohort_size = my_cohort_size
+  )
 )
 
 designArmB <- DesignArm(
-    "B",
-    design = DesignCombo(
-        data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
-        startingDose = c(compound1 = d1[1], compound2 = 0),
-        model = combo_model,
-        stopping = my_stopping,
-        increments = my_increments_combo,
-        nextBest = myNextBest,
-        cohort_size = my_cohort_size
-    ),
-    open_when = ArmMinDoseCondition("A", min_dose = d1[2])
+  "B",
+  design = DesignCombo(
+    data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
+    startingDose = c(compound1 = d1[1], compound2 = 0),
+    model = combo_model,
+    stopping = my_stopping,
+    increments = my_increments_combo,
+    nextBest = myNextBest,
+    cohort_size = my_cohort_size
+  ),
+  open_when = ArmMinDoseCondition("A", min_dose = d1[2])
 )
 
 designArmC <- HistoricalArm(
-    "C",
-    data = hist_data_comp2,
-    model = mono_model2
+  "C",
+  data = hist_data_comp2,
+  model = mono_model2
 )
 ```
 
@@ -347,49 +351,49 @@ Now we can define the hierarchical design:
 
 ``` r
 design_hierarchical <- HierarchicalDesign(
-    designArmA,
-    designArmB,
-    designArmC,
-    exchangeable_parameters = list(
-        comp1_intercept = list(
-            A = "alpha0",
-            B = "alpha0[1]"
-        ),
-        comp1_slope = list(
-            A = "alpha1",
-            B = "alpha1[1]"
-        ),
-        comp2_intercept = list(
-            B = "alpha0[2]",
-            C = "alpha0"
-        ),
-        comp2_slope = list(
-            B = "alpha1[2]",
-            C = "alpha1"    
-        )
+  designArmA,
+  designArmB,
+  designArmC,
+  exchangeable_parameters = list(
+    comp1_intercept = list(
+      A = "alpha0",
+      B = "alpha0[1]"
     ),
-    pool_correlations = list(
-        comp1 = c("comp1_intercept", "comp1_slope"),
-        comp2 = c("comp2_intercept", "comp2_slope")
+    comp1_slope = list(
+      A = "alpha1",
+      B = "alpha1[1]"
     ),
-    pool_priors = list(
-        comp1_intercept = list(
-            mu = prior_mu$mu_a1,
-            tau = prior_tau$tau_a1
-        ),
-        comp1_slope = list(
-            mu = prior_mu$mu_b1,
-            tau = prior_tau$tau_b1
-        ),
-        comp2_intercept = list(
-            mu = prior_mu$mu_a2,
-            tau = prior_tau$tau_a2
-        ),
-        comp2_slope = list(
-            mu = prior_mu$mu_b2,
-            tau = prior_tau$tau_b2
-        )
+    comp2_intercept = list(
+      B = "alpha0[2]",
+      C = "alpha0"
+    ),
+    comp2_slope = list(
+      B = "alpha1[2]",
+      C = "alpha1"
     )
+  ),
+  pool_correlations = list(
+    comp1 = c("comp1_intercept", "comp1_slope"),
+    comp2 = c("comp2_intercept", "comp2_slope")
+  ),
+  pool_priors = list(
+    comp1_intercept = list(
+      mu = prior_mu$mu_a1,
+      tau = prior_tau$tau_a1
+    ),
+    comp1_slope = list(
+      mu = prior_mu$mu_b1,
+      tau = prior_tau$tau_b1
+    ),
+    comp2_intercept = list(
+      mu = prior_mu$mu_a2,
+      tau = prior_tau$tau_a2
+    ),
+    comp2_slope = list(
+      mu = prior_mu$mu_b2,
+      tau = prior_tau$tau_b2
+    )
+  )
 )
 ```
 
@@ -404,13 +408,13 @@ Then we define the scenario:
 
 ``` r
 scenario_hierarchical <- HierarchicalData(
-    A = Data(
-        x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
-        y = c(0, 0, 0, 0, 0, 1),
-        doseGrid = designArmA@design@data@doseGrid
-    ),
-    B = designArmB@design@data,
-    C = designArmC@design@data
+  A = Data(
+    x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
+    y = c(0, 0, 0, 0, 0, 1),
+    doseGrid = designArmA@design@data@doseGrid
+  ),
+  B = designArmB@design@data,
+  C = designArmC@design@data
 )
 ```
 
@@ -419,9 +423,15 @@ And then we can use the `scenario()` function:
 
 ``` r
 result1CrmPack <- scenario(
-    design_hierarchical,
-    data = scenario_hierarchical,
-    mcmcOptions = McmcOptions()
+  design_hierarchical,
+  data = scenario_hierarchical,
+  mcmcOptions = McmcOptions(
+    burnin = 5000,
+    step = 2,
+    samples = 10000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 3819
+  )
 )
 ```
 
@@ -432,53 +442,53 @@ We can look at the fit results:
 result1CrmPack$fit
 #> $A
 #>   dose    middle       lower     upper
-#> 1  0.1 0.1407995 0.005295787 0.4937883
-#> 2  0.2 0.1826502 0.014432700 0.5464696
-#> 3  0.4 0.2386864 0.028407413 0.6280273
-#> 4  0.8 0.3102918 0.041100361 0.7222728
-#> 5  1.6 0.3942466 0.051212191 0.8182096
-#> 6  2.4 0.4453440 0.056586907 0.8661251
-#> 7  3.6 0.4947799 0.061978937 0.9091248
-#> 8  5.0 0.5321623 0.065890208 0.9357199
-#> 9  6.0 0.5515949 0.067648517 0.9473867
+#> 1  0.1 0.1046387 0.002845412 0.3799733
+#> 2  0.2 0.1375386 0.005605476 0.4545443
+#> 3  0.4 0.1830381 0.010328016 0.5582113
+#> 4  0.8 0.2428908 0.016980233 0.6730738
+#> 5  1.6 0.3138176 0.026002062 0.8121629
+#> 6  2.4 0.3578495 0.031423841 0.8786569
+#> 7  3.6 0.4024675 0.037853283 0.9273444
+#> 8  5.0 0.4384830 0.044326003 0.9541833
+#> 9  6.0 0.4582433 0.047451227 0.9649142
 #> 
 #> $B
 #>    compound1 compound2    middle       lower     upper
-#> 1        0.1         0 0.1440166 0.003121785 0.5266384
-#> 2        0.2         0 0.1844345 0.009268448 0.5942079
-#> 3        0.4         0 0.2380199 0.021178455 0.6697797
-#> 4        0.8         0 0.3066369 0.034340342 0.7600865
-#> 5        1.6         0 0.3886614 0.046396291 0.8446266
-#> 6        2.4         0 0.4397581 0.053031472 0.8855780
-#> 7        3.6         0 0.4899070 0.057805894 0.9187044
-#> 8        5.0         0 0.5281072 0.062530357 0.9401462
-#> 9        6.0         0 0.5480017 0.064903444 0.9505503
-#> 10       0.1         8 0.2002601 0.019947387 0.5545810
-#> 11       0.2         8 0.2380454 0.030704273 0.6182847
-#> 12       0.4         8 0.2882041 0.047395498 0.6920547
-#> 13       0.8         8 0.3526387 0.068013284 0.7785380
-#> 14       1.6         8 0.4300104 0.087493642 0.8595002
-#> 15       2.4         8 0.4781780 0.091900770 0.8991359
-#> 16       3.6         8 0.5249353 0.092564762 0.9347802
-#> 17       5.0         8 0.5595701 0.086014353 0.9581764
-#> 18       6.0         8 0.5768971 0.079647464 0.9692442
-#> 19       0.1        12 0.2421937 0.051671158 0.5872622
-#> 20       0.2        12 0.2781230 0.062404517 0.6415353
-#> 21       0.4        12 0.3258863 0.080055761 0.7074648
-#> 22       0.8        12 0.3873621 0.099882881 0.7941856
-#> 23       1.6        12 0.4611422 0.115575804 0.8720211
-#> 24       2.4        12 0.5066145 0.116182503 0.9118151
-#> 25       3.6        12 0.5496531 0.104022974 0.9462170
-#> 26       5.0        12 0.5799097 0.083169341 0.9716268
-#> 27       6.0        12 0.5940229 0.068708851 0.9814791
+#> 1        0.1         0 0.1081103 0.001717895 0.4345796
+#> 2        0.2         0 0.1402851 0.004019373 0.5045911
+#> 3        0.4         0 0.1841187 0.008609725 0.6001470
+#> 4        0.8         0 0.2415920 0.015004694 0.7060277
+#> 5        1.6         0 0.3110846 0.023878252 0.8267028
+#> 6        2.4         0 0.3552291 0.030848217 0.8848043
+#> 7        3.6         0 0.4004119 0.037371329 0.9292687
+#> 8        5.0         0 0.4369976 0.043385942 0.9543399
+#> 9        6.0         0 0.4570713 0.046520408 0.9638559
+#> 10       0.1         8 0.1680642 0.020035557 0.4821143
+#> 11       0.2         8 0.1979350 0.024714265 0.5462661
+#> 12       0.4         8 0.2386073 0.032715232 0.6325631
+#> 13       0.8         8 0.2920212 0.042641168 0.7305542
+#> 14       1.6         8 0.3569261 0.057823207 0.8472238
+#> 15       2.4         8 0.3983816 0.065845515 0.8996631
+#> 16       3.6         8 0.4408956 0.070382427 0.9385514
+#> 17       5.0         8 0.4750114 0.068897732 0.9617663
+#> 18       6.0         8 0.4933233 0.062921024 0.9718469
+#> 19       0.1        12 0.2146454 0.054590315 0.5233133
+#> 20       0.2        12 0.2429429 0.061520366 0.5792393
+#> 21       0.4        12 0.2814837 0.069538399 0.6594620
+#> 22       0.8        12 0.3321423 0.079706787 0.7475603
+#> 23       1.6        12 0.3937753 0.089594383 0.8616008
+#> 24       2.4        12 0.4330593 0.089450473 0.9101683
+#> 25       3.6        12 0.4728402 0.080188572 0.9481548
+#> 26       5.0        12 0.5036724 0.064814119 0.9713802
+#> 27       6.0        12 0.5194371 0.053337582 0.9808318
 #> 
 #> $C
-#>   dose     middle        lower      upper
-#> 1    2 0.01808136 1.236549e-07 0.09934627
-#> 2    4 0.03024506 1.450462e-05 0.12649290
-#> 3    8 0.06006885 1.977201e-03 0.17212528
-#> 4   12 0.10593455 2.070334e-02 0.24906697
-#> 5   16 0.17961751 3.738200e-02 0.40831621
+#>   dose     middle        lower     upper
+#> 1    2 0.01861966 7.877314e-07 0.1095317
+#> 2    4 0.03034311 5.594861e-05 0.1289899
+#> 3    8 0.06173245 3.672557e-03 0.1769157
+#> 4   12 0.11106989 2.874351e-02 0.2434508
+#> 5   16 0.18420600 5.320721e-02 0.3849792
 ```
 
 We can also check the probabilities to be in target and overdosing intervals:
@@ -487,44 +497,44 @@ We can also check the probabilities to be in target and overdosing intervals:
 ``` r
 result1CrmPack$next_best$A$probs
 #>       dose target overdose
-#>  [1,]  0.1 0.2412   0.0937
-#>  [2,]  0.2 0.3061   0.1498
-#>  [3,]  0.4 0.3481   0.2560
-#>  [4,]  0.8 0.3393   0.4084
-#>  [5,]  1.6 0.2607   0.5842
-#>  [6,]  2.4 0.2160   0.6509
-#>  [7,]  3.6 0.1812   0.7025
-#>  [8,]  5.0 0.1490   0.7454
-#>  [9,]  6.0 0.1413   0.7595
+#>  [1,]  0.1 0.1765   0.0430
+#>  [2,]  0.2 0.2496   0.0798
+#>  [3,]  0.4 0.3179   0.1485
+#>  [4,]  0.8 0.3565   0.2618
+#>  [5,]  1.6 0.3479   0.3894
+#>  [6,]  2.4 0.3218   0.4756
+#>  [7,]  3.6 0.2736   0.5582
+#>  [8,]  5.0 0.2476   0.6108
+#>  [9,]  6.0 0.2247   0.6461
 result1CrmPack$next_best$B$probs
 #>    compound1 compound2 target_prob overdose_prob not_eligible
-#> 1        0.1         0      0.2225        0.1096        FALSE
-#> 2        0.2         0      0.2779        0.1664        FALSE
-#> 3        0.4         0      0.3222        0.2607         TRUE
-#> 4        0.8         0      0.3241        0.3969         TRUE
-#> 5        1.6         0      0.2565        0.5619         TRUE
-#> 6        2.4         0      0.2153        0.6388         TRUE
-#> 7        3.6         0      0.1814        0.6958         TRUE
-#> 8        5.0         0      0.1563        0.7322         TRUE
-#> 9        6.0         0      0.1453        0.7497         TRUE
-#> 10       0.1         8      0.3472        0.1674        FALSE
-#> 11       0.2         8      0.3776        0.2434        FALSE
-#> 12       0.4         8      0.3872        0.3489         TRUE
-#> 13       0.8         8      0.3527        0.4836         TRUE
-#> 14       1.6         8      0.2595        0.6359         TRUE
-#> 15       2.4         8      0.2186        0.6962         TRUE
-#> 16       3.6         8      0.1828        0.7423         TRUE
-#> 17       5.0         8      0.1575        0.7654         TRUE
-#> 18       6.0         8      0.1456        0.7740         TRUE
-#> 19       0.1        12      0.4541        0.2277        FALSE
-#> 20       0.2        12      0.4535        0.3108         TRUE
-#> 21       0.4        12      0.4173        0.4262         TRUE
-#> 22       0.8        12      0.3461        0.5626         TRUE
-#> 23       1.6        12      0.2438        0.6947         TRUE
-#> 24       2.4        12      0.2005        0.7435         TRUE
-#> 25       3.6        12      0.1686        0.7693         TRUE
-#> 26       5.0        12      0.1434        0.7797         TRUE
-#> 27       6.0        12      0.1310        0.7802         TRUE
+#> 1        0.1         0      0.1761        0.0581        FALSE
+#> 2        0.2         0      0.2299        0.0978        FALSE
+#> 3        0.4         0      0.2856        0.1658        FALSE
+#> 4        0.8         0      0.3253        0.2645         TRUE
+#> 5        1.6         0      0.3218        0.3895         TRUE
+#> 6        2.4         0      0.3048        0.4694         TRUE
+#> 7        3.6         0      0.2697        0.5477         TRUE
+#> 8        5.0         0      0.2396        0.6086         TRUE
+#> 9        6.0         0      0.2250        0.6372         TRUE
+#> 10       0.1         8      0.3204        0.1022        FALSE
+#> 11       0.2         8      0.3719        0.1515        FALSE
+#> 12       0.4         8      0.3986        0.2348        FALSE
+#> 13       0.8         8      0.3860        0.3477         TRUE
+#> 14       1.6         8      0.3363        0.4783         TRUE
+#> 15       2.4         8      0.2966        0.5518         TRUE
+#> 16       3.6         8      0.2565        0.6145         TRUE
+#> 17       5.0         8      0.2278        0.6533         TRUE
+#> 18       6.0         8      0.2110        0.6694         TRUE
+#> 19       0.1        12      0.4629        0.1553        FALSE
+#> 20       0.2        12      0.4820        0.2145        FALSE
+#> 21       0.4        12      0.4678        0.3110         TRUE
+#> 22       0.8        12      0.4089        0.4340         TRUE
+#> 23       1.6        12      0.3295        0.5573         TRUE
+#> 24       2.4        12      0.2796        0.6179         TRUE
+#> 25       3.6        12      0.2383        0.6597         TRUE
+#> 26       5.0        12      0.2014        0.6827         TRUE
+#> 27       6.0        12      0.1839        0.6874         TRUE
 ```
 
 ## Comparison of fit
@@ -539,24 +549,24 @@ fitTrialADecider <- result1$`trial-A` |> as.data.frame()
 fitTrialACrmPack <- result1CrmPack$fit$A
 probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
 diffTrialA <- data.frame(
-    dose = fitTrialACrmPack$dose,
-    center = fitTrialADecider$mean - fitTrialACrmPack$middle,
-    lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
-    upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
-    target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
-    overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
+  dose = fitTrialACrmPack$dose,
+  center = fitTrialADecider$mean - fitTrialACrmPack$middle,
+  lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
+  upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
+  target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
+  overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
 )
 diffTrialA
-#>   dose      center        lower        upper   target overdose
-#> 1  0.1 -0.02546952 -0.002145787 -0.089118344 -0.03685 -0.03871
-#> 2  0.2 -0.02836023 -0.007492700 -0.065369561 -0.03014 -0.04201
-#> 3  0.4 -0.03094635 -0.015107413 -0.045717280 -0.02301 -0.05037
-#> 4  0.8 -0.03377181 -0.018340361 -0.018072780 -0.01543 -0.06324
-#> 5  1.6 -0.03753662 -0.016712191  0.005980405  0.02090 -0.09153
-#> 6  2.4 -0.03957402 -0.014406907  0.014484876  0.03579 -0.08196
-#> 7  3.6 -0.04049986 -0.011598937  0.014305245  0.04030 -0.06799
-#> 8  5.0 -0.03997227 -0.008540208  0.013000088  0.04873 -0.06445
-#> 9  6.0 -0.03911485 -0.006028517  0.011893333  0.04388 -0.05518
+#>   dose     center        lower        upper   target overdose
+#> 1  0.1 0.01012133 0.0002245881  0.022246708  0.02725  0.01067
+#> 2  0.2 0.01609142 0.0011745243  0.024965718  0.02673  0.02595
+#> 3  0.4 0.02386188 0.0028819842  0.021778652  0.00870  0.05530
+#> 4  0.8 0.03251923 0.0056797667  0.030106234 -0.03320  0.08057
+#> 5  1.6 0.04157237 0.0084079378  0.013967147 -0.06460  0.10067
+#> 6  2.4 0.04660054 0.0108061593  0.003803119 -0.06937  0.09116
+#> 7  3.6 0.05056254 0.0122967167 -0.002604407 -0.05204  0.07516
+#> 8  5.0 0.05255700 0.0130539967 -0.005133299 -0.04849  0.06822
+#> 9  6.0 0.05313669 0.0138887730 -0.005614243 -0.03771  0.05618
 ```
 
 And then the results for Arm B:
@@ -566,37 +576,37 @@ And then the results for Arm B:
 fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
 fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
 probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
-    as.data.frame() |>
-    dplyr::filter(compound2 > 0)
+  as.data.frame() |>
+  dplyr::filter(compound2 > 0)
 diffTrialB <- data.frame(
-    dose1 = fitTrialBCrmPack$compound1,
-    dose2 = fitTrialBCrmPack$compound2,
-    center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
-    lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
-    upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
-    target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
-    overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
+  dose1 = fitTrialBCrmPack$compound1,
+  dose2 = fitTrialBCrmPack$compound2,
+  center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
+  lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
+  upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
+  target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
+  overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
 )
 diffTrialB
-#>    dose1 dose2      center         lower         upper  target overdose
-#> 1    0.1     8 -0.01469006  7.172613e-03 -0.0445310228 0.01083 -0.03972
-#> 2    0.2     8 -0.01774541  4.335727e-03 -0.0425246531 0.01537 -0.04696
-#> 3    0.4     8 -0.02081415 -1.505498e-03 -0.0323447242 0.01020 -0.04787
-#> 4    0.8     8 -0.02413869 -8.413284e-03 -0.0217879706 0.00855 -0.05006
-#> 5    1.6     8 -0.02836038 -1.367364e-02 -0.0054901628 0.03651 -0.06838
-#> 6    2.4     8 -0.03078798 -1.131077e-02  0.0024340833 0.03441 -0.06039
-#> 7    3.6     8 -0.03216530 -1.003476e-02  0.0051297502 0.03070 -0.05313
-#> 8    5.0     8 -0.03200013 -8.504353e-03  0.0050936190 0.02649 -0.04453
-#> 9    6.0     8 -0.03136714 -7.667464e-03  0.0037057579 0.02366 -0.04082
-#> 10   0.1    12 -0.01879372 -6.115777e-05 -0.0476722429 0.00239 -0.04810
-#> 11   0.2    12 -0.02158302 -1.984517e-03 -0.0398353436 0.00680 -0.05137
-#> 12   0.4    12 -0.02435635 -7.815761e-03 -0.0272048337 0.01436 -0.05662
-#> 13   0.8    12 -0.02738209 -1.358288e-02 -0.0210155529 0.02027 -0.06173
-#> 14   1.6    12 -0.03115219 -1.833580e-02 -0.0049011289 0.03871 -0.06988
-#> 15   2.4    12 -0.03309447 -1.964250e-02  0.0023948546 0.03405 -0.06250
-#> 16   3.6    12 -0.03376309 -1.736297e-02  0.0051530095 0.02597 -0.05134
-#> 17   5.0    12 -0.03289974 -1.405934e-02  0.0016831618 0.02362 -0.04636
-#> 18   6.0    12 -0.03188293 -1.197885e-02  0.0009709258 0.02229 -0.04446
+#>    dose1 dose2      center         lower       upper   target overdose
+#> 1    0.1     8 0.016925829  0.0079744433 0.024315706  0.03550  0.02405
+#> 2    0.2     8 0.021665031  0.0113657352 0.029043938  0.02095  0.04340
+#> 3    0.4     8 0.027892695  0.0140447678 0.028356927  0.00062  0.06198
+#> 4    0.8     8 0.035238827  0.0175588316 0.029055790 -0.02182  0.08085
+#> 5    1.6     8 0.043003876  0.0167967925 0.007296226 -0.03948  0.08710
+#> 6    2.4     8 0.046978426  0.0149944850 0.003656907 -0.04073  0.08082
+#> 7    3.6     8 0.049504430  0.0124075730 0.002378648 -0.04090  0.07170
+#> 8    5.0     8 0.049868624  0.0097122675 0.002333679 -0.04062  0.06372
+#> 9    6.0     8 0.049306697  0.0102489765 0.001883140 -0.03797  0.05965
+#> 10   0.1    12 0.008284575 -0.0016303146 0.013976738 -0.00767  0.02377
+#> 11   0.2    12 0.012987070  0.0007196342 0.021320673 -0.02135  0.04236
+#> 12   0.4    12 0.019196349  0.0046116008 0.022627965 -0.03265  0.05390
+#> 13   0.8    12 0.026597705  0.0083432133 0.026749684 -0.03916  0.06286
+#> 14   1.6    12 0.034394743  0.0088856172 0.005879164 -0.04311  0.06338
+#> 15   2.4    12 0.038230724  0.0088895272 0.005261693 -0.03984  0.05841
+#> 16   3.6    12 0.040359797  0.0078314279 0.004455189 -0.04012  0.05475
+#> 17   5.0    12 0.040237551  0.0056758809 0.002489836 -0.03043  0.04538
+#> 18   6.0    12 0.039382933  0.0050324180 0.001788167 -0.02677  0.04310
 ```
 
 So these differences look relatively small, and there does not seem to be any 

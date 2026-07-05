@@ -29,6 +29,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   out.width = "100%"
 )
+
 ```
 
 # Abstract
@@ -310,7 +311,7 @@ then provided to the `mcmc` function, together with the `data` and the
 `model` objects:
 
 ```{r mcmc-sampling}
-options <- McmcOptions(burnin = 1000, step = 2, samples = 10000)
+options <- McmcOptions(burnin = 1000, step = 2, samples = 10000, rng_kind = "Mersenne-Twister", rng_seed = 3819)
 set.seed(94)
 samples <- mcmc(data, model, options)
 ```
@@ -621,6 +622,7 @@ general model class `GeneralModel`:
 Here we specify that the new class is called `OneParExp` and contains
 three additional slots containing the resulting skeleton prior probabilities,
 the dose grid, and the prior parameter $\lambda$.
+Note that in the current version of `crmPack` the class `OneParExpPrior` already implements this functionality, but we show it here nevertheless for illustration purposes.
 
 Second we have to create a convenient initialization function, which specifies
 the likelihood and prior distributions in the underlying `GeneralModel` in

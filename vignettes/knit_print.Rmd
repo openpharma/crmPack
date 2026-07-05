@@ -421,6 +421,13 @@ Placebo will not be administered in the trial.
 
 
 
+### Backfill cohorts
+
+No backfill cohorts at all will be opened.
+
+
+
+
 ### Dose recommendation
 
 The dose recommended for the next cohort will be chosen in the following way.  First, doses that are ineligible according to the increments rule will be discarded.  Next, any dose for which the mean posterior probability of toxicity being in the overdose range - (0.35, 1] - is 0.25 or more will also be discarded.  Finally, the dose amongst those remaining which has the highest chance that the mean posterior probability of toxicity is in the target toxicity range of 0.2 to 0.35 (inclusive) will be selected.
@@ -712,26 +719,38 @@ The dose recommended for the next cohort will be chosen in the following way.
 
 
 
-`crmPack` defines 125 classes. Custom `knit_print` methods exist for 92
-of them. Of the remaining 33 classes, 22 are virtual classes
-that will never be directly instantiated by end users. That leaves 11 classes for which
+`crmPack` defines 160 classes. Custom `knit_print` methods exist for 110
+of them. Of the remaining 50 classes, 27 are virtual classes
+that will never be directly instantiated by end users. That leaves 23 classes for which
 `knit_print` methods may be useful. These classes are listed below.
 
 
 
-|Class                  |
-|:----------------------|
-|DualSimulationsSummary |
-|NextBestEWOC           |
-|Simulations            |
-|StoppingExternal       |
-|DualSimulations        |
-|GeneralSimulations     |
-|Samples                |
-|DASimulations          |
-|IncrementsMaxToxProb   |
-|EffFlexi               |
-|McmcOptions            |
+|Class                   |
+|:-----------------------|
+|HierarchicalSimulations |
+|GeneralSimulations      |
+|Simulations             |
+|ComboSimulations        |
+|HierarchicalDesign      |
+|ArmConditionAny         |
+|ArmConditionAll         |
+|McmcOptions             |
+|HierarchicalSamples     |
+|IncrementsMaxToxProb    |
+|StoppingExternal        |
+|ArmFinishedCondition    |
+|Samples                 |
+|DesignArm               |
+|HierarchicalData        |
+|DualSimulationsSummary  |
+|DualSimulations         |
+|EffFlexi                |
+|NoArmCondition          |
+|DASimulations           |
+|ArmMinDoseCondition     |
+|ArmConditionList        |
+|NextBestEWOC            |
 
 
 
