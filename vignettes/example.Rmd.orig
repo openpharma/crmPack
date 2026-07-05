@@ -34,7 +34,9 @@ knitr::opts_chunk$set(
   tidy = "styler",
   fig.path = "./example-figures/",
   fig.width = 6,
-  out.width = "100%"
+  out.width = "100%",
+  webshot = "webshot2",
+  screenshot.opts = list(delay = 1)
 )
 ```
 

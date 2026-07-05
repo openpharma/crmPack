@@ -33,3 +33,8 @@ README.html
 /.quarto/
 **/*.quarto_ipynb
 *.png
+!man/figures/*.png
+!vignettes/*.png
+!vignettes/example-figures/*.png
+!vignettes/jss-figures/*.png
+!vignettes/rolling-crm-figures/*.png

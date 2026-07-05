@@ -1,11 +1,18 @@
 # Before each CRAN release, we need to rebuild the precomputed vignettes,
 # by executing this script.
 #
-# Important: The webshot package needs to be installed and
-# webshot::install_phantomjs()
-# needs to be run to be able to compile the example.Rmd vignette successfully.
+# Important: The webshot2 package and a Chrome/Chromium browser need to be
+# installed to capture htmlwidget figures in example.Rmd successfully.
 
 rm(list = ls())
+
+if (!requireNamespace("webshot2", quietly = TRUE)) {
+  stop(
+    "The webshot2 package is required to rebuild the precomputed vignettes. ",
+    "Please install it before running this script.",
+    call. = FALSE
+  )
+}
 
 source_files <- c(
   "example.Rmd.orig",
