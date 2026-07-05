@@ -36,3 +36,4 @@ lib
 ^vignettes/figure$
 ^AGENTS\.md$
 tools/
+tools
