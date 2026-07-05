@@ -1,0 +1,24 @@
+pandoc: '3.9'
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  combo_designs: combo_designs.html
+  comparison_decider: comparison_decider.html
+  crmPack-jss-paper: crmPack-jss-paper.html
+  example: example.html
+  knit_print: knit_print.html
+  ordinal-crm: ordinal-crm.html
+  parallel_computing_with_extensions: parallel_computing_with_extensions.html
+  rolling-crm: rolling-crm.html
+  simulations: simulations.html
+  tidy_method: tidy_method.html
+  trial_analysis: trial_analysis.html
+  trial_backfill: trial_backfill.html
+  trial_definition: trial_definition.html
+  trial_sanity_checks: trial_sanity_checks.html
+  trial_simulation: trial_simulation.html
+  upgrading_from_the_old_crmPack: upgrading_from_the_old_crmPack.html
+last_built: 2026-07-05T13:14Z
+urls:
+  reference: https://docs.crmpack.org/reference
+  article: https://docs.crmpack.org/articles
