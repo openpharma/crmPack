@@ -110,7 +110,7 @@ RuleDesignOrdinal(
 #> Slot "derive":
 #> function (x) 
 #> median(x, na.rm = TRUE)
-#> <environment: 0x55795bb87bf0>
+#> <environment: 0x560dc5ce0cc8>
 #> 
 #> 
 #> 
