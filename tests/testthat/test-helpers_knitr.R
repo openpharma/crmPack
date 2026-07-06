@@ -151,7 +151,7 @@ test_that("knit_print methods exist for all relevant classes and produce consist
                   "RStudio not running",
                   "This {rstudioapi} function is not currently implemented for VSCode."
                 )
-                if (!any(sapply(ignored_errors, grepl, e$message))) {
+                if (!any(sapply(ignored_errors, grepl, e$message, fixed = TRUE))) {
                   warning(
                     paste0("Error for class ", cls, ": "),
                     geterrmessage()
