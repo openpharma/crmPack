@@ -37,3 +37,4 @@ lib
 ^AGENTS\.md$
 tools/
 tools
+^\.devcontainer$
