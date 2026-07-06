@@ -13,7 +13,7 @@ h_prepare_labels(x)
 
 - x:
 
-  (`character`)  
+  (`character`)\
   The vector to be checked
 
 ## Value

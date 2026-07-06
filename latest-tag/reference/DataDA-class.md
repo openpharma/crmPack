@@ -3,8 +3,8 @@
 **\[stable\]**
 
 `DataDA` is a class for the time-to-DLT augmented data. It inherits from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional DLT free survival times.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional DLT free survival times.
 
 ## Usage
 
@@ -23,42 +23,42 @@ DataDA(
 
 - u:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of DLT free survival times.
 
 - t0:
 
-  (`numeric`)  
+  (`numeric`)\
   time of initial dosing for each patient. Non-negative values sorted in
   ascending order. Default to vector of 0s of length equal to length of
   `u`.
 
 - Tmax:
 
-  (`number`)  
+  (`number`)\
   the DLT observation period.
 
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 
 - `u`:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of DLT free survival times.
 
 - `t0`:
 
-  (`numeric`)  
+  (`numeric`)\
   time of initial dosing for each patient. Non-negative values sorted in
   ascending order.
 
 - `Tmax`:
 
-  (`number`)  
+  (`number`)\
   the DLT observation period.
 
 ## Note

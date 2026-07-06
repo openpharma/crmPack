@@ -19,29 +19,29 @@ StoppingMTDCV(target = 0.3, thresh_cv = 40, report_label = NA_character_)
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - thresh_cv:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   toxicity target of MTD (except 0 or 1).
 
 - `thresh_cv`:
 
-  (`number`)  
+  (`number`)\
   threshold (percentage \> 0) for CV to be considered accurate enough to
   stop the trial. The stopping occurs when the CV is less than or equal
   to `tresh_cv`.

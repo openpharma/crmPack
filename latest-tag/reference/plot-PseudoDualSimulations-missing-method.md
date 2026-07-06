@@ -5,7 +5,7 @@
 Summarize the simulations with plots.
 
 This plot method can be applied to
-[`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+[`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 objects in order to summarize them graphically. Possible `type`s of
 plots at the moment are:
 
@@ -34,17 +34,17 @@ plot(x, y, type = c("trajectory", "dosesTried", "sigma2"), ...)
 
 - x:
 
-  (`PseudoDualSimulations`)  
+  (`PseudoDualSimulations`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   missing object, not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the type of plots you want to obtain.
 
 - ...:

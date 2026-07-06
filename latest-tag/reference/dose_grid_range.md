@@ -25,7 +25,7 @@ dose_grid_range(object, ignore_placebo = TRUE)
 
 - object:
 
-  (`Data`)  
+  (`Data`)\
   object with dose grid.
 
 - ...:
@@ -34,7 +34,7 @@ dose_grid_range(object, ignore_placebo = TRUE)
 
 - ignore_placebo:
 
-  (`flag`)  
+  (`flag`)\
   should placebo dose (if any) not be counted?
 
 ## Value

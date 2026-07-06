@@ -46,7 +46,7 @@ size(object, ...)
 
 - object:
 
-  (`McmcOptions` or `Samples` or `CohortSize`)  
+  (`McmcOptions` or `Samples` or `CohortSize`)\
   an object for which the size is computed.
 
 - ...:
@@ -60,7 +60,7 @@ size(object, ...)
 - data:
 
   the data input, an object of class
-  [`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md).
+  [`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md).
 
 ## Value
 

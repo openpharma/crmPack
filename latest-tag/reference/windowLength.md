@@ -20,13 +20,13 @@ windowLength(safetyWindow, size, ...)
 
 - safetyWindow:
 
-  (`SafetyWindow`)  
+  (`SafetyWindow`)\
   the rule, an object of class
-  [`SafetyWindow`](https://openpharma.github.io/crmPack/reference/SafetyWindow-class.md).
+  [`SafetyWindow`](https://docs.crmpack.org/reference/SafetyWindow-class.md).
 
 - size:
 
-  (`integer`)  
+  (`integer`)\
   the next cohort size.
 
 - ...:
@@ -35,9 +35,9 @@ windowLength(safetyWindow, size, ...)
 
 - data:
 
-  (`DataDA`)  
+  (`DataDA`)\
   the data input, an object of class
-  [`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md).
+  [`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md).
 
 ## Value
 

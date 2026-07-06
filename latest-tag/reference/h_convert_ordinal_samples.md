@@ -3,10 +3,10 @@
 **\[experimental\]**
 
 A simple helper function that converts a
-[`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
-object from the fit of an ordinal CRM model to that which would have
-been obtained from fitting a binary CRM model for toxicities of a
-specified grade to the same observed data.
+[`Samples`](https://docs.crmpack.org/reference/Samples-class.md) object
+from the fit of an ordinal CRM model to that which would have been
+obtained from fitting a binary CRM model for toxicities of a specified
+grade to the same observed data.
 
 ## Usage
 
@@ -18,16 +18,15 @@ h_convert_ordinal_samples(obj, grade)
 
 - obj:
 
-  (`Samples`)  
+  (`Samples`)\
   the `Samples` object to covert
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade for which the equivalent data is required.
 
 ## Value
 
-A
-[`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+A [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
 object.

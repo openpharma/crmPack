@@ -32,24 +32,24 @@ assert_equal(
 
 - ...:
 
-  (`numeric`)  
+  (`numeric`)\
   vectors to be compared
 
 - tol:
 
-  (`numeric`)  
+  (`numeric`)\
   the maximum difference to be tolerated when judging equality
 
 - .var.name:
 
-  \[`character(1)`\]  
+  \[`character(1)`\]\
   Name of the checked object to print in assertions. Defaults to the
   heuristic implemented in
   [`vname`](https://mllg.github.io/checkmate/reference/vname.html).
 
 - add:
 
-  \[`AssertCollection`\]  
+  \[`AssertCollection`\]\
   Collection to store assertion messages. See
   [`AssertCollection`](https://mllg.github.io/checkmate/reference/AssertCollection.html).
 
@@ -75,11 +75,8 @@ If elements in `...` are not all of the same length, an error is thrown.
 
 ## See also
 
-[`assertions`](https://openpharma.github.io/crmPack/reference/assertions.md)
-for more details.
-
-[`assertions`](https://openpharma.github.io/crmPack/reference/assertions.md)
-for more details.
+[`assertions`](https://docs.crmpack.org/reference/assertions.md) for
+more details.
 
 ## Examples
 

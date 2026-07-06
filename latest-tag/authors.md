@@ -48,7 +48,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/openpharma/crmPack/blob/v2.1.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/openpharma/crmPack/blob/v2.2.0/inst/CITATION)
 
 Sabanés Bové D, Yeung WY, Palermo G, Jaki T (2019). “Model-Based Dose
 Escalation Designs in R with crmPack.” *Journal of Statistical

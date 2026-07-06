@@ -4,7 +4,7 @@
 
 `CohortSizeParts` is the class for cohort size that changes for the
 second part of the dose escalation. It works only in conjunction with
-[`DataParts`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+[`DataParts`](https://docs.crmpack.org/reference/DataParts-class.md)
 objects.
 
 ## Usage
@@ -19,14 +19,14 @@ CohortSizeParts(cohort_sizes)
 
 - cohort_sizes:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `cohort_sizes`:
 
-  (`integer`)  
+  (`integer`)\
   a vector of length two with two sizes, one for part 1, and one for
   part 2 respectively.
 

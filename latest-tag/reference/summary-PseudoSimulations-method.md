@@ -15,23 +15,23 @@ summary(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 
 - object:
 
-  (`PseudoSimulations`)  
+  (`PseudoSimulations`)\
   the object we want to summarize.
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity.
 
 - targetEndOfTrial:
 
-  (`number`)  
+  (`number`)\
   the target probability of DLE wanted to achieve at the end of a trial.
 
 - targetDuringTrial:
 
-  (`number`)  
+  (`number`)\
   the target probability of DLE wanted to achieve during a trial.
 
 - ...:
@@ -41,7 +41,7 @@ summary(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 ## Value
 
 An object of class
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md).
+[`PseudoSimulationsSummary`](https://docs.crmpack.org/reference/PseudoSimulationsSummary-class.md).
 
 ## Examples
 

@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Backfill cohorts • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Backfill cohorts">
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,8 @@
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -71,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -97,12 +100,13 @@
       <img src="../logo.png" class="logo" alt=""><h1>Backfill cohorts</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/vignettes/trial_backfill.Rmd" class="external-link"><code>vignettes/trial_backfill.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/vignettes/trial_backfill.Rmd" class="external-link"><code>vignettes/trial_backfill.Rmd</code></a></small>
       <div class="d-none name"><code>trial_backfill.Rmd</code></div>
     </div>
 
     
     
+<!-- trial_backfill.Rmd is generated from trial_backfill.Rmd.orig Please edit that file -->
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -246,13 +250,7 @@ changed by the backfilling framework - except that for the
 <code>StoppingPatientsNearDose</code> rule we can now choose whether to
 include backfill patients or not.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/openpharma/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: ggplot2</span></span>
-<span><span class="co">#&gt; Registered S3 method overwritten by 'crmPack':</span></span>
-<span><span class="co">#&gt;   method       from  </span></span>
-<span><span class="co">#&gt;   print.gtable gtable</span></span>
-<span><span class="co">#&gt; Type crmPackHelp() to open help browser</span></span>
-<span><span class="co">#&gt; Type crmPackExample() to open example</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.crmpack.org/">crmPack</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define the dose-grid.</span></span>
 <span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
@@ -425,7 +423,11 @@ different scenarios in practice.</p>
 <span><span class="va">myTruth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">design_simple_backfill</span><span class="op">@</span><span class="va">model</span>, alpha0 <span class="op">=</span> <span class="fl">3</span>, alpha1 <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">myTruth</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">emptydata</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span>, </span>
 <span>      add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="trial_backfill_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="700"></p>
+<div class="figure">
+<img src="trial_backfill-figures/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" width="100%"><p class="caption">
+plot of chunk unnamed-chunk-8
+</p>
+</div>
 <p>Now we can run the simulations for this particular scenario:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For real applications, use e.g. McmcOptions() with defaults.</span></span>
@@ -472,7 +474,11 @@ and we can also plot it.</p>
 looks like this:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sims_simple</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, mark_backfill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="trial_backfill_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="700"></p>
+<div class="figure">
+<img src="trial_backfill-figures/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" width="100%"><p class="caption">
+plot of chunk unnamed-chunk-10
+</p>
+</div>
 <p>We can see from the patient IDs, which are assigned sequentially in
 time, when the backfill patients were recruited (those with an empty
 shape). For example, we see that the highest dose which was backfilled
@@ -484,7 +490,11 @@ mark the response data (using blue squares around the points with a
 response):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sims_complex</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span>, mark_backfill <span class="op">=</span> <span class="cn">TRUE</span>, mark_response <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="trial_backfill_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="700"></p>
+<div class="figure">
+<img src="trial_backfill-figures/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11" width="100%"><p class="caption">
+plot of chunk unnamed-chunk-11
+</p>
+</div>
 <p>Here we can see that the starting dose cohort at dose 3 as well as
 the next one at dose 5 did not produce any responses, hence no backfill
 cohorts could be opened at these dose levels. Only after dose escalation

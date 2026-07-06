@@ -14,7 +14,7 @@ printVignette(x, ...)
 
 - x:
 
-  (`list`)  
+  (`list`)\
   vignette information.
 
 - ...:

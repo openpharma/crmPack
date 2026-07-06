@@ -16,14 +16,14 @@ CohortSizeConst(size)
 
 - size:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 ## Slots
 
 - `size`:
 
-  (`integer`)  
+  (`integer`)\
   cohort size.
 
 ## Note

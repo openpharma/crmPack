@@ -13,17 +13,17 @@ h_kable_param_default(param, col_names = NULL, caption = NULL)
 
 - param:
 
-  (`list`)  
+  (`list`)\
   The list of `...` parameters passed to `knit_print`
 
 - col_names:
 
-  (`character`)  
+  (`character`)\
   Default column names for the table
 
 - caption:
 
-  (`character`)  
+  (`character`)\
   Default caption for the table
 
 ## Value

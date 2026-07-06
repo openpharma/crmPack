@@ -2,7 +2,7 @@
 
 **\[stable\]** This class captures the summary of dual-endpoint
 simulations output. In comparison to its parent class
-[`SimulationsSummary`](https://openpharma.github.io/crmPack/reference/SimulationsSummary-class.md),
+[`SimulationsSummary`](https://docs.crmpack.org/reference/SimulationsSummary-class.md),
 it has additional slots.
 
 ## Usage
@@ -15,12 +15,12 @@ it has additional slots.
 
 - `biomarker_fit_at_dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   fitted biomarker level at most often selected dose.
 
 - `mean_biomarker_fit`:
 
-  (`list`)  
+  (`list`)\
   list with average, lower (2.5%) and upper (97.5%) quantiles of mean
   fitted biomarker level at each dose
 

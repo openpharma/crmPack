@@ -4,7 +4,7 @@
 
 `NextBestNCRMLoss` is the class based on NCRM rule and loss function.
 This class is similar to
-[`NextBestNCRM`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md)
+[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)
 class, but differences are the addition of loss function and re-defined
 toxicity intervals, see each toxicity interval documentation and the
 note for details. As in NCRM rule, first admissible doses are found,
@@ -32,41 +32,41 @@ NextBestNCRMLoss(
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - overdose:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - unacceptable:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - max_overdose_prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition in
-  [`NextBestNCRM`](https://openpharma.github.io/crmPack/reference/NextBestNCRM-class.md).
+  [`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md).
 
 - losses:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`numeric`)  
+  (`numeric`)\
   the target toxicity interval (limits included). It has to be a
   probability range excluding 0 and 1.
 
 - `overdose`:
 
-  (`numeric`)  
+  (`numeric`)\
   the overdose toxicity interval (lower limit excluded, upper limit
   included) or the excessive toxicity interval (lower limit excluded,
   upper limit included) if unacceptable is not provided. It has to be a
@@ -74,7 +74,7 @@ NextBestNCRMLoss(
 
 - `unacceptable`:
 
-  (`numeric`)  
+  (`numeric`)\
   an unacceptable toxicity interval (lower limit excluded, upper limit
   included). This must be specified if the `overdose` does not
   include 1. Otherwise, it is `c(1, 1)` (default), which is essentially
@@ -82,7 +82,7 @@ NextBestNCRMLoss(
 
 - `losses`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector specifying the loss function. If the `unacceptable` is
   provided, the vector length must be 4, otherwise 3.
 

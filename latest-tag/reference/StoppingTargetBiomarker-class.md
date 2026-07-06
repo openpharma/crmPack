@@ -22,36 +22,36 @@ StoppingTargetBiomarker(
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - is_relative:
 
-  (`flag`)  
+  (`flag`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`numeric`)  
+  (`numeric`)\
   the biomarker target range that needs to be reached. For example,
   `target = c(0.8, 1.0)` with `is_relative = TRUE` means that we target
   a dose with at least 80% of maximum biomarker level.
 
 - `is_relative`:
 
-  (`flag`)  
+  (`flag`)\
   is target relative? If it so (default), then the `target` is
   interpreted relative to the maximum, so it must be a probability
   range. Otherwise, the `target` is interpreted as absolute biomarker
@@ -59,7 +59,7 @@ StoppingTargetBiomarker(
 
 - `prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   required target probability (except 0 or 1) for reaching sufficient
   precision.
 

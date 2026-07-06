@@ -18,4 +18,4 @@ Typically, end users will not use the `.DefaultModelPseudo()` function.
 
 ## See also
 
-[`GeneralModel`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md).
+[`GeneralModel`](https://docs.crmpack.org/reference/GeneralModel-class.md).

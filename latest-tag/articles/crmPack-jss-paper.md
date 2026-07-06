@@ -129,7 +129,7 @@ with the `examine` and `simulate` methods to obtain hypothetical trial
 courses and operating characteristics, respectively. Note that
 individual model classes and methods are not shown here for clarity,
 please refer to the package documentation for details, e.g., by calling
-[`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md).’
+[`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md).’
 
 **Data** Let $`x`$ denote one specific treatment, chosen from the set of
 possible treatments \${\cal X}\$. This could be one specific dose, but
@@ -264,9 +264,9 @@ library("crmPack")
 ```
 
 > As indicated in the startup message, try
-> [`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md)
+> [`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md)
 > and
-> [`crmPackExample()`](https://openpharma.github.io/crmPack/reference/crmPackExample.md)
+> [`crmPackExample()`](https://docs.crmpack.org/reference/crmPackExample.md)
 > to open the help page and the package vignette.
 
 ### Implementing a CRM trial
@@ -312,8 +312,8 @@ and
 ``` math
 \Sigma=
  \left(\begin{smallmatrix}
-   1.51 & 0.18 \\
-   0.18 & 0.21
+   1.78 & 0.12 \\
+   0.12 & 0.01
  \end{smallmatrix}\right)
 ```
 and will approximately have 5% probability each for the DLT rate to
@@ -391,7 +391,7 @@ provided to the `mcmc` function, together with the `data` and the
 
 ``` r
 
-options <- McmcOptions(burnin = 1000, step = 2, samples = 10000)
+options <- McmcOptions(burnin = 1000, step = 2, samples = 10000, rng_kind = "Mersenne-Twister", rng_seed = 3819)
 set.seed(94)
 samples <- mcmc(data, model, options)
 ```
@@ -595,7 +595,7 @@ DLTs. In the last rows of the output we see that if no DLTs were
 observed before the 250 mg cohort, the maximum considered dose of 300 mg
 dose can be reached in the next cohort if also no DLTs are observed at
 250 mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as
-225, 175 and 150 mg, respectively.
+275, 200 and 150 mg, respectively.
 
 ``` r
 
@@ -605,26 +605,26 @@ examine(design, mcmcOptions = options)
 #> 1    25    0       50 FALSE       100
 #> 2    25    1       50 FALSE       100
 #> 3    25    2       25 FALSE         0
-#> 4    25    3       NA FALSE        NA
+#> 4    25    3       25 FALSE         0
 #> 5    50    0      100 FALSE       100
-#> 6    50    1       75 FALSE        50
+#> 6    50    1       50 FALSE         0
 #> 7    50    2       50 FALSE         0
 #> 8    50    3       25 FALSE       -50
-#> 9   100    0      125 FALSE        25
+#> 9   100    0      150 FALSE        50
 #> 10  100    1      100 FALSE         0
 #> 11  100    2       75 FALSE       -25
 #> 12  100    3       50 FALSE       -50
-#> 13  125    0      175 FALSE        40
-#> 14  125    1      125 FALSE         0
-#> 15  125    2      100 FALSE       -20
-#> 16  125    3       75 FALSE       -40
-#> 17  175    0      250 FALSE        43
-#> 18  175    1      175 FALSE         0
-#> 19  175    2      125 FALSE       -29
-#> 20  175    3      100 FALSE       -43
+#> 13  150    0      200 FALSE        33
+#> 14  150    1      150 FALSE         0
+#> 15  150    2      100 FALSE       -33
+#> 16  150    3       75 FALSE       -50
+#> 17  200    0      250 FALSE        25
+#> 18  200    1      200 FALSE         0
+#> 19  200    2      150 FALSE       -25
+#> 20  200    3      125 FALSE       -38
 #> 21  250    0      300 FALSE        20
-#> 22  250    1      225 FALSE       -10
-#> 23  250    2      175 FALSE       -30
+#> 22  250    1      275 FALSE        10
+#> 23  250    2      200 FALSE       -20
 #> 24  250    3      150 FALSE       -40
 ```
 
@@ -672,7 +672,7 @@ mySimsTime <-
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 274 seconds for 100
+can yield a meaningful speedup. Here we needed 57 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -685,9 +685,9 @@ simulated trial:
 ``` r
 
 mySims@data[[3]]@nObs
-#> [1] 32
+#> [1] 24
 mySims@doses[3]
-#> [1] 25
+#> [1] 50
 ```
 
 Furthermore, we can plot the `Simulations` object by calling the `plot`
@@ -714,22 +714,22 @@ simSum
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
 #> Number of patients on placebo : mean 7 (6, 8) 
-#> Number of patients on active : mean 22 (18, 24) 
-#> Number of patients overall : mean 30 (24, 32) 
-#> Number of patients treated above target tox interval : mean 3 (0, 3) 
+#> Number of patients on active : mean 21 (18, 24) 
+#> Number of patients overall : mean 29 (24, 32) 
+#> Number of patients treated above target tox interval : mean 2 (0, 3) 
 #> Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
-#> Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 38 %) 
-#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) 
-#> Doses selected as MTD : mean 46 (25, 50) 
-#> True toxicity at doses selected : mean 22 % (0 %, 26 %) 
-#> Proportion of trials selecting target MTD: 84 %
+#> Proportions of DLTs in the trials for patients on active : mean 27 % (17 %, 33 %) 
+#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 34 %) 
+#> Doses selected as MTD : mean 49.5 (50, 50) 
+#> True toxicity at doses selected : mean 27 % (26 %, 26 %) 
+#> Proportion of trials selecting target MTD: 92 %
 #> Dose most often selected as MTD: 50 
-#> Observed toxicity rate at dose most often selected: 27 %
-#> Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) 
+#> Observed toxicity rate at dose most often selected: 25 %
+#> Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 28 %) 
 #> Stop reason triggered:
-#>  ≥ 30 patients dosed :  65 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  45 %
-#>  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %
+#>  ≥ 30 patients dosed :  54 %
+#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  62 %
+#>  ≥ 9 patients dosed in 20 % dose range around NBD :  93 %
 ```
 
 A plot of the summary results can also be produced, see Figure
@@ -1007,7 +1007,10 @@ from the general model class `GeneralModel`:
 
 Here we specify that the new class is called `OneParExp` and contains
 three additional slots containing the resulting skeleton prior
-probabilities, the dose grid, and the prior parameter $`\lambda`$.
+probabilities, the dose grid, and the prior parameter $`\lambda`$. Note
+that in the current version of `crmPack` the class `OneParExpPrior`
+already implements this functionality, but we show it here nevertheless
+for illustration purposes.
 
 Second we have to create a convenient initialization function, which
 specifies the likelihood and prior distributions in the underlying
@@ -1216,16 +1219,16 @@ of model-based dose escalation designs. The package does, however,
 already include a wide range of model-based and algorithmic dose
 escalation procedures, which are described in the package’s
 documentation available through
-[`crmPackHelp()`](https://openpharma.github.io/crmPack/reference/crmPackHelp.md)
-and provide end-users easy access to these approaches without the need
-for further coding. Another unique feature of the package is the
-inclusion of approaches that allow placebo data, which are routinely
-collected in healthy volunteer studies, to be utilized. Finally some
-methods \[e.g.,\](Bekele and Shen 2005)(Yeung et al. 2015) for
-dose-finding incorporating safety and efficacy are implemented already
-in the package. As for all designs, the underlying structure to extend
-to novel dual endpoint methods is provided. Simulation facilities for
-all approaches and relevant graphical displays are also available.
+[`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md) and
+provide end-users easy access to these approaches without the need for
+further coding. Another unique feature of the package is the inclusion
+of approaches that allow placebo data, which are routinely collected in
+healthy volunteer studies, to be utilized. Finally some methods
+\[e.g.,\](Bekele and Shen 2005)(Yeung et al. 2015) for dose-finding
+incorporating safety and efficacy are implemented already in the
+package. As for all designs, the underlying structure to extend to novel
+dual endpoint methods is provided. Simulation facilities for all
+approaches and relevant graphical displays are also available.
 
 The package is actively developed further and new methods will be added.
 Future extensions of `crmPack` will include model-based combination dose

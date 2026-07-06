@@ -8,21 +8,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Find Interval Numbers or Indices and Return Custom Number For 0. — h_find_interval • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Find Interval Numbers or Indices and Return Custom Number For 0. — h_find_interval">
 <meta name="description" content="
-A simple wrapper of findInterval() function that invokes
-findInterval(), takes its output and replaces all the
+A simple wrapper of base::findInterval() function that invokes
+base::findInterval(), takes its output and replaces all the
 elements with \(0\) value to a custom number as specified in replacement
 argument.">
 <meta property="og:description" content="
-A simple wrapper of findInterval() function that invokes
-findInterval(), takes its output and replaces all the
+A simple wrapper of base::findInterval() function that invokes
+base::findInterval(), takes its output and replaces all the
 elements with \(0\) value to a custom number as specified in replacement
 argument.">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -32,7 +32,7 @@ argument.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,8 @@ argument.">
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -82,6 +84,7 @@ argument.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -102,14 +105,14 @@ argument.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Find Interval Numbers or Indices and Return Custom Number For 0.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers.R" class="external-link"><code>R/helpers.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/helpers.R" class="external-link"><code>R/helpers.R</code></a></small>
       <div class="d-none name"><code>h_find_interval.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
-<p>A simple wrapper of <code><a href="https://rdrr.io/r/base/findInterval.html" class="external-link">findInterval()</a></code> function that invokes
-<code><a href="https://rdrr.io/r/base/findInterval.html" class="external-link">findInterval()</a></code>, takes its output and replaces all the
+<p>A simple wrapper of <code><a href="https://rdrr.io/r/base/findInterval.html" class="external-link">base::findInterval()</a></code> function that invokes
+<code><a href="https://rdrr.io/r/base/findInterval.html" class="external-link">base::findInterval()</a></code>, takes its output and replaces all the
 elements with \(0\) value to a custom number as specified in <code>replacement</code>
 argument.</p>
     </div>
@@ -128,46 +131,7 @@ argument.</p>
 <dl>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>
 </dt>
-<dd>
-<p>Arguments passed on to <code><a href="https://rdrr.io/r/base/findInterval.html" class="external-link">base::findInterval</a></code></p>
-<dl>
-<dt><code>x</code></dt>
-<dd><p>numeric.</p></dd>
-
-    <dt><code>vec</code></dt>
-<dd><p>numeric, sorted (weakly) increasingly, of length <code>N</code>,
-    say.</p></dd>
-
-    <dt><code>rightmost.closed</code></dt>
-<dd><p>logical; if true, the rightmost interval,
-    <code>vec[N-1] .. vec[N]</code> is treated as <em>closed</em>, see below.</p></dd>
-
-    <dt><code>all.inside</code></dt>
-<dd><p>logical; if true, the returned indices are coerced
-    into <code>1,...,N-1</code>, i.e., <code>0</code> is mapped to <code>1</code>
-    and <code>N</code> to <code>N-1</code>.</p></dd>
-
-    <dt><code>left.open</code></dt>
-<dd><p>logical; if true all the intervals are open at left
-    and closed at right; in the formulas below, \(\le\) should be
-    swapped with \(&lt;\) (and \(&gt;\) with \(\ge\)), and
-    <code>rightmost.closed</code> means ‘leftmost is closed’.  This may
-    be useful, e.g., in survival analysis computations.</p></dd>
-
-    <dt><code>checkSorted</code></dt>
-<dd><p>logical indicating if <code>vec</code> should be checked,
-    i.e., <code><a href="https://rdrr.io/r/base/is.unsorted.html" class="external-link">is.unsorted</a>(vec)</code> is asserted to be false.  Setting
-    this to <code>FALSE</code> skips the check gaining speed, but may return
-    nonsense results in case <code>vec</code> is not sorted.</p></dd>
-
-    <dt><code>checkNA</code></dt>
-<dd><p>logical indicating if each <code>x[i]</code> should be checked
-    as with <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a>(.)</code>.  Setting this to <code>FALSE</code> in case
-    of <code>NA</code>'s in <code>x[]</code> may result in platform dependent nonsense.</p></dd>
-
-
-</dl>
-</dd>
+<dd><p>further arguments passed to <code><a href="https://rdrr.io/r/base/findInterval.html" class="external-link">base::findInterval()</a></code> function.</p></dd>
 
 
 <dt id="arg-replacement">replacement<a class="anchor" aria-label="anchor" href="#arg-replacement"></a>

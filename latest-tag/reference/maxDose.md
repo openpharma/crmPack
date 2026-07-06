@@ -10,6 +10,12 @@ This function determines the upper limit of the next dose based on the
 ``` r
 maxDose(increments, data, ...)
 
+# S4 method for class 'IncrementsComboOneDrugOnly,DataCombo'
+maxDose(increments, data, ...)
+
+# S4 method for class 'IncrementsComboCartesian,DataCombo'
+maxDose(increments, data, ...)
+
 # S4 method for class 'IncrementsRelative,Data'
 maxDose(increments, data, ...)
 
@@ -31,6 +37,9 @@ maxDose(increments, data, ...)
 # S4 method for class 'IncrementsMin,Data'
 maxDose(increments, data, ...)
 
+# S4 method for class 'IncrementsMin,DataCombo'
+maxDose(increments, data, ...)
+
 # S4 method for class 'IncrementsMin,DataOrdinal'
 maxDose(increments, data, ...)
 
@@ -48,12 +57,12 @@ maxDose(increments, data, model, samples, ...)
 
 - increments:
 
-  (`Increments`)  
+  (`Increments`)\
   the rule for the next best dose.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   input data.
 
 - ...:
@@ -62,12 +71,12 @@ maxDose(increments, data, model, samples, ...)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   The model on which probabilities will be based
 
 - samples:
 
-  (`Samples`)  
+  (`Samples`)\
   The MCMC samples to which `model` will be applied
 
 ## Value
@@ -75,6 +84,16 @@ maxDose(increments, data, model, samples, ...)
 A `number`, the maximum possible next dose.
 
 ## Functions
+
+- `maxDose(increments = IncrementsComboOneDrugOnly, data = DataCombo)`:
+  determine the maximum possible next dose levels for a two drug
+  combination, based on the rule that only one drug can be escalated at
+  a time.
+
+- `maxDose(increments = IncrementsComboCartesian, data = DataCombo)`:
+  determine the maximum possible next dose levels for a two drug
+  combination, based on the drug specific increment rules which are
+  applied independently.
 
 - `maxDose(increments = IncrementsRelative, data = Data)`: determine the
   maximum possible next dose based on relative increments.
@@ -97,12 +116,16 @@ A `number`, the maximum possible next dose.
   equal to: base dose level + level increment. The base dose level is
   the level of the last dose in grid or the level of the maximum dose
   applied, which is defined in `increments` object. Find out more in
-  [`IncrementsDoseLevels`](https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.md).
+  [`IncrementsDoseLevels`](https://docs.crmpack.org/reference/IncrementsDoseLevels-class.md).
 
 - `maxDose(increments = IncrementsHSRBeta, data = Data)`: determine the
   maximum possible next dose for escalation.
 
 - `maxDose(increments = IncrementsMin, data = Data)`: determine the
+  maximum possible next dose based on multiple increment rules, taking
+  the minimum across individual increments.
+
+- `maxDose(increments = IncrementsMin, data = DataCombo)`: determine the
   maximum possible next dose based on multiple increment rules, taking
   the minimum across individual increments.
 
@@ -123,6 +146,68 @@ A `number`, the maximum possible next dose.
 ## Examples
 
 ``` r
+# Example of usage for `IncrementsComboOneDrugOnly` maxDose method.
+
+# Create two-drug combination data where the last cohort received
+# drug1 = 10, drug2 = 20.
+my_data <- DataCombo(
+  x = cbind(
+    drug1 = c(10, 10, 10),
+    drug2 = c(20, 20, 20)
+  ),
+  y = c(0L, 0L, 0L),
+  ID = 1L:3L,
+  cohort = c(1L, 1L, 1L),
+  doseGrid = list(
+    drug1 = c(10, 20, 30),
+    drug2 = c(20, 40, 60)
+  )
+)
+
+# Define the one-drug-only escalation rule.
+my_increments <- IncrementsComboOneDrugOnly()
+
+# Determine the maximum allowed dose combination.
+# For drug1 = 10 (not escalated): drug2 may go up to Inf (unrestricted here).
+# For drug1 = 20 or 30 (escalated): drug2 is capped at the last drug2 dose (20).
+maxDose(my_increments, my_data)
+#>      dose_grid_one dose_for_second_drug
+#> [1,]            10                  Inf
+#> [2,]            20                   20
+#> [3,]            30                   20
+# Example of usage for `IncrementsComboCartesian` maxDose method.
+
+# Create two-drug combination data where the last cohort received
+# drug1 = 10, drug2 = 20.
+my_data <- DataCombo(
+  x = cbind(
+    drug1 = c(10, 10, 10),
+    drug2 = c(20, 20, 20)
+  ),
+  y = c(0L, 0L, 0L),
+  ID = 1L:3L,
+  cohort = c(1L, 1L, 1L),
+  doseGrid = list(
+    drug1 = c(10, 20, 30),
+    drug2 = c(20, 40, 60)
+  )
+)
+
+# Define independent increment rules for each drug.
+my_increments <- IncrementsComboCartesian(
+  drug1 = IncrementsRelative(intervals = c(0), increments = c(1)),
+  drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+)
+
+# Determine the maximum allowed next dose levels.
+# Here, the drug1 rule allows escalation up to 20 and the drug2 rule allows
+# escalation up to 40. For drug1 values above 20, the combination is not
+# admissible and is represented with NA for drug2.
+maxDose(my_increments, my_data)
+#>      dose_grid_one dose_for_second_drug
+#> [1,]            10                   40
+#> [2,]            20                   40
+#> [3,]            30                   NA
 # Example of usage for `IncrementsRelative` maxDose class.
 
 # Create the data.
@@ -287,6 +372,40 @@ my_increments <- IncrementsMin(
   increments_list = list(my_increments_1, my_increments_2)
 )
 max_dose <- maxDose(my_increments, my_data)
+# Example of usage for `IncrementsMin` maxDose with DataCombo.
+
+# Create two-drug combination data where the last cohort received
+# drug1 = 10, drug2 = 20.
+my_data <- DataCombo(
+  x = cbind(
+    drug1 = c(10, 10, 10),
+    drug2 = c(20, 20, 20)
+  ),
+  y = c(0L, 0L, 0L),
+  ID = 1L:3L,
+  cohort = c(1L, 1L, 1L),
+  doseGrid = list(
+    drug1 = c(10, 20, 30),
+    drug2 = c(20, 40, 60)
+  )
+)
+
+# Rule 1: only one drug can be escalated at a time.
+rule_one <- IncrementsComboOneDrugOnly()
+
+# Rule 2: independent Cartesian increments for each drug.
+rule_two <- IncrementsComboCartesian(
+  drug1 = IncrementsRelative(intervals = c(0), increments = c(2)),
+  drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+)
+
+# Combine both rules and take the most conservative allowed dose per row.
+my_increments <- IncrementsMin(increments_list = list(rule_one, rule_two))
+maxDose(my_increments, my_data)
+#>      first_column min_second_column
+#> [1,]           10                40
+#> [2,]           20                20
+#> [3,]           30                20
 maxDose(
   increments = IncrementsOrdinal(2L, .DefaultIncrementsRelative()),
   data = .DefaultDataOrdinal()
@@ -327,5 +446,5 @@ suppressWarnings({
 })
 toxIncrements <- IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05))
 maxDose(toxIncrements, emptyData, model, samples)
-#> [1] 3
+#> [1] 1
 ```

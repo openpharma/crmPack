@@ -1,21 +1,22 @@
-# Internal Helper Functions for Validation of [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md) Objects
+# Internal Helper Functions for Validation of [`Samples`](https://docs.crmpack.org/reference/Samples-class.md) Objects
 
 These functions are only used internally to validate the format of an
-input
-[`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+input [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
 or inherited classes and therefore not exported.
 
 ## Usage
 
 ``` r
 v_samples(object)
+
+v_hierarchical_samples(object)
 ```
 
 ## Arguments
 
 - object:
 
-  (`Samples`)  
+  (`Samples`)\
   object to validate.
 
 ## Value
@@ -26,5 +27,9 @@ case validation passes.
 ## Functions
 
 - `v_samples()`: validates that the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  [`Samples`](https://docs.crmpack.org/reference/Samples-class.md)
   object contains valid `data` slot.
+
+- `v_hierarchical_samples()`: validates that the
+  [`HierarchicalSamples`](https://docs.crmpack.org/reference/HierarchicalSamples-class.md)
+  object contains valid per-arm sample mappings.

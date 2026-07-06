@@ -5,8 +5,7 @@
 A simple helper function that prepares an object for `data` argument of
 [`rjags::jags.model()`](https://rdrr.io/pkg/rjags/man/jags.model.html),
 which is invoked by
-[`mcmc()`](https://openpharma.github.io/crmPack/reference/mcmc.md)
-method.
+[`mcmc()`](https://docs.crmpack.org/reference/mcmc.md) method.
 
 ## Usage
 
@@ -18,17 +17,17 @@ h_jags_get_data(model, data, from_prior)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   an input model.
 
 - data:
 
-  (`GeneralData`)  
+  (`GeneralData`)\
   an input data.
 
 - from_prior:
 
-  (`flag`)  
+  (`flag`)\
   sample from the prior only? In this case data will not be appended to
   the output, i.e. only the variables required by the `model@priormodel`
   model will be returned in data.

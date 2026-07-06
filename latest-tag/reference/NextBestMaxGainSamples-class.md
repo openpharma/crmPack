@@ -8,9 +8,8 @@ efficacy samples. There are two target probabilities of the occurrence
 of a DLT that must be specified: target probability to be used during
 the trial and target probability to be used at the end of the trial. It
 is suitable to use it only with the
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-model and
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) model
+and [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
 classes.
 
 ## Usage
@@ -25,31 +24,31 @@ NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
 
 - prob_target_drt:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition in
-  [`NextBestMaxGain`](https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.md).
+  [`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md).
 
 - prob_target_eot:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition in
-  [`NextBestMaxGain`](https://openpharma.github.io/crmPack/reference/NextBestMaxGain-class.md).
+  [`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md).
 
 - derive:
 
-  (`function`)  
+  (`function`)\
   see slot definition.
 
 - mg_derive:
 
-  (`function`)  
+  (`function`)\
   see slot definition.
 
 ## Slots
 
 - `derive`:
 
-  (`function`)  
+  (`function`)\
   derives, based on a vector of posterior dose samples, the target dose
   that has the probability of the occurrence of DLT equals to either the
   `prob_target_drt` or `prob_target_eot`. It must therefore accept one
@@ -57,7 +56,7 @@ NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
 
 - `mg_derive`:
 
-  (`function`)  
+  (`function`)\
   derives, based on a vector of posterior dose samples that give the
   maximum gain value, the final next best estimate of the dose that
   gives the maximum gain value. It must therefore accept one and only

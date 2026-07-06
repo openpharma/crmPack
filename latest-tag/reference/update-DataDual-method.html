@@ -8,15 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Updating DataDual Objects — update,DataDual-method • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Updating DataDual Objects — update,DataDual-method">
 <meta name="description" content="
 A method that updates existing DataDual object with new data.">
 <meta property="og:description" content="
 A method that updates existing DataDual object with new data.">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -26,7 +26,7 @@ A method that updates existing DataDual object with new data.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,8 @@ A method that updates existing DataDual object with new data.">
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -76,6 +78,7 @@ A method that updates existing DataDual object with new data.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -96,7 +99,7 @@ A method that updates existing DataDual object with new data.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Updating <code>DataDual</code> Objects</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Data-methods.R" class="external-link"><code>R/Data-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/Data-methods.R" class="external-link"><code>R/Data-methods.R</code></a></small>
       <div class="d-none name"><code>update-DataDual-method.Rd</code></div>
     </div>
 
@@ -166,8 +169,8 @@ on the use case of this parameter.</p></dd>
 <span class="r-in"><span><span class="va">my_data1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class "DataDual"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "w":</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] -0.20623012  0.09240299  0.31941239 -0.62852541 -1.37296433 -0.59526685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] -0.37946553  0.09395461  0.40000000  1.20000000  2.20000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  1.9282334 -0.3815113  0.1459108  0.2983996 -0.7549335  1.4238041</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]  0.5983956  0.3799402  0.4000000  1.2000000  2.2000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Slot "x":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  0.1  0.5  1.5  3.0  6.0 10.0 10.0 10.0 20.0 20.0 20.0</span>

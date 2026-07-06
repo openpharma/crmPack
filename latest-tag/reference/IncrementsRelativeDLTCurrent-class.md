@@ -19,12 +19,12 @@ IncrementsRelativeDLTCurrent(intervals = c(0L, 1L), increments = c(2L, 1L))
 
 - intervals:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - increments:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Note
@@ -34,7 +34,7 @@ Typically, end users will not use the
 
 ## See also
 
-[IncrementsRelativeDLT](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLT-class.md).
+[IncrementsRelativeDLT](https://docs.crmpack.org/reference/IncrementsRelativeDLT-class.md).
 
 ## Examples
 

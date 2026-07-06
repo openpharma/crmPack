@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Render a CohortSizeConst Object — knit_print.Backfill • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Render a CohortSizeConst Object — knit_print.Backfill">
 <meta name="description" content="
@@ -28,6 +28,11 @@ crmPack objects in Markdown and Quarto files
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of Design.
+
+
+
+
+
 
 
 
@@ -177,6 +182,11 @@ all design classes, not just those that are direct descendants of Design.
 
 
 
+
+
+
+
+
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
 
@@ -200,7 +210,7 @@ crmPack objects in Markdown and Quarto files
 
 
 ">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -210,7 +220,7 @@ crmPack objects in Markdown and Quarto files
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -240,6 +250,8 @@ crmPack objects in Markdown and Quarto files
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -260,6 +272,7 @@ crmPack objects in Markdown and Quarto files
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -280,7 +293,7 @@ crmPack objects in Markdown and Quarto files
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Render a <code>CohortSizeConst</code> Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers_knitr_Backfill.R" class="external-link"><code>R/helpers_knitr_Backfill.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/helpers_knitr_Design.R" class="external-link"><code>R/helpers_knitr_Design.R</code></a>, and 8 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/helpers_knitr_Backfill.R" class="external-link"><code>R/helpers_knitr_Backfill.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/helpers_knitr_Design.R" class="external-link"><code>R/helpers_knitr_Design.R</code></a>, and 8 more</small>
       <div class="d-none name"><code>knit_print.Rd</code></div>
     </div>
 
@@ -301,6 +314,11 @@ crmPack objects in Markdown and Quarto files</p>
 <p>We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files.  This file contains methods for
 all design classes, not just those that are direct descendants of <code>Design</code>.</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
@@ -420,6 +438,9 @@ crmPack objects in Markdown and Quarto files</p>
 <span><span class="co"># S3 method for class 'Design'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, level <span class="op">=</span> <span class="fl">2L</span>, title <span class="op">=</span> <span class="st">"Design"</span>, sections <span class="op">=</span> <span class="cn">NA</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'DesignCombo'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, level <span class="op">=</span> <span class="fl">2L</span>, title <span class="op">=</span> <span class="st">"Design"</span>, sections <span class="op">=</span> <span class="cn">NA</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'DualDesign'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, level <span class="op">=</span> <span class="fl">2L</span>, title <span class="op">=</span> <span class="st">"Design"</span>, sections <span class="op">=</span> <span class="cn">NA</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -484,6 +505,16 @@ crmPack objects in Markdown and Quarto files</p>
 <span>  format_func <span class="op">=</span> <span class="va">h_knit_format_func</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'DataCombo'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  asis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"participant"</span>, <span class="st">"participants"</span><span class="op">)</span>,</span>
+<span>  units <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  fmt <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'DualEndpoint'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
@@ -518,6 +549,9 @@ crmPack objects in Markdown and Quarto files</p>
 <span>  fmt <span class="op">=</span> <span class="st">"%5.2f"</span>,</span>
 <span>  units <span class="op">=</span> <span class="cn">NA</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'HierarchicalModel'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'LogisticKadane'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span></span>
@@ -597,6 +631,9 @@ crmPack objects in Markdown and Quarto files</p>
 <span>  asis <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'TwoDrugsCombo'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, use_values <span class="op">=</span> <span class="cn">TRUE</span>, fmt <span class="op">=</span> <span class="st">"%5.2f"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'LogisticLogNormalOrdinal'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
@@ -647,6 +684,12 @@ crmPack objects in Markdown and Quarto files</p>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'IncrementsMin'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'IncrementsComboOneDrugOnly'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'IncrementsComboCartesian'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'IncrementsOrdinal'</span></span>
@@ -981,16 +1024,16 @@ participant counts by dose and <code>"cohort"</code> by cohort.</p></dd>
 <dd><p>(<code>function</code>)<br> The function used to format the range table.</p></dd>
 
 
-<dt id="arg-use-values">use_values<a class="anchor" aria-label="anchor" href="#arg-use-values"></a>
-</dt>
-<dd><p>(<code>flag</code>)<br> print the values associated with hyperparameters,
-or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.</p></dd>
-
-
 <dt id="arg-fmt">fmt<a class="anchor" aria-label="anchor" href="#arg-fmt"></a>
 </dt>
 <dd><p>(<code>character</code>)<br> the <code>sprintf</code> format string used to render
 numerical values.  Ignored if <code>use_values</code> is <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-use-values">use_values<a class="anchor" aria-label="anchor" href="#arg-use-values"></a>
+</dt>
+<dd><p>(<code>flag</code>)<br> print the values associated with hyperparameters,
+or the symbols used to define the hyper-parameters.  That is, for example, mu or 1.</p></dd>
 
 
 <dt id="arg-biomarker-label">biomarker_label<a class="anchor" aria-label="anchor" href="#arg-biomarker-label"></a>

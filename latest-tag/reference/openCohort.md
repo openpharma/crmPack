@@ -33,22 +33,22 @@ openCohort(opening, cohort, data, dose, ...)
 
 - opening:
 
-  (`Opening`)  
+  (`Opening`)\
   opening rule to be applied.
 
 - cohort:
 
-  (`int`)  
+  (`int`)\
   backfill cohort index.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   current trial data.
 
 - dose:
 
-  (`numeric`)  
+  (`numeric`)\
   the recommended next best dose.
 
 - ...:
@@ -57,7 +57,7 @@ openCohort(opening, cohort, data, dose, ...)
 
 - summary_fun:
 
-  (`function`)  
+  (`function`)\
   to apply to the list of results (e.g., `all` or `any`). Only used for
   `OpeningList` and its subclasses.
 

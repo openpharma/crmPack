@@ -3,9 +3,8 @@
 **\[stable\]**
 
 `DataMixture` is a class for the data with mixture sharing. It inherits
-from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional information on the mixture sharing.
+from [`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional information on the mixture sharing.
 
 ## Usage
 
@@ -19,12 +18,12 @@ DataMixture(xshare = numeric(), yshare = integer(), ...)
 
 - xshare:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the share patients.
 
 - yshare:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1) for the share patients. You can
   also supply `numeric` vectors, but these will then be converted to
   `integer` internally.
@@ -32,23 +31,23 @@ DataMixture(xshare = numeric(), yshare = integer(), ...)
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 
 - `xshare`:
 
-  (`numeric`)  
+  (`numeric`)\
   the doses for the share patients.
 
 - `yshare`:
 
-  (`integer`)  
+  (`integer`)\
   the vector of toxicity events (0 or 1) for the share patients.
 
 - `nObsshare`:
 
-  (`count`)  
+  (`count`)\
   number of share patients.
 
 ## Note

@@ -1,9 +1,9 @@
-# Plot Method for the [`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md) Class
+# Plot Method for the [`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md) Class
 
 **\[stable\]**
 
 A method that creates a plot for
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object.
 
 ## Usage
@@ -17,17 +17,17 @@ plot(x, y, blind = FALSE, ...)
 
 - x:
 
-  (`DataDual`)  
+  (`DataDual`)\
   object we want to plot.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   missing object, for compatibility with the generic function.
 
 - blind:
 
-  (`flag`)  
+  (`flag`)\
   indicates whether to blind the data. If `TRUE`, then placebo subjects
   are reported at the same level as the active dose level in the
   corresponding cohort, and DLTs are always assigned to the first
@@ -40,7 +40,7 @@ plot(x, y, blind = FALSE, ...)
 ## Value
 
 The
-[`ggplot2::ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+[`ggplot2`](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
 object.
 
 ## Examples

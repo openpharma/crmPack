@@ -14,17 +14,17 @@ h_plot_simulation_trajectory(sim_doses, max_patients, has_placebo)
 
 - sim_doses:
 
-  (`list`)  
+  (`list`)\
   list of simulated doses per trial.
 
 - max_patients:
 
-  (`integer`)  
+  (`integer`)\
   maximum number of patients.
 
 - has_placebo:
 
-  (`flag`)  
+  (`flag`)\
   whether the design includes placebo.
 
 ## Value

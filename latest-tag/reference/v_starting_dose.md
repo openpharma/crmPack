@@ -1,4 +1,4 @@
-# Internal Helper Functions for Validation of [`StartingDose`](https://openpharma.github.io/crmPack/reference/StartingDose-class.md) Objects
+# Internal Helper Functions for Validation of [`StartingDose`](https://docs.crmpack.org/reference/StartingDose-class.md) Objects
 
 **\[experimental\]**
 
@@ -14,7 +14,7 @@ v_starting_dose(object)
 
 - object:
 
-  (`StartingDose`)  
+  (`StartingDose`)\
   object to validate.
 
 ## Value

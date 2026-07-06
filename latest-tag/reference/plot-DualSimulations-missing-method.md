@@ -3,7 +3,7 @@
 **\[stable\]**
 
 This plot method can be applied to
-[`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
+[`DualSimulations`](https://docs.crmpack.org/reference/DualSimulations-class.md)
 objects in order to summarize them graphically. In addition to the
 standard plot types, there is:
 
@@ -28,17 +28,17 @@ plot(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
 
 - x:
 
-  (`DualSimulations`)  
+  (`DualSimulations`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the type of plots you want to obtain.
 
 - ...:

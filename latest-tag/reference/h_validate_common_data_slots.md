@@ -12,7 +12,7 @@ h_validate_common_data_slots(object)
 
 - object:
 
-  (`Data` or `DataOrdinal`)  
+  (`Data` or `DataOrdinal`)\
   the object to be validated
 
 ## Value

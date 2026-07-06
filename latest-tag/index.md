@@ -35,25 +35,25 @@ The package vignettes provide information on various aspects of CRM
 trial design, implementation, simulation and analysis:
 
 - [Trial
-  definition](https://openpharma.github.io/crmPack/main/articles/trial_definition.html)
+  definition](https://docs.crmpack.org/main/articles/trial_definition.html)
 - [Trial
-  analysis](https://openpharma.github.io/crmPack/main/articles/trial_analysis.html)
+  analysis](https://docs.crmpack.org/main/articles/trial_analysis.html)
 - [Sanity
-  checking](https://openpharma.github.io/crmPack/main/articles/trial_sanity_checks.html)
+  checking](https://docs.crmpack.org/main/articles/trial_sanity_checks.html)
 - [Simulation of operating
-  characteristics](https://openpharma.github.io/crmPack/main/articles/trial_simulation.html)
+  characteristics](https://docs.crmpack.org/main/articles/trial_simulation.html)
 - [Backfill cohort
-  simulations](https://openpharma.github.io/crmPack/main/articles/trial_backfill.html)
+  simulations](https://docs.crmpack.org/main/articles/trial_backfill.html)
 - [Ordinal CRM
-  models](https://openpharma.github.io/crmPack/main/articles/ordinal-crm.html)
+  models](https://docs.crmpack.org/main/articles/ordinal-crm.html)
 - [Extending
-  `crmPack`](https://openpharma.github.io/crmPack/main/articles/parallel_computing_with_extensions.html)
+  `crmPack`](https://docs.crmpack.org/main/articles/parallel_computing_with_extensions.html)
 - [Tidy `crmPack`
-  data](https://openpharma.github.io/crmPack/main/articles/tidy_method.html)
+  data](https://docs.crmpack.org/main/articles/tidy_method.html)
 - [Describing `crmPack` objects in Markdown and Quarto
-  documents](https://openpharma.github.io/crmPack/main/articles/knit_print.html)
+  documents](https://docs.crmpack.org/main/articles/knit_print.html)
 - [Upgrading from `crmPack` version
-  1.0](https://openpharma.github.io/crmPack/main/articles/upgrading_from_the_old_crmPack.html)
+  1.0](https://docs.crmpack.org/main/articles/upgrading_from_the_old_crmPack.html)
 - Sabanés Bové et al (2019) Model-based Dose Escalation Designs in R
   with `crmPack`. JSS 89:10 [DOI
   10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)

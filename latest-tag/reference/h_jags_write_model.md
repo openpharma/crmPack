@@ -19,12 +19,12 @@ h_jags_write_model(model, file = NULL, digits = 5)
 
 - model:
 
-  (`function`)  
+  (`function`)\
   function containing the JAGS model.
 
 - file:
 
-  (`string` or `NULL`)  
+  (`string` or `NULL`)\
   the name of the file (including the optional path) where the model
   will be saved. If `NULL`, the file will be created in a `R_crmPack`
   folder placed under temporary directory indicated by
@@ -32,7 +32,7 @@ h_jags_write_model(model, file = NULL, digits = 5)
 
 - digits:
 
-  (`count`)  
+  (`count`)\
   a desired number of significant digits for for numbers used in JAGS
   input, see [`formatC()`](https://rdrr.io/r/base/formatc.html).
 
@@ -61,5 +61,5 @@ my_model <- function() {
 }
 
 h_jags_write_model(my_model, digits = 5)
-#> [1] "/tmp/RtmpxmKF2P/R_crmPack/jags_model_fun2f8686a8d71.txt"
+#> [1] "/tmp/RtmpFFIqCE/R_crmPack/jags_model_fun6e225da70ce.txt"
 ```

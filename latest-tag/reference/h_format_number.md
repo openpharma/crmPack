@@ -20,22 +20,22 @@ h_format_number(x, digits = 5, prefix = "", suffix = "")
 
 - x:
 
-  (`number`)  
+  (`number`)\
   a number to be formatted.
 
 - digits:
 
-  (`function`)  
+  (`function`)\
   the desired number of significant digits.
 
 - prefix:
 
-  (`string`)  
+  (`string`)\
   a prefix to be added in front of the formatted number.
 
 - suffix:
 
-  (`string`)  
+  (`string`)\
   a suffix to be appended after the formatted number.
 
 ## Value
@@ -46,7 +46,7 @@ condition is not met.
 ## Note
 
 This function was primarily designed as a helper for
-[`h_jags_write_model()`](https://openpharma.github.io/crmPack/reference/h_jags_write_model.md)
+[`h_jags_write_model()`](https://docs.crmpack.org/reference/h_jags_write_model.md)
 function.
 
 ## Examples

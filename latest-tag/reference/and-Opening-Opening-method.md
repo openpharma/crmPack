@@ -3,9 +3,9 @@
 **\[experimental\]**
 
 Combines two
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
-objects with AND logic using the `&` operator. This creates an
-[`OpeningAll`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md)
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md) objects
+with AND logic using the `&` operator. This creates an
+[`OpeningAll`](https://docs.crmpack.org/reference/OpeningAll-class.md)
 object.
 
 ## Usage
@@ -28,10 +28,10 @@ e1 & e2
 ## Value
 
 An
-[`OpeningAll`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md)
+[`OpeningAll`](https://docs.crmpack.org/reference/OpeningAll-class.md)
 object combining `e1` and `e2`.
 
 ## See also
 
-[`OpeningAll`](https://openpharma.github.io/crmPack/reference/OpeningAll-class.md)
+[`OpeningAll`](https://docs.crmpack.org/reference/OpeningAll-class.md)
 for more details.

@@ -17,19 +17,19 @@ StoppingMinPatients(nPatients = 20L, report_label = NA_character_)
 
 - nPatients:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `nPatients`:
 
-  (`number`)  
+  (`number`)\
   minimum allowed number of patients.
 
 ## Note

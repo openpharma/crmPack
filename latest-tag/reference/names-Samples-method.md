@@ -15,7 +15,7 @@ names(x)
 
 - x:
 
-  (`Samples`)  
+  (`Samples`)\
   object with samples.
 
 ## Examples

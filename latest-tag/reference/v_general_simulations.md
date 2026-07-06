@@ -1,10 +1,10 @@
-# Internal Helper Functions for Validation of [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md) Objects
+# Internal Helper Functions for Validation of [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md) Objects
 
 **\[stable\]**
 
 These functions are only used internally to validate the format of an
 input
-[`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+[`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 or inherited classes and therefore not exported.
 
 ## Usage
@@ -13,6 +13,10 @@ or inherited classes and therefore not exported.
 v_general_simulations(object)
 
 v_simulations(object)
+
+v_hierarchical_simulations(object)
+
+v_combo_simulations(object)
 
 v_dual_simulations(object)
 
@@ -23,7 +27,7 @@ v_da_simulations(object)
 
 - object:
 
-  (`GeneralSimulations`)  
+  (`GeneralSimulations`)\
   object to validate.
 
 ## Value
@@ -34,21 +38,31 @@ case validation passes.
 ## Functions
 
 - `v_general_simulations()`: validates that the
-  [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+  [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
   object contains valid `data` object and valid `dose` simulations.
 
 - `v_simulations()`: validates that the
-  [`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+  [`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
   object contains valid object `fit`, `stop_reasons`, `stop_report`, and
   `additional_stats` compared to the general class
-  [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md).
+  [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md).
+
+- `v_hierarchical_simulations()`: validates that the
+  [`HierarchicalSimulations`](https://docs.crmpack.org/reference/HierarchicalSimulations-class.md)
+  object contains valid hierarchical data, posterior samples, fits, and
+  stopping outputs.
+
+- `v_combo_simulations()`: validates that the
+  [`ComboSimulations`](https://docs.crmpack.org/reference/ComboSimulations-class.md)
+  object contains valid combo data, recommended dose combinations, model
+  fit, and stopping outputs.
 
 - `v_dual_simulations()`: validates that the
-  [`DualSimulations`](https://openpharma.github.io/crmPack/reference/DualSimulations-class.md)
+  [`DualSimulations`](https://docs.crmpack.org/reference/DualSimulations-class.md)
   object and capture the dose-biomarker `fits`, and the `sigma2W` and
   `rho` estimates.
 
 - `v_da_simulations()`: validates that the
-  [`DASimulations`](https://openpharma.github.io/crmPack/reference/DASimulations-class.md)
+  [`DASimulations`](https://docs.crmpack.org/reference/DASimulations-class.md)
   object contains valid `trial_duration` the vector of trial duration
   values for all simulations.

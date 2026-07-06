@@ -17,24 +17,24 @@ StoppingOrdinal(grade, rule)
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 - rule:
 
-  (`Stopping`)  
+  (`Stopping`)\
   see slot definition.
 
 ## Slots
 
 - `grade`:
 
-  (`integer`)  
+  (`integer`)\
   the grade to which the rule should be applied
 
 - `rule`:
 
-  (`Stopping`)  
+  (`Stopping`)\
   the rule to apply
 
 ## Note

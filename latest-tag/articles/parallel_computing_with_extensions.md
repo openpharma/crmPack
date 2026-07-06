@@ -137,7 +137,7 @@ my_own_extension <- function() {
 
   #' `LogisticNormalTruncPrior`
   #'
-  #' @description `r lifecycle::badge("experimental")`
+  #' @description \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
   #'
   #' [`LogisticNormalTruncPrior`] is the class for the usual logistic regression
   #'  model with bivariate normal prior on the intercept and slope.

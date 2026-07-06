@@ -14,17 +14,17 @@
 
 - `ID`:
 
-  (`integer`)  
+  (`integer`)\
   unique patient IDs.
 
 - `cohort`:
 
-  (`integer`)  
+  (`integer`)\
   the cohort (non-negative sorted) indices.
 
 - `nObs`:
 
-  (`integer`)  
+  (`integer`)\
   number of observations, a single value.
 
 ## Note

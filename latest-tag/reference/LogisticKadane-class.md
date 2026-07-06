@@ -17,17 +17,17 @@ LogisticKadane(theta, xmin, xmax)
 
 - theta:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability.
 
 - xmin:
 
-  (`number`)  
+  (`number`)\
   the minimum of the dose range.
 
 - xmax:
 
-  (`number`)  
+  (`number`)\
   the maximum of the dose range.
 
 ## Details
@@ -46,17 +46,17 @@ theta).\$\$
 
 - `theta`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability.
 
 - `xmin`:
 
-  (`number`)  
+  (`number`)\
   the minimum of the dose range.
 
 - `xmax`:
 
-  (`number`)  
+  (`number`)\
   the maximum of the dose range.
 
 ## Note
@@ -80,7 +80,7 @@ of the American Statistical Association*, **75**(372), 845–854. ISSN
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md)
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md)
 
 ## Examples
 

@@ -17,18 +17,18 @@ LogisticLogNormal(mean, cov, ref_dose = 1)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 ## Details
@@ -46,13 +46,13 @@ function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md),
-[`LogisticLogNormalSub`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalSub-class.md),
-[`ProbitLogNormal`](https://openpharma.github.io/crmPack/reference/ProbitLogNormal-class.md),
-[`ProbitLogNormalRel`](https://openpharma.github.io/crmPack/reference/ProbitLogNormalRel-class.md),
-[`LogisticLogNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalMixture-class.md),
-[`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md),
+[`ProbitLogNormal`](https://docs.crmpack.org/reference/ProbitLogNormal-class.md),
+[`ProbitLogNormalRel`](https://docs.crmpack.org/reference/ProbitLogNormalRel-class.md),
+[`LogisticLogNormalMixture`](https://docs.crmpack.org/reference/LogisticLogNormalMixture-class.md),
+[`DALogisticLogNormal`](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md).
 
 ## Examples
 
@@ -91,8 +91,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x55dea606bf50>
-#> <environment: 0x55dea06ce4b8>
+#> <bytecode: 0x56134ec84ba8>
+#> <environment: 0x5613544878c8>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -100,8 +100,8 @@ my_model
 #>       alpha0 <- theta[1]
 #>       alpha1 <- exp(theta[2])
 #>     }
-#> <bytecode: 0x55dea5be1b90>
-#> <environment: 0x55dea06ce6e8>
+#> <bytecode: 0x56134f571750>
+#> <environment: 0x561354487af8>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -111,15 +111,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x55de9f926098>
-#> <environment: 0x55dea06ce6e8>
+#> <bytecode: 0x56134f760c48>
+#> <environment: 0x561354487af8>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1))
 #>     }
-#> <bytecode: 0x55de9fff1f00>
-#> <environment: 0x55dea06ce6e8>
+#> <bytecode: 0x56134f7e5280>
+#> <environment: 0x561354487af8>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

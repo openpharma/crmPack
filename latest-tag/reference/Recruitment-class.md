@@ -19,5 +19,5 @@ Typically, end users will not use the `.DefaultRecruitment()` function.
 
 ## See also
 
-[`RecruitmentUnlimited`](https://openpharma.github.io/crmPack/reference/RecruitmentUnlimited-class.md),
-[`RecruitmentRatio`](https://openpharma.github.io/crmPack/reference/RecruitmentRatio-class.md).
+[`RecruitmentUnlimited`](https://docs.crmpack.org/reference/RecruitmentUnlimited-class.md),
+[`RecruitmentRatio`](https://docs.crmpack.org/reference/RecruitmentRatio-class.md).

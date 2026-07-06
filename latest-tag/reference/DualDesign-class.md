@@ -5,7 +5,7 @@
 `DualDesign` is the class for the dual-endpoint CRM design. This class
 has special requirements for the `model` and `data` slots in comparison
 to the parent class
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md).
+[`Design`](https://docs.crmpack.org/reference/Design-class.md).
 
 ## Usage
 
@@ -19,49 +19,49 @@ DualDesign(model, data, ...)
 
 - model:
 
-  (`DualEndpoint`)  
+  (`DualEndpoint`)\
   see slot definition.
 
 - data:
 
-  (`DataDual`)  
+  (`DataDual`)\
   see slot definition.
 
 - ...:
 
   Arguments passed on to
-  [`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+  [`Design`](https://docs.crmpack.org/reference/Design-class.md)
 
   `stopping`
 
-  :   (`Stopping`)  
+  :   (`Stopping`)\
       see slot definition.
 
   `increments`
 
-  :   (`Increments`)  
+  :   (`Increments`)\
       see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `backfill`
 
-  :   (`Backfill`)  
+  :   (`Backfill`)\
       see slot definition.
 
 ## Slots
 
 - `model`:
 
-  (`DualEndpoint`)  
+  (`DualEndpoint`)\
   the model to be used.
 
 - `data`:
 
-  (`DataDual`)  
+  (`DataDual`)\
   specifies dose grid, any previous data, etc.
 
 ## Note

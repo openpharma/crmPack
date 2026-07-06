@@ -4,9 +4,9 @@
 
 This function constructs a minimally informative prior, which is
 captured in a
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 (or
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md))
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md))
 object.
 
 Based on the proposal by Neuenschwander et al. (2008) , a minimally
@@ -22,13 +22,15 @@ smaller than \\q\_{J}\\ has only 5% probability (\\p\_{J} = 0.05\\). The
 probabilities \\1 - p\_{1}\\ and \\p\_{J}\\ can be controlled with the
 arguments `probmin` and `probmax`, respectively. Subsequently, for all
 doses supplied in the `dosegrid` argument, beta distributions are set up
-from the assumption that the prior medians are linear in log-dose on the
-logit scale, and
-[`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md)
+from the assumption that the prior medians are linear in log-dose (or
+dose if `useLogDose = FALSE`) on the logit scale, and
+[`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md)
 is used to transform the resulting quantiles into an approximating
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 (or
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md))
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
+or
+[`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md))
 model. Note that the reference dose is not required for these
 computations.
 
@@ -42,7 +44,8 @@ MinimalInformative(
   threshmax = 0.3,
   probmin = 0.05,
   probmax = 0.05,
-  ...
+  ...,
+  useLogDose = TRUE
 )
 ```
 
@@ -50,47 +53,55 @@ MinimalInformative(
 
 - dosegrid:
 
-  (`numeric`)  
-  the dose grid.
+  (`numeric`)\
+  the dose grid, only positive sorted values are allowed.
 
 - refDose:
 
-  (`number`)  
-  the reference dose.
+  (`number`)\
+  the reference dose. Must be positive if `useLogDose = TRUE`.
 
 - threshmin:
 
-  (`number`)  
+  (`number`)\
   any toxicity probability above this threshold would be very unlikely
   (see `probmin`) at the minimum dose.
 
 - threshmax:
 
-  (`number`)  
+  (`number`)\
   any toxicity probability below this threshold would be very unlikely
   (see `probmax`) at the maximum dose.
 
 - probmin:
 
-  (`number`)  
+  (`number`)\
   the prior probability of exceeding `threshmin` at the minimum dose.
 
 - probmax:
 
-  (`number`)  
+  (`number`)\
   the prior probability of being below `threshmax` at the maximum dose.
 
 - ...:
 
   additional arguments for computations, see
-  [`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md),
+  [`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md),
   e.g. `refDose` and `logNormal=TRUE` to obtain a minimal informative
   log normal prior.
+
+- useLogDose:
+
+  (`flag`)\
+  use `log(dosegrid / refDose)` as dose covariate? If `FALSE`, pass
+  `logNormal = TRUE` via `...` to obtain a
+  [`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md)
+  model.
 
 ## Value
 
 See
-[`Quantiles2LogisticNormal()`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md).
+[`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md).
 
 ## References
 
@@ -114,13 +125,13 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   threshmax=0.3,
                                   control=## for real case: leave out control 
                                     list(max.time=0.1)) 
-#> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1
-#> timeSpan = 4.518187 maxTime = 0.1
-#> Emini is: 0.6732911061
+#> It: 1, obj value (lsEnd): 0.6727662311 indTrace: 1
+#> timeSpan = 4.424475 maxTime = 0.1
+#> Emini is: 0.6727662311
 #> xmini are:
-#> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 
-#> Totally it used 4.518221 secs
-#> No. of function call is: 991
+#> 3.446289216 9.080650618 4.30874806 0.7251654219 -0.7565382708 
+#> Totally it used 4.424507 secs
+#> No. of function call is: 980
 
 # Plotting the result
 matplot(x=coarseGrid,

@@ -3,7 +3,7 @@
 **\[experimental\]**
 
 Helper function which creates the plot for
-[`nextBest-NextBestTD()`](https://openpharma.github.io/crmPack/reference/nextBest.md)
+[`nextBest-NextBestTD()`](https://docs.crmpack.org/reference/nextBest.md)
 method.
 
 ## Usage
@@ -25,40 +25,40 @@ h_next_best_td_plot(
 
 - prob_target_drt:
 
-  (`proportion`)  
+  (`proportion`)\
   target DLT probability during the trial.
 
 - dose_target_drt:
 
-  (`number`)  
+  (`number`)\
   target dose estimate during the trial.
 
 - prob_target_eot:
 
-  (`proportion`)  
+  (`proportion`)\
   target DLT probability at the end of the trial.
 
 - dose_target_eot:
 
-  (`number`)  
+  (`number`)\
   target dose estimate at the end of the trial.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   the data object from which the dose grid will be fetched.
 
 - prob_dlt:
 
-  (`numeric`)  
+  (`numeric`)\
   DLT probabilities for doses in grid.
 
 - doselimit:
 
-  (`number`)  
+  (`number`)\
   the maximum allowed next dose.
 
 - next_dose:
 
-  (`number`)  
+  (`number`)\
   next best dose.

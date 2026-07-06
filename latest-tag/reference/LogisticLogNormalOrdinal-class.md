@@ -17,18 +17,18 @@ LogisticLogNormalOrdinal(mean, cov, ref_dose)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 ## Note
@@ -78,8 +78,8 @@ LogisticLogNormalOrdinal(
 #>         }
 #>       }
 #>     }
-#> <bytecode: 0x55dea8042180>
-#> <environment: 0x55dea8ebf3e8>
+#> <bytecode: 0x56135791dda8>
+#> <environment: 0x5613572d6818>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -90,8 +90,8 @@ LogisticLogNormalOrdinal(
 #>       gamma ~ dnorm(mean[k], prec[k, k])
 #>       beta <- exp(gamma)
 #>     }
-#> <bytecode: 0x55dea8caa080>
-#> <environment: 0x55dea8ebf3e8>
+#> <bytecode: 0x56135754a870>
+#> <environment: 0x5613572d6818>
 #> 
 #> Slot "modelspecs":
 #> function(y, from_prior) {
@@ -111,8 +111,8 @@ LogisticLogNormalOrdinal(
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x55dea928ea88>
-#> <environment: 0x55dea8ebf3e8>
+#> <bytecode: 0x561357c786b8>
+#> <environment: 0x5613572d6818>
 #> 
 #> Slot "init":
 #> function() {
@@ -121,8 +121,8 @@ LogisticLogNormalOrdinal(
 #>         gamma = 1
 #>       )
 #>     }
-#> <bytecode: 0x55deaaa961c0>
-#> <environment: 0x55dea8ebf3e8>
+#> <bytecode: 0x561357e2de58>
+#> <environment: 0x5613572d6818>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "x"   

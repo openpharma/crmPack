@@ -18,25 +18,25 @@ LogisticLogNormalGrouped(mean, cov, ref_dose = 1)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   the reference dose \\x\*\\ (strictly positive number).
 
 ## Details
 
 The continuous covariate is the natural logarithm of the dose \\x\\
 divided by the reference dose \\x\*\\ as in
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md).
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md).
 In addition, \\I_c\\ is a binary indicator covariate which is 1 for the
 combo arm and 0 for the mono arm. The model is then defined as:
 \$\$logit\[p(x)\] = (alpha0 + I_c \* delta0) + (alpha1 + I_c \* delta1)
@@ -53,8 +53,8 @@ Typically, end users will not use the
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md).
 
 ## Examples
 
@@ -98,8 +98,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x55dea8ddd380>
-#> <environment: 0x55dea91dc8d0>
+#> <bytecode: 0x5613540d2518>
+#> <environment: 0x561350ac5d80>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -109,8 +109,8 @@ my_model
 #>       alpha1 <- exp(theta[3])
 #>       delta1 <- exp(theta[4])
 #>     }
-#> <bytecode: 0x55dea9117870>
-#> <environment: 0x55dea91dc8d0>
+#> <bytecode: 0x56135465cd10>
+#> <environment: 0x561350ac5d80>
 #> 
 #> Slot "modelspecs":
 #> function(group, from_prior) {
@@ -124,15 +124,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x55dea8c69ee8>
-#> <environment: 0x55dea91dc8d0>
+#> <bytecode: 0x561353e7a008>
+#> <environment: 0x561350ac5d80>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1, 1, 1))
 #>     }
-#> <bytecode: 0x55dea8be8a50>
-#> <environment: 0x55dea91dc8d0>
+#> <bytecode: 0x561353dbfa10>
+#> <environment: 0x561350ac5d80>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

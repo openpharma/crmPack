@@ -26,14 +26,14 @@ NextBestProbMTDMinDist(target)
 
 - target:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`numeric`)  
+  (`numeric`)\
   the target toxicity probability.
 
 ## Note

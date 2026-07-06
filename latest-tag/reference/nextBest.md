@@ -20,6 +20,9 @@ nextBest(nextBest, doselimit = Inf, samples, model, data, ...)
 # S4 method for class 'NextBestNCRM,numeric,Samples,GeneralModel,Data'
 nextBest(nextBest, doselimit = Inf, samples, model, data, ...)
 
+# S4 method for class 'NextBestNCRM,matrix,Samples,TwoDrugsCombo,DataCombo'
+nextBest(nextBest, doselimit, samples, model, data, ...)
+
 # S4 method for class 'NextBestNCRM,numeric,Samples,GeneralModel,DataParts'
 nextBest(nextBest, doselimit = Inf, samples, model, data, ...)
 
@@ -85,29 +88,30 @@ nextBest(nextBest, doselimit = Inf, samples, model, data, ...)
 
 - nextBest:
 
-  (`NextBest`)  
+  (`NextBest`)\
   the rule for the next best dose.
 
 - doselimit:
 
-  (`number`)  
-  the maximum allowed next dose. If it is an infinity (default), then
+  (`number` or `matrix`)\
+  the maximum allowed next dose. If it is infinity (default), then
   essentially no dose limit will be applied in the course of dose
-  recommendation calculation.
+  recommendation calculation. A `matrix` must be used for two drug
+  combinations.
 
 - samples:
 
-  (`Samples`)  
+  (`Samples`)\
   posterior samples from `model` parameters given `data`.
 
 - model:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   the DLT model.
 
 - data:
 
-  (`Data`)  
+  (`Data` or `DataCombo`)\
   data that was used to generate the samples.
 
 - ...:
@@ -116,7 +120,7 @@ nextBest(nextBest, doselimit = Inf, samples, model, data, ...)
 
 - in_sim:
 
-  (`flag`)  
+  (`flag`)\
   is this method used in simulations? Default as `FALSE`. If this flag
   is `TRUE` and target dose estimates (during trial and end-of-trial)
   are outside of the dose grid range, the information message is printed
@@ -124,12 +128,12 @@ nextBest(nextBest, doselimit = Inf, samples, model, data, ...)
 
 - model_eff:
 
-  (`Effloglog` or `EffFlexi`)  
+  (`Effloglog` or `EffFlexi`)\
   the efficacy model.
 
 - samples_eff:
 
-  (`Samples`)  
+  (`Samples`)\
   posterior samples from `model_eff` parameters given `data`.
 
 ## Value
@@ -154,6 +158,9 @@ outcome of the rule can be contained too.
   element `probs` in the output's list contains the target and
   overdosing probabilities (across all doses in the dose grid) used in
   the derivation of the next best dose.
+
+- `nextBest( nextBest = NextBestNCRM, doselimit = matrix, samples = Samples, model = TwoDrugsCombo, data = DataCombo )`:
+  find the next best dose combination based on the NCRM method.
 
 - `nextBest( nextBest = NextBestNCRM, doselimit = numeric, samples = Samples, model = GeneralModel, data = DataParts )`:
   find the next best dose based on the NCRM method when two parts trial
@@ -180,19 +187,18 @@ outcome of the rule can be contained too.
 
 - `nextBest( nextBest = NextBestTD, doselimit = numeric, samples = missing, model = LogisticIndepBeta, data = Data )`:
   find the next best dose based only on the DLT responses and for
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   model class object without DLT samples.
 
 - `nextBest( nextBest = NextBestTDsamples, doselimit = numeric, samples = Samples, model = LogisticIndepBeta, data = Data )`:
   find the next best dose based only on the DLT responses and for
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   model class object involving DLT samples.
 
 - `nextBest( nextBest = NextBestMaxGain, doselimit = numeric, samples = missing, model = ModelTox, data = DataDual )`:
   find the next best dose based only on pseudo DLT model
-  [`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-  and
-  [`Effloglog`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+  [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) and
+  [`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)
   efficacy model without samples.
 
 - `nextBest( nextBest = NextBestMaxGainSamples, doselimit = numeric, samples = Samples, model = ModelTox, data = DataDual )`:
@@ -271,19 +277,19 @@ dose_recommendation$probs
 #>  [4,]  3.0      0.0
 #>  [5,]  6.0      0.0
 #>  [6,] 10.0      0.0
-#>  [7,] 12.0      0.7
-#>  [8,] 14.0      0.9
-#>  [9,] 16.0      0.9
-#> [10,] 18.0      0.9
-#> [11,] 20.0      0.9
-#> [12,] 22.0      0.9
+#>  [7,] 12.0      0.0
+#>  [8,] 14.0      0.0
+#>  [9,] 16.0      0.0
+#> [10,] 18.0      0.0
+#> [11,] 20.0      0.0
+#> [12,] 22.0      0.0
 #> [13,] 24.0      0.9
-#> [14,] 26.0      1.0
-#> [15,] 28.0      1.0
-#> [16,] 30.0      1.0
-#> [17,] 32.0      1.0
-#> [18,] 34.0      1.0
-#> [19,] 36.0      1.0
+#> [14,] 26.0      0.9
+#> [15,] 28.0      0.9
+#> [16,] 30.0      0.9
+#> [17,] 32.0      0.9
+#> [18,] 34.0      0.9
+#> [19,] 36.0      0.9
 #> [20,] 38.0      1.0
 #> [21,] 40.0      1.0
 #> [22,] 42.0      1.0
@@ -403,45 +409,128 @@ dose_recommendation$probs
 #>       dose target overdose
 #>  [1,]  0.1    0.0      0.0
 #>  [2,]  0.5    0.0      0.0
-#>  [3,]  1.5    0.2      0.0
-#>  [4,]  3.0    0.3      0.2
-#>  [5,]  6.0    0.8      0.2
-#>  [6,] 10.0    0.5      0.5
-#>  [7,] 12.0    0.0      1.0
-#>  [8,] 14.0    0.0      1.0
-#>  [9,] 16.0    0.0      1.0
-#> [10,] 18.0    0.0      1.0
-#> [11,] 20.0    0.0      1.0
-#> [12,] 22.0    0.0      1.0
-#> [13,] 24.0    0.0      1.0
-#> [14,] 26.0    0.0      1.0
-#> [15,] 28.0    0.0      1.0
-#> [16,] 30.0    0.0      1.0
-#> [17,] 32.0    0.0      1.0
-#> [18,] 34.0    0.0      1.0
-#> [19,] 36.0    0.0      1.0
-#> [20,] 38.0    0.0      1.0
-#> [21,] 40.0    0.0      1.0
-#> [22,] 42.0    0.0      1.0
-#> [23,] 44.0    0.0      1.0
-#> [24,] 46.0    0.0      1.0
-#> [25,] 48.0    0.0      1.0
-#> [26,] 50.0    0.0      1.0
-#> [27,] 52.0    0.0      1.0
-#> [28,] 54.0    0.0      1.0
-#> [29,] 56.0    0.0      1.0
-#> [30,] 58.0    0.0      1.0
-#> [31,] 60.0    0.0      1.0
-#> [32,] 62.0    0.0      1.0
-#> [33,] 64.0    0.0      1.0
-#> [34,] 66.0    0.0      1.0
-#> [35,] 68.0    0.0      1.0
-#> [36,] 70.0    0.0      1.0
-#> [37,] 72.0    0.0      1.0
-#> [38,] 74.0    0.0      1.0
-#> [39,] 76.0    0.0      1.0
-#> [40,] 78.0    0.0      1.0
-#> [41,] 80.0    0.0      1.0
+#>  [3,]  1.5    0.0      0.0
+#>  [4,]  3.0    0.0      0.0
+#>  [5,]  6.0    0.3      0.0
+#>  [6,] 10.0    0.5      0.0
+#>  [7,] 12.0    0.2      0.3
+#>  [8,] 14.0    0.5      0.3
+#>  [9,] 16.0    0.5      0.3
+#> [10,] 18.0    0.3      0.5
+#> [11,] 20.0    0.3      0.5
+#> [12,] 22.0    0.3      0.5
+#> [13,] 24.0    0.0      0.8
+#> [14,] 26.0    0.0      0.8
+#> [15,] 28.0    0.2      0.8
+#> [16,] 30.0    0.2      0.8
+#> [17,] 32.0    0.2      0.8
+#> [18,] 34.0    0.2      0.8
+#> [19,] 36.0    0.2      0.8
+#> [20,] 38.0    0.2      0.8
+#> [21,] 40.0    0.2      0.8
+#> [22,] 42.0    0.2      0.8
+#> [23,] 44.0    0.2      0.8
+#> [24,] 46.0    0.2      0.8
+#> [25,] 48.0    0.2      0.8
+#> [26,] 50.0    0.2      0.8
+#> [27,] 52.0    0.2      0.8
+#> [28,] 54.0    0.2      0.8
+#> [29,] 56.0    0.2      0.8
+#> [30,] 58.0    0.2      0.8
+#> [31,] 60.0    0.2      0.8
+#> [32,] 62.0    0.2      0.8
+#> [33,] 64.0    0.2      0.8
+#> [34,] 66.0    0.2      0.8
+#> [35,] 68.0    0.2      0.8
+#> [36,] 70.0    0.2      0.8
+#> [37,] 72.0    0.2      0.8
+#> [38,] 74.0    0.2      0.8
+#> [39,] 76.0    0.2      0.8
+#> [40,] 78.0    0.2      0.8
+#> [41,] 80.0    0.2      0.8
+# Example of usage for `NextBestNCRM` nextBest method with two-drug `DataCombo`.
+
+# Create two-drug combination data.
+my_data <- DataCombo(
+  x = cbind(
+    drug1 = c(10, 10, 10, 20, 20, 20),
+    drug2 = c(20, 20, 20, 20, 20, 20)
+  ),
+  y = c(0L, 0L, 0L, 0L, 1L, 0L),
+  ID = 1L:6L,
+  cohort = c(1L, 1L, 1L, 2L, 2L, 2L),
+  doseGrid = list(
+    drug1 = c(10, 20, 30),
+    drug2 = c(20, 40, 60)
+  )
+)
+
+# Initialize the two-drug combination model.
+my_model <- TwoDrugsCombo(
+  single_models = list(
+    drug1 = LogisticLogNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+      ref_dose = 10
+    ),
+    drug2 = LogisticLogNormal(
+      mean = c(-0.7, 0.8),
+      cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+      ref_dose = 20
+    )
+  ),
+  gamma = 0,
+  tau = 1
+)
+
+# Set-up MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Define the dose increment rules for two-drug combination.
+rule_one <- IncrementsComboOneDrugOnly()
+rule_two <- IncrementsComboCartesian(
+  drug1 = IncrementsRelative(intervals = c(0), increments = c(2)),
+  drug2 = IncrementsRelative(intervals = c(0), increments = c(1))
+)
+my_increments <- IncrementsMin(increments_list = list(rule_one, rule_two))
+next_max_dose <- maxDose(my_increments, data = my_data)
+
+# Define the next best rule based on the NextBestNCRM class.
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Calculate the next best dose combination.
+dose_recommendation <- nextBest(
+  nextBest = my_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+# See the next best dose combination.
+dose_recommendation$value
+#> [1] NA
+
+# See the target and overdose probabilities.
+dose_recommendation$probs
+#>   drug1 drug2 target_prob overdose_prob not_eligible
+#> 1    10    20         0.4           0.5         TRUE
+#> 2    20    20         0.1           0.5         TRUE
+#> 3    30    20         0.1           0.4         TRUE
+#> 4    10    40         0.2           0.3         TRUE
+#> 5    20    40         0.0           0.3         TRUE
+#> 6    30    40          NA            NA        FALSE
+#> 7    10    60          NA            NA        FALSE
+#> 8    20    60          NA            NA        FALSE
+#> 9    30    60          NA            NA        FALSE
+
+# Look at the plot.
+dose_recommendation$plot
 # Example of usage for `NextBestNCRM-DataParts` NextBest class.
 
 # Create the data.
@@ -548,52 +637,52 @@ dose_recommendation <- nextBest(
 
 # Next best dose.
 dose_recommendation$value
-#> [1] 16
+#> [1] 0.1
 
 # Look at the probabilities.
 dose_recommendation$probs
-#>     dose underdosing target excessive unacceptable        mean     std_dev
-#> 0.1  0.1         1.0    0.0       0.0          0.0 0.003085460 0.006295566
-#> 0.5  0.5         1.0    0.0       0.0          0.0 0.007917626 0.011747142
-#> 1.5  1.5         1.0    0.0       0.0          0.0 0.017421597 0.017321106
-#> 3    3.0         1.0    0.0       0.0          0.0 0.031197444 0.021698711
-#> 6    6.0         1.0    0.0       0.0          0.0 0.059468263 0.030459010
-#> 10  10.0         1.0    0.0       0.0          0.0 0.097725112 0.048675950
-#> 12  12.0         1.0    0.0       0.0          0.0 0.116558576 0.059557822
-#> 14  14.0         0.9    0.1       0.0          0.0 0.134977608 0.070873085
-#> 16  16.0         0.6    0.4       0.0          0.0 0.152879306 0.082259989
-#> 18  18.0         0.6    0.4       0.0          0.0 0.170196874 0.093478027
-#> 20  20.0         0.6    0.4       0.0          0.0 0.186890999 0.104370053
-#> 22  22.0         0.6    0.3       0.1          0.0 0.202942929 0.114836014
-#> 24  24.0         0.6    0.3       0.1          0.0 0.218349041 0.124815355
-#> 26  26.0         0.6    0.0       0.4          0.0 0.233116624 0.134275099
-#> 28  28.0         0.6    0.0       0.4          0.0 0.247260641 0.143201586
-#> 30  30.0         0.4    0.2       0.4          0.0 0.260801277 0.151594652
-#> 32  32.0         0.4    0.2       0.4          0.0 0.273762082 0.159463464
-#> 34  34.0         0.4    0.2       0.4          0.0 0.286168595 0.166823510
-#> 36  36.0         0.4    0.2       0.4          0.0 0.298047318 0.173694416
-#> 38  38.0         0.4    0.2       0.4          0.0 0.309424981 0.180098359
-#> 40  40.0         0.4    0.2       0.4          0.0 0.320328014 0.186058916
-#> 42  42.0         0.4    0.2       0.4          0.0 0.330782174 0.191600235
-#> 44  44.0         0.4    0.2       0.4          0.0 0.340812300 0.196746445
-#> 46  46.0         0.4    0.2       0.4          0.0 0.350442153 0.201521242
-#> 48  48.0         0.3    0.3       0.3          0.1 0.359694326 0.205947600
-#> 50  50.0         0.3    0.3       0.0          0.4 0.368590199 0.210047590
-#> 52  52.0         0.3    0.3       0.0          0.4 0.377149935 0.213842261
-#> 54  54.0         0.3    0.3       0.0          0.4 0.385392491 0.217351574
-#> 56  56.0         0.3    0.3       0.0          0.4 0.393335658 0.220594381
-#> 58  58.0         0.2    0.4       0.0          0.4 0.400996104 0.223588425
-#> 60  60.0         0.2    0.4       0.0          0.4 0.408389427 0.226350359
-#> 62  62.0         0.0    0.6       0.0          0.4 0.415530212 0.228895783
-#> 64  64.0         0.0    0.6       0.0          0.4 0.422432091 0.231239283
-#> 66  66.0         0.0    0.6       0.0          0.4 0.429107802 0.233394486
-#> 68  68.0         0.0    0.6       0.0          0.4 0.435569244 0.235374103
-#> 70  70.0         0.0    0.6       0.0          0.4 0.441827534 0.237189988
-#> 72  72.0         0.0    0.6       0.0          0.4 0.447893062 0.238853186
-#> 74  74.0         0.0    0.6       0.0          0.4 0.453775541 0.240373987
-#> 76  76.0         0.0    0.6       0.0          0.4 0.459484054 0.241761974
-#> 78  78.0         0.0    0.6       0.0          0.4 0.465027099 0.243026069
-#> 80  80.0         0.0    0.6       0.0          0.4 0.470412631 0.244174583
+#>     dose underdosing target excessive unacceptable         mean      std_dev
+#> 0.1  0.1         1.0    0.0       0.0            0 0.0009807846 0.0006808776
+#> 0.5  0.5         1.0    0.0       0.0            0 0.0041335093 0.0024421622
+#> 1.5  1.5         1.0    0.0       0.0            0 0.0111679700 0.0054812188
+#> 3    3.0         1.0    0.0       0.0            0 0.0209896989 0.0086676693
+#> 6    6.0         1.0    0.0       0.0            0 0.0394481438 0.0127452740
+#> 10  10.0         1.0    0.0       0.0            0 0.0625805966 0.0156412036
+#> 12  12.0         1.0    0.0       0.0            0 0.0736654023 0.0164106826
+#> 14  14.0         1.0    0.0       0.0            0 0.0844716846 0.0168564776
+#> 16  16.0         1.0    0.0       0.0            0 0.0950193927 0.0170423127
+#> 18  18.0         1.0    0.0       0.0            0 0.1053237441 0.0170174541
+#> 20  20.0         1.0    0.0       0.0            0 0.1153969652 0.0168214579
+#> 22  22.0         1.0    0.0       0.0            0 0.1252492802 0.0164871064
+#> 24  24.0         1.0    0.0       0.0            0 0.1348895115 0.0160423649
+#> 26  26.0         1.0    0.0       0.0            0 0.1443254609 0.0155117769
+#> 28  28.0         1.0    0.0       0.0            0 0.1535641619 0.0149175253
+#> 30  30.0         1.0    0.0       0.0            0 0.1626120525 0.0142802917
+#> 32  32.0         1.0    0.0       0.0            0 0.1714750967 0.0136199862
+#> 34  34.0         1.0    0.0       0.0            0 0.1801588711 0.0129563836
+#> 36  36.0         1.0    0.0       0.0            0 0.1886686297 0.0123096577
+#> 38  38.0         0.4    0.6       0.0            0 0.1970093511 0.0117007561
+#> 40  40.0         0.1    0.9       0.0            0 0.2051857756 0.0111514962
+#> 42  42.0         0.1    0.9       0.0            0 0.2132024332 0.0106841986
+#> 44  44.0         0.1    0.9       0.0            0 0.2210636656 0.0103206626
+#> 46  46.0         0.0    1.0       0.0            0 0.2287736445 0.0100804007
+#> 48  48.0         0.0    1.0       0.0            0 0.2363363852 0.0099783556
+#> 50  50.0         0.0    1.0       0.0            0 0.2437557594 0.0100227368
+#> 52  52.0         0.0    1.0       0.0            0 0.2510355040 0.0102138332
+#> 54  54.0         0.0    1.0       0.0            0 0.2581792304 0.0105443714
+#> 56  56.0         0.0    1.0       0.0            0 0.2651904307 0.0110012917
+#> 58  58.0         0.0    1.0       0.0            0 0.2720724851 0.0115682111
+#> 60  60.0         0.0    1.0       0.0            0 0.2788286661 0.0122277467
+#> 62  62.0         0.0    1.0       0.0            0 0.2854621446 0.0129632042
+#> 64  64.0         0.0    1.0       0.0            0 0.2919759932 0.0137595376
+#> 66  66.0         0.0    1.0       0.0            0 0.2983731913 0.0146037285
+#> 68  68.0         0.0    1.0       0.0            0 0.3046566277 0.0154847978
+#> 70  70.0         0.0    1.0       0.0            0 0.3108291050 0.0163936267
+#> 72  72.0         0.0    1.0       0.0            0 0.3168933420 0.0173227046
+#> 74  74.0         0.0    1.0       0.0            0 0.3228519771 0.0182658685
+#> 76  76.0         0.0    0.7       0.3            0 0.3287075713 0.0192180660
+#> 78  78.0         0.0    0.7       0.3            0 0.3344626100 0.0201751509
+#> 80  80.0         0.0    0.7       0.3            0 0.3401195067 0.0211337152
 #>     posterior_loss
 #> 0.1            1.0
 #> 0.5            1.0
@@ -602,40 +691,40 @@ dose_recommendation$probs
 #> 6              1.0
 #> 10             1.0
 #> 12             1.0
-#> 14             0.9
-#> 16             0.6
-#> 18             0.6
-#> 20             0.6
-#> 22             0.7
-#> 24             0.7
+#> 14             1.0
+#> 16             1.0
+#> 18             1.0
+#> 20             1.0
+#> 22             1.0
+#> 24             1.0
 #> 26             1.0
 #> 28             1.0
-#> 30             0.8
-#> 32             0.8
-#> 34             0.8
-#> 36             0.8
-#> 38             0.8
-#> 40             0.8
-#> 42             0.8
-#> 44             0.8
-#> 46             0.8
-#> 48             0.8
-#> 50             1.1
-#> 52             1.1
-#> 54             1.1
-#> 56             1.1
-#> 58             1.0
-#> 60             1.0
-#> 62             0.8
-#> 64             0.8
-#> 66             0.8
-#> 68             0.8
-#> 70             0.8
-#> 72             0.8
-#> 74             0.8
-#> 76             0.8
-#> 78             0.8
-#> 80             0.8
+#> 30             1.0
+#> 32             1.0
+#> 34             1.0
+#> 36             1.0
+#> 38             0.4
+#> 40             0.1
+#> 42             0.1
+#> 44             0.1
+#> 46             0.0
+#> 48             0.0
+#> 50             0.0
+#> 52             0.0
+#> 54             0.0
+#> 56             0.0
+#> 58             0.0
+#> 60             0.0
+#> 62             0.0
+#> 64             0.0
+#> 66             0.0
+#> 68             0.0
+#> 70             0.0
+#> 72             0.0
+#> 74             0.0
+#> 76             0.3
+#> 78             0.3
+#> 80             0.3
 
 # Define another rule (loss function of 3 elements).
 nrcm_loss_next_best_losses_3 <- NextBestNCRMLoss(
@@ -656,52 +745,52 @@ dose_recommendation_losses_3 <- nextBest(
 
 # Next best dose.
 dose_recommendation_losses_3$value
-#> [1] 16
+#> [1] 0.1
 
 # Look at the probabilities.
 dose_recommendation_losses_3$probs
-#>     dose underdosing target overdose        mean     std_dev posterior_loss
-#> 0.1  0.1         1.0    0.0      0.0 0.003085460 0.006295566            1.0
-#> 0.5  0.5         1.0    0.0      0.0 0.007917626 0.011747142            1.0
-#> 1.5  1.5         1.0    0.0      0.0 0.017421597 0.017321106            1.0
-#> 3    3.0         1.0    0.0      0.0 0.031197444 0.021698711            1.0
-#> 6    6.0         1.0    0.0      0.0 0.059468263 0.030459010            1.0
-#> 10  10.0         1.0    0.0      0.0 0.097725112 0.048675950            1.0
-#> 12  12.0         1.0    0.0      0.0 0.116558576 0.059557822            1.0
-#> 14  14.0         0.9    0.1      0.0 0.134977608 0.070873085            0.9
-#> 16  16.0         0.6    0.4      0.0 0.152879306 0.082259989            0.6
-#> 18  18.0         0.6    0.4      0.0 0.170196874 0.093478027            0.6
-#> 20  20.0         0.6    0.4      0.0 0.186890999 0.104370053            0.6
-#> 22  22.0         0.6    0.3      0.1 0.202942929 0.114836014            0.8
-#> 24  24.0         0.6    0.3      0.1 0.218349041 0.124815355            0.8
-#> 26  26.0         0.6    0.0      0.4 0.233116624 0.134275099            1.4
-#> 28  28.0         0.6    0.0      0.4 0.247260641 0.143201586            1.4
-#> 30  30.0         0.4    0.2      0.4 0.260801277 0.151594652            1.2
-#> 32  32.0         0.4    0.2      0.4 0.273762082 0.159463464            1.2
-#> 34  34.0         0.4    0.2      0.4 0.286168595 0.166823510            1.2
-#> 36  36.0         0.4    0.2      0.4 0.298047318 0.173694416            1.2
-#> 38  38.0         0.4    0.2      0.4 0.309424981 0.180098359            1.2
-#> 40  40.0         0.4    0.2      0.4 0.320328014 0.186058916            1.2
-#> 42  42.0         0.4    0.2      0.4 0.330782174 0.191600235            1.2
-#> 44  44.0         0.4    0.2      0.4 0.340812300 0.196746445            1.2
-#> 46  46.0         0.4    0.2      0.4 0.350442153 0.201521242            1.2
-#> 48  48.0         0.3    0.3      0.4 0.359694326 0.205947600            1.1
-#> 50  50.0         0.3    0.3      0.4 0.368590199 0.210047590            1.1
-#> 52  52.0         0.3    0.3      0.4 0.377149935 0.213842261            1.1
-#> 54  54.0         0.3    0.3      0.4 0.385392491 0.217351574            1.1
-#> 56  56.0         0.3    0.3      0.4 0.393335658 0.220594381            1.1
-#> 58  58.0         0.2    0.4      0.4 0.400996104 0.223588425            1.0
-#> 60  60.0         0.2    0.4      0.4 0.408389427 0.226350359            1.0
-#> 62  62.0         0.0    0.6      0.4 0.415530212 0.228895783            0.8
-#> 64  64.0         0.0    0.6      0.4 0.422432091 0.231239283            0.8
-#> 66  66.0         0.0    0.6      0.4 0.429107802 0.233394486            0.8
-#> 68  68.0         0.0    0.6      0.4 0.435569244 0.235374103            0.8
-#> 70  70.0         0.0    0.6      0.4 0.441827534 0.237189988            0.8
-#> 72  72.0         0.0    0.6      0.4 0.447893062 0.238853186            0.8
-#> 74  74.0         0.0    0.6      0.4 0.453775541 0.240373987            0.8
-#> 76  76.0         0.0    0.6      0.4 0.459484054 0.241761974            0.8
-#> 78  78.0         0.0    0.6      0.4 0.465027099 0.243026069            0.8
-#> 80  80.0         0.0    0.6      0.4 0.470412631 0.244174583            0.8
+#>     dose underdosing target overdose         mean      std_dev posterior_loss
+#> 0.1  0.1         1.0    0.0      0.0 0.0009807846 0.0006808776            1.0
+#> 0.5  0.5         1.0    0.0      0.0 0.0041335093 0.0024421622            1.0
+#> 1.5  1.5         1.0    0.0      0.0 0.0111679700 0.0054812188            1.0
+#> 3    3.0         1.0    0.0      0.0 0.0209896989 0.0086676693            1.0
+#> 6    6.0         1.0    0.0      0.0 0.0394481438 0.0127452740            1.0
+#> 10  10.0         1.0    0.0      0.0 0.0625805966 0.0156412036            1.0
+#> 12  12.0         1.0    0.0      0.0 0.0736654023 0.0164106826            1.0
+#> 14  14.0         1.0    0.0      0.0 0.0844716846 0.0168564776            1.0
+#> 16  16.0         1.0    0.0      0.0 0.0950193927 0.0170423127            1.0
+#> 18  18.0         1.0    0.0      0.0 0.1053237441 0.0170174541            1.0
+#> 20  20.0         1.0    0.0      0.0 0.1153969652 0.0168214579            1.0
+#> 22  22.0         1.0    0.0      0.0 0.1252492802 0.0164871064            1.0
+#> 24  24.0         1.0    0.0      0.0 0.1348895115 0.0160423649            1.0
+#> 26  26.0         1.0    0.0      0.0 0.1443254609 0.0155117769            1.0
+#> 28  28.0         1.0    0.0      0.0 0.1535641619 0.0149175253            1.0
+#> 30  30.0         1.0    0.0      0.0 0.1626120525 0.0142802917            1.0
+#> 32  32.0         1.0    0.0      0.0 0.1714750967 0.0136199862            1.0
+#> 34  34.0         1.0    0.0      0.0 0.1801588711 0.0129563836            1.0
+#> 36  36.0         1.0    0.0      0.0 0.1886686297 0.0123096577            1.0
+#> 38  38.0         0.4    0.6      0.0 0.1970093511 0.0117007561            0.4
+#> 40  40.0         0.1    0.9      0.0 0.2051857756 0.0111514962            0.1
+#> 42  42.0         0.1    0.9      0.0 0.2132024332 0.0106841986            0.1
+#> 44  44.0         0.1    0.9      0.0 0.2210636656 0.0103206626            0.1
+#> 46  46.0         0.0    1.0      0.0 0.2287736445 0.0100804007            0.0
+#> 48  48.0         0.0    1.0      0.0 0.2363363852 0.0099783556            0.0
+#> 50  50.0         0.0    1.0      0.0 0.2437557594 0.0100227368            0.0
+#> 52  52.0         0.0    1.0      0.0 0.2510355040 0.0102138332            0.0
+#> 54  54.0         0.0    1.0      0.0 0.2581792304 0.0105443714            0.0
+#> 56  56.0         0.0    1.0      0.0 0.2651904307 0.0110012917            0.0
+#> 58  58.0         0.0    1.0      0.0 0.2720724851 0.0115682111            0.0
+#> 60  60.0         0.0    1.0      0.0 0.2788286661 0.0122277467            0.0
+#> 62  62.0         0.0    1.0      0.0 0.2854621446 0.0129632042            0.0
+#> 64  64.0         0.0    1.0      0.0 0.2919759932 0.0137595376            0.0
+#> 66  66.0         0.0    1.0      0.0 0.2983731913 0.0146037285            0.0
+#> 68  68.0         0.0    1.0      0.0 0.3046566277 0.0154847978            0.0
+#> 70  70.0         0.0    1.0      0.0 0.3108291050 0.0163936267            0.0
+#> 72  72.0         0.0    1.0      0.0 0.3168933420 0.0173227046            0.0
+#> 74  74.0         0.0    1.0      0.0 0.3228519771 0.0182658685            0.0
+#> 76  76.0         0.0    0.7      0.3 0.3287075713 0.0192180660            0.6
+#> 78  78.0         0.0    0.7      0.3 0.3344626100 0.0201751509            0.6
+#> 80  80.0         0.0    0.7      0.3 0.3401195067 0.0211337152            0.6
 # Example of usage for `NextBestThreePlusThree` NextBest class.
 
 # Create the data.
@@ -810,47 +899,47 @@ dose_recommendation <- nextBest(
 # See the probabilities.
 dose_recommendation$probs
 #>       dose target overdose
-#>  [1,]  0.1    0.1        1
-#>  [2,]  0.5    0.1        1
-#>  [3,]  1.5    0.0        1
-#>  [4,]  3.0    0.0        1
-#>  [5,]  6.0    0.0        1
-#>  [6,] 10.0    0.1        1
-#>  [7,] 12.0    0.2        1
-#>  [8,] 14.0    0.0        1
-#>  [9,] 16.0    0.0        1
-#> [10,] 18.0    0.0        1
-#> [11,] 20.0    0.0        1
-#> [12,] 22.0    0.0        1
-#> [13,] 24.0    0.0        1
-#> [14,] 26.0    0.0        1
-#> [15,] 28.0    0.0        1
-#> [16,] 30.0    0.0        1
-#> [17,] 32.0    0.0        1
-#> [18,] 34.0    0.0        1
-#> [19,] 36.0    0.0        1
-#> [20,] 38.0    0.0        1
-#> [21,] 40.0    0.0        1
-#> [22,] 42.0    0.0        1
-#> [23,] 44.0    0.0        1
-#> [24,] 46.0    0.0        1
-#> [25,] 48.0    0.0        1
-#> [26,] 50.0    0.0        1
-#> [27,] 52.0    0.0        1
-#> [28,] 54.0    0.0        1
-#> [29,] 56.0    0.0        1
-#> [30,] 58.0    0.0        1
-#> [31,] 60.0    0.0        1
-#> [32,] 62.0    0.1        1
-#> [33,] 64.0    0.1        1
-#> [34,] 66.0    0.0        1
-#> [35,] 68.0    0.1        1
-#> [36,] 70.0    0.0        1
-#> [37,] 72.0    0.0        1
-#> [38,] 74.0    0.0        1
-#> [39,] 76.0    0.1        1
-#> [40,] 78.0    0.1        1
-#> [41,] 80.0    0.0        1
+#>  [1,]  0.1    0.2      0.9
+#>  [2,]  0.5    0.1      1.0
+#>  [3,]  1.5    0.1      1.0
+#>  [4,]  3.0    0.0      1.0
+#>  [5,]  6.0    0.0      1.0
+#>  [6,] 10.0    0.0      1.0
+#>  [7,] 12.0    0.1      1.0
+#>  [8,] 14.0    0.0      1.0
+#>  [9,] 16.0    0.1      1.0
+#> [10,] 18.0    0.0      1.0
+#> [11,] 20.0    0.0      1.0
+#> [12,] 22.0    0.0      1.0
+#> [13,] 24.0    0.0      1.0
+#> [14,] 26.0    0.2      1.0
+#> [15,] 28.0    0.1      1.0
+#> [16,] 30.0    0.0      1.0
+#> [17,] 32.0    0.0      1.0
+#> [18,] 34.0    0.0      1.0
+#> [19,] 36.0    0.0      1.0
+#> [20,] 38.0    0.0      1.0
+#> [21,] 40.0    0.0      1.0
+#> [22,] 42.0    0.0      1.0
+#> [23,] 44.0    0.0      1.0
+#> [24,] 46.0    0.0      1.0
+#> [25,] 48.0    0.0      1.0
+#> [26,] 50.0    0.0      1.0
+#> [27,] 52.0    0.0      1.0
+#> [28,] 54.0    0.0      1.0
+#> [29,] 56.0    0.0      1.0
+#> [30,] 58.0    0.0      1.0
+#> [31,] 60.0    0.0      1.0
+#> [32,] 62.0    0.0      1.0
+#> [33,] 64.0    0.0      1.0
+#> [34,] 66.0    0.0      1.0
+#> [35,] 68.0    0.0      1.0
+#> [36,] 70.0    0.0      1.0
+#> [37,] 72.0    0.0      1.0
+#> [38,] 74.0    0.0      1.0
+#> [39,] 76.0    0.1      1.0
+#> [40,] 78.0    0.0      1.0
+#> [41,] 80.0    0.0      1.0
 
 # Joint plot.
 print(dose_recommendation$plot)
@@ -939,7 +1028,7 @@ dose_recommendation <- nextBest(
 )
 
 dose_recommendation$next_dose_drt
-#> [1] 50
+#> [1] 25
 dose_recommendation$plot
 #> Warning: Some data points are outside of `bounds`. Removing them.
 #> Warning: Some data points are outside of `bounds`. Removing them.
@@ -1053,11 +1142,16 @@ dose_recommendation <- nextBest(
   model_eff = my_model_effll,
   samples_eff = my_samples_effll
 )
-#> [1] "Estimated max gain dose = 300 not within dose grid"
+#> [1] "Estimated TD 35 = 18.5931775531197 not within dose grid"
+#> [1] "Estimated TD 30 = 13.4232117251262 not within dose grid"
 
 dose_recommendation$next_dose
-#> [1] 275
+#> [1] NA
 dose_recommendation$plot
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_vline()`).
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_text()`).
 
 
 # Now using the 'EffFlexi' class efficacy model:
@@ -1083,10 +1177,16 @@ dose_recommendation <- nextBest(
   model_eff = my_model_effflexi,
   samples_eff = my_samples_effflexi
 )
+#> [1] "Estimated TD 35 = 18.5931775531197 not within dose grid"
+#> [1] "Estimated TD 30 = 13.4232117251262 not within dose grid"
 
 dose_recommendation$next_dose
-#> [1] 250
+#> [1] NA
 dose_recommendation$plot
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_vline()`).
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_text()`).
 # }
 # Example of usage for `NextBestProbMTDLTE` NextBest class.
 
@@ -1204,13 +1304,13 @@ nextBest(
 #>  [1,]   10  0.000    0.000
 #>  [2,]   20  0.000    0.000
 #>  [3,]   30  0.000    0.000
-#>  [4,]   40  0.003    0.000
-#>  [5,]   50  0.019    0.001
-#>  [6,]   60  0.228    0.130
-#>  [7,]   70  0.156    0.488
-#>  [8,]   80  0.116    0.638
-#>  [9,]   90  0.100    0.715
-#> [10,]  100  0.106    0.763
+#>  [4,]   40  0.004    0.000
+#>  [5,]   50  0.029    0.002
+#>  [6,]   60  0.225    0.125
+#>  [7,]   70  0.192    0.474
+#>  [8,]   80  0.139    0.646
+#>  [9,]   90  0.105    0.733
+#> [10,]  100  0.076    0.797
 #> 
 # }
 ordinal_data <- .DefaultDataOrdinal()
@@ -1244,15 +1344,15 @@ nextBest(
 #> $probs
 #>       dose target overdose
 #>  [1,]   10  0.000    0.000
-#>  [2,]   20  0.000    0.000
-#>  [3,]   30  0.000    0.000
-#>  [4,]   40  0.002    0.000
-#>  [5,]   50  0.017    0.001
-#>  [6,]   60  0.203    0.133
-#>  [7,]   70  0.183    0.484
-#>  [8,]   80  0.105    0.661
-#>  [9,]   90  0.095    0.735
-#> [10,]  100  0.073    0.780
+#>  [2,]   20  0.001    0.000
+#>  [3,]   30  0.001    0.000
+#>  [4,]   40  0.003    0.000
+#>  [5,]   50  0.013    0.004
+#>  [6,]   60  0.201    0.166
+#>  [7,]   70  0.169    0.505
+#>  [8,]   80  0.129    0.661
+#>  [9,]   90  0.108    0.738
+#> [10,]  100  0.084    0.789
 #> 
 # }
 ```

@@ -17,19 +17,19 @@ IncrementsRelative(intervals, increments)
 
 - intervals:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 - increments:
 
-  (`numeric`)  
+  (`numeric`)\
   see slot definition.
 
 ## Slots
 
 - `intervals`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector with the left bounds of the relevant intervals. For example,
   `intervals = c(0, 50, 100)` specifies three intervals: \\(0, 50)\\,
   \\\[50, 100)\\ and \\\[100, +Inf)\\. That means, the right bound of
@@ -38,7 +38,7 @@ IncrementsRelative(intervals, increments)
 
 - `increments`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector of the same length with the maximum allowable relative
   increments in the `intervals`.
 

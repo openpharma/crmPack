@@ -16,37 +16,37 @@ DualEndpoint(mean, cov, ref_dose = 1, use_log_dose = FALSE, sigma2W, rho)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   for the probit toxicity model, the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   for the probit toxicity model, the prior covariance matrix. The
   precision matrix is internally calculated as an inverse of `cov`.
 
 - ref_dose:
 
-  (`number`)  
+  (`number`)\
   for the probit toxicity model, the reference dose \\x\*\\ (strictly
   positive number).
 
 - use_log_dose:
 
-  (`flag`)  
+  (`flag`)\
   for the probit toxicity model, whether a log transformation of the
   (standardized) dose should be used?
 
 - sigma2W:
 
-  (`numeric`)  
+  (`numeric`)\
   the biomarker variance. Either a fixed value or Inverse-Gamma
   distribution parameters, i.e. vector with two elements named `a` and
   `b`.
 
 - rho:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed value for the correlation (between `-1` and `1`), or a
   named vector with two elements named `a` and `b` for the Beta prior on
   the transformation `kappa = (rho + 1) / 2`, which is in `(0, 1)`. For
@@ -83,39 +83,39 @@ assigned a prior distribution from the scaled Beta family; see the
 details below under slot `rho`.
 
 Please see the example vignette by typing
-[`crmPackExample()`](https://openpharma.github.io/crmPack/reference/crmPackExample.md)
+[`crmPackExample()`](https://docs.crmpack.org/reference/crmPackExample.md)
 for a full example.
 
 ## Slots
 
 - `betaZ_params`:
 
-  (`ModelParamsNormal`)  
+  (`ModelParamsNormal`)\
   for the probit toxicity model, it contains the prior mean, covariance
   matrix and precision matrix which is internally calculated as an
   inverse of the covariance matrix.
 
 - `ref_dose`:
 
-  (`positive_number`)  
+  (`positive_number`)\
   for the probit toxicity model, the reference dose.
 
 - `use_log_dose`:
 
-  (`flag`)  
+  (`flag`)\
   for the probit toxicity model, whether a log transformation of the
   (standardized) dose should be used?
 
 - `sigma2W`:
 
-  (`numeric`)  
+  (`numeric`)\
   the biomarker variance. Either a fixed value or Inverse-Gamma
   distribution parameters, i.e. vector with two elements named `a` and
   `b`.
 
 - `rho`:
 
-  (`numeric`)  
+  (`numeric`)\
   either a fixed value for the correlation (between `-1` and `1`), or a
   named vector with two elements named `a` and `b` for the Beta prior on
   the transformation `kappa = (rho + 1) / 2`, which is in `(0, 1)`. For
@@ -123,7 +123,7 @@ for a full example.
 
 - `use_fixed`:
 
-  (`logical`)  
+  (`logical`)\
   indicates whether a fixed value for `sigma2W` or `rho` (for each
   parameter separately) is used or not. This slot is needed for internal
   purposes and must not be touched by the user.
@@ -134,6 +134,6 @@ Typically, end users will not use the `.DefaultDualEndpoint()` function.
 
 ## See also
 
-[`DualEndpointRW`](https://openpharma.github.io/crmPack/reference/DualEndpointRW-class.md),
-[`DualEndpointBeta`](https://openpharma.github.io/crmPack/reference/DualEndpointBeta-class.md),
-[`DualEndpointEmax`](https://openpharma.github.io/crmPack/reference/DualEndpointEmax-class.md).
+[`DualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md),
+[`DualEndpointBeta`](https://docs.crmpack.org/reference/DualEndpointBeta-class.md),
+[`DualEndpointEmax`](https://docs.crmpack.org/reference/DualEndpointEmax-class.md).

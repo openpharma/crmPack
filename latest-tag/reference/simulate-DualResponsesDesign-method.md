@@ -4,12 +4,12 @@
 
 This is a method to simulate dose escalation procedure using both DLE
 and efficacy responses. This is a method based on the
-[`DualResponsesDesign`](https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.md)
+[`DualResponsesDesign`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)
 where DLE model used are of
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class object and efficacy model used are of
-[`ModelEff`](https://openpharma.github.io/crmPack/reference/ModelEff-class.md)
-class object. In addition, no DLE and efficacy samples are involved or
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+object and efficacy model used are of
+[`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md) class
+object. In addition, no DLE and efficacy samples are involved or
 generated in the simulation process.
 
 ## Usage
@@ -36,41 +36,40 @@ simulate(
 - object:
 
   the
-  [`DualResponsesDesign`](https://openpharma.github.io/crmPack/reference/DualResponsesDesign-class.md)
+  [`DualResponsesDesign`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)
   object we want to simulate the data from
 
 - nsim:
 
-  (`count`)  
+  (`count`)\
   the number of simulations (default: 1)
 
 - seed:
 
-  see
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md)
+  see [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md)
 
 - trueDLE:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) of the occurrence of a DLE. Additional arguments
   can be supplied in `args`.
 
 - trueEff:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the
   expected efficacy responses (vector). Additional arguments can be
   supplied in `args`.
 
 - trueNu:
 
-  (`number`)  
+  (`number`)\
   the precision, the inverse of the variance of the efficacy responses
 
 - args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   data frame with arguments for the `trueDLE` and `trueEff` function.
   The column names correspond to the argument names, the rows to the
   values of the arguments. The rows are appropriately recycled in the
@@ -78,20 +77,20 @@ simulate(
 
 - firstSeparate:
 
-  (`flag`)  
+  (`flag`)\
   enroll the first patient separately from the rest of the cohort? (not
   default) If yes, the cohort will be closed if a DLT occurs in this
   patient.
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   should the simulation runs be parallelized across the clusters of the
   computer? (not default)
 
 - nCores:
 
-  (`count`)  
+  (`count`)\
   how many cores should be used for parallel computing? Defaults to the
   number of cores on the machine, maximum 5.
 
@@ -102,7 +101,7 @@ simulate(
 ## Value
 
 an object of class
-[`PseudoDualSimulations`](https://openpharma.github.io/crmPack/reference/PseudoDualSimulations-class.md)
+[`PseudoDualSimulations`](https://docs.crmpack.org/reference/PseudoDualSimulations-class.md)
 
 ## Examples
 

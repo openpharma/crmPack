@@ -18,33 +18,33 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
 
 - dlt_start:
 
-  (`count`)  
+  (`count`)\
   see slot definition.
 
 - clean_start:
 
-  (`count`)  
+  (`count`)\
   see slot definition.
 
 - ...:
 
   Arguments passed on to
-  [`IncrementsRelative`](https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.md)
+  [`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)
 
   `intervals`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       see slot definition.
 
   `increments`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       see slot definition.
 
 ## Details
 
 This class works only in conjunction with
-[`DataParts`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+[`DataParts`](https://docs.crmpack.org/reference/DataParts-class.md)
 objects. If part 2 will just be started in the next cohort, then the
 next maximum dose will be either `dlt_start` (e.g. -1) shift of the last
 part 1 dose in case of a DLT in part 1, or `clean_start` shift (e.g. -1)
@@ -54,19 +54,19 @@ still be on in the next cohort, then the next dose level will be the
 next higher dose level in the `part1Ladder` slot of the data object. If
 part 2 has been started before, the usual relative increment rules
 apply, see
-[`IncrementsRelative`](https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.md).
+[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md).
 
 ## Slots
 
 - `dlt_start`:
 
-  (`integer`)  
+  (`integer`)\
   a scalar, the dose level increment for starting part 2 in case of at
   least one DLT event in part 1.
 
 - `clean_start`:
 
-  (`integer`)  
+  (`integer`)\
   a scalar, the dose level increment for starting part 2 in case of no
   DLTs in part 1. If `clean_start <= 0`, then the part 1 ladder will be
   used to find the maximum next dose. Otherwise, the relative increment

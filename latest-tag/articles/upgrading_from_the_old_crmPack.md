@@ -42,18 +42,6 @@ dose-DLT/DLT-dose relationship.
 ``` r
 
 library(crmPack)
-```
-
-    ## Loading required package: ggplot2
-
-    ## Registered S3 method overwritten by 'crmPack':
-    ##   method       from  
-    ##   print.gtable gtable
-
-    ## Type crmPackHelp() to open help browser
-    ## Type crmPackExample() to open example
-
-``` r
 
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 my_model <- LogisticNormal(
@@ -76,14 +64,10 @@ model’s parameters values.
 # given a particular models and samples.
 # Every single dose corresponds to one particular sample in `my_samples`.
 dose(0.3, my_model, my_samples)
-```
-
-    ##  [1] 1.165354e+00 6.909732e-01 1.887941e+00 6.072867e-02 1.441370e+00
-    ##  [6] 2.337550e+00 1.708456e+00 1.157963e-04 4.683572e+00 2.364364e+00
-    ## [11] 7.731771e-01 1.650963e+00 6.133708e+01 1.331486e+00 2.343850e-01
-    ## [16] 3.519540e+00 3.618990e-01 7.216616e-01 2.858444e+00 1.063298e+00
-
-``` r
+#>  [1]  1.34841076  0.11025416  0.86730537  1.53660845  1.20567406  0.83567002
+#>  [7]  1.64091143  2.28460821  4.52450730  1.44885220  1.58322190  0.02608328
+#> [13]  1.21766897  0.39543888  1.28366789  0.73875076 19.61886830  0.60780362
+#> [19]  0.05915204  1.29433795
 
 # True dose-DLT relationship.
 # Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.
@@ -92,9 +76,8 @@ dose(0.3, my_model, my_samples)
 # of the model's parameters.
 true_dose_fun <- doseFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_dose_fun(0.3)
+#> [1] 0.9538033
 ```
-
-    ## [1] 0.9538033
 
 ### Prob
 
@@ -103,14 +86,10 @@ true_dose_fun(0.3)
 # Toxicity probabilities for a given dose (equal to 10), model and samples.
 # Every single probability value corresponds to one particular sample in `my_samples`.
 prob(10, my_model, my_samples)
-```
-
-    ##  [1] 0.80957405 0.02860184 0.68895841 0.66527136 0.89285778 0.68417954
-    ##  [7] 0.95695401 0.38913467 0.19430279 0.44834035 0.95146942 0.98673162
-    ## [13] 0.46637112 0.74679914 0.89759380 0.18900887 0.91932699 0.83108570
-    ## [19] 0.96144722 0.85925326
-
-``` r
+#>  [1] 0.93817478 0.22611044 0.99172210 0.73879550 0.86176537 0.02110999
+#>  [7] 0.78785107 0.66024799 0.16678261 0.89131170 0.99387321 0.78392448
+#> [13] 0.87738055 0.95835853 0.92685442 0.74505590 0.36538941 0.93118090
+#> [19] 0.83881343 0.98010014
 
 # True DLT-dose relationship.
 # Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.
@@ -119,9 +98,8 @@ prob(10, my_model, my_samples)
 # of the model's parameters.
 true_prob_fun <- probFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_prob_fun(10)
+#> [1] 0.8179597
 ```
-
-    ## [1] 0.8179597
 
 ## New Random Number Generator settings for the MCMC
 
@@ -163,6 +141,7 @@ If all of the following rules are `TRUE`:
 - ≥ 20 patients dosed: If 20 or more participants have been treated.
 
 ``` r
+
 
 class_name <- "LogisticNormal"
 eval(parse(text = paste0(".Default", class_name, "()")))

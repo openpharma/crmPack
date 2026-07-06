@@ -129,12 +129,6 @@ backfill patients or not.
 ``` r
 
 library(crmPack)
-#> Loading required package: ggplot2
-#> Registered S3 method overwritten by 'crmPack':
-#>   method       from  
-#>   print.gtable gtable
-#> Type crmPackHelp() to open help browser
-#> Type crmPackExample() to open example
 
 # Define the dose-grid.
 emptydata <- Data(
@@ -326,7 +320,10 @@ curve(myTruth(x), from = 0, to = max(emptydata@doseGrid),
       add = TRUE, col = "red")
 ```
 
-![](trial_backfill_files/figure-html/unnamed-chunk-8-1.png)
+![plot of chunk
+unnamed-chunk-8](trial_backfill-figures/unnamed-chunk-8-1.png)
+
+plot of chunk unnamed-chunk-8
 
 Now we can run the simulations for this particular scenario:
 
@@ -381,7 +378,10 @@ looks like this:
 plot(sims_simple@data[[3]], mark_backfill = TRUE)
 ```
 
-![](trial_backfill_files/figure-html/unnamed-chunk-10-1.png)
+![plot of chunk
+unnamed-chunk-10](trial_backfill-figures/unnamed-chunk-10-1.png)
+
+plot of chunk unnamed-chunk-10
 
 We can see from the patient IDs, which are assigned sequentially in
 time, when the backfill patients were recruited (those with an empty
@@ -399,7 +399,10 @@ response):
 plot(sims_complex@data[[5]], mark_backfill = TRUE, mark_response = TRUE)
 ```
 
-![](trial_backfill_files/figure-html/unnamed-chunk-11-1.png)
+![plot of chunk
+unnamed-chunk-11](trial_backfill-figures/unnamed-chunk-11-1.png)
+
+plot of chunk unnamed-chunk-11
 
 Here we can see that the starting dose cohort at dose 3 as well as the
 next one at dose 5 did not produce any responses, hence no backfill

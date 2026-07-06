@@ -17,7 +17,7 @@ StoppingHighestDose(report_label = NA_character_)
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Note

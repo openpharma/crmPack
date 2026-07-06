@@ -26,40 +26,40 @@ StoppingMTDdistribution(
 
 - target:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - thresh:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - prob:
 
-  (`proportion`)  
+  (`proportion`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `target`:
 
-  (`proportion`)  
+  (`proportion`)\
   the target toxicity probability (except 0 or 1) defining the MTD.
 
 - `thresh`:
 
-  (`proportion`)  
+  (`proportion`)\
   the threshold (except 0 or 1) relative to the recommended next best
   dose.
 
 - `prob`:
 
-  (`proportion`)  
+  (`proportion`)\
   required minimum probability, except 0 or 1.
 
 ## Note

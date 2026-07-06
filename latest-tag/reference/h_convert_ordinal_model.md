@@ -3,7 +3,7 @@
 **\[experimental\]**
 
 A simple helper function that takes a
-[`LogisticLogNormalOrdinal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalOrdinal-class.md)
+[`LogisticLogNormalOrdinal`](https://docs.crmpack.org/reference/LogisticLogNormalOrdinal-class.md)
 and an integer grade and converts them to the equivalent
 `LogisticLogNormal` model.
 
@@ -17,16 +17,16 @@ h_convert_ordinal_model(x, grade)
 
 - x:
 
-  (`LogisticLogNormalOrdinal`)  
+  (`LogisticLogNormalOrdinal`)\
   the `LogisticLogNormalOrdinal` model to covert
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   the toxicity grade for which the equivalent model is required.
 
 ## Value
 
 A
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 model.

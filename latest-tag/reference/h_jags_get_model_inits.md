@@ -5,9 +5,8 @@
 A simple helper function that prepares an object for `inits` argument of
 [`rjags::jags.model()`](https://rdrr.io/pkg/rjags/man/jags.model.html),
 which is invoked by
-[`mcmc()`](https://openpharma.github.io/crmPack/reference/mcmc.md)
-method. The `inits` argument specifies initial values for model
-parameters.
+[`mcmc()`](https://docs.crmpack.org/reference/mcmc.md) method. The
+`inits` argument specifies initial values for model parameters.
 
 ## Usage
 
@@ -19,12 +18,12 @@ h_jags_get_model_inits(model, data)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   an input model.
 
 - data:
 
-  (`GeneralData`)  
+  (`GeneralData`)\
   an input data.
 
 ## Value

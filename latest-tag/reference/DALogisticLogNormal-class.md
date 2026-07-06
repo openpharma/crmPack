@@ -4,7 +4,7 @@
 
 `DALogisticLogNormal` is the class for the logistic model with bivariate
 (log) normal prior and data augmentation. This class inherits from the
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 class.
 
 ## Usage
@@ -19,68 +19,68 @@ DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
 
 - npiece:
 
-  (`number`)  
+  (`number`)\
   the number of pieces in the `PEM`.
 
 - l:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector used in the lambda prior.
 
 - c_par:
 
-  (`numeric`)  
+  (`numeric`)\
   a parameter used in the lambda prior; according to Liu's paper,
   `c_par = 2` is recommended.
 
 - cond_pem:
 
-  (`flag`)  
+  (`flag`)\
   is a conditional piecewise-exponential model used? (default).
   Otherwise an unconditional model is used.
 
 - ...:
 
   Arguments passed on to
-  [`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)
+  [`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 
   `mean`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       the prior mean vector.
 
   `cov`
 
-  :   (`matrix`)  
+  :   (`matrix`)\
       the prior covariance matrix. The precision matrix `prec` is
       internally calculated as an inverse of `cov`.
 
   `ref_dose`
 
-  :   (`number`)  
+  :   (`number`)\
       the reference dose \\x\*\\ (strictly positive number).
 
 ## Slots
 
 - `npiece`:
 
-  (`number`)  
+  (`number`)\
   the number of pieces in the `PEM`.
 
 - `l`:
 
-  (`numeric`)  
+  (`numeric`)\
   a vector used in the lambda prior.
 
 - `c_par`:
 
-  (`numeric`)  
+  (`numeric`)\
   a parameter used in the lambda prior; according to Liu's paper,
   `c_par = 2` is recommended.
 
 - `cond_pem`:
 
-  (`flag`)  
+  (`flag`)\
   is a conditional piecewise-exponential model used? (default).
   Otherwise an unconditional model is used.
 
@@ -93,9 +93,9 @@ function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md),
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md).
 
 ## Examples
 

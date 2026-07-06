@@ -140,18 +140,18 @@ tidySamples <- samples %>% tidy()
 tidySamples %>% head()
 #> $data
 #> # A tibble: 2,000 × 10
-#>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
-#>        <int> <int>   <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -2.36    18.3        1           1        2100     100     1
-#>  2         2     1 -0.0155   9.08       1           1        2100     100     1
-#>  3         3     1 -0.221    7.51       1           1        2100     100     1
-#>  4         4     1 -0.413    6.61       1           1        2100     100     1
-#>  5         5     1 -1.12     4.48       1           1        2100     100     1
-#>  6         6     1 -0.188    7.99       1           1        2100     100     1
-#>  7         7     1  0.0359   1.48       1           1        2100     100     1
-#>  8         8     1 -0.890    4.35       1           1        2100     100     1
-#>  9         9     1 -2.18     8.13       1           1        2100     100     1
-#> 10        10     1 -1.21     6.41       1           1        2100     100     1
+#>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
+#>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
+#>  1         1     1  1.27   0.220       1           1        2100     100     1
+#>  2         2     1 -1.55   8.04        1           1        2100     100     1
+#>  3         3     1 -2.09   2.12        1           1        2100     100     1
+#>  4         4     1  1.34   0.488       1           1        2100     100     1
+#>  5         5     1 -0.803  1.05        1           1        2100     100     1
+#>  6         6     1 -1.25   4.93        1           1        2100     100     1
+#>  7         7     1 -1.88   1.47        1           1        2100     100     1
+#>  8         8     1 -2.94   5.96        1           1        2100     100     1
+#>  9         9     1  0.835  3.26        1           1        2100     100     1
+#> 10        10     1  0.941  2.48        1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 
@@ -159,7 +159,7 @@ tidySamples %>% head()
 #> # A tibble: 1 × 5
 #>   iterations burnin  step rng_kind rng_seed
 #>        <int>  <int> <int> <chr>       <int>
-#> 1       2100    100     1 NA             NA
+#> 1       2100    100     1 <NA>           NA
 ```
 
 ### Using tidy `crmPack` data
@@ -245,60 +245,64 @@ tidySamples$data %>%
   )
 ```
 
-![](tidy_method_files/figure-html/unnamed-chunk-7-1.png)
+![plot of chunk
+unnamed-chunk-7](tidy_method-figures/unnamed-chunk-7-1.png)
+
+plot of chunk unnamed-chunk-7
 
 ## Environment
 
 ``` r
 
 sessionInfo()
-#> R version 4.5.2 (2025-10-31)
-#> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> R version 4.6.1 (2026-06-24)
+#> Platform: aarch64-apple-darwin23
+#> Running under: macOS Tahoe 26.5.1
 #> 
 #> Matrix products: default
-#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+#> LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 #> 
 #> locale:
-#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+#> [1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
 #> 
-#> time zone: Etc/UTC
-#> tzcode source: system (glibc)
+#> time zone: Asia/Taipei
+#> tzcode source: internal
 #> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] dplyr_1.1.4      magrittr_2.0.4   tidyr_1.3.2      kableExtra_1.4.0
-#> [5] knitr_1.51       crmPack_2.1.0    ggplot2_4.0.1   
+#> [1] dplyr_1.2.1      magrittr_2.0.5   tidyr_1.3.2      kableExtra_1.4.0
+#> [5] knitr_1.51       crmPack_2.2.0    testthat_3.3.2   ggplot2_4.0.3   
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] utf8_1.2.6           sass_0.4.10          generics_0.1.4      
-#>  [4] xml2_1.5.2           futile.options_1.0.1 lattice_0.22-7      
-#>  [7] stringi_1.8.7        digest_0.6.39        evaluate_1.0.5      
-#> [10] grid_4.5.2           RColorBrewer_1.1-3   mvtnorm_1.3-3       
-#> [13] fastmap_1.2.0        jsonlite_2.0.0       backports_1.5.0     
-#> [16] formatR_1.14         gridExtra_2.3        purrr_1.2.1         
-#> [19] viridisLite_0.4.2    scales_1.4.0         textshaping_1.0.4   
-#> [22] jquerylib_0.1.4      Rdpack_2.6.4         cli_3.6.5           
-#> [25] rlang_1.1.7          rbibutils_2.4        futile.logger_1.4.9 
-#> [28] parallelly_1.46.1    withr_3.0.2          cachem_1.1.0        
-#> [31] yaml_2.3.12          otel_0.2.0           parallel_4.5.2      
-#> [34] tools_4.5.2          coda_0.19-4.1        checkmate_2.3.3     
-#> [37] lambda.r_1.2.4       vctrs_0.7.0          R6_2.6.1            
-#> [40] lifecycle_1.0.5      stringr_1.6.0        GenSA_1.1.15        
-#> [43] fs_1.6.6             htmlwidgets_1.6.4    ragg_1.5.0          
-#> [46] rjags_4-17           pkgconfig_2.0.3      desc_1.4.3          
-#> [49] pkgdown_2.2.0        pillar_1.11.1        bslib_0.9.0         
-#> [52] gtable_0.3.6         glue_1.8.0           systemfonts_1.3.1   
-#> [55] xfun_0.56            tibble_3.3.1         tidyselect_1.2.1    
-#> [58] rstudioapi_0.18.0    dichromat_2.0-0.1    farver_2.1.2        
-#> [61] htmltools_0.5.9      labeling_0.4.3       svglite_2.2.2       
-#> [64] rmarkdown_2.30       compiler_4.5.2       S7_0.2.1
+#>  [1] tidyselect_1.2.1     viridisLite_0.4.3    farver_2.1.2        
+#>  [4] R.utils_2.13.0       rjags_4-17           S7_0.2.2            
+#>  [7] fastmap_1.2.0        webshot2_0.1.2       promises_1.5.0      
+#> [10] digest_0.6.39        lifecycle_1.0.5      ellipsis_0.3.3      
+#> [13] survival_3.8-6       processx_3.9.0       compiler_4.6.1      
+#> [16] rlang_1.2.0          tools_4.6.1          utf8_1.2.6          
+#> [19] lambda.r_1.2.4       labeling_0.4.3       pkgbuild_1.4.8      
+#> [22] xml2_1.6.0           RColorBrewer_1.1-3   pkgload_1.5.3       
+#> [25] websocket_1.4.4      R.cache_0.17.0       withr_3.0.3         
+#> [28] purrr_1.2.2          R.oo_1.27.1          desc_1.4.3          
+#> [31] grid_4.6.1           scales_1.4.0         cli_3.6.6           
+#> [34] mvtnorm_1.4-1        rmarkdown_2.31       ragg_1.5.2          
+#> [37] generics_0.1.4       otel_0.2.0           rstudioapi_0.19.0   
+#> [40] sessioninfo_1.2.4    cachem_1.1.0         chromote_0.5.1      
+#> [43] stringr_1.6.0        splines_4.6.1        parallel_4.6.1      
+#> [46] formatR_1.14         vctrs_0.7.3          devtools_2.5.2      
+#> [49] Matrix_1.7-5         jsonlite_2.0.0       GenSA_1.1.15        
+#> [52] systemfonts_1.3.2    glue_1.8.1           parallelly_1.47.0   
+#> [55] codetools_0.2-20     stringi_1.8.7        gtable_0.3.6        
+#> [58] futile.logger_1.4.9  later_1.4.8          tibble_3.3.1        
+#> [61] styler_1.11.0        pillar_1.11.1        htmltools_0.5.9     
+#> [64] brio_1.1.5           R6_2.6.1             textshaping_1.0.5   
+#> [67] Rdpack_2.6.6         rprojroot_2.1.1      evaluate_1.0.5      
+#> [70] lattice_0.22-9       R.methodsS3_1.8.2    futile.options_1.0.1
+#> [73] rbibutils_2.4.1      backports_1.5.1      memoise_2.0.1       
+#> [76] Rcpp_1.1.1-1.1       svglite_2.2.2        coda_0.19-4.1       
+#> [79] gridExtra_2.3.1      checkmate_2.3.4      xfun_0.59           
+#> [82] fs_2.1.0             usethis_3.2.1        pkgconfig_2.0.3
 ```

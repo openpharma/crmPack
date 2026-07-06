@@ -12,17 +12,17 @@ h_get_formatted_dosegrid(grid, units = NA, fmt = NA, ...)
 
 - grid:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid
 
 - units:
 
-  (`character`)  
+  (`character`)\
   The units in which the values in `doseGrid` are
 
 - fmt:
 
-  (`character`)  
+  (`character`)\
   The format used to display values in `doseGrid`. If `NA`, grid values
   are not pre-formatted
 

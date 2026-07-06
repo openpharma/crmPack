@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Trial Design: basic sanity checks • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Trial Design: basic sanity checks">
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,8 @@
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -71,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -97,7 +100,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Trial Design: basic sanity checks</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/vignettes/trial_sanity_checks.Rmd" class="external-link"><code>vignettes/trial_sanity_checks.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/vignettes/trial_sanity_checks.Rmd" class="external-link"><code>vignettes/trial_sanity_checks.Rmd</code></a></small>
       <div class="d-none name"><code>trial_sanity_checks.Rmd</code></div>
     </div>
 
@@ -126,7 +129,7 @@ permitted increment and selecting the dose for the nest study.</p>
 <h2 id="study-definition">Study definition<a class="anchor" aria-label="anchor" href="#study-definition"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/openpharma/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.crmpack.org/">crmPack</a></span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># Define the dose grid and an empty data object</span></span>
@@ -227,9 +230,9 @@ earlier DLTs were reported at lower doses.</p>
 <tr class="even">
 <td align="right">5</td>
 <td align="right">1</td>
-<td align="right">5</td>
+<td align="right">3</td>
 <td align="left">FALSE</td>
-<td align="right">0</td>
+<td align="right">-40</td>
 </tr>
 <tr class="odd">
 <td align="right">10</td>
@@ -869,7 +872,13 @@ the state of the model after escalation to 50 mg without toxicity…</p>
 <span>  cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">:</span><span class="fl">7L</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">8L</span><span class="op">:</span><span class="fl">9L</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">default_mcmc_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, step <span class="op">=</span> <span class="fl">2</span>, samples <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">default_mcmc_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
+<span>  burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  step <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  samples <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>,</span>
+<span>  rng_seed <span class="op">=</span> <span class="fl">3819</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">no_tox_50_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">no_tox_below_50_data</span>, <span class="va">initial_model</span>, <span class="va">default_mcmc_options</span><span class="op">)</span></span>
 <span><span class="va">recommended_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span></span>
 <span>  <span class="va">next_best</span>,</span>
@@ -888,17 +897,17 @@ the state of the model after escalation to 50 mg without toxicity…</p>
 <span><span class="co">#&gt;  [4,]   10  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [6,]   20  0.001    0.000</span></span>
-<span><span class="co">#&gt;  [7,]   25  0.002    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.027    0.001</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.122    0.016</span></span>
-<span><span class="co">#&gt; [10,]   80  0.145    0.797</span></span>
-<span><span class="co">#&gt; [11,]  100  0.071    0.911</span></span>
+<span><span class="co">#&gt;  [7,]   25  0.003    0.000</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.054    0.002</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.145    0.016</span></span>
+<span><span class="co">#&gt; [10,]   80  0.158    0.803</span></span>
+<span><span class="co">#&gt; [11,]  100  0.043    0.939</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">revised_increment_rule</span>, <span class="va">no_tox_below_50_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 83.5</span></span></code></pre></div>
 <p>Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
-at 80 mg is 0.797, well above the limit of 0.25 defined in the dose
+at 80 mg is 0.803, well above the limit of 0.25 defined in the dose
 recommendation rule (<code>next_best</code>).</p>
 <p>Again, we have several options. We can introduce intermediate doses,
 thus slowing escalation and allowing the prior model more time to adapt
@@ -938,7 +947,7 @@ attempt.</p>
 <span></span>
 <span><span class="va">min_inf_model</span><span class="op">$</span><span class="va">model</span><span class="op">@</span><span class="va">params</span></span></code></pre></div>
 <p>The prior for θ is given
-by<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛉</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>α</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>β</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>0.98</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>1.35</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.92</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.05</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.05</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.00</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.98 \\  1.35\end{bmatrix} , \begin{bmatrix} 1.92 &amp;  0.05 \\ 0.05 &amp;  0.00\end{bmatrix} \right) </annotation></semantics></math></p>
+by<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">𝜽</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>α</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>β</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>0.98</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>1.35</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.92</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.05</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.05</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.00</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.98 \\  1.35\end{bmatrix} , \begin{bmatrix} 1.92 &amp;  0.05 \\ 0.05 &amp;  0.00\end{bmatrix} \right) </annotation></semantics></math></p>
 <p>The minimally informative model has a prior distribution of</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>α</mi><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="right" style="text-align: right"><mn>0.979</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mn>1.348</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="right" style="text-align: right"><mn>1.923</mn></mtd><mtd columnalign="right" style="text-align: right"><mn>0.045</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mn>0.045</mn></mtd><mtd columnalign="right" style="text-align: right"><mn>0.002</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\binom{\alpha}{log(\beta)} \sim N \left( \left[\begin{array}{rr} 0.979 \\  1.348 \end{array}\right], \left[\begin{array}{rr}  1.923 &amp;  0.045 \\  0.045 &amp;  0.002\end{array}\right]\right)</annotation></semantics></math></p>
 <p>Does this fix the rigidity problem?</p>
@@ -1024,6 +1033,20 @@ by<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><m
 <tr class="odd">
 <td align="right">15</td>
 <td align="right">0</td>
+<td align="right">15</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">15</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="left">FALSE</td>
+<td align="right">-33</td>
+</tr>
+<tr class="odd">
+<td align="right">15</td>
+<td align="right">0</td>
 <td align="right">20</td>
 <td align="left">FALSE</td>
 <td align="right">33</td>
@@ -1045,9 +1068,9 @@ by<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><m
 <tr class="even">
 <td align="right">20</td>
 <td align="right">1</td>
-<td align="right">10</td>
+<td align="right">15</td>
 <td align="left">FALSE</td>
-<td align="right">-50</td>
+<td align="right">-25</td>
 </tr>
 <tr class="odd">
 <td align="right">25</td>
@@ -1165,28 +1188,28 @@ by<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><m
 <td align="right">80</td>
 <td align="right">0</td>
 <td align="right">100</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="right">25</td>
 </tr>
 <tr class="even">
 <td align="right">80</td>
 <td align="right">1</td>
 <td align="right">50</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="right">-38</td>
 </tr>
 <tr class="odd">
 <td align="right">80</td>
 <td align="right">2</td>
 <td align="right">50</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="right">-38</td>
 </tr>
 <tr class="even">
 <td align="right">80</td>
 <td align="right">3</td>
 <td align="right">40</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="right">-50</td>
 </tr>
 </tbody>
@@ -1227,10 +1250,10 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt;  [5,]   15  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [6,]   20  0.000    0.000</span></span>
 <span><span class="co">#&gt;  [7,]   25  0.000    0.000</span></span>
-<span><span class="co">#&gt;  [8,]   40  0.015    0.000</span></span>
-<span><span class="co">#&gt;  [9,]   50  0.048    0.000</span></span>
-<span><span class="co">#&gt; [10,]   80  0.356    0.027</span></span>
-<span><span class="co">#&gt; [11,]  100  0.465    0.095</span></span>
+<span><span class="co">#&gt;  [8,]   40  0.000    0.000</span></span>
+<span><span class="co">#&gt;  [9,]   50  0.004    0.000</span></span>
+<span><span class="co">#&gt; [10,]   80  0.191    0.000</span></span>
+<span><span class="co">#&gt; [11,]  100  0.347    0.012</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span><span class="va">stopping_trial</span>, <span class="va">recommended_dose</span><span class="op">$</span><span class="va">value</span>, <span class="va">no_tox_samples</span>, <span class="va">initial_model</span>, <span class="va">no_tox_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
@@ -1240,7 +1263,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 46 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -1254,7 +1277,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 46 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -1267,7 +1290,7 @@ any reports of toxicity, and fit the revised model …</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 46 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">#&gt; </span></span>

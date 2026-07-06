@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Plot of the DLE and efficacy curve side by side given a DLE pseudo model, a DLE sample, an efficacy pseudo model and a given efficacy sample — plotDualResponses • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Plot of the DLE and efficacy curve side by side given a DLE pseudo model, a DLE sample, an efficacy pseudo model and a given efficacy sample — plotDualResponses">
 <meta name="description" content="Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
@@ -20,7 +20,7 @@ and a given pseudo efficacy model without DLE and efficacy samples">
 a DLE sample, an efficacy pseudo model and a given efficacy sample
 Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
 and a given pseudo efficacy model without DLE and efficacy samples">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -30,7 +30,7 @@ and a given pseudo efficacy model without DLE and efficacy samples">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,8 @@ and a given pseudo efficacy model without DLE and efficacy samples">
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -80,6 +82,7 @@ and a given pseudo efficacy model without DLE and efficacy samples">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -100,7 +103,7 @@ and a given pseudo efficacy model without DLE and efficacy samples">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot of the DLE and efficacy curve side by side given a DLE pseudo model, a DLE sample, an efficacy pseudo model and a given efficacy sample</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Samples-methods.R" class="external-link"><code>R/Samples-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/Samples-methods.R" class="external-link"><code>R/Samples-methods.R</code></a></small>
       <div class="d-none name"><code>plotDualResponses.Rd</code></div>
     </div>
 
@@ -140,27 +143,27 @@ and a given pseudo efficacy model without DLE and efficacy samples</p>
 <dl>
 <dt id="arg-dlemodel">DLEmodel<a class="anchor" aria-label="anchor" href="#arg-dlemodel"></a>
 </dt>
-<dd><p>the pseudo DLE model of <code><a href="ModelTox-class.html">ModelTox</a></code> class object</p></dd>
+<dd><p>the pseudo DLE model of <a href="ModelTox-class.html">ModelTox</a> class object</p></dd>
 
 
 <dt id="arg-dlesamples">DLEsamples<a class="anchor" aria-label="anchor" href="#arg-dlesamples"></a>
 </dt>
-<dd><p>the DLE samples of <code><a href="Samples-class.html">Samples</a></code> class object</p></dd>
+<dd><p>the DLE samples of <a href="Samples-class.html">Samples</a> class object</p></dd>
 
 
 <dt id="arg-effmodel">Effmodel<a class="anchor" aria-label="anchor" href="#arg-effmodel"></a>
 </dt>
-<dd><p>the pseudo efficacy model of <code><a href="ModelEff-class.html">ModelEff</a></code> class object</p></dd>
+<dd><p>the pseudo efficacy model of <a href="ModelEff-class.html">ModelEff</a> class object</p></dd>
 
 
 <dt id="arg-effsamples">Effsamples<a class="anchor" aria-label="anchor" href="#arg-effsamples"></a>
 </dt>
-<dd><p>the Efficacy samples of <code><a href="Samples-class.html">Samples</a></code> class object</p></dd>
+<dd><p>the Efficacy samples of <a href="Samples-class.html">Samples</a> class object</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a>
 </dt>
-<dd><p>the data input of <code><a href="DataDual-class.html">DataDual</a></code> class object</p></dd>
+<dd><p>the data input of <a href="DataDual-class.html">DataDual</a> class object</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>

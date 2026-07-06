@@ -26,21 +26,18 @@ approximate(
 
 - object:
 
-  the
-  [`Samples`](https://openpharma.github.io/crmPack/reference/Samples-class.md)
+  the [Samples](https://docs.crmpack.org/reference/Samples-class.md)
   object
 
 - model:
 
   the
-  [`GeneralModel`](https://openpharma.github.io/crmPack/reference/GeneralModel-class.md)
+  [GeneralModel](https://docs.crmpack.org/reference/GeneralModel-class.md)
   object
 
 - data:
 
-  the
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-  object
+  the [Data](https://docs.crmpack.org/reference/Data-class.md) object
 
 - ...:
 
@@ -79,7 +76,7 @@ model
 
 - `approximate(Samples)`: Here the ... argument can transport additional
   arguments for
-  [`Quantiles2LogisticNormal`](https://openpharma.github.io/crmPack/reference/Quantiles2LogisticNormal.md),
+  [`Quantiles2LogisticNormal`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md),
   e.g. in order to control the approximation quality, etc.
 
 ## Examples
@@ -134,12 +131,12 @@ approximation <- approximate(
     maxit = 1
   )
 )
-#> Have got accurate energy 0.09331159644 <= 0.1 in smooth search
-#> Emini is: 0.09331159644
+#> Emini is: 0.1023457835
 #> xmini are:
-#> -0.2065317447 0.02120616785 0.743090456 0.4883771888 0.1211733668 
-#> Totally it used 7.4e-05 secs
+#> -0.1052955766 0.1049918505 0.7477237344 0.4955097001 0.0841870982 
+#> Totally it used 5.8e-05 secs
 #> No. of function call is: 1
+#> Algorithm reached max number of iterations.
 
 posterior <- approximation$model
 

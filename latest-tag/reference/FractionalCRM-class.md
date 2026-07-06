@@ -23,29 +23,29 @@ FractionalCRM(...)
 - ...:
 
   Arguments passed on to
-  [`OneParLogNormalPrior`](https://openpharma.github.io/crmPack/reference/OneParLogNormalPrior-class.md)
+  [`OneParLogNormalPrior`](https://docs.crmpack.org/reference/OneParLogNormalPrior-class.md)
 
   `skel_probs`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       skeleton prior probabilities. This is a vector of unique and
       sorted probability values between 0 and 1.
 
   `dose_grid`
 
-  :   (`numeric`)  
+  :   (`numeric`)\
       dose grid. It must be must be a sorted vector of the same length
       as `skel_probs`.
 
   `sigma2`
 
-  :   (`number`)  
+  :   (`number`)\
       prior variance of log power parameter alpha.
 
 ## Note
 
 Typically, end users will not use the
-[`.DefaultTITELogisticLogNormal()`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+[`.DefaultTITELogisticLogNormal()`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
 function.
 
 ## References
@@ -58,7 +58,7 @@ Biopharmaceutical Statistics*, **23**(4), 856–870.
 
 ## See also
 
-[`TITELogisticLogNormal`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md).
+[`TITELogisticLogNormal`](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md).
 
 ## Examples
 

@@ -22,40 +22,40 @@ StoppingPatientsNearDose(
 
 - nPatients:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - percentage:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - include_backfill:
 
-  (`flag`)  
+  (`flag`)\
   see slot definition.
 
 - report_label:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   see slot definition.
 
 ## Slots
 
 - `nPatients`:
 
-  (`number`)  
+  (`number`)\
   number of required patients.
 
 - `percentage`:
 
-  (`number`)  
+  (`number`)\
   percentage (between and including 0 and 100) within the next best dose
   the patients must lie.
 
 - `include_backfill`:
 
-  (`flag`)  
+  (`flag`)\
   whether to include backfill patients.
 
 ## Note

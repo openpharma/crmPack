@@ -4,7 +4,7 @@
 
 `RuleDesignOrdinal` is the class for rule-based designs. The difference
 between this class and the
-[`DesignOrdinal`](https://openpharma.github.io/crmPack/reference/DesignOrdinal-class.md)
+[`DesignOrdinal`](https://docs.crmpack.org/reference/DesignOrdinal-class.md)
 class is that `RuleDesignOrdinal` does not contain `model`, `stopping`
 and `increments` slots.
 
@@ -20,35 +20,35 @@ RuleDesignOrdinal(next_best, cohort_size, data, starting_dose)
 
 - next_best:
 
-  (`NextBestOrdinal`)  
+  (`NextBestOrdinal`)\
   see slot definition.
 
 - cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - data:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   see slot definition.
 
 - starting_dose:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 ## Details
 
 Please note that the cohort size rules need to be wrapped into the
 corresponding
-[CohortSizeOrdinal](https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.md)
+[CohortSizeOrdinal](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)
 class, before a successful evaluation of the corresponding methods can
 take place. Note also that these wrappers cannot be nested, i.e., you
 cannot have a
-[CohortSizeOrdinal](https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.md)
+[CohortSizeOrdinal](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)
 inside another
-[CohortSizeOrdinal](https://openpharma.github.io/crmPack/reference/CohortSizeOrdinal-class.md)
+[CohortSizeOrdinal](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)
 (which also would not make sense) because it would not be clear which
 event grade to use for the methods calculation. However, multiple rules
 can be combined using the operators defined, e.g.,
@@ -58,22 +58,22 @@ can be combined using the operators defined, e.g.,
 
 - `next_best`:
 
-  (`NextBestOrdinal`)  
+  (`NextBestOrdinal`)\
   how to find the next best dose.
 
 - `cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes.
 
 - `data`:
 
-  (`DataOrdinal`)  
+  (`DataOrdinal`)\
   specifies dose grid, any previous data, etc.
 
 - `starting_dose`:
 
-  (`number`)  
+  (`number`)\
   the starting dose, it must lie on the dose grid in `data`.
 
 ## Note
@@ -110,7 +110,7 @@ RuleDesignOrdinal(
 #> Slot "derive":
 #> function (x) 
 #> median(x, na.rm = TRUE)
-#> <environment: 0x55deac9e04e0>
+#> <environment: 0x56135916cbc0>
 #> 
 #> 
 #> 

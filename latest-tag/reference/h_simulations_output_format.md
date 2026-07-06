@@ -12,7 +12,7 @@ h_simulations_output_format(resultList)
 
 - resultList:
 
-  (`list`)  
+  (`list`)\
   raw iteration output.
 
 ## Value

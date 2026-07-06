@@ -15,18 +15,18 @@ e1 & e2
 
 - e1:
 
-  (`Stopping`)  
+  (`Stopping`)\
   stopping rule object.
 
 - e2:
 
-  (`StoppingAll`)  
+  (`StoppingAll`)\
   stopping list object.
 
 ## Value
 
 The modified
-[`StoppingAll`](https://openpharma.github.io/crmPack/reference/StoppingAll-class.md)
+[`StoppingAll`](https://docs.crmpack.org/reference/StoppingAll-class.md)
 object.
 
 ## Examples

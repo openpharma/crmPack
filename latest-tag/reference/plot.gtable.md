@@ -21,7 +21,7 @@ print(x, ...)
 
 - x:
 
-  (`gtable`)  
+  (`gtable`)\
   object to print.
 
 - ...:

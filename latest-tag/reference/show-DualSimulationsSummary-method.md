@@ -15,7 +15,7 @@ show(object)
 
 - object:
 
-  (`DualSimulationsSummary`)  
+  (`DualSimulationsSummary`)\
   the object we want to print.
 
 ## Value
@@ -149,15 +149,15 @@ show(summary(
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
 #> Mean toxicity risks for the patients on active : mean 0 % (0 %, 0 %) 
-#> Doses selected as MTD : mean 0 (0, 0) 
+#> Doses selected as MTD : mean 1 (1, 1) 
 #> True toxicity at doses selected : mean 0 % (0 %, 0 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 0 
+#> Dose most often selected as MTD: 1 
 #> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean NA % (NA %, NA %) 
+#> Fitted toxicity rate at dose most often selected : mean 3 % (3 %, 3 %) 
 #> Stop reason triggered:
-#>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
+#>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  100 %
 #>  ≥ 10 patients dosed :  0 %
-#>  Stopped because of missing dose :  100 %
-#> Fitted biomarker level at dose most often selected : mean NA (NA, NA) 
+#>  Stopped because of missing dose :  0 %
+#> Fitted biomarker level at dose most often selected : mean 0.6 (0.6, 0.6) 
 ```

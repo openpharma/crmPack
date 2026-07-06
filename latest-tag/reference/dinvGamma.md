@@ -12,27 +12,27 @@ dinvGamma(x, a, b, log = FALSE, normalize = TRUE)
 
 - x:
 
-  (`numeric`)  
+  (`numeric`)\
   vector of quantiles.
 
 - a:
 
-  (`number`)  
+  (`number`)\
   the shape parameter of the inverse gamma distribution.
 
 - b:
 
-  (`number`)  
+  (`number`)\
   the scale parameter of the inverse gamma distribution.
 
 - log:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE`, probabilities `p` are given as `log(p)`.
 
 - normalize:
 
-  (`flag`)  
+  (`flag`)\
   if `TRUE`, the output will be normalized.
 
 ## Value

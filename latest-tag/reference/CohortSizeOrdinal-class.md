@@ -17,24 +17,24 @@ CohortSizeOrdinal(grade, rule)
 
 - grade:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 - rule:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 ## Slots
 
 - `grade`:
 
-  (`integer`)  
+  (`integer`)\
   the grade at which the rule should be applied
 
 - `rule`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   the `CohortSize` rule to apply.
 
 ## Note

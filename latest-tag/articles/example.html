@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>crmPack: Object-oriented implementation of CRM designs • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="crmPack: Object-oriented implementation of CRM designs">
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,8 @@
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -71,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -100,7 +103,7 @@ Daniel Sabanés Bové</h4>
             
             <h4 data-toc-skip class="date">02 January 2019</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/vignettes/example.Rmd" class="external-link"><code>vignettes/example.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/vignettes/example.Rmd" class="external-link"><code>vignettes/example.Rmd</code></a></small>
       <div class="d-none name"><code>example.Rmd</code></div>
     </div>
 
@@ -126,7 +129,7 @@ computations. WinBUGS is not required or supported anymore.</p>
 <p>Before being able to run anything, you have to load the package
 with</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/openpharma/crmPack" class="external-link">crmPack</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.crmpack.org/">crmPack</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gluc/data.tree" class="external-link">data.tree</a></span><span class="op">)</span></span></code></pre></div>
 <p>For browsing the help pages for the package, it is easiest to start
 the web browser interface with</p>
@@ -153,8 +156,12 @@ classes and corresponding methods) of CRM designs with
 <span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.tree/man/as.Node.html" class="external-link">as.Node</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/data.tree/man/ToDiagrammeRGraph.html" class="external-link">SetNodeStyle</a></span><span class="op">(</span><span class="va">tree</span>, shape <span class="op">=</span> <span class="st">"box"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="example-figures/datastruct-1.png" alt="GeneralData is the grand parent, Data the child and DataDual the grand child." width="100%"><p class="caption">
+Data classes structure
+</p>
+</div>
 <p>We have three data classes for this package. The parent class is the
 <code>GeneralData</code> class. The <code>Data</code> class is
 inheriting from the <code>GeneralData</code> class and the
@@ -248,7 +255,11 @@ classes. There are two further classes under <code>ModelPseudo</code>
 which are the <code>ModelTox</code> class include all DLT (the
 occurrence of a dose-limiting toxicity) class models, and class
 <code>ModelEff</code> which includes all efficacy class models.</p>
-<pre><code><span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre>
+<div class="figure">
+<img src="example-figures/model-classes-1.png" alt="A dedrogram showing the inheritance structure for descendants of AllModels." width="100%"><p class="caption">
+Model classes structure
+</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="model-setup">Model setup<a class="anchor" aria-label="anchor" href="#model-setup"></a>
@@ -264,7 +275,7 @@ next steps.</p>
 <p>With the following command, we create a new model of class
 <code>LogisticLogNormal</code>, with certain mean and covariance prior
 parameters and reference dose:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LogisticLogNormal-class.html">LogisticLogNormal</a></span><span class="op">(</span></span>
 <span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.85</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  cov <span class="op">=</span></span>
@@ -275,14 +286,14 @@ parameters and reference dose:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We can query the class that an object belongs to with the
 <code>class</code> function:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "LogisticLogNormal"</span></span>
 <span><span class="co">#&gt; attr(,"package")</span></span>
 <span><span class="co">#&gt; [1] "crmPack"</span></span></code></pre></div>
 <p>We can look in detail at the structure of <code>model</code> as
 follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Formal class 'LogisticLogNormal' [package "crmPack"] with 9 slots</span></span>
 <span><span class="co">#&gt;   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots</span></span>
@@ -293,16 +304,16 @@ follows:</p>
 <span><span class="co">#&gt;   .. .. ..@ .Data: num 56</span></span>
 <span><span class="co">#&gt;   ..@ datamodel      :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 290 17 295 5 17 5 290 295</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ priormodel     :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 146 18 150 5 18 5 146 150</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ modelspecs     :function (from_prior)  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ init           :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ datanames      : chr [1:3] "nObs" "y" "x"</span></span>
 <span><span class="co">#&gt;   ..@ datanames_prior: chr(0) </span></span>
 <span><span class="co">#&gt;   ..@ sample         : chr [1:2] "alpha0" "alpha1"</span></span></code></pre></div>
@@ -310,7 +321,7 @@ follows:</p>
 accessed with the <code>@</code> operator (similarly as for lists the
 <code>$</code> operator), for example we can extract the
 <code>ref_dose</code> slot:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span><span class="op">@</span><span class="va">ref_dose</span></span>
 <span><span class="co">#&gt; An object of class "positive_number"</span></span>
 <span><span class="co">#&gt; [1] 56</span></span></code></pre></div>
@@ -341,7 +352,7 @@ set that contains all currently available observations is needed.</p>
 <p>Therefore, let’s assume an empty data set is set up. For example, we
 will use 12 dose levels from 25 to 300 mg with increments of 25 mg. Then
 we have:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
 <span>  doseGrid <span class="op">=</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">25</span>, to <span class="op">=</span> <span class="fl">300</span>, by <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
@@ -388,7 +399,7 @@ parameters φ<sub>1</sub> and φ<sub>2</sub>.</p>
 <p>With the following commands, we create the model of class
 <code>LogisticIndepBeta</code>, with the prior specified in form of
 pseudo data.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LogisticIndepBeta-class.html">LogisticIndepBeta</a></span><span class="op">(</span></span>
 <span>  binDLE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.05</span>, <span class="fl">1.8</span><span class="op">)</span>, DLEweights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span>
 <span>  DLEdose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">300</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">data1</span></span>
@@ -424,7 +435,7 @@ In principle,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>l</mi></msub><annotation encoding="application/x-tex">n_l</annotation></semantics></math>
 can also be non-integer values.</p>
 <p>Then we can look at the structure of this model:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">DLTmodel</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Formal class 'LogisticIndepBeta' [package "crmPack"] with 7 slots</span></span>
 <span><span class="co">#&gt;   ..@ binDLE    : num [1:2] 1.05 1.8</span></span>
@@ -436,21 +447,23 @@ can also be non-integer values.</p>
 <span><span class="co">#&gt;   .. ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : chr [1:2] "(Intercept)" "log(x)"</span></span>
-<span><span class="co">#&gt;   ..@ data      :Formal class 'Data' [package "crmPack"] with 9 slots</span></span>
-<span><span class="co">#&gt;   .. .. ..@ x       : num(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ y       : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...</span></span>
-<span><span class="co">#&gt;   .. .. ..@ nGrid   : int 12</span></span>
-<span><span class="co">#&gt;   .. .. ..@ xLevel  : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ placebo : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. .. ..@ ID      : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ cohort  : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ nObs    : int 0</span></span></code></pre></div>
+<span><span class="co">#&gt;   ..@ data      :Formal class 'Data' [package "crmPack"] with 11 slots</span></span>
+<span><span class="co">#&gt;   .. .. ..@ x         : num(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ y         : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ doseGrid  : num [1:12] 25 50 75 100 125 150 175 200 225 250 ...</span></span>
+<span><span class="co">#&gt;   .. .. ..@ nGrid     : int 12</span></span>
+<span><span class="co">#&gt;   .. .. ..@ xLevel    : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ placebo   : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. .. ..@ backfilled: logi(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ response  : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ ID        : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ cohort    : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ nObs      : int 0</span></span></code></pre></div>
 <p>There are in total 10 slots and their names are given. Remember that
 they can be accessed with the <code>@</code> operator (similarly as for
 lists the <code>$</code> operator), for example we can extract the
 <code>phi1</code> slot:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTmodel</span><span class="op">@</span><span class="va">phi1</span></span>
 <span><span class="co">#&gt; [1] -1.946152</span></span></code></pre></div>
 <p>This gives the updated modal estimate of the intercept parameter
@@ -475,7 +488,7 @@ So the minimal informative construction avoids explicit specification of
 the prior parameters of the logistic regression model.</p>
 <p>In our example, we could construct it as follows, assuming a minimal
 dose of 0.1 mg and a maximum dose of 100 mg:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coarseGrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span>, <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">minInfModel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MinimalInformative.html">MinimalInformative</a></span><span class="op">(</span></span>
 <span>  dosegrid <span class="op">=</span> <span class="va">coarseGrid</span>,</span>
@@ -489,14 +502,20 @@ dose of 0.1 mg and a maximum dose of 100 mg:</p>
 <span>    <span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">432</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; It: 1, obj value (lsEnd): 0.4445658375 indTrace: 1</span></span>
-<span><span class="co">#&gt; It: 4, obj value (lsEnd): 0.4002825478 indTrace: 4</span></span>
-<span><span class="co">#&gt; It: 14, obj value (lsEnd): 0.114847608 indTrace: 14</span></span>
-<span><span class="co">#&gt; Emini is: 0.114847608</span></span>
+<span><span class="co">#&gt; It: 1, obj value (lsEnd): 0.445156546 indTrace: 1</span></span>
+<span><span class="co">#&gt; It: 4, obj value (lsEnd): 0.3925370602 indTrace: 4</span></span>
+<span><span class="co">#&gt; It: 46, obj value (lsEnd): 0.3744556993 indTrace: 46</span></span>
+<span><span class="co">#&gt; It: 66, obj value (lsEnd): 0.2418512802 indTrace: 66</span></span>
+<span><span class="co">#&gt; It: 67, obj value (lsEnd): 0.1971230397 indTrace: 67</span></span>
+<span><span class="co">#&gt; It: 68, obj value (lsEnd): 0.1841176649 indTrace: 68</span></span>
+<span><span class="co">#&gt; It: 96, obj value (lsEnd): 0.06428445449 indTrace: 96</span></span>
+<span><span class="co">#&gt; It: 177, obj value (lsEnd): 0.0610906796 indTrace: 177</span></span>
+<span><span class="co">#&gt; It: 191, obj value (lsEnd): 0.05912244288 indTrace: 191</span></span>
+<span><span class="co">#&gt; Emini is: 0.05912244288</span></span>
 <span><span class="co">#&gt; xmini are:</span></span>
-<span><span class="co">#&gt; 1.004919453 1.023914845 1.873799323 0.1222736022 -0.6253169547 </span></span>
-<span><span class="co">#&gt; Totally it used 24.994 secs</span></span>
-<span><span class="co">#&gt; No. of function call is: 4862</span></span>
+<span><span class="co">#&gt; 0.5995305301 0.6542658519 1.344683068 0.003274296776 0.04149785291 </span></span>
+<span><span class="co">#&gt; Totally it used 16.361409 secs</span></span>
+<span><span class="co">#&gt; No. of function call is: 10483</span></span>
 <span><span class="co">#&gt; Algorithm reached max number of iterations.</span></span></code></pre></div>
 <p>We use a few grid points between the minimum and the maximum to guide
 the approximation routine, which is based on a stochastic optimization
@@ -513,7 +532,7 @@ it is very unlikely (only 5% probability) to have the true probability
 of DLT at the minimum and maximum dose, respectively.</p>
 <p>The result <code>minInfModel</code> is a list, and we can use its
 contents to illustrate the creation of the prior:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">coarseGrid</span>,</span>
 <span>  y <span class="op">=</span> <span class="va">minInfModel</span><span class="op">$</span><span class="va">required</span>,</span>
@@ -541,36 +560,36 @@ plot of chunk min-inf-res
 the Beta distributions that we approximate with the red quantiles of the
 logistic normal model. We see that the distance is still quite large,
 and the maximum distance between any red and blue point is:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">minInfModel</span><span class="op">$</span><span class="va">distance</span></span>
-<span><span class="co">#&gt; [1] 0.1148476</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.05912244</span></span></code></pre></div>
 <p>Therefore usually we would let the computations take longer (by
 removing the <code>control</code> option from the
 <code>MinimalInformative</code> call) to obtain a better approximation.
 The final approximating model, which has produced the red points, is
 contained in the <code>model</code> list element:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">minInfModel</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Formal class 'LogisticNormal' [package "crmPack"] with 9 slots</span></span>
 <span><span class="co">#&gt;   ..@ params         :Formal class 'ModelParamsNormal' [package "crmPack"] with 3 slots</span></span>
-<span><span class="co">#&gt;   .. .. ..@ mean: Named num [1:2] 1 1.02</span></span>
+<span><span class="co">#&gt;   .. .. ..@ mean: Named num [1:2] 0.6 0.654</span></span>
 <span><span class="co">#&gt;   .. .. .. ..- attr(*, "names")= chr [1:2] "meanAlpha" "meanBeta"</span></span>
-<span><span class="co">#&gt;   .. .. ..@ cov : num [1:2, 1:2] 3.511 -0.143 -0.143 0.015</span></span>
-<span><span class="co">#&gt;   .. .. ..@ prec: num [1:2, 1:2] 0.468 4.482 4.482 109.833</span></span>
+<span><span class="co">#&gt;   .. .. ..@ cov : num [1:2, 1:2] 1.81 1.83e-04 1.83e-04 1.07e-05</span></span>
+<span><span class="co">#&gt;   .. .. ..@ prec: num [1:2, 1:2] 0.554 -9.441 -9.441 93435.615</span></span>
 <span><span class="co">#&gt;   ..@ ref_dose       :Formal class 'positive_number' [package "crmPack"] with 1 slot</span></span>
 <span><span class="co">#&gt;   .. .. ..@ .Data: num 50</span></span>
 <span><span class="co">#&gt;   ..@ datamodel      :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 220 17 225 5 17 5 220 225</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ priormodel     :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 226 18 230 5 18 5 226 230</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ modelspecs     :function (from_prior)  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ init           :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x0000028310554460&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
 <span><span class="co">#&gt;   ..@ datanames      : chr [1:3] "nObs" "y" "x"</span></span>
 <span><span class="co">#&gt;   ..@ datanames_prior: chr(0) </span></span>
 <span><span class="co">#&gt;   ..@ sample         : chr [1:2] "alpha0" "alpha1"</span></span></code></pre></div>
@@ -582,7 +601,7 @@ other places in the model object. Therefore, always use the class
 initialization function to create a new model object, if new parameters
 are required. But if we want to further use the approximation model, we
 can save it under a shorter name, e.g.:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myModel</span> <span class="op">&lt;-</span> <span class="va">minInfModel</span><span class="op">$</span><span class="va">model</span></span></code></pre></div>
 </div>
 </div>
@@ -601,11 +620,13 @@ can still obtain the full posterior distribution of the model parameters
 via MCMC for any models specified under <code>ModelPseudo</code> class.
 The MCMC sampling can be controlled with an object of class
 <code>mcmcOptions</code>, created for example as follows:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
 <span>  burnin <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  step <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  samples <span class="op">=</span> <span class="fl">2000</span></span>
+<span>  samples <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>,</span>
+<span>  rng_seed <span class="op">=</span> <span class="fl">4991</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now the object <code>options</code> specifies that you would like to
 have <code>2000</code> parameter samples obtained from a Markov chain
@@ -616,11 +637,14 @@ actual production use and are only used for illustrating purposes here;
 normally you would specify at least the default parameters of the
 initialization function <code>mcmcOptions</code>: <code>10000</code>
 burn-in iterations and <code>10000</code> samples saved every
-2<sup>nd</sup> iteration. You can look these up in help browser under
-the link <code>McmcOptions</code>.</p>
+2<sup>nd</sup> iteration. In order to make the results reproducible, you
+also need to specify the <code>rng_kind</code> and
+<code>rng_seed</code>. Otherwise you will experience differences in the
+MCMC sampling, and therefore results. You can look these up in help
+browser under the link <code>McmcOptions</code>.</p>
 <p>After having set up the options, you can proceed to MCMC sampling by
 calling the <code>mcmc</code> function:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">94</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>mcmc</code> function takes the data object, the model and
@@ -638,26 +662,26 @@ object of class <code>Samples</code>.</p>
 samples: (please have a look at the help page for the
 <code>LogisticLogNormal</code> model class for the interpretation of the
 parameters)</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## look at the structure of the samples object:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Formal class 'Samples' [package "crmPack"] with 2 slots</span></span>
 <span><span class="co">#&gt;   ..@ data   :List of 2</span></span>
-<span><span class="co">#&gt;   .. ..$ alpha0: num [1:2000] 1.289 1.289 1.289 -0.428 -0.428 ...</span></span>
-<span><span class="co">#&gt;   .. ..$ alpha1: num [1:2000] 1.69 1.69 1.69 2.27 2.27 ...</span></span>
+<span><span class="co">#&gt;   .. ..$ alpha0: num [1:2000] 0.321 0.321 0.321 0.208 0.208 ...</span></span>
+<span><span class="co">#&gt;   .. ..$ alpha1: num [1:2000] 1.97 1.97 1.97 0.778 0.778 ...</span></span>
 <span><span class="co">#&gt;   ..@ options:Formal class 'McmcOptions' [package "crmPack"] with 5 slots</span></span>
 <span><span class="co">#&gt;   .. .. ..@ iterations: int 4100</span></span>
 <span><span class="co">#&gt;   .. .. ..@ burnin    : int 100</span></span>
 <span><span class="co">#&gt;   .. .. ..@ step      : int 2</span></span>
-<span><span class="co">#&gt;   .. .. ..@ rng_kind  : chr NA</span></span>
-<span><span class="co">#&gt;   .. .. ..@ rng_seed  : int NA</span></span>
+<span><span class="co">#&gt;   .. .. ..@ rng_kind  : chr "base::Mersenne-Twister"</span></span>
+<span><span class="co">#&gt;   .. .. ..@ rng_seed  : int 4991</span></span>
 <span><span class="co">## now extract the alpha0 samples (intercept of the regression model)</span></span>
 <span><span class="va">alpha0samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">samples</span>, <span class="st">"alpha0"</span><span class="op">)</span></span></code></pre></div>
 <p><code>alpha0samples</code> now contains the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\alpha_{0}</annotation></semantics></math>
 samples in a format understood by <code>ggmcmc</code> and we can produce
 plots with it, e.g. a trace plot and an autocorrelation plot:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://xavier-fim.net/packages/ggmcmc/" class="external-link">ggmcmc</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggmcmc/man/ggs_traceplot.html" class="external-link">ggs_traceplot</a></span><span class="op">(</span><span class="va">alpha0samples</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -665,7 +689,7 @@ plots with it, e.g. a trace plot and an autocorrelation plot:</p>
 plot of chunk ggmcmc
 </p>
 </div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggmcmc/man/ggs_autocorrelation.html" class="external-link">ggs_autocorrelation</a></span><span class="op">(</span><span class="va">alpha0samples</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/ggmcmc2-1.png" alt="An autocorrelation plot for alpha0" width="100%"><p class="caption">
@@ -677,18 +701,18 @@ might consider using a higher thinning parameter in order to decrease
 it.</p>
 <p>You can find other useful plotting functions in the package
 information:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"ggmcmc"</span>, help_type <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <p>Similarly, using models from <code>ModelPseudo</code> class, we can
 also obtain the prior and posterior samples of the model parameters via
 MCMC.</p>
 <p>For example, using the DLTmodel, <code>data1</code>, the empty data
 set and options specified in earlier examples.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data1</span>, model <span class="op">=</span> <span class="va">DLTmodel</span>, options <span class="op">=</span> <span class="va">options</span><span class="op">)</span></span></code></pre></div>
 <p>The prior samples of the model parameters are now saved in the
 variable <code>DLTsamples</code>.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="fl">75</span>, <span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">225</span>, <span class="fl">300</span><span class="op">)</span>,</span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -724,7 +748,7 @@ posterior modal estimates of the model parameters will be display in the
 output of the model.</p>
 <p>For example, we have some new observations specified in the data set
 <code>data3</code> and update the DLT model:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">newDLTmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">DLTmodel</span>, data <span class="op">=</span> <span class="va">data3</span><span class="op">)</span></span>
 <span><span class="va">newDLTmodel</span><span class="op">@</span><span class="va">phi1</span></span>
 <span><span class="co">#&gt; [1] -5.070681</span></span>
@@ -741,7 +765,7 @@ updated result <code>newDLTmodel</code>.</p>
 <p>After having obtained the parameter samples, we can plot the model
 fit, by supplying the samples, model and data to the generic plot
 function:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plot-model-fit-1.png" alt="A graph with dose level on the x axis and the probability of DLT on the y axis.  The posterior mean probability of toxicity increases smoothly with dose.  The 95% credible interval is roughly symmetric about the mean." width="100%"><p class="caption">
@@ -755,7 +779,7 @@ object.</p>
 credible intervals, i.e. from the model without any data. This works in
 principle the same way as with data, just that we use an empty data
 object:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## provide only the dose grid:</span></span>
 <span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Data-class.html">Data</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span></span>
 <span><span class="co">## obtain prior samples with this Data object</span></span>
@@ -770,7 +794,7 @@ plot of chunk empty-data
 <p>This <code>plot</code> function can also apply to the
 <code>DLTmodel</code> when samples of the parameters have been
 generated:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">DLTsamples</span>, <span class="va">DLTmodel</span>, <span class="va">data1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plot-samplesdata1-1.png" alt="A graph similar to those above, but based on the DLTmodel object." width="100%"><p class="caption">
@@ -782,7 +806,7 @@ the prior or the posterior modal estimates of the model parameters when
 no MCMC sampling is used. For example, we have the <code>DLTmodel</code>
 specified earlier under the <code>ModelTox</code> class with the data
 set <code>data1</code> we specified earlier:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data1</span>, <span class="va">DLTmodel</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/emptydatanoDLTsamples-1.png" alt="A graph with dose level on the x axis and the probability of DLT on the y axis.  The modal probability of toxicity increases with dose.  No credible interval is plotted." width="100%"><p class="caption">
@@ -818,7 +842,11 @@ help pages <code>Increments-class</code>, <code>NextBest-class</code>,
 </h3>
 <p>Figure @ref(fig:increments) shows the structure of the
 <code>Increments</code> classes:</p>
-<pre><code><span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre>
+<div class="figure">
+<img src="example-figures/increments-1.png" alt="A dendrogram showing the inheritance structure of the Increments classes." width="100%"><p class="caption">
+Increments classes structure
+</p>
+</div>
 <p>The <code>Increments</code> class is the basis for all maximum
 increments rule classes within this package. There are three subclasses,
 the <code>IncrementsRelative</code>, the
@@ -834,7 +862,7 @@ on the current cumulative number of DLTs that have happened
 <p>For example, in order to specify a maximum increase of 100% for doses
 up to 20 mg, and a maximum of 33% for doses above 20 mg, we can setup
 the following increments rule:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myIncrements</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.33</span><span class="op">)</span></span>
@@ -844,7 +872,7 @@ intervals, in which the maximum relative <code>Increments</code> (note:
 decimal values here, no percentages!) are valid.</p>
 <p>The increments rule is used by the <code>maxDose</code> function to
 obtain the maximum allowable dose given the current data:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nextMaxDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxDose.html">maxDose</a></span><span class="op">(</span><span class="va">myIncrements</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data</span></span>
 <span><span class="op">)</span></span>
@@ -853,7 +881,7 @@ obtain the maximum allowable dose given the current data:</p>
 <p>So in this case, the next dose could not be larger than 20 mg.</p>
 <p>In the following example the dose escalation will be restricted to a
 3-fold (= 200%) increase:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myIncrements1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IncrementsRelative-class.html">IncrementsRelative</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span><span class="op">)</span>,</span>
 <span>  increments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
@@ -869,7 +897,11 @@ maximum increments instead of the last dose.</p>
 </h3>
 <p>Figure @ref(fig:rules) show the structure of the next best dose
 recommendation rules currently implemented in <code>crmPack</code>.</p>
-<pre><code><span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre>
+<div class="figure">
+<img src="example-figures/rules-1.png" alt="A dendrogram showing the inheritance structure of the NextBest classes.  Next Best is the parent class.  All other NextBest classes are children of NextBest." width="100%"><p class="caption">
+Escalation classes structure
+</p>
+</div>
 <p>All classes of escalation rules are contained in the
 <code>nextBest</code> class. There are two main types of escalation
 rules: either only the binary DLT responses are incorporated into the
@@ -885,7 +917,7 @@ best dose.</p>
 <p>For example, in order to use the N-CRM with a target toxicity
 interval from 20% to 35%, and a maximum overdosing probability of 25%,
 we specify:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestNCRM-class.html">NextBestNCRM</a></span><span class="op">(</span></span>
 <span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.35</span><span class="op">)</span>,</span>
 <span>  overdose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -894,7 +926,7 @@ we specify:</p>
 <p>Alternatively, we could use an MTD driven recommendation rule. For
 example, with a target toxicity rate of 33%, and recommending the 25%
 posterior quantile of the MTD, we specify</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mtdNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestMTD-class.html">NextBestMTD</a></span><span class="op">(</span></span>
 <span>  target <span class="op">=</span> <span class="fl">0.33</span>,</span>
 <span>  derive <span class="op">=</span></span>
@@ -920,7 +952,7 @@ The above two targets always have to be specified. For cases when
 samples are involved, an additional argument has to be used, which is a
 function to advise what we should recommend using the samples that we
 have. This will be elaborated in details in the example below.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">TDNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestTD-class.html">NextBestTD</a></span><span class="op">(</span></span>
 <span>  prob_target_drt <span class="op">=</span> <span class="fl">0.35</span>,</span>
 <span>  prob_target_eot <span class="op">=</span> <span class="fl">0.3</span></span>
@@ -934,7 +966,7 @@ than or equal to 0.3. This <code>NextBestTD</code> rule class can be
 only used when no samples are involved in the escalation procedure. Next
 we will show an example of the <code>NextBestTDsamples</code> rule class
 when samples are involved in the escalation process.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">TDsamplesNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestTDsamples-class.html">NextBestTDsamples</a></span><span class="op">(</span></span>
 <span>  prob_target_drt <span class="op">=</span> <span class="fl">0.35</span>,</span>
 <span>  prob_target_eot <span class="op">=</span> <span class="fl">0.3</span>,</span>
@@ -954,7 +986,7 @@ doses.</p>
 <p>During the study, in order to derive the next best dose, we supply
 the generic <code>nextBest</code> function with the rule, the maximum
 dose, the posterior samples, the model and the data:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">myNextBest</span>,</span>
 <span>  doselimit <span class="op">=</span> <span class="va">nextMaxDose</span>,</span>
 <span>  samples <span class="op">=</span> <span class="va">samples</span>, model <span class="op">=</span> <span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span></span>
@@ -966,7 +998,7 @@ dose was computed. In this case we used the N-CRM rule, therefore the
 plot gives the target-dosing and overdosing probabilities together with
 the safety bar of 25%, the maximum dose and the final recommendation
 (the red triangle):</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span>
 <span><span class="co">#&gt; [1] 20</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doseRecommendation</span><span class="op">$</span><span class="va">plot</span><span class="op">)</span></span></code></pre></div>
@@ -981,7 +1013,7 @@ In the example below we will use the data set <code>data3</code> with
 DLT observations. We can compute the next best dose to be given to the
 next cohort using the posterior modal estimates of the DLT model (i.e.,
 no MCMC sampling involved here):</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecDLT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">TDNextBest</span>, doselimit <span class="op">=</span> <span class="fl">300</span>, model <span class="op">=</span> <span class="va">newDLTmodel</span>, data <span class="op">=</span> <span class="va">data3</span><span class="op">)</span></span></code></pre></div>
 <p>A list of numerical values and a plot showing how the next best dose
 was computed will be given. This list of results will provide the
@@ -997,7 +1029,7 @@ level at dose grid closest and less than the
 <code>dose_target_eot</code>, <code>next_dose_eot</code>. We can use the
 <code>$</code> operator to obtain these values and the plot from the
 list. For example,</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecDLT</span><span class="op">$</span><span class="va">next_dose_drt</span></span>
 <span><span class="co">#&gt; [1] 50</span></span>
 <span><span class="va">doseRecDLT</span><span class="op">$</span><span class="va">prob_target_drt</span></span>
@@ -1038,7 +1070,7 @@ parameters to choose the next best dose. For example, in the following
 code chunk we use the data set, <code>data3</code>, with some DLT
 observations and the posterior samples of the model parameters,
 <code>DLTpostsamples</code> to compute the next best dose:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecDLTSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">TDsamplesNextBest</span>,</span>
 <span>  doselimit <span class="op">=</span> <span class="fl">300</span>,</span>
 <span>  samples <span class="op">=</span> <span class="va">DLTpostsamples</span>, model <span class="op">=</span> <span class="va">newDLTmodel</span>,</span>
@@ -1051,7 +1083,7 @@ The values of the <code>next_dose_drt</code>,
 <code>next_dose_eot</code> can be obtained using the <code>$</code>
 operator. The only difference is that the plot in this example will look
 slightly different than in the previous example:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doseRecDLTSamples</span><span class="op">$</span><span class="va">plot</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/next-bestTDsamples-results-1.png" alt="A denisty plot showing the PDFs for the TD35 and TD30 against dose.  Both are highly skewed to the left. Vertical blue and red lines indicate the recommended dose for the next cohort and the maximum dose permitted by the increments rule. The recommended dose is 50 and the maximum dose 300." width="100%"><p class="caption">
@@ -1069,7 +1101,7 @@ curves of the TD30 (pink) and the TD35 (grey) are plotted.</p>
 <div class="section level3">
 <h3 id="cohort-size-rules">Cohort size rules<a class="anchor" aria-label="anchor" href="#cohort-size-rules"></a>
 </h3>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  pathString <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"CohortSize/CohortSizeRange"</span>,</span>
@@ -1083,8 +1115,12 @@ curves of the TD30 (pink) and the TD35 (grey) are plotted.</p>
 <span></span>
 <span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.tree/man/as.Node.html" class="external-link">as.Node</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/data.tree/man/ToDiagrammeRGraph.html" class="external-link">SetNodeStyle</a></span><span class="op">(</span><span class="va">tree</span>, shape <span class="op">=</span> <span class="st">"box"</span>, fig.alt <span class="op">=</span> <span class="st">"A dendrogram showing the inheritance stricture of the CohortSize classes.  CohortSie is the parent class.  All other classes are children of CohortSize."</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="example-figures/cohort-size-1.png" alt="CohortSize classes structure" width="100%"><p class="caption">
+CohortSize classes structure
+</p>
+</div>
 <p>% All classes related to cohort size in this package are contains
 within <code>CohortSize</code> class.</p>
 <p>Similarly to the increments rules, you can define intervals in the
@@ -1094,19 +1130,19 @@ until we reach 30 mg or the first DLT is encountered, and then proceed
 with three patients per cohort.</p>
 <p>We start by creating the two separate rules, first for the dose
 range:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySize1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeRange-class.html">CohortSizeRange</a></span><span class="op">(</span>intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>, cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then for the DLT range:</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySize2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeDLT-class.html">CohortSizeDLT</a></span><span class="op">(</span>intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, cohort_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Finally we combine the two rules by taking the maximum number of
 patients of both rules:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxSize.html">maxSize</a></span><span class="op">(</span><span class="va">mySize1</span>, <span class="va">mySize2</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>CohortSize</code> rule is used by the size}` function,
 together with the next dose and the current data, in order to determine
 the size of the next cohort:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/size.html">size</a></span><span class="op">(</span><span class="va">mySize</span>,</span>
 <span>  dose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data</span></span>
@@ -1118,7 +1154,7 @@ the next cohort.</p>
 use the following <code>CohortSizeConst</code> class, which we will use
 (with three patients) for simplicity for the remainder of this
 vignette:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CohortSizeConst-class.html">CohortSizeConst</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -1171,7 +1207,7 @@ least 50% probability in the target toxicity interval
 or the maximum sample size of 20 patients has been reached.</p>
 <p>Then we start by creating the three pieces the rule is composed
 of:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMinCohorts-class.html">StoppingMinCohorts</a></span><span class="op">(</span>nCohorts <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">myStopping2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingTargetProb-class.html">StoppingTargetProb</a></span><span class="op">(</span></span>
 <span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.35</span><span class="op">)</span>,</span>
@@ -1180,7 +1216,7 @@ of:</p>
 <span><span class="va">myStopping3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span>nPatients <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p>Finally we combine these with the <code>and</code> operator
 <code>&amp;</code> and the <code>or</code> operator <code>|</code>:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">myStopping1</span> <span class="op">&amp;</span> <span class="va">myStopping2</span><span class="op">)</span> <span class="op">|</span> <span class="va">myStopping3</span></span></code></pre></div>
 <p>We can also stop the trial when the current estimate of the quantity
 of interest, such as the TD30 given in earlier examples, is ‘accurate’
@@ -1195,7 +1231,7 @@ deciding that we have obtained an estimate which is ‘accurate’
 enough.</p>
 <p>The <code>StoppingTDCIRatio</code> function can be used in both cases
 when no DLT samples or DLT samples are involved:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingTDCIRatio-class.html">StoppingTDCIRatio</a></span><span class="op">(</span>target_ratio <span class="op">=</span> <span class="fl">5</span>, prob_target <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p>In the above two examples, the <code>targetRatio</code> and
@@ -1204,7 +1240,7 @@ when no DLT samples or DLT samples are involved:</p>
 <p>During the dose escalation study, any (atomic or combined) stopping
 rule can be used by the function <code>stopTrial</code> to determine if
 the rule has already been fulfilled. For example in our case:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span></span>
 <span>  stopping <span class="op">=</span> <span class="va">myStopping</span>, dose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span>,</span>
 <span>  samples <span class="op">=</span> <span class="va">samples</span>, model <span class="op">=</span> <span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span></span>
@@ -1216,7 +1252,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
@@ -1230,7 +1266,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">#&gt; [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"individual")</span></span>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
@@ -1243,7 +1279,7 @@ the rule has already been fulfilled. For example in our case:</p>
 <span><span class="co">#&gt; attr(,"individual")[[2]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 38 % for dose 20 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 33 % for dose 20 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1268,14 +1304,14 @@ maximum sample size has not been reached, therefore the trial shall
 continue.</p>
 <p>In the same way the stopping rule <code>myStopping4</code> (no
 samples and with samples) can be evaluated:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span></span>
 <span>  stopping <span class="op">=</span> <span class="va">myStopping4</span>, dose <span class="op">=</span> <span class="va">doseRecDLTSamples</span><span class="op">$</span><span class="va">next_dose_drt</span>,</span>
 <span>  samples <span class="op">=</span> <span class="va">DLTpostsamples</span>, model <span class="op">=</span> <span class="va">newDLTmodel</span>, data <span class="op">=</span> <span class="va">data3</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "95% CI is (0.000611274483577986, 10459.1345133638), Ratio = 17110373.1537 is greater than target_ratio = 5"</span></span>
+<span><span class="co">#&gt; [1] "95% CI is (0.000611274483578011, 10459.1345133637), Ratio = 17110373.1537 is greater than target_ratio = 5"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] "TD 5 for 0.3 target prob"</span></span>
 <span></span>
@@ -1303,14 +1339,18 @@ objects. This is still under development.</p>
 <p>In order to run simulations, we first have to build a specific
 design, that comprises a model, the escalation rules, starting data, a
 cohort size and a starting dose.</p>
-<p>The structure of the design classes in this package is shown in
-figure @ref(fig:Design).</p>
-<pre><code><span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre>
+The structure of the design classes in this package is shown in figure
+@ref(fig:Design).
+<div class="figure">
+<img src="example-figures/Design-1.png" alt="A dendrogram showing the inheritance structure of the Design classes.  RuleDesign is the grandparent.  Design, TDDesign and TDSampesDesign are its children and DualDeaign, DualResponsesDesign and DualResponsesTDSamplesDesign its grandchildren." width="100%"><p class="caption">
+Design classes structure
+</p>
+</div>
 <p>It might seem strange at first sight that we have to supply starting
 data to the design, but we will show below that this makes sense. First,
 we use our <code>emptydata</code> object that only contains the dose
 grid, and a cohorts of 3 patients, starting from 0.1 mg:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Design-class.html">Design</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>  nextBest <span class="op">=</span> <span class="va">myNextBest</span>,</span>
@@ -1335,7 +1375,7 @@ than or equal to 5. In addition, we also use <code>myIncrements1</code>,
 for the <code>increments</code>, <code>cohort_size</code> and
 <code>data</code> slots in defining the <code>TDDesign</code>
 object:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTdesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TDDesign-class.html">TDDesign</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">DLTmodel</span>,</span>
 <span>  nextBest <span class="op">=</span> <span class="va">TDNextBest</span>,</span>
@@ -1358,7 +1398,7 @@ credibility interval limits of the current estimate of TD30
 (<code>TDtargetEndOfTrial</code>) is less than or equal to 5
 (<code>myStopping4</code>) or when a maximum of 30 patients has been
 enrolled in the trial (<code>myStopping3</code>):</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTsamplesDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TDsamplesDesign-class.html">TDsamplesDesign</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">DLTmodel</span>,</span>
 <span>  nextBest <span class="op">=</span> <span class="va">TDsamplesNextBest</span>,</span>
@@ -1379,12 +1419,12 @@ showing the beginning of several hypothetical trial courses under the
 design. Assuming no DLTs have been seen until a certain dose, then the
 consequences of different number of DLTs being observed at this dose are
 shown. In the current example we have</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/examine.html">examine</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    dose DLTs nextDose  stop increment</span></span>
 <span><span class="co">#&gt; 1     3    0      6.0 FALSE       100</span></span>
-<span><span class="co">#&gt; 2     3    1      3.0 FALSE         0</span></span>
+<span><span class="co">#&gt; 2     3    1      6.0 FALSE       100</span></span>
 <span><span class="co">#&gt; 3     3    2      0.1 FALSE       -97</span></span>
 <span><span class="co">#&gt; 4     3    3       NA FALSE        NA</span></span>
 <span><span class="co">#&gt; 5     6    0     12.0 FALSE       100</span></span>
@@ -1401,8 +1441,8 @@ shown. In the current example we have</p>
 <span><span class="co">#&gt; 16   24    3     18.0 FALSE       -25</span></span>
 <span><span class="co">#&gt; 17   30    0     38.0 FALSE        27</span></span>
 <span><span class="co">#&gt; 18   30    1     38.0 FALSE        27</span></span>
-<span><span class="co">#&gt; 19   30    2     34.0 FALSE        13</span></span>
-<span><span class="co">#&gt; 20   30    3     26.0 FALSE       -13</span></span>
+<span><span class="co">#&gt; 19   30    2     36.0 FALSE        20</span></span>
+<span><span class="co">#&gt; 20   30    3     28.0 FALSE        -7</span></span>
 <span><span class="co">#&gt; 21   38    0     50.0 FALSE        32</span></span>
 <span><span class="co">#&gt; 22   38    1     50.0 FALSE        32</span></span>
 <span><span class="co">#&gt; 23   38    2     42.0 FALSE        11</span></span>
@@ -1434,7 +1474,7 @@ true scenario, from which the data should arise. In this case, this only
 requires a function that computes the probability of DLT given a dose.
 Here we use a specific case of the function contained in the model
 space:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## define the true function</span></span>
 <span><span class="va">myTruth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">model</span>, alpha0 <span class="op">=</span> <span class="fl">7</span>, alpha1 <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
@@ -1449,7 +1489,7 @@ plot of chunk true-def
 scenario using the <code>TDDesign</code> and the
 <code>TDsamplesDesign</code>.</p>
 <p>First, we will specified the true DLT scenario such that</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## define the true function</span></span>
 <span><span class="va">TrueDLT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">DLTmodel</span>, phi1 <span class="op">=</span> <span class="op">-</span><span class="fl">53.66584</span>, phi2 <span class="op">=</span> <span class="fl">10.50499</span><span class="op">)</span></span>
 <span></span>
@@ -1465,7 +1505,7 @@ plot of chunk trueDLT
 <p>Now we can proceed to the simulations. We only generate 100 trial
 outcomes here for illustration, for the actual study this should be
 increased of course to at least 500:</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">mySims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">design</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">myTruth</span>,</span>
@@ -1476,10 +1516,10 @@ increased of course to at least 500:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span>
 <span><span class="co">#&gt; elapsed </span></span>
-<span><span class="co">#&gt;   121.6</span></span></code></pre></div>
+<span><span class="co">#&gt;  45.932</span></span></code></pre></div>
 <p>We have wrapped the call to <code>simulate</code> in a
 <code>system.time</code> to obtain the required time for the simulations
-(about 122 seconds in this case). The argument <code>args</code> could
+(about 46 seconds in this case). The argument <code>args</code> could
 contain additional arguments for the <code>truth</code> function, which
 we did not require here and therefore let it at the default
 <code>NULL</code>. We specify the number of simulations with
@@ -1492,14 +1532,16 @@ parallel. This can yield a meaningful speedup, especially for larger
 number of simulations.</p>
 <p>As (almost) always, the result of this call is again an object with a
 class, in this case <code>Simulations</code>:</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">mySims</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Simulations"</span></span>
 <span><span class="co">#&gt; attr(,"package")</span></span>
 <span><span class="co">#&gt; [1] "crmPack"</span></span></code></pre></div>
 <p>From the help page</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="st">"Simulations-class"</span>, help <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="st">"Simulations-class"</span>, help <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; No documentation for 'Simulations-class' in specified packages and libraries:</span></span>
+<span><span class="co">#&gt; you could try '??Simulations-class'</span></span></code></pre></div>
 <p>we see that this class is a subclass of the
 <code>GeneralSimulations</code> class. By looking at the help pages for
 <code>Simulations</code> and the parent class
@@ -1508,33 +1550,33 @@ slots of <code>mySims</code>. In particular, the <code>Data</code> slot
 contains the list of produced <code>Data</code> objects of the simulated
 trials. Therefore, we can plot the course of e.g. the third simulated
 trial as follows:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mySims</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-figures/third-trial-1.png" alt="A graph summarising dose allocations for the third trial in the simulation.  Patient number runs along the x axis, dose administered along the y axis.  Red triangle indicate patients who reported a DLT, black circles those who did not.  DLTs were reported by patients 10, 11, 12, 16 and 18, all at a dose of 24.  No other patients reported DLTs." width="100%"><p class="caption">
+<img src="example-figures/third-trial-1.png" alt="A graph summarising dose allocations for the third trial in the simulation.  Patient number runs along the x axis, dose administered along the y axis.  Red triangle indicate patients who reported a DLT, black circles those who did not.  DLTs were reported by patients 12, 16, 17, 18, 20 and 21.  No other patients reported DLTs." width="100%"><p class="caption">
 plot of chunk third-trial
 </p>
 </div>
 <p>The final dose for this trial was</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">doses</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 22</span></span></code></pre></div>
 <p>and the stopping reason was</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">stop_reasons</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]][[1]]</span></span>
-<span><span class="co">#&gt; [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span></span>
+<span><span class="co">#&gt; [1] "Number of cohorts is 7 and thus reached the prespecified minimum number 3"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[1]][[2]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 51 % for dose 22 and thus above the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 52 % for dose 22 and thus above the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] "Number of patients is 18 and thus below the prespecified minimum number 20"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"</span></span></code></pre></div>
 <p>Furthermore, with this object, we can apply two methods. First, we
 can plot it, i.e. we can apply the plot method:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mySims</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/sim-plot-1.png" alt="two plots in a single column.  The first shows patient number on the x axis and dose administered on the y axis.  Lines in various styles indicate the minimum, maximum, median, lower quartile and upper quartile of the dose administered tat each patient number, calculated over all simulations.  The lower graph has dose on the x axis and proportion of patients treated at that dose on the y axis.  The proportuon of patients treated is avreaged over all simulations." width="100%"><p class="caption">
@@ -1549,7 +1591,7 @@ by default is <code>type =   c("trajectory", "dosesTried")</code>.</p>
 <p>Second, we can summarize the simulation results. Here again we have
 to supply a true dose-toxicity function. We take the same
 (<code>myTruth</code>) as above:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySims</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">myTruth</span></span>
 <span><span class="op">)</span></span>
@@ -1560,19 +1602,19 @@ to supply a true dose-toxicity function. We take the same
 <span><span class="co">#&gt; Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Number of patients overall : mean 19 (18, 21) </span></span>
-<span><span class="co">#&gt; Number of patients treated above target tox interval : mean 7 (6, 9) </span></span>
+<span><span class="co">#&gt; Number of patients treated above target tox interval : mean 8 (6, 12) </span></span>
 <span><span class="co">#&gt; Proportions of DLTs in the trials : mean 26 % (22 %, 33 %) </span></span>
-<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 26 % (16 %, 36 %) </span></span>
-<span><span class="co">#&gt; Doses selected as MTD : mean 20.7 (16, 24.2) </span></span>
-<span><span class="co">#&gt; True toxicity at doses selected : mean 31 % (5 %, 57 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target MTD: 22 %</span></span>
-<span><span class="co">#&gt; Dose most often selected as MTD: 18 </span></span>
-<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 11 %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 24 % (20 %, 28 %) </span></span>
+<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 26 % (17 %, 35 %) </span></span>
+<span><span class="co">#&gt; Doses selected as MTD : mean 20.6 (16, 24) </span></span>
+<span><span class="co">#&gt; True toxicity at doses selected : mean 31 % (5 %, 56 %) </span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target MTD: 24 %</span></span>
+<span><span class="co">#&gt; Dose most often selected as MTD: 20 </span></span>
+<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 21 %</span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 26 % (23 %, 33 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  ≥ 3 cohorts dosed :  100 %</span></span>
-<span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  96 %</span></span>
-<span><span class="co">#&gt;  ≥ 20 patients dosed :  41 %</span></span></code></pre></div>
+<span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %</span></span>
+<span><span class="co">#&gt;  ≥ 20 patients dosed :  48 %</span></span></code></pre></div>
 <p>Note that sometimes the observed toxicity rate at the dose most often
 selected (here 20 mg) is not available, because it can happen that no
 patients were actually treated that dose during the simulations. (Here
@@ -1581,7 +1623,7 @@ the evidence from the data at other dose levels – which is an advantage
 of model-based dose-escalation designs.</p>
 <p>Now we can also produce a plot of the summary results, which gives a
 bit more detail than the textual summary we have just seen:</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySims</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">myTruth</span></span>
 <span><span class="op">)</span></span>
@@ -1592,12 +1634,12 @@ plot of chunk sim-sum-plot
 </p>
 </div>
 <p>The top left panel shows the distribution of the sample size across
-the simulated trials. In this case the trials had between 15 and 21
+the simulated trials. In this case the trials had between 18 and 21
 patients. The top right panel shows the distribution of the final MTD
 estimate / recommended dose across the simulated trials. The middle left
 panel shows the distribution across the simulations of the DLT
 proportions observed in the patients dosed. Here in most trials between
-20 and 30% of the patients had DLTs. The middle right panel shows the
+22 and 33% of the patients had DLTs. The middle right panel shows the
 distribution across simulations of the number of patients treated above
 the target toxicity window (here we used the default from 20% to 35%).
 Finally, in the bottom panel we see a comparison of the true
@@ -1610,7 +1652,7 @@ final selected doses is too small and shows not the right x-axis window,
 we can only plot this one and add x-axis customization on top: (see the
 <code>ggplot2</code> documentation for more information on customizing
 the plots)</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dosePlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">simSum</span>, type <span class="op">=</span> <span class="st">"doseSelected"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fl">10</span><span class="op">:</span><span class="fl">30</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dosePlot</span><span class="op">)</span></span></code></pre></div>
@@ -1622,7 +1664,7 @@ plot of chunk sim-sum-plot2
 <p>Some further examples will be given for simulations using the
 <code>TDDesign</code> and the <code>TDsamplesDesign</code> classes. For
 illustration purpose, we will generate only 10 trial outcomes.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTSim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">DLTdesign</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">TrueDLT</span>,</span>
@@ -1632,7 +1674,7 @@ illustration purpose, we will generate only 10 trial outcomes.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The above is an example when no MCMC sampling is involved and we have
 another example below for simulation when MCMC sampling is involved:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTsampSim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">DLTsamplesDesign</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">TrueDLT</span>,</span>
@@ -1654,22 +1696,22 @@ graphically using the <code>plot</code> function. The dose level for
 recommendation that is the dose levels closest below the final estimated
 TD30 (the final estimates of the dose level with probability of DLT
 equals to the target end of trial) was</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTSim</span><span class="op">@</span><span class="va">doses</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 100</span></span></code></pre></div>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTsampSim</span><span class="op">@</span><span class="va">doses</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 100</span></span></code></pre></div>
 <p>The overall results of the 100 trials for these two simulations can
 also be plotted as</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">DLTSim</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plotDLTSim-1.png" alt="Two graphs in a single column describing the dose allocations in the DLTSim object." width="100%"><p class="caption">
 plot of chunk plotDLTSim
 </p>
 </div>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">DLTsampSim</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plotDLTsampSim-1.png" alt="Two graphs in a single column describing the dose allocations in the DLTsampSim object." width="100%"><p class="caption">
@@ -1680,7 +1722,7 @@ plot of chunk plotDLTsampSim
 tried.</p>
 <p>These simulation results can also be summarized using the
 <code>summary</code> function given the truth:</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">DLTSim</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">TrueDLT</span></span>
 <span><span class="op">)</span></span>
@@ -1724,7 +1766,7 @@ tried.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  TD 5 for 0.3 target prob :  100 %</span></span></code></pre></div>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">DLTsampSim</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">TrueDLT</span></span>
 <span><span class="op">)</span></span>
@@ -1771,7 +1813,7 @@ tried.</p>
 <span><span class="co">#&gt;  ≥ 20 patients dosed :  100 %</span></span></code></pre></div>
 <p>Then we can also plot the summary of these two simulations using the
 <code>plot</code> function:</p>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTsimSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">DLTSim</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">TrueDLT</span></span>
 <span><span class="op">)</span></span>
@@ -1782,7 +1824,7 @@ plot of chunk DLTSim-plotsummary
 </p>
 </div>
 <p>and</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DLTsimsampSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">DLTsampSim</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">TrueDLT</span></span>
 <span><span class="op">)</span></span>
@@ -1811,36 +1853,36 @@ values contained in the data frame given to <code>simulate</code> as the
 samples of <code>alpha0</code> and <code>alpha1</code> in this data
 frame. We take only 50 out of the 2000 posterior samples in order to
 reduce the runtime for this example:</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">postSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">samples</span><span class="op">@</span><span class="va">data</span><span class="op">)</span><span class="op">[</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="op">*</span> <span class="fl">50</span>, <span class="op">]</span></span>
 <span><span class="va">postSamples</span></span>
-<span><span class="co">#&gt;            alpha0    alpha1</span></span>
-<span><span class="co">#&gt; 50    0.695299465 0.8733989</span></span>
-<span><span class="co">#&gt; 100   0.242365900 0.2919931</span></span>
-<span><span class="co">#&gt; 150   0.097567739 1.4674529</span></span>
-<span><span class="co">#&gt; 200  -0.381162693 0.8607228</span></span>
-<span><span class="co">#&gt; 250   0.002811076 2.3787228</span></span>
-<span><span class="co">#&gt; 300  -0.488011988 0.7904999</span></span>
-<span><span class="co">#&gt; 350   0.193239874 3.0284607</span></span>
-<span><span class="co">#&gt; 400  -0.224671354 1.5766281</span></span>
-<span><span class="co">#&gt; 450  -0.174586799 0.6269332</span></span>
-<span><span class="co">#&gt; 500  -0.875658079 1.3458226</span></span>
-<span><span class="co">#&gt; 550   0.148783871 2.3489434</span></span>
-<span><span class="co">#&gt; 600   1.015454082 1.7576347</span></span>
-<span><span class="co">#&gt; 650  -0.841267361 2.9162000</span></span>
-<span><span class="co">#&gt; 700  -0.421833904 0.8812350</span></span>
-<span><span class="co">#&gt; 750  -0.785097094 0.8227093</span></span>
-<span><span class="co">#&gt; 800   0.389585876 1.0958372</span></span>
-<span><span class="co">#&gt; 850  -0.097983082 3.8501000</span></span>
-<span><span class="co">#&gt; 900  -0.718133798 1.3214675</span></span>
-<span><span class="co">#&gt; 950  -0.591148227 0.6041364</span></span>
-<span><span class="co">#&gt; 1000 -0.623243550 1.0894726</span></span></code></pre></div>
+<span><span class="co">#&gt;          alpha0    alpha1</span></span>
+<span><span class="co">#&gt; 50   -1.0642746 0.9880961</span></span>
+<span><span class="co">#&gt; 100  -1.3205596 1.2035031</span></span>
+<span><span class="co">#&gt; 150  -0.2787745 1.1420241</span></span>
+<span><span class="co">#&gt; 200  -0.6736342 1.9538039</span></span>
+<span><span class="co">#&gt; 250  -0.3450108 1.6705798</span></span>
+<span><span class="co">#&gt; 300  -0.5117568 1.0511386</span></span>
+<span><span class="co">#&gt; 350   0.2383558 1.0875325</span></span>
+<span><span class="co">#&gt; 400   0.7832575 1.4880692</span></span>
+<span><span class="co">#&gt; 450   0.1441964 0.4854883</span></span>
+<span><span class="co">#&gt; 500   0.3672222 1.1369901</span></span>
+<span><span class="co">#&gt; 550   0.5250996 0.7058702</span></span>
+<span><span class="co">#&gt; 600   0.2357070 1.2774505</span></span>
+<span><span class="co">#&gt; 650  -0.7399773 0.4011145</span></span>
+<span><span class="co">#&gt; 700  -0.2415685 0.4412713</span></span>
+<span><span class="co">#&gt; 750  -0.1679610 1.1685310</span></span>
+<span><span class="co">#&gt; 800   0.4211765 0.5613394</span></span>
+<span><span class="co">#&gt; 850   0.4369553 1.3116985</span></span>
+<span><span class="co">#&gt; 900   0.5305816 1.4328609</span></span>
+<span><span class="co">#&gt; 950  -0.5691799 0.4664936</span></span>
+<span><span class="co">#&gt; 1000 -1.2305607 1.4746557</span></span></code></pre></div>
 <p>Therefore, each simulated trial will come from a posterior sample of
 our estimated model, given all data so far.</p>
 <p>Furthermore we have to make a new <code>Design</code> object that
 contains the current data to start from, and the current recommended
 dose as the starting dose:</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nowDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Design-class.html">Design</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>  nextBest <span class="op">=</span> <span class="va">myNextBest</span>,</span>
@@ -1853,7 +1895,7 @@ dose as the starting dose:</p>
 <span>  startingDose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Finally we can execute the simulations:</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">futureSims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
 <span>  <span class="co">## supply the new design here</span></span>
 <span>  <span class="va">nowDesign</span>,</span>
@@ -1878,11 +1920,11 @@ dose as the starting dose:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span>
 <span><span class="co">#&gt; elapsed </span></span>
-<span><span class="co">#&gt;   15.97</span></span></code></pre></div>
+<span><span class="co">#&gt;   5.276</span></span></code></pre></div>
 <p>And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
 simulations, for example show the predicted trajectories of doses:</p>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">futureSims</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/sim-future-plot-1.png" alt="A histrogram showing the proportions of simulations in simSum that identified each dose as the MTD." width="100%"><p class="caption">
@@ -1893,7 +1935,7 @@ plot of chunk sim-future-plot
 involving the true dose-toxicity function, because in this case we are
 not intending to compare the performance of our CRM relative to a
 truth:</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">futureSims</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">myTruth</span></span>
 <span><span class="op">)</span></span>
@@ -1903,20 +1945,20 @@ truth:</p>
 <span><span class="co">#&gt; Target dose interval corresponding to this was 19.6, 21.6 </span></span>
 <span><span class="co">#&gt; Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Number of patients overall : mean 18 (17, 20) </span></span>
+<span><span class="co">#&gt; Number of patients overall : mean 19 (17, 20) </span></span>
 <span><span class="co">#&gt; Number of patients treated above target tox interval : mean 4 (0, 9) </span></span>
-<span><span class="co">#&gt; Proportions of DLTs in the trials : mean 20 % (12 %, 29 %) </span></span>
-<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 22 % (4 %, 43 %) </span></span>
-<span><span class="co">#&gt; Doses selected as MTD : mean 24.4 (9.6, 38.4) </span></span>
-<span><span class="co">#&gt; True toxicity at doses selected : mean 51 % (0 %, 98 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target MTD: 20 %</span></span>
-<span><span class="co">#&gt; Dose most often selected as MTD: 20 </span></span>
-<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 26 %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 26 % (14 %, 39 %) </span></span>
+<span><span class="co">#&gt; Proportions of DLTs in the trials : mean 22 % (10 %, 31 %) </span></span>
+<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 20 % (5 %, 41 %) </span></span>
+<span><span class="co">#&gt; Doses selected as MTD : mean 22.4 (9.6, 38.4) </span></span>
+<span><span class="co">#&gt; True toxicity at doses selected : mean 40 % (0 %, 98 %) </span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target MTD: 10 %</span></span>
+<span><span class="co">#&gt; Dose most often selected as MTD: 16 </span></span>
+<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 11 %</span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (11 %, 36 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  ≥ 3 cohorts dosed :  100 %</span></span>
-<span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  90 %</span></span>
-<span><span class="co">#&gt;  ≥ 20 patients dosed :  50 %</span></span></code></pre></div>
+<span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  80 %</span></span>
+<span><span class="co">#&gt;  ≥ 20 patients dosed :  75 %</span></span></code></pre></div>
 <p>We see here e.g. that the estimated number of patients overall is 19,
 so 11 more than the current 8 patients are expected to be needed before
 finishing the trial.</p>
@@ -1933,7 +1975,7 @@ enumerated, however we still rely here on simulations for consistency
 with the overall <code>crmPack</code> design.</p>
 <p>The easiest way to setup a 3+3 design is the function
 <code>ThreePlusThreeDesign</code>:</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">threeDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RuleDesign-class.html">ThreePlusThreeDesign</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">threeDesign</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "RuleDesign"</span></span>
@@ -1947,7 +1989,7 @@ options if you directly use the <code><a href="../reference/RuleDesign-class.htm
 function. We can then simulate trials, again assuming that the
 <code>myTruth</code> function gives the true dose-toxicity
 relationship:</p>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">threeSims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">threeDesign</span>,</span>
 <span>  nsim <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">35</span>,</span>
@@ -1956,7 +1998,7 @@ relationship:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>As before for the model-based design, we can summarize the
 simulations:</p>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">threeSimsSum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">threeSims</span>,</span>
 <span>  truth <span class="op">=</span> <span class="va">myTruth</span></span>
 <span><span class="op">)</span></span>
@@ -1985,7 +2027,7 @@ more refined dose grid. In this case we obtain doses that are too low,
 as one can see from the average true toxicity of 4~% at doses selected.
 Graphical summaries are again obtained by calling <code>plot</code> on
 the summary object:</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">threeSimsSum</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/three-sims-plot-1.png" alt="A 2x2 panel of graphs summarising the results of the simulations in the threeSimsSum object." width="100%"><p class="caption">
@@ -2021,7 +2063,7 @@ with the aim to maximize the biomarker response while controlling
 toxicity in a safe range. This is useful when it can not be assumed that
 just increasing the dose will always lead to better efficacy.</p>
 <p>Let’s look at the data structure. Here is an example:</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDual-class.html">DataDual</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -2047,7 +2089,7 @@ just increasing the dose will always lead to better efficacy.</p>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The corresponding plot can again be obtained with:</p>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/dual-data-plot-1.png" alt="Two graphs, side-by-side.  The first shows patient number on the x axis and dose administered on the y axis.  Different symbols indicate the toxicity status of each patient.  The second graph has dose on the x axis and biomarker value on the y axis.  Again, different symbols indicate toxicity status and annotations show the patient number with which each point is asscoated." width="100%"><p class="caption">
@@ -2058,7 +2100,7 @@ plot of chunk dual-data-plot
 around 10 mg already. In order to model this data, we consider a
 dual-endpoint model with a first-order random-walk (RW1) structure for
 the dose-biomarker relationship:</p>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DualEndpointRW-class.html">DualEndpointRW</a></span><span class="op">(</span></span>
 <span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  cov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
@@ -2085,18 +2127,20 @@ between the latent DLT and the biomarker variable.</p>
 a sufficiently long Markov chain for fitting them. Here we just use for
 illustration purposes a quite small Markov chain – again, for the real
 application, this would need to be at least 25 times longer!</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
 <span>  burnin <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  step <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  samples <span class="op">=</span> <span class="fl">2000</span></span>
+<span>  samples <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>,</span>
+<span>  rng_seed <span class="op">=</span> <span class="fl">3819</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Then we can obtain the MCMC samples:</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
 <p>And we check the convergence by picking a few of the fitted biomarker
 means and plotting their traceplots:</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span><span class="op">@</span><span class="va">nGrid</span></span>
 <span><span class="co">#&gt; [1] 41</span></span>
 <span><span class="va">betaWpicks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">samples</span>, <span class="st">"betaW"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">5L</span>, <span class="fl">10L</span>, <span class="fl">25L</span><span class="op">)</span><span class="op">)</span></span>
@@ -2113,7 +2157,7 @@ means, which are the biomarker means at the first, 5th, 10th and 25th
 gridpoint, respectively, seem to have converged, as the traceplots show.
 (Remember that <code>data@nGrid</code> gives the number of grid points.)
 So we can plot the model fit:</p>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, extrapolate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/dual-modelfit-1.png" alt="Two plots, side-by-side.  The first shows the posterior estimate of the dose-toxicity curve, with a credible interval.  The second shows the posterior estimate of biomarker level against dose, again with a credible interval." width="100%"><p class="caption">
@@ -2127,7 +2171,7 @@ the estimated biomarker precision
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msubsup><mi>σ</mi><mi>W</mi><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">1 / \sigma^{2}_{W}</annotation></semantics></math>.
 For that we extract the precision <code>precW</code> and then use
 another <code>ggmcmc</code> function to create the histogram:</p>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/ggmcmc/man/ggs_histogram.html" class="external-link">ggs_histogram</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">samples</span>, <span class="st">"precW"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/dual-variance-1.png" alt="A histogram of the biomarker precision in the samples object." width="100%"><p class="caption">
@@ -2139,7 +2183,7 @@ plot of chunk dual-variance
 maximize the biomarker response, under an NCRM-type safety constraint.
 If we want to have at least 90% of the maximum biomarker response, and a
 25% maximum overdose probability for the next dose, we specify:</p>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestDualEndpoint-class.html">NextBestDualEndpoint</a></span><span class="op">(</span></span>
 <span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  overdose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -2148,7 +2192,7 @@ If we want to have at least 90% of the maximum biomarker response, and a
 <p>In our example, and assuming a dose limit of 50 mg given by the
 maximum allowable increments, the next dose can then be found as
 follows:</p>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nextDose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">myNextBest</span>,</span>
 <span>  doselimit <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  samples <span class="op">=</span> <span class="va">samples</span>,</span>
@@ -2159,7 +2203,7 @@ follows:</p>
 <span><span class="co">#&gt; [1] 10</span></span></code></pre></div>
 <p>A corresponding plot can be produced by printing the
 <code>plot</code> element of the returned list:</p>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">nextDose</span><span class="op">$</span><span class="va">plot</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/dual-nextdose-plot-1.png" alt="Two graphs in a single column that summarise the results of applying the NextBest rule.  For descriptions of the plots, refer to earlier examples in this vignette." width="100%"><p class="caption">
@@ -2179,14 +2223,14 @@ probability to be above a relative biomarker target, then the
 when queried if it has been fulfilled by the <code>stopTrial</code>
 function. For example, if we require at least 50% probability to be
 above 90% biomarker response, we specify:</p>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingTargetBiomarker-class.html">StoppingTargetBiomarker</a></span><span class="op">(</span></span>
 <span>  target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  prob <span class="op">=</span> <span class="fl">0.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>In this case, the rule has not been fulfilled yet, as we see
 here:</p>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span><span class="va">myStopping6</span>,</span>
 <span>  dose <span class="op">=</span> <span class="va">nextDose</span><span class="op">$</span><span class="va">value</span>,</span>
 <span>  <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span></span>
@@ -2199,14 +2243,14 @@ here:</p>
 <p>Again, this dual-endpoint specific rule can be combined as required
 with any other stopping rule. For example, we could combine it with a
 maximum sample size of 40~patients:</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="va">myStopping6</span> <span class="op">|</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span><span class="fl">40</span><span class="op">)</span></span></code></pre></div>
 <p>If one or both of the stopping rules are fulfilled, then the trial is
 stopped.</p>
 <p>Let’s try to build a corresponding dual-endpoint design. We start
 with an empty data set, and use the relative increments rule defined in
 a previous section and use a constant cohort size of 3 patients:</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">emptydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDual-class.html">DataDual</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="va">data</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span></span>
 <span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DualDesign-class.html">DualDesign</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model</span>,</span>
@@ -2224,7 +2268,7 @@ corresponding <code>DualEndpointBeta</code> model class, that allows to
 have dual-endpoint designs with the beta biomarker response function.
 Have a look at the corresponding help page for more information on that.
 But let’s come back to our scenario definition:</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">betaMod</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span>, <span class="va">e0</span>, <span class="va">eMax</span>, <span class="va">delta1</span>, <span class="va">delta2</span>, <span class="va">scal</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">maxDens</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">delta1</span><span class="op">^</span><span class="va">delta1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">delta2</span><span class="op">^</span><span class="va">delta2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="op">(</span><span class="va">delta1</span> <span class="op">+</span> <span class="va">delta2</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="va">delta1</span> <span class="op">+</span> <span class="va">delta2</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">dose</span> <span class="op">&lt;-</span> <span class="va">dose</span> <span class="op">/</span> <span class="va">scal</span></span>
@@ -2237,7 +2281,7 @@ But let’s come back to our scenario definition:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="op">(</span><span class="va">dose</span> <span class="op">-</span> <span class="fl">60</span><span class="op">)</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>We can draw the corresponding curves:</p>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">trueTox</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">trueBiomarker</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></code></pre></div>
@@ -2253,7 +2297,7 @@ and a true biomarker variance of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>σ</mi><mi>W</mi><mn>2</mn></msubsup><mo>=</mo><mn>0.01</mn></mrow><annotation encoding="application/x-tex">\sigma^{2}_{W} = 0.01</annotation></semantics></math>
 (giving a high signal-to-noise ratio), we can start simulating trials
 (starting each with 6 mg):</p>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">design</span>,</span>
 <span>  trueTox <span class="op">=</span> <span class="va">trueTox</span>,</span>
 <span>  trueBiomarker <span class="op">=</span> <span class="va">trueBiomarker</span>,</span>
@@ -2267,7 +2311,9 @@ and a true biomarker variance of
 <span>    <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span>
 <span>      burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>      step <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>      samples <span class="op">=</span> <span class="fl">3000</span></span>
+<span>      samples <span class="op">=</span> <span class="fl">3000</span>,</span>
+<span>      rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>,</span>
+<span>      rng_seed <span class="op">=</span> <span class="fl">3819</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Note that we are having a “small” MCMC option set here, in order to
@@ -2276,7 +2322,7 @@ reduce simulation time — for the real application, this should be
 <p>Plotting the result gives not only an overview of the final dose
 recommendations and trial trajectories, but also a summary of the
 biomarker variance and correlation estimates in the simulations:</p>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mySims</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/dual-sims-plot-1.png" alt="A panel of four plots summarisong the results of the simulation." width="100%"><p class="caption">
@@ -2285,7 +2331,7 @@ plot of chunk dual-sims-plot
 </div>
 <p>Finally, a summary of the simulations can be obtained with the
 corresponding function:</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sumOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mySims</span>,</span>
 <span>  trueTox <span class="op">=</span> <span class="va">trueTox</span>,</span>
 <span>  trueBiomarker <span class="op">=</span> <span class="va">trueBiomarker</span></span>
@@ -2306,7 +2352,7 @@ corresponding function:</p>
 <span><span class="co">#&gt; Proportion of trials selecting target MTD: 0 %</span></span>
 <span><span class="co">#&gt; Dose most often selected as MTD: 0.1 </span></span>
 <span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 0 %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 2 % (1 %, 2 %) </span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 1 % (1 %, 2 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %</span></span>
 <span><span class="co">#&gt;  ≥ 40 patients dosed :  100 %</span></span>
@@ -2317,7 +2363,7 @@ selected are lower than the toxicity target range, because here we were
 aiming for a biomarker target instead, and the true biomarker response
 peaked at 50 mg.</p>
 <p>The corresponding plot looks as follows:</p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sumOut</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/dual-sim-sum-plot-1.png" alt="A panel of plots that dscribe the results of the simulation summary." width="100%"><p class="caption">
@@ -2343,7 +2389,7 @@ responses.</p>
 <p>First, we have to define the data sets for the dual responses using
 the <code>DataDual</code> function just like in the example given in the
 last subsection.</p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDual-class.html">DataDual</a></span><span class="op">(</span>doseGrid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">300</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DataDual-class.html">DataDual</a></span><span class="op">(</span></span>
@@ -2392,7 +2438,7 @@ and the precision
 (inverse of the variance) of the efficacy responses. Similarly to other
 pseudo models, the data set has to be specified before setting up the
 model:</p>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Effmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Effloglog-class.html">Effloglog</a></span><span class="op">(</span></span>
 <span>  eff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.223</span>, <span class="fl">2.513</span><span class="op">)</span>,</span>
 <span>  eff_dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">300</span><span class="op">)</span>,</span>
@@ -2427,7 +2473,7 @@ can also be specified in <code>nu</code> slot. Finally the
 data set with all currently available observations.</p>
 <p>Similarly, we can also look at the structure of the Effmodel by
 applying the <code>str</code> function:</p>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Effmodel</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Formal class 'Effloglog' [package "crmPack"] with 13 slots</span></span>
 <span><span class="co">#&gt;   ..@ eff      : num [1:2] 1.22 2.51</span></span>
@@ -2453,17 +2499,19 @@ applying the <code>str</code> function:</p>
 <span><span class="co">#&gt;   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : chr [1:2] "(Intercept)" "log(log(x))"</span></span>
 <span><span class="co">#&gt;   ..@ const    : num 0</span></span>
-<span><span class="co">#&gt;   ..@ data     :Formal class 'DataDual' [package "crmPack"] with 10 slots</span></span>
-<span><span class="co">#&gt;   .. .. ..@ w       : num(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ x       : num(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ y       : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...</span></span>
-<span><span class="co">#&gt;   .. .. ..@ nGrid   : int 12</span></span>
-<span><span class="co">#&gt;   .. .. ..@ xLevel  : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ placebo : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. .. ..@ ID      : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ cohort  : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ nObs    : int 0</span></span></code></pre></div>
+<span><span class="co">#&gt;   ..@ data     :Formal class 'DataDual' [package "crmPack"] with 12 slots</span></span>
+<span><span class="co">#&gt;   .. .. ..@ w         : num(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ x         : num(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ y         : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ doseGrid  : num [1:12] 25 50 75 100 125 150 175 200 225 250 ...</span></span>
+<span><span class="co">#&gt;   .. .. ..@ nGrid     : int 12</span></span>
+<span><span class="co">#&gt;   .. .. ..@ xLevel    : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ placebo   : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. .. ..@ backfilled: logi(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ response  : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ ID        : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ cohort    : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ nObs      : int 0</span></span></code></pre></div>
 <p>There are 15 slots, which can be accessed with the <code>@</code>
 operator. From this efficacy model, we can obtain the prior (if using an
 empty data set) or the posterior modal estimates of model parameters
@@ -2492,7 +2540,7 @@ distribution of all these mean efficacy responses.</p>
 <code>EffFlexi</code> class object. The <code>EffFlexi</code> class is
 inheriting from the <code>ModelEff</code> class and its prior is also
 specified with pseudo data:</p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Effmodel2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/EffFlexi-class.html">EffFlexi</a></span><span class="op">(</span></span>
 <span>  eff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.223</span>, <span class="fl">2.513</span><span class="op">)</span>,</span>
 <span>  eff_dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">300</span><span class="op">)</span>,</span>
@@ -2537,7 +2585,7 @@ the data set in <code>Data</code> to be used for the model which is
 <code>data2</code> in this example.</p>
 <p>The structure of the <code>EffFlexi</code> model object is as
 follows:</p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Effmodel2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Formal class 'EffFlexi' [package "crmPack"] with 10 slots</span></span>
 <span><span class="co">#&gt;   ..@ eff        : num [1:2] 1.22 2.51</span></span>
@@ -2552,17 +2600,19 @@ follows:</p>
 <span><span class="co">#&gt;   ..@ X          : int [1:2, 1:12] 1 0 0 0 0 0 0 0 0 0 ...</span></span>
 <span><span class="co">#&gt;   ..@ RW         : num [1:12, 1:12] 1 -2 1 0 0 0 0 0 0 0 ...</span></span>
 <span><span class="co">#&gt;   ..@ RW_rank    : int 10</span></span>
-<span><span class="co">#&gt;   ..@ data       :Formal class 'DataDual' [package "crmPack"] with 10 slots</span></span>
-<span><span class="co">#&gt;   .. .. ..@ w       : num(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ x       : num(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ y       : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ doseGrid: num [1:12] 25 50 75 100 125 150 175 200 225 250 ...</span></span>
-<span><span class="co">#&gt;   .. .. ..@ nGrid   : int 12</span></span>
-<span><span class="co">#&gt;   .. .. ..@ xLevel  : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ placebo : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. .. ..@ ID      : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ cohort  : int(0) </span></span>
-<span><span class="co">#&gt;   .. .. ..@ nObs    : int 0</span></span></code></pre></div>
+<span><span class="co">#&gt;   ..@ data       :Formal class 'DataDual' [package "crmPack"] with 12 slots</span></span>
+<span><span class="co">#&gt;   .. .. ..@ w         : num(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ x         : num(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ y         : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ doseGrid  : num [1:12] 25 50 75 100 125 150 175 200 225 250 ...</span></span>
+<span><span class="co">#&gt;   .. .. ..@ nGrid     : int 12</span></span>
+<span><span class="co">#&gt;   .. .. ..@ xLevel    : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ placebo   : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. .. ..@ backfilled: logi(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ response  : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ ID        : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ cohort    : int(0) </span></span>
+<span><span class="co">#&gt;   .. .. ..@ nObs      : int 0</span></span></code></pre></div>
 <p>The slot and the names are shown which can be accessed with the
 <code>@</code> operator. The value ‘FALSE’ of the slot
 <code>useFixed</code> shows that both the variance of the efficacy
@@ -2578,10 +2628,10 @@ parameters via MCMC sampling. (Similarly, we can also use the
 <code>Effloglog</code> and the <code>EffFlexi</code> models.) % using
 Effmodel or Effmodel2, respectively with data2 and options specified
 earlier</p>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Effsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data2</span>, model <span class="op">=</span> <span class="va">Effmodel</span>, <span class="va">options</span><span class="op">)</span></span>
 <span><span class="va">Effsamples2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data2</span>, model <span class="op">=</span> <span class="va">Effmodel2</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Effpostsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data2</span>, model <span class="op">=</span> <span class="va">Effmodel</span>, <span class="va">options</span><span class="op">)</span></span>
 <span><span class="va">Effpostsamples2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data2</span>, model <span class="op">=</span> <span class="va">Effmodel2</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
 <p>Under the <code>Effloglog</code> (Effmodel) model, samples of the
@@ -2607,7 +2657,7 @@ the new observations using the <code>update</code> function. Then the
 prior or the posterior modal estimates of the model parameters can be
 obtained using the <code>@</code> operator of the model. For example,
 for the <code>Effloglog</code> class model:</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">newEffmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">Effmodel</span>, data <span class="op">=</span> <span class="va">data4</span><span class="op">)</span></span>
 <span><span class="va">newEffmodel</span><span class="op">@</span><span class="va">theta1</span></span>
 <span><span class="co">#&gt; [1] -2.81695</span></span>
@@ -2622,7 +2672,7 @@ the updated values of parameters of the gamma distribution of
 can be read now from the output above.</p>
 <p>Similarly we can update with new data for the <code>EffFlexi</code>
 class model:</p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">newEffmodel2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">Effmodel2</span>, data <span class="op">=</span> <span class="va">data4</span><span class="op">)</span></span>
 <span><span class="va">newEffmodel2</span><span class="op">@</span><span class="va">RW</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]</span></span>
@@ -2642,14 +2692,14 @@ class model:</p>
 <code>Effloglog</code> model class or the <code>EffFlexi</code> model
 class objects, when samples of the parameters are generated under all
 these models:</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Effpostsamples</span>, <span class="va">newEffmodel</span>, <span class="va">data4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plot-samplesdata2loglog-1.png" alt="Expected efficacy against dose for the data4 object, assuming the model described by the newEffmodel object." width="100%"><p class="caption">
 plot of chunk plot-samplesdata2loglog
 </p>
 </div>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Effpostsamples2</span>, <span class="va">newEffmodel2</span>, <span class="va">data4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plot-samplesdata2Flexi-1.png" alt="Expected efficacy against dose for the data4 object, assuming the model described by the newEffmodel2 object." width="100%"><p class="caption">
@@ -2660,7 +2710,7 @@ plot of chunk plot-samplesdata2Flexi
 the prior or the posterior modal estimates of the model parameters when
 no MCMC sampling is used. For example, using <code>Effmodel</code> and
 data set <code>data2</code> specified earlier:</p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data2</span>, <span class="va">Effmodel</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plot-nosamplesEffmodel-1.png" alt="Expected efficacy against dose for the data2 object, assuming the model described by the Effmodel object." width="100%"><p class="caption">
@@ -2675,7 +2725,7 @@ efficacy curve side by side using the <code>plotDualResponses</code>
 function. For example, using the <code>DLTmodel</code>,
 <code>Effmodel</code> and <code>data2</code> specified in earlier
 examples:</p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDualResponses.html">plotDualResponses</a></span><span class="op">(</span></span>
 <span>  DLEmodel <span class="op">=</span> <span class="va">DLTmodel</span>,</span>
 <span>  Effmodel <span class="op">=</span> <span class="va">Effmodel</span>, data <span class="op">=</span> <span class="va">data2</span></span>
@@ -2686,7 +2736,7 @@ plot of chunk plotDualResponseNoSamples
 </p>
 </div>
 <p>When the MCMC samples are used, we have:</p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDualResponses.html">plotDualResponses</a></span><span class="op">(</span></span>
 <span>  DLEmodel <span class="op">=</span> <span class="va">DLTmodel</span>, DLEsamples <span class="op">=</span> <span class="va">DLTsamples</span>,</span>
 <span>  Effmodel <span class="op">=</span> <span class="va">Effmodel</span>, Effsamples <span class="op">=</span> <span class="va">Effsamples</span>, data <span class="op">=</span> <span class="va">data2</span></span>
@@ -2731,7 +2781,7 @@ cohort of subjects.</p>
 For example, using the variables <code>newDLTmodel</code>,
 <code>newEffmodel</code> and the data set with observations,
 <code>data4</code>, specified in earlier examples, we have:</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotGain.html">plotGain</a></span><span class="op">(</span>DLEmodel <span class="op">=</span> <span class="va">newDLTmodel</span>, Effmodel <span class="op">=</span> <span class="va">newEffmodel</span>, data <span class="op">=</span> <span class="va">data4</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plotGain-1.png" alt="A summary of the gain function  for newDLEmodel and newEffmodel applied to data4." width="100%"><p class="caption">
@@ -2749,7 +2799,7 @@ parameters to obtain the gain values at each of the dose levels, while
 the <code>NextBestMaxGainSamples</code> is used when MCMC sampling is
 involved to obtain the posterior estimates. For example, when no MCMC
 sampling is involved:</p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">GainNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestMaxGain-class.html">NextBestMaxGain</a></span><span class="op">(</span></span>
 <span>  prob_target_drt <span class="op">=</span> <span class="fl">0.35</span>,</span>
 <span>  prob_target_eot <span class="op">=</span> <span class="fl">0.3</span></span>
@@ -2768,7 +2818,7 @@ to use the <code>nextBest</code> function with this
 <code>NextBestMaxGain</code> object given the doselimit, both the DLT
 and the efficacy models and the data set, which includes all currently
 available observations:</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecGain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">GainNextBest</span>,</span>
 <span>  doselimit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data4</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span>,</span>
 <span>  model <span class="op">=</span> <span class="va">newDLTmodel</span>,</span>
@@ -2784,7 +2834,7 @@ estimated dose (the dose with gives the maximum gain value) are provided
 along with the corresponding dose level in the dose grid for the above
 three estimates. We can also get to see the plot about the next best
 dose recommendation using the <code>$</code> operator.</p>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecGain</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/nextbestplot-maxgain-1.png" alt="A summary the results of applying the GainNextBest object to the gain function for newDLEmodel and newEffmodel applied to data4." width="100%"><p class="caption">
@@ -2805,7 +2855,7 @@ the target probabilities of DLT used during or at the end of a trial to
 be 0.35 and 0.3 again, and we specify that the 30% posterior quantile
 will be used as the estimate for the TD35 and TD30, while we specify the
 50% posterior quantile for the Gstar estimate:</p>
-<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">GainsamplesNextBest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NextBestMaxGainSamples-class.html">NextBestMaxGainSamples</a></span><span class="op">(</span></span>
 <span>  prob_target_drt <span class="op">=</span> <span class="fl">0.35</span>,</span>
 <span>  prob_target_eot <span class="op">=</span> <span class="fl">0.3</span>,</span>
@@ -2821,7 +2871,7 @@ will be used as the estimate for the TD35 and TD30, while we specify the
 estimates from the posterior samples.</p>
 <p>Again, the generic function <code>nextBest</code> will be used
 together with this rule object to derive the next best dose:</p>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecGainSamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nextBest.html">nextBest</a></span><span class="op">(</span><span class="va">GainsamplesNextBest</span>,</span>
 <span>  doselimit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data4</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">)</span>,</span>
 <span>  model <span class="op">=</span> <span class="va">newDLTmodel</span>,</span>
@@ -2830,13 +2880,13 @@ together with this rule object to derive the next best dose:</p>
 <span>  samples_eff <span class="op">=</span> <span class="va">Effpostsamples</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data4</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Estimated TD 30 = 18.6611868271307 not within dose grid"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Estimated TD 30 = 18.6611868271306 not within dose grid"</span></span></code></pre></div>
 <p>The list of numerical results given in the output will be the same as
 those given using <code>NextBestMaxGain</code> class object which
 includes the next dose suggested, the current estimates of TD30, TD35
 and Gstar and their corresponding dose levels at dose Grid. We can also
 see the plot:</p>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doseRecGainSamples</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/nextbest-NextBestMaxGainSamplesplot-1.png" alt="A description of this graph is given in the text below." width="100%"><p class="caption">
@@ -2861,7 +2911,7 @@ more accurate is the estimate.</p>
 <p>For example, we would like to stop our trial if the ratio is less
 than or equal to 5. The functions <code>StoppingMaxGainCIRatio</code> is
 used for this purpose:</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myStopping7</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/StoppingMaxGainCIRatio-class.html">StoppingMaxGainCIRatio</a></span><span class="op">(</span>target_ratio <span class="op">=</span> <span class="fl">5</span>, prob_target <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span><span class="va">myStopping8</span> <span class="op">&lt;-</span> <span class="va">myStopping7</span> <span class="op">|</span> <span class="fu"><a href="../reference/StoppingMinPatients-class.html">StoppingMinPatients</a></span><span class="op">(</span><span class="fl">72</span><span class="op">)</span></span></code></pre></div>
 <p>To note here, at the moment the class
@@ -2871,7 +2921,7 @@ used for this purpose:</p>
 is still under development).</p>
 <p>Similarly, the <code>stopTrial</code> function can then be used in
 order to determine if the rule has been fulfilled:</p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/stopTrial.html">stopTrial</a></span><span class="op">(</span></span>
 <span>  stopping <span class="op">=</span> <span class="va">myStopping7</span>, dose <span class="op">=</span> <span class="va">doseRecGain</span><span class="op">$</span><span class="va">next_dose</span>, model <span class="op">=</span> <span class="va">newDLTmodel</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data4</span>, Effmodel <span class="op">=</span> <span class="va">newEffmodel</span></span>
@@ -2917,7 +2967,7 @@ the <code>DataDual</code> class introduced in earlier examples.</p>
 are involved. For example, we use the object <code>Effmodel</code> of
 the <code>Effloglog</code> class specified earlier as the efficacy model
 in the following code:</p>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">design1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DualResponsesDesign-class.html">DualResponsesDesign</a></span><span class="op">(</span></span>
 <span>  nextBest <span class="op">=</span> <span class="va">GainNextBest</span>,</span>
 <span>  model <span class="op">=</span> <span class="va">DLTmodel</span>,</span>
@@ -2944,7 +2994,7 @@ specify a design when an efficacy model is specified under the
 <code>EffFlexi</code> class object. For example, we use the object
 <code>Effmodel2</code> of the <code>EffFlexi</code> class specified in
 earlier examples here:</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">design3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DualResponsesSamplesDesign-class.html">DualResponsesSamplesDesign</a></span><span class="op">(</span></span>
 <span>  nextBest <span class="op">=</span> <span class="va">GainsamplesNextBest</span>,</span>
 <span>  model <span class="op">=</span> <span class="va">DLTmodel</span>,</span>
@@ -2962,7 +3012,7 @@ size.</p>
 for simulations using the DLT model and efficacy model from the
 <code>LogisticIndepBeta</code> and <code>Effloglog</code> objects,
 respectively, we can specify the scenario as below:</p>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myTruthDLT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/probFunction.html">probFunction</a></span><span class="op">(</span><span class="va">DLTmodel</span>, phi1 <span class="op">=</span> <span class="op">-</span><span class="fl">53.66584</span>, phi2 <span class="op">=</span> <span class="fl">10.50499</span><span class="op">)</span></span>
 <span><span class="va">myTruthEff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/efficacyFunction.html">efficacyFunction</a></span><span class="op">(</span><span class="va">Effmodel</span>, theta1 <span class="op">=</span> <span class="op">-</span><span class="fl">4.818429</span>, theta2 <span class="op">=</span> <span class="fl">3.653058</span><span class="op">)</span></span>
 <span></span>
@@ -2971,7 +3021,7 @@ respectively, we can specify the scenario as below:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>The true DLT, efficacy and gain curves can be obtained. We can see
 the corresponding curves as</p>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">TruthTD</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/doseFunction.html">doseFunction</a></span><span class="op">(</span><span class="va">DLTmodel</span>, phi1 <span class="op">=</span> <span class="op">-</span><span class="fl">53.66584</span>, phi2 <span class="op">=</span> <span class="fl">10.50499</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">GAIN</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">xi</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3012,7 +3062,7 @@ used for both cases (modal estimates or MCMC samples).</p>
 <p>If the <code>EffFlexi</code> class object will be used for the
 simulations. Using the same DLT scenario and a new efficacy scenario
 will be specified such that</p>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myTruthEff1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="op">-</span><span class="fl">0.5478867</span>, <span class="fl">0.1645417</span>, <span class="fl">0.5248031</span>, <span class="fl">0.7604467</span>,</span>
 <span>  <span class="fl">0.9333009</span>, <span class="fl">1.0687031</span>, <span class="fl">1.1793942</span>, <span class="fl">1.2726408</span>,</span>
@@ -3022,7 +3072,7 @@ will be specified such that</p>
 <span><span class="va">d1</span> <span class="op">&lt;-</span> <span class="va">data2</span><span class="op">@</span><span class="va">doseGrid</span></span>
 <span><span class="va">myTruthGain1</span> <span class="op">&lt;-</span> <span class="va">myTruthEff1</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu">myTruthDLT</span><span class="op">(</span><span class="va">d1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The corresponding curves can also be plotted as:</p>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">maxg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">myTruthGain1</span><span class="op">)</span></span>
 <span><span class="va">gstar1</span> <span class="op">&lt;-</span> <span class="va">data2</span><span class="op">@</span><span class="va">doseGrid</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">myTruthGain1</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">DoseLevels1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">300</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -3059,7 +3109,7 @@ corresponding real values of the TD30, TD35 and Gstar.</p>
 trials. First, we will look at two examples when the
 <code>Effloglog</code> class object is used as the efficacy model. We
 will show first an example when no MCMC samples are involved:</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sim1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">design1</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -3081,7 +3131,7 @@ their specification and description details.</p>
 <p>When MCMC samples are used, we can also specify the simulations in a
 similar way with an additional argument <code>mcmcOptions</code> such
 that we have</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sim2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">design2</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -3095,7 +3145,7 @@ that we have</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>When the <code>EffFlexi</code> class object is used as the efficacy
 model, we will generate the simulations as follows:</p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sim3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">design3</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -3120,21 +3170,21 @@ model to be used in the simulation.</p>
 <p>Furthermore, we can also plot, summarize and plot the summary of the
 simulated results using <code>plot</code> and <code>summary</code>
 function:</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Sim1</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plotsimulationresults1-1.png" alt="A description of the Sim1 object." width="100%"><p class="caption">
 plot of chunk plotsimulationresults1
 </p>
 </div>
-<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Sim2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plotsimulationresults2-1.png" alt="A description of the Sim2 object." width="100%"><p class="caption">
 plot of chunk plotsimulationresults2
 </p>
 </div>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Sim3</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="example-figures/plotsimulationresults3-1.png" alt="A description of the Sim3 object." width="100%"><p class="caption">
@@ -3147,7 +3197,7 @@ efficacy variance and also the random walk model variance when the
 <code>EffFlexi</code> class object is used for the efficacy model.</p>
 <p>Then, the summary and the plot of the summary of the simulations can
 be obtained by:</p>
-<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sum1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">Sim1</span>,</span>
 <span>  trueDLE <span class="op">=</span> <span class="va">myTruthDLT</span>,</span>
 <span>  trueEff <span class="op">=</span> <span class="va">myTruthEff</span></span>
@@ -3218,7 +3268,7 @@ be obtained by:</p>
 plot of chunk summarysimulationresults1
 </p>
 </div>
-<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sum2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">Sim2</span>,</span>
 <span>  trueDLE <span class="op">=</span> <span class="va">myTruthDLT</span>,</span>
 <span>  trueEff <span class="op">=</span> <span class="va">myTruthEff</span></span>
@@ -3291,7 +3341,7 @@ plot of chunk summarysimulationresults1
 plot of chunk summarysimulationresults2
 </p>
 </div>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sum3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">Sim3</span>,</span>
 <span>  trueDLE <span class="op">=</span> <span class="va">myTruthDLT</span>,</span>
 <span>  trueEff <span class="op">=</span> <span class="va">myTruthEff1</span></span>
@@ -3364,7 +3414,7 @@ plot of chunk summarysimulationresults2
 plot of chunk summarysimulationresults3
 </p>
 </div>
-<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># nolint end</span></span></code></pre></div>
 <p>In the first simulation, <code>Sim1</code> the trial will only stop

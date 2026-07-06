@@ -3,7 +3,7 @@
 **\[stable\]**
 
 Display a brief representation of the
-[GeneralSimulations](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+[GeneralSimulations](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 object.
 
 ## Usage
@@ -17,7 +17,7 @@ show(object)
 
 - object:
 
-  (`GeneralSimulations`)  
+  (`GeneralSimulations`)\
   the object we want to print.
 
 ## Value

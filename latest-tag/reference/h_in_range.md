@@ -15,17 +15,17 @@ h_in_range(x, range = c(0, 1), bounds_closed = TRUE)
 
 - x:
 
-  (`numeric`)  
+  (`numeric`)\
   vector or matrix with elements to test.
 
 - range:
 
-  (`numeric`)  
+  (`numeric`)\
   an interval, i.e. sorted two-elements vector.
 
 - bounds_closed:
 
-  (`logical`)  
+  (`logical`)\
   should bounds in the `range` be treated as closed? This can be a
   scalar or vector of length two. If it is a scalar, then its value
   applies to lower bound `range[1]` and upper bound `range[2]`. If this

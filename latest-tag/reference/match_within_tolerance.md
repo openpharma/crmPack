@@ -15,17 +15,17 @@ match_within_tolerance(x, table, tolerance = 1e-10)
 
 - x:
 
-  (`numeric`)  
+  (`numeric`)\
   the values to be matched.
 
 - table:
 
-  (`numeric`)  
+  (`numeric`)\
   the values to be matched against.
 
 - tolerance:
 
-  (`number`)  
+  (`number`)\
   the numerical tolerance for comparison.
 
 ## Value

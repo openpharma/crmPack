@@ -3,7 +3,7 @@
 ## Introduction
 
 This vignette picks up where the previous one ([Trial
-Definition](https://openpharma.github.io/crmPack/articles/trial_definition.md)),
+Definition](https://docs.crmpack.org/articles/trial_definition.md)),
 ends. To recap, our trial defines the six fundamental elements of a CRM
 trial as
 
@@ -78,7 +78,7 @@ The trial will stop when *either*
 
 The code to define these elements of the trial design is given in the
 [Trial
-Definition](https://openpharma.github.io/crmPack/articles/trial_definition.Rmd)
+Definition](https://docs.crmpack.org/articles/trial_definition.Rmd)
 vignette.
 
 ## Analysing a trial
@@ -123,7 +123,9 @@ plot(firstFour)
 ![A visual representation of the data from the first four participants.
 The first three, treated at doses 1, 3 and 9, do not report any
 toxicities. The fourth, treated at 20,
-does.](trial_analysis_files/figure-html/unnamed-chunk-5-1.png)
+does.](trial_analysis-figures/unnamed-chunk-5-1.png)
+
+plot of chunk unnamed-chunk-5
 
 and, since the `plot` method returns a `ggplot` object, it is easily
 customised.
@@ -134,8 +136,9 @@ plot(firstFour) + theme_light()
 ```
 
 ![The same graph as above, but with a white background to the plot area
-rather than a grey
-one.](trial_analysis_files/figure-html/unnamed-chunk-6-1.png)
+rather than a grey one.](trial_analysis-figures/unnamed-chunk-6-1.png)
+
+plot of chunk unnamed-chunk-6
 
 We first define the MCMC options, explicitly setting a seed and the kind
 for the random number generator, in order to make sure that the results
@@ -180,7 +183,9 @@ probability of toxicity increases smoothly, with a slight convex curve,
 from about zero percent at a dose of zero to about 65% at a dose of 100.
 The confidence interval extends from 0% to about 25% at a dose of zero
 and from about 30% to about 90% at a dose of
-100.](trial_analysis_files/figure-html/unnamed-chunk-9-1.png)
+100.](trial_analysis-figures/unnamed-chunk-9-1.png)
+
+plot of chunk unnamed-chunk-9
 
 A visual representation of the model’s state is obtained with:
 
@@ -206,7 +211,9 @@ indicating that this is the highest acceptable probability of being in
 the overdose range. The red bars for doses of 30 and above all extend
 above 25%, indicating that their toxicity is unacceptable. The toxicity
 for doses of 20 and below lie below
-25%.](trial_analysis_files/figure-html/unnamed-chunk-10-1.png)
+25%.](trial_analysis-figures/unnamed-chunk-10-1.png)
+
+plot of chunk unnamed-chunk-10
 
 The lower panel of the plot shows the posterior probability that each
 dose is in the overdose range. The dashed horizontal black line shows
@@ -774,7 +781,9 @@ plot(fifthFullCohort)
 been treated. One each at doses 1, 3 and 9; four at a dose of 20; 6 at a
 dose of 30 and 6 at a dose of 45. Toxicitiues were reported by
 participants 4 (at a dose of 20) and 18 and 19 (both at a dose of
-45).](trial_analysis_files/figure-html/unnamed-chunk-34-1.png)
+45).](trial_analysis-figures/unnamed-chunk-34-1.png)
+
+plot of chunk unnamed-chunk-34
 
 ``` r
 
@@ -786,7 +795,9 @@ The mean probability of toxicity increases smoothly from about zero
 percent at a dose of zero to about 55% at a dose of 100. The confidence
 interval extends from 0% to about 6% at a dose of zero and from about
 22% to about 90% at a dose of
-100.](trial_analysis_files/figure-html/unnamed-chunk-35-1.png)
+100.](trial_analysis-figures/unnamed-chunk-35-1.png)
+
+plot of chunk unnamed-chunk-35
 
 ``` r
 
@@ -804,7 +815,9 @@ indicating that this is the highest acceptable probability of being in
 the overdose range. The red bars for doses of 60 and above all extend
 above 25%, indicating that their toxicity is unacceptable. The toxicity
 for doses of 45 and below lie below
-25%.](trial_analysis_files/figure-html/unnamed-chunk-36-1.png)
+25%.](trial_analysis-figures/unnamed-chunk-36-1.png)
+
+plot of chunk unnamed-chunk-36
 
 With a little bit of work, we can obtain a more detailed summary and
 plot of the posterior probabilities of toxicity at each dose:
@@ -842,8 +855,6 @@ fullSummary <- fullSamples %>%
       )
     }
   )
-#> Warning in sprintf("Q%02.0f", as.numeric(str_remove_all(.x, "%"))): NAs
-#> introduced by coercion
 
 fullSummary %>%
   kableExtra::kable(
@@ -879,7 +890,9 @@ fullSamples %>%
 toxicity for all doses greater than nine. The mode of each density moves
 to the right as dose increases. The densities for low doses are heaviliy
 skewed to the left. Densities for higher doses are more symmetric and
-flatter.](trial_analysis_files/figure-html/unnamed-chunk-37-1.png)
+flatter.](trial_analysis-figures/unnamed-chunk-37-1.png)
+
+plot of chunk unnamed-chunk-37
 
 ``` r
 
@@ -896,8 +909,6 @@ fullSummary %>%
     colour = "Dose",
     y = "P(Toxicity)"
   )
-#> Ignoring unknown labels:
-#> • colour : "Dose"
 ```
 
 ![A visual representation of the posterior dose - toxicity curve. Very
@@ -909,7 +920,9 @@ shading increases with distance from the solid lines. The shading is
 funnel shaped, with a narrow mneck at a dose of 100 and a wider mouth at
 a dose of 100. The shading represents the central 90%, 80% and 50%
 confidence intervals for the posterior mean estimate of toxicity at each
-dose.](trial_analysis_files/figure-html/unnamed-chunk-38-1.png)
+dose.](trial_analysis-figures/unnamed-chunk-38-1.png)
+
+plot of chunk unnamed-chunk-38
 
 ## Note
 

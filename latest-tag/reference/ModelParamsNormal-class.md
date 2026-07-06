@@ -20,12 +20,12 @@ ModelParamsNormal(mean, cov)
 
 - mean:
 
-  (`numeric`)  
+  (`numeric`)\
   the prior mean vector.
 
 - cov:
 
-  (`matrix`)  
+  (`matrix`)\
   the prior covariance matrix. The precision matrix `prec` is internally
   calculated as an inverse of `cov`.
 
@@ -33,17 +33,17 @@ ModelParamsNormal(mean, cov)
 
 - `mean`:
 
-  (`numeric`)  
+  (`numeric`)\
   the mean vector.
 
 - `cov`:
 
-  (`matrix`)  
+  (`matrix`)\
   the covariance matrix.
 
 - `prec`:
 
-  (`matrix`)  
+  (`matrix`)\
   the precision matrix, which is an inverse matrix of the `cov`.
 
 ## Note
@@ -52,8 +52,8 @@ Typically, end users will not use the `.ModelPAramsNormal()` function.
 
 ## See also
 
-[`ModelLogNormal`](https://openpharma.github.io/crmPack/reference/ModelLogNormal-class.md),
-[`LogisticNormalMixture`](https://openpharma.github.io/crmPack/reference/LogisticNormalMixture-class.md).
+[`ModelLogNormal`](https://docs.crmpack.org/reference/ModelLogNormal-class.md),
+[`LogisticNormalMixture`](https://docs.crmpack.org/reference/LogisticNormalMixture-class.md).
 
 ## Examples
 

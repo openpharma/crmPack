@@ -28,6 +28,12 @@ prob(dose, model, samples, ...)
 # S4 method for class 'numeric,LogisticLogNormalGrouped,Samples'
 prob(dose, model, samples, group, ...)
 
+# S4 method for class 'numeric,TwoDrugsCombo,Samples'
+prob(dose, model, samples, ...)
+
+# S4 method for class 'matrix,TwoDrugsCombo,Samples'
+prob(dose, model, samples, ...)
+
 # S4 method for class 'numeric,LogisticKadane,Samples'
 prob(dose, model, samples, ...)
 
@@ -66,7 +72,7 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - dose:
 
-  (`number` or `numeric`)  
+  (`number` or `numeric`)\
   the dose which is targeted. The following recycling rule applies when
   `samples` is not missing: vectors of size 1 will be recycled to the
   size of the sample (i.e. `size(samples)`). Otherwise, `dose` must have
@@ -74,13 +80,13 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - model:
 
-  (`GeneralModel` or `ModelTox`)  
+  (`GeneralModel` or `ModelTox`)\
   the model for single agent dose escalation or pseudo DLE
   (dose-limiting events)/toxicity model.
 
 - samples:
 
-  (`Samples`)  
+  (`Samples`)\
   the samples of model's parameters that will be used to compute
   toxicity probabilities. Can also be missing for some models.
 
@@ -90,33 +96,36 @@ prob(dose, model, samples, grade, cumulative = TRUE, ...)
 
 - group:
 
-  (`character` or `factor`)  
+  (`character` or `factor`)\
   for
-  [`LogisticLogNormalGrouped`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.md),
+  [`LogisticLogNormalGrouped`](https://docs.crmpack.org/reference/LogisticLogNormalGrouped-class.md),
   indicating whether to calculate the probability for the `mono` or for
   the `combo` arm.
 
 - grade:
 
-  (`integer` or `integer_vector`)  
+  (`integer` or `integer_vector`)\
   The toxicity grade for which probabilities are required
 
 - cumulative:
 
-  (`flag`)  
+  (`flag`)\
   Should the returned probability be cumulative (the default) or
   grade-specific?
 
 ## Value
 
-A `proportion` or `numeric` vector with the toxicity probabilities. If
-non-scalar `samples` were used, then every element in the returned
-vector corresponds to one element of a sample. Hence, in this case, the
-output vector is of the same length as the sample vector. If scalar
-`samples` were used or no `samples` were used, e.g. for pseudo
+A `proportion` or `numeric` vector with the toxicity probabilities, or a
+numeric matrix for methods that evaluate multiple dose combinations at
+once. If non-scalar `samples` were used, then every element in the
+returned vector corresponds to one element of a sample. Hence, in this
+case, the output vector is of the same length as the sample vector. If
+scalar `samples` were used or no `samples` were used, e.g. for pseudo
 DLE/toxicity `model`, then the output is of the same length as the
-length of the `dose`. In the case of `LogisticLogNormalOrdinal`, the
-probabilities relate to toxicities of grade given by `grade`.
+length of the `dose`. For matrix-valued dose inputs, the returned matrix
+contains one column per dose combination. In the case of
+`LogisticLogNormalOrdinal`, the probabilities relate to toxicities of
+grade given by `grade`.
 
 ## Details
 
@@ -129,65 +138,93 @@ the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 ## Functions
 
 - `prob(dose = numeric, model = LogisticNormal, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticNormal` model.
 
 - `prob(dose = numeric, model = LogisticLogNormal, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticLogNormal` model.
 
 - `prob(dose = numeric, model = LogisticLogNormalSub, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticLogNormalSub` model.
 
 - `prob(dose = numeric, model = ProbitLogNormal, samples = Samples)`:
+  Calculate toxicity probabilities for a `ProbitLogNormal` model.
 
 - `prob(dose = numeric, model = ProbitLogNormalRel, samples = Samples)`:
+  Calculate toxicity probabilities for a `ProbitLogNormalRel` model.
 
 - `prob(dose = numeric, model = LogisticLogNormalGrouped, samples = Samples)`:
   method for
-  [`LogisticLogNormalGrouped`](https://openpharma.github.io/crmPack/reference/LogisticLogNormalGrouped-class.md)
+  [`LogisticLogNormalGrouped`](https://docs.crmpack.org/reference/LogisticLogNormalGrouped-class.md)
   which needs `group` argument in addition.
 
+- `prob(dose = numeric, model = TwoDrugsCombo, samples = Samples)`:
+  method for
+  [`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)
+  for a single dose combination provided as a named numeric vector.
+
+- `prob(dose = matrix, model = TwoDrugsCombo, samples = Samples)`:
+  method for
+  [`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)
+  for one or more dose combinations provided in the rows of a numeric
+  matrix.
+
 - `prob(dose = numeric, model = LogisticKadane, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticKadane` model.
 
 - `prob(dose = numeric, model = LogisticKadaneBetaGamma, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticKadaneBetaGamma`
+  model.
 
 - `prob(dose = numeric, model = LogisticNormalMixture, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticNormalMixture` model.
 
 - `prob(dose = numeric, model = LogisticNormalFixedMixture, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticNormalFixedMixture`
+  model.
 
 - `prob(dose = numeric, model = LogisticLogNormalMixture, samples = Samples)`:
+  Calculate toxicity probabilities for a `LogisticLogNormalMixture`
+  model.
 
 - `prob(dose = numeric, model = DualEndpoint, samples = Samples)`:
+  Calculate toxicity probabilities for a `DualEndpoint` model.
 
 - `prob(dose = numeric, model = LogisticIndepBeta, samples = Samples)`:
   compute toxicity probabilities of the occurrence of a DLE at a
   specified dose level, based on the samples of
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   model parameters.
 
 - `prob(dose = numeric, model = LogisticIndepBeta, samples = missing)`:
   compute toxicity probabilities of the occurrence of a DLE at a
   specified dose level, based on the
-  [`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+  [`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
   model parameters. All model parameters (except `dose`) should be
   present in the `model` object.
 
 - `prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)`:
+  Calculate toxicity probabilities for a `OneParLogNormalPrior` model.
 
 - `prob(dose = numeric, model = OneParExpPrior, samples = Samples)`:
+  Calculate toxicity probabilities for a `OneParExpPrior` model.
 
 - `prob(dose = numeric, model = LogisticLogNormalOrdinal, samples = Samples)`:
+  Calculate grade-specific toxicity probabilities for a
+  `LogisticLogNormalOrdinal` model.
 
 ## Note
 
-The `prob()` and
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md)
+The `prob()` and [`dose()`](https://docs.crmpack.org/reference/dose.md)
 functions are the inverse of each other, for all
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md)
-methods for which its first argument, i.e. a given independent variable
-that dose depends on, represents toxicity probability.
+[`dose()`](https://docs.crmpack.org/reference/dose.md) methods for which
+its first argument, i.e. a given independent variable that dose depends
+on, represents toxicity probability.
 
 ## See also
 
-[`probFunction()`](https://openpharma.github.io/crmPack/reference/probFunction.md),
-[`dose()`](https://openpharma.github.io/crmPack/reference/dose.md),
-[`efficacy()`](https://openpharma.github.io/crmPack/reference/efficacy.md).
+[`probFunction()`](https://docs.crmpack.org/reference/probFunction.md),
+[`dose()`](https://docs.crmpack.org/reference/dose.md),
+[`efficacy()`](https://docs.crmpack.org/reference/efficacy.md).
 
 ## Examples
 
@@ -214,9 +251,9 @@ my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
 # Posterior for Prob(DLT | dose = 50).
 prob(dose = 50, model = my_model, samples = my_samples)
-#>  [1] 0.5987228 0.5987228 0.5987228 0.5987228 0.5987228 0.5987228 0.2984777
-#>  [8] 0.3894058 0.3894058 0.3894058 0.3894058 0.3894058 0.3894058 0.3894058
-#> [15] 0.2634117 0.2754086 0.5519921 0.5797113 0.5797113 0.3042682
+#>  [1] 0.7301298 0.6092194 0.6092194 0.5606247 0.2556206 0.2593980 0.2593980
+#>  [8] 0.2593980 0.2593980 0.6953571 0.4845362 0.6086718 0.2060176 0.3370329
+#> [15] 0.3370329 0.3370329 0.2161408 0.3931113 0.1694637 0.1694637
 
 # Create data from the 'DataDual' class.
 data_dual <- DataDual(
@@ -241,9 +278,9 @@ dlt_sample <- mcmc(data = data_dual, model = dlt_model, options = my_options)
 
 # Posterior for Prob(DLT | dose = 100).
 prob(dose = 100, model = dlt_model, samples = dlt_sample)
-#>  [1] 0.1723670 0.1723670 0.4748224 0.4748224 0.4748224 0.2628373 0.2628373
-#>  [8] 0.4670407 0.4670407 0.4670407 0.4670407 0.4670407 0.4670407 0.4670407
-#> [15] 0.4670407 0.4670407 0.4670407 0.4670407 0.4670407 0.4670407
+#>  [1] 0.3331095 0.3331095 0.3331095 0.3331095 0.3780942 0.3780942 0.4100337
+#>  [8] 0.4100337 0.4100337 0.4100337 0.4070378 0.4070378 0.4070378 0.4070378
+#> [15] 0.4070378 0.4070378 0.4070378 0.5868325 0.6399562 0.1724915
 prob(dose = c(50, 150), model = dlt_model)
 #> [1] 0.1981823 0.4601234
 ```

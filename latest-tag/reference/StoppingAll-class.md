@@ -19,19 +19,19 @@ StoppingAll(stop_list, report_label = NA_character_)
 
 - stop_list:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - report_label:
 
-  (`string`)  
+  (`string`)\
   see slot definition.
 
 ## Slots
 
 - `stop_list`:
 
-  (`list`)  
+  (`list`)\
   list of stopping rules.
 
 - `report_label`:

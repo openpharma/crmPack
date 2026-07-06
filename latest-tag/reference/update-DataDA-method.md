@@ -3,8 +3,8 @@
 **\[stable\]**
 
 A method that updates existing
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
-object with new data.
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object
+with new data.
 
 ## Usage
 
@@ -17,52 +17,51 @@ update(object, u, t0, trialtime, y, ..., check = TRUE)
 
 - object:
 
-  (`DataDA`)  
+  (`DataDA`)\
   object you want to update.
 
 - u:
 
-  (`numeric`)  
+  (`numeric`)\
   the new DLT free survival times for all patients, i.e. for existing
   patients in the `object` as well as for new patients.
 
 - t0:
 
-  (`numeric`)  
+  (`numeric`)\
   the time that each patient starts DLT observation window. This
   parameter covers all patients, i.e. existing patients in the `object`
   as well as for new patients.
 
 - trialtime:
 
-  (`number`)  
+  (`number`)\
   current time in the trial, i.e. a followup time.
 
 - y:
 
-  (`numeric`)  
+  (`numeric`)\
   the new DLTs for all patients, i.e. for existing patients in the
   `object` as well as for new patients.
 
 - ...:
 
   further arguments passed to `Data` update method
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md).
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md).
   These are used when there are new patients to be added to the cohort.
 
 - check:
 
-  (`flag`)  
+  (`flag`)\
   whether the validation of the updated object should be conducted. See
   help for
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)
   for more details on the use case of this parameter.
 
 ## Value
 
 The new, updated
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
-object.
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object.
 
 ## Note
 

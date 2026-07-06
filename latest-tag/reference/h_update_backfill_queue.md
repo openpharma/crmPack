@@ -13,22 +13,22 @@ h_update_backfill_queue(backfill_cohorts, data, dose, backfill)
 
 - backfill_cohorts:
 
-  (`list`)  
+  (`list`)\
   current queue of backfill cohorts.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   current trial data.
 
 - dose:
 
-  (`number`)  
+  (`number`)\
   current dose being evaluated.
 
 - backfill:
 
-  (`Backfill`)  
+  (`Backfill`)\
   with opening rules and cohort size.
 
 ## Value

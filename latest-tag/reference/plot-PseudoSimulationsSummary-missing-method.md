@@ -5,7 +5,7 @@
 Graphical display of the simulation summary.
 
 This plot method can be applied to
-[`PseudoSimulationsSummary`](https://openpharma.github.io/crmPack/reference/PseudoSimulationsSummary-class.md)
+[`PseudoSimulationsSummary`](https://docs.crmpack.org/reference/PseudoSimulationsSummary-class.md)
 objects in order to summarize them graphically. This can be used when
 only DLE responses are involved in the simulations. This also applied to
 results with or without samples generated during the simulations.
@@ -26,17 +26,17 @@ plot(
 
 - x:
 
-  (`PseudoSimulationsSummary`)  
+  (`PseudoSimulationsSummary`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   missing object, not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the types of plots you want to obtain.
 
 - ...:

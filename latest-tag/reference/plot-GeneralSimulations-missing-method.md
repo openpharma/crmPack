@@ -5,7 +5,7 @@
 Summarize the simulations with plots.
 
 This plot method can be applied to
-[`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+[`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 objects in order to summarize them graphically. Possible `type`s of
 plots at the moment are:
 
@@ -30,17 +30,17 @@ plot(x, y, type = c("trajectory", "dosesTried"), ...)
 
 - x:
 
-  (`GeneralSimulations`)  
+  (`GeneralSimulations`)\
   the object we want to plot from.
 
 - y:
 
-  (`missing`)  
+  (`missing`)\
   not used.
 
 - type:
 
-  (`character`)  
+  (`character`)\
   the type of plots you want to obtain.
 
 - ...:

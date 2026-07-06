@@ -16,89 +16,89 @@ function is provided for this class.
 
 - `target`:
 
-  (`numeric`)  
+  (`numeric`)\
   target toxicity interval
 
 - `target_dose_interval`:
 
-  (`numeric`)  
+  (`numeric`)\
   corresponding target dose interval
 
 - `nsim`:
 
-  (`integer`)  
+  (`integer`)\
   number of simulations
 
 - `prop_dlts`:
 
-  (`ANY`)  
+  (`ANY`)\
   A numeric array (multi-dimensional) or list representing proportions
   of DLTs in the trials
 
 - `mean_tox_risk`:
 
-  (`numeric`)  
+  (`numeric`)\
   mean toxicity risks for the patients
 
 - `dose_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   doses selected as MTD
 
 - `tox_at_doses_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   true toxicity at doses selected
 
 - `prop_at_target`:
 
-  (`numeric`)  
+  (`numeric`)\
   Proportion of trials selecting target MTD
 
 - `dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   dose most often selected as MTD
 
 - `obs_tox_rate_at_dose_most_selected`:
 
-  (`numeric`)  
+  (`numeric`)\
   observed toxicity rate at dose most often selected
 
 - `n_obs`:
 
-  (`ANY`)  
+  (`ANY`)\
   A numeric array (multi-dimensional) or list representing number of
   patients overall.
 
 - `n_above_target`:
 
-  (`integer`)  
+  (`integer`)\
   number of patients treated above target tox interval
 
 - `dose_grid`:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid that has been used
 
 - `placebo`:
 
-  (`logical`)  
+  (`logical`)\
   set to TRUE (default is FALSE) for a design with placebo
 
 - `any_backfilled`:
 
-  (`flag`)  
+  (`flag`)\
   indicates if any backfill cohorts were used
 
 - `n_backfill`:
 
-  (`ANY`)  
+  (`ANY`)\
   number of patients in backfill cohorts (only if `any_backfilled=TRUE`)
 
 - `backfill_doses`:
 
-  (`ANY`)  
+  (`ANY`)\
   list with doses used in backfill cohorts (only if
   `any_backfilled=TRUE`)
 

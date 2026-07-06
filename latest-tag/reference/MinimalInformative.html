@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Construct a Minimally Informative Prior — MinimalInformative • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Construct a Minimally Informative Prior — MinimalInformative">
 <meta name="description" content="
@@ -30,10 +30,11 @@ probability of DLT smaller than \(q_{J}\) has only 5% probability
 controlled with the arguments probmin and probmax, respectively.
 Subsequently, for all doses supplied in the
 dosegrid argument, beta distributions are set up from the assumption
-that the prior medians are linear in log-dose on the logit scale, and
+that the prior medians are linear in log-dose (or dose if
+useLogDose = FALSE) on the logit scale, and
 Quantiles2LogisticNormal() is used to transform the resulting
 quantiles into an approximating LogisticNormal (or
-LogisticLogNormal) model. Note that the reference dose
+LogisticLogNormal or LogisticLogNormalSub) model. Note that the reference dose
 is not required for these computations.">
 <meta property="og:description" content="
 This function constructs a minimally informative prior, which is captured in
@@ -53,12 +54,13 @@ probability of DLT smaller than \(q_{J}\) has only 5% probability
 controlled with the arguments probmin and probmax, respectively.
 Subsequently, for all doses supplied in the
 dosegrid argument, beta distributions are set up from the assumption
-that the prior medians are linear in log-dose on the logit scale, and
+that the prior medians are linear in log-dose (or dose if
+useLogDose = FALSE) on the logit scale, and
 Quantiles2LogisticNormal() is used to transform the resulting
 quantiles into an approximating LogisticNormal (or
-LogisticLogNormal) model. Note that the reference dose
+LogisticLogNormal or LogisticLogNormalSub) model. Note that the reference dose
 is not required for these computations.">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -68,7 +70,7 @@ is not required for these computations.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,6 +100,8 @@ is not required for these computations.">
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -118,6 +122,7 @@ is not required for these computations.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -138,7 +143,7 @@ is not required for these computations.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Construct a Minimally Informative Prior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/fromQuantiles.R" class="external-link"><code>R/fromQuantiles.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/fromQuantiles.R" class="external-link"><code>R/fromQuantiles.R</code></a></small>
       <div class="d-none name"><code>MinimalInformative.Rd</code></div>
     </div>
 
@@ -161,10 +166,11 @@ probability of DLT smaller than \(q_{J}\) has only 5% probability
 controlled with the arguments <code>probmin</code> and <code>probmax</code>, respectively.
 Subsequently, for all doses supplied in the
 <code>dosegrid</code> argument, beta distributions are set up from the assumption
-that the prior medians are linear in log-dose on the logit scale, and
+that the prior medians are linear in log-dose (or dose if
+<code>useLogDose = FALSE</code>) on the logit scale, and
 <code><a href="Quantiles2LogisticNormal.html">Quantiles2LogisticNormal()</a></code> is used to transform the resulting
 quantiles into an approximating <code><a href="LogisticNormal-class.html">LogisticNormal</a></code> (or
-<code><a href="LogisticLogNormal-class.html">LogisticLogNormal</a></code>) model. Note that the reference dose
+<code><a href="LogisticLogNormal-class.html">LogisticLogNormal</a></code> or <code><a href="LogisticLogNormalSub-class.html">LogisticLogNormalSub</a></code>) model. Note that the reference dose
 is not required for these computations.</p>
     </div>
 
@@ -178,7 +184,8 @@ is not required for these computations.</p>
 <span>  threshmax <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  probmin <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  probmax <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  useLogDose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -190,12 +197,12 @@ is not required for these computations.</p>
 <dl>
 <dt id="arg-dosegrid">dosegrid<a class="anchor" aria-label="anchor" href="#arg-dosegrid"></a>
 </dt>
-<dd><p>(<code>numeric</code>)<br> the dose grid.</p></dd>
+<dd><p>(<code>numeric</code>)<br> the dose grid, only positive sorted values are allowed.</p></dd>
 
 
 <dt id="arg-refdose">refDose<a class="anchor" aria-label="anchor" href="#arg-refdose"></a>
 </dt>
-<dd><p>(<code>number</code>)<br> the reference dose.</p></dd>
+<dd><p>(<code>number</code>)<br> the reference dose. Must be positive if <code>useLogDose = TRUE</code>.</p></dd>
 
 
 <dt id="arg-threshmin">threshmin<a class="anchor" aria-label="anchor" href="#arg-threshmin"></a>
@@ -228,6 +235,13 @@ at the maximum dose.</p></dd>
 <code><a href="Quantiles2LogisticNormal.html">Quantiles2LogisticNormal()</a></code>, e.g. <code>refDose</code> and
 <code>logNormal=TRUE</code> to obtain a minimal informative log normal prior.</p></dd>
 
+
+<dt id="arg-uselogdose">useLogDose<a class="anchor" aria-label="anchor" href="#arg-uselogdose"></a>
+</dt>
+<dd><p>(<code>flag</code>)<br> use <code>log(dosegrid / refDose)</code> as dose covariate?
+If <code>FALSE</code>, pass <code>logNormal = TRUE</code> via <code>...</code> to obtain a
+<code><a href="LogisticLogNormalSub-class.html">LogisticLogNormalSub</a></code> model.</p></dd>
+
 </dl>
 </div>
     <div class="section level2">
@@ -259,13 +273,13 @@ at the maximum dose.</p></dd>
 <span class="r-in"><span>                                  threshmax<span class="op">=</span><span class="fl">0.3</span>,</span></span>
 <span class="r-in"><span>                                  control<span class="op">=</span><span class="co">## for real case: leave out control </span></span></span>
 <span class="r-in"><span>                                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>max.time<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> timeSpan = 4.518187 maxTime = 0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Emini is: 0.6732911061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> It: 1, obj value (lsEnd): 0.6727662311 indTrace: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> timeSpan = 4.424475 maxTime = 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Emini is: 0.6727662311</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> xmini are:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Totally it used 4.518221 secs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No. of function call is: 991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3.446289216 9.080650618 4.30874806 0.7251654219 -0.7565382708 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Totally it used 4.424507 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No. of function call is: 980</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting the result</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">coarseGrid</span>,</span></span>

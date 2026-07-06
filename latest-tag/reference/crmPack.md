@@ -13,9 +13,7 @@ Software*, **89**(10), 1–22.
 
 Useful links:
 
-- <https://github.com/openpharma/crmPack>
-
-- <https://openpharma.github.io/crmPack/>
+- <https://docs.crmpack.org/>
 
 - Report bugs at <https://github.com/openpharma/crmPack/issues>
 
@@ -25,6 +23,9 @@ Useful links:
 ([ORCID](https://orcid.org/0000-0002-0176-9239))
 
 Authors:
+
+- Daniel Sabanés Bové <daniel.sabanes_bove@rconis.com>
+  ([ORCID](https://orcid.org/0000-0002-0176-9239))
 
 - Wai Yin Yeung <winnie.yeung@roche.com>
 

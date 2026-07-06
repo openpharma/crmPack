@@ -4,7 +4,7 @@
 
 This class has special requirements for the `model` and `data` slots in
 comparison to the parent class
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md):
+[`Design`](https://docs.crmpack.org/reference/Design-class.md):
 
 ## Usage
 
@@ -18,42 +18,42 @@ DADesign(model, data, safetyWindow, ...)
 
 - model:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   see slot definition.
 
 - data:
 
-  (`DataDA`)  
+  (`DataDA`)\
   see slot definition.
 
 - safetyWindow:
 
-  (`SafetyWindow`)  
+  (`SafetyWindow`)\
   see slot definition.
 
 - ...:
 
   Arguments passed on to
-  [`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
+  [`Design`](https://docs.crmpack.org/reference/Design-class.md)
 
   `stopping`
 
-  :   (`Stopping`)  
+  :   (`Stopping`)\
       see slot definition.
 
   `increments`
 
-  :   (`Increments`)  
+  :   (`Increments`)\
       see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `backfill`
 
-  :   (`Backfill`)  
+  :   (`Backfill`)\
       see slot definition.
 
 ## Details
@@ -74,21 +74,22 @@ constructor. For example:
 
 - `model`:
 
-  (`GeneralModel`)  
+  (`GeneralModel`)\
   the model to use, see in particular
-  [`DALogisticLogNormal`](https://openpharma.github.io/crmPack/reference/DALogisticLogNormal-class.md)
+  [DALogisticLogNormal](https://docs.crmpack.org/reference/DALogisticLogNormal-class.md),
+  [TITELogisticLogNormal](https://docs.crmpack.org/reference/TITELogisticLogNormal-class.md)
   and
-  [`TITELogisticLogNormal`](https://openpharma.github.io/crmPack/reference/TITELogisticLogNormal-class.md)
+  [TITELogisticLogNormalSub](https://docs.crmpack.org/reference/TITELogisticLogNormalSub-class.md)
   which make use of the time-to-DLT data.
 
 - `data`:
 
-  (`DataDA`)  
+  (`DataDA`)\
   what is the dose grid, any previous data, etc.
 
 - `safetyWindow`:
 
-  (`SafetyWindow`)  
+  (`SafetyWindow`)\
   the safety window to apply between cohorts.
 
 ## Note
@@ -97,7 +98,7 @@ Typically, end users will not use the `.DefaultDADesign()` function.
 
 ## See also
 
-[`SafetyWindowConst`](https://openpharma.github.io/crmPack/reference/SafetyWindowConst-class.md)
+[`SafetyWindowConst`](https://docs.crmpack.org/reference/SafetyWindowConst-class.md)
 for creating a constant safety window.
 
 ## Examples

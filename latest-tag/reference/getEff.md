@@ -19,7 +19,7 @@ getEff(object, no_dlt = FALSE)
 
 - object:
 
-  (`DataDual`)  
+  (`DataDual`)\
   object from which the responses and dose levels are extracted.
 
 - ...:
@@ -28,7 +28,7 @@ getEff(object, no_dlt = FALSE)
 
 - no_dlt:
 
-  (`flag`)  
+  (`flag`)\
   should only no DLT responses be returned? Otherwise, all responses are
   returned.
 

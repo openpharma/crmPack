@@ -9,7 +9,7 @@ class object. The resulting data frame is used by the plot function for
 **\[experimental\]**
 
 A method that transforms
-[`GeneralData`](https://openpharma.github.io/crmPack/reference/GeneralData-class.md)
+[`GeneralData`](https://docs.crmpack.org/reference/GeneralData-class.md)
 objects into a `tibble` suitable for plotting with `ggplot2` methods
 
 ## Usage
@@ -30,7 +30,7 @@ h_plot_data_df(data, blind = FALSE, legend = TRUE, ...)
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   object from which data is extracted and converted into a data frame.
 
 - ...:
@@ -42,14 +42,14 @@ h_plot_data_df(data, blind = FALSE, legend = TRUE, ...)
 
 - blind:
 
-  (`flag`)  
+  (`flag`)\
   should data be blinded? If `TRUE`, then for each cohort, all DLTs are
   assigned to the first subjects in the cohort. In addition, the placebo
   (if any) is set to the active dose level for that cohort.
 
 - legend:
 
-  (`flag`)  
+  (`flag`)\
   Display the legend for the toxicity categories
 
 ## Value
@@ -66,7 +66,7 @@ toxicity.
 ## Methods (by class)
 
 - `h_plot_data_df(Data)`: method for
-  [`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data`](https://docs.crmpack.org/reference/Data-class.md).
 
 - `h_plot_data_df(DataOrdinal)`: Class specific method for
-  [`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+  [`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)

@@ -19,14 +19,14 @@ OpeningMinCohorts(min_cohorts = 2L)
 
 - min_cohorts:
 
-  (`integer`)  
+  (`integer`)\
   see slot definition.
 
 ## Slots
 
 - `min_cohorts`:
 
-  (`integer`)  
+  (`integer`)\
   the minimum number of cohorts that must have been treated before
   backfilling can be opened.
 
@@ -37,5 +37,5 @@ function.
 
 ## See also
 
-[`Opening`](https://openpharma.github.io/crmPack/reference/Opening-class.md)
-and the other subclasses listed in there.
+[`Opening`](https://docs.crmpack.org/reference/Opening-class.md) and the
+other subclasses listed in there.

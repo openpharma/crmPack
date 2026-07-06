@@ -15,12 +15,12 @@ h_get_min_inf_beta(p, q)
 
 - p:
 
-  (`number`)  
+  (`number`)\
   the probability.
 
 - q:
 
-  (`number`)  
+  (`number`)\
   the quantile.
 
 ## Value

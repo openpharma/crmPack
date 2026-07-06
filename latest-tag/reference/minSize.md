@@ -19,12 +19,12 @@ minSize(...)
 - ...:
 
   Objects of class
-  [`CohortSize`](https://openpharma.github.io/crmPack/reference/CohortSize-class.md).
+  [`CohortSize`](https://docs.crmpack.org/reference/CohortSize-class.md).
 
 ## Value
 
 The combination as an object of class
-[`CohortSizeMin`](https://openpharma.github.io/crmPack/reference/CohortSizeMin-class.md).
+[`CohortSizeMin`](https://docs.crmpack.org/reference/CohortSizeMin-class.md).
 
 ## Functions
 
@@ -33,7 +33,7 @@ The combination as an object of class
 
 ## See also
 
-[`maxSize()`](https://openpharma.github.io/crmPack/reference/maxSize.md)
+[`maxSize()`](https://docs.crmpack.org/reference/maxSize.md)
 
 ## Examples
 

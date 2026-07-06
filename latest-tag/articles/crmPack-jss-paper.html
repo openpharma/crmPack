@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Model-based Dose Escalation Designs in R with crmPack (JSS manuscript) • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)">
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,8 @@
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -71,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -97,7 +100,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/vignettes/crmPack-jss-paper.Rmd" class="external-link"><code>vignettes/crmPack-jss-paper.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/vignettes/crmPack-jss-paper.Rmd" class="external-link"><code>vignettes/crmPack-jss-paper.Rmd</code></a></small>
       <div class="d-none name"><code>crmPack-jss-paper.Rmd</code></div>
     </div>
 
@@ -309,7 +312,7 @@ is specified via a bivariate normal distribution on a transformation of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
 to ensure
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\alpha_{1} &gt; 0</annotation></semantics></math>:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>0</mn></msub><mo>,</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo><mi>ξ</mi><mo>∼</mo><msub><mi>𝒩</mi><mn>2</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>μ</mi><mo>,</mo><mi mathvariant="normal">Σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>0</mn></msub><mo>,</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo><mi>ξ</mi><mo>∼</mo><msub><mi mathvariant="script">𝒩</mi><mn>2</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>μ</mi><mo>,</mo><mi mathvariant="normal">Σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
   \label{eq:bivariateNormal}
   (\alpha_{0}, \log(\alpha_{1})) | \xi \sim \mathcal{N}_{2} (\mu, \Sigma)
 \end{equation}</annotation></semantics></math> with hyperparameters
@@ -327,9 +330,9 @@ to be tested in the next cohort
 In the <span class="citation">(Thall 2010)</span> notation, the function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 is mapping the currently accumulated data
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒟</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\mathcal{D}_{N}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">𝒟</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\mathcal{D}_{N}</annotation></semantics></math>
 to the dose space
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒳</mi><annotation encoding="application/x-tex">\mathcal{X}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="script">𝒳</mi><annotation encoding="application/x-tex">\mathcal{X}</annotation></semantics></math>
 (or to dose
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>,
 meaning to stop the trial because all doses are too toxic): <span class="math display">$$\begin{equation}
@@ -339,20 +342,20 @@ combination of two elements: The first element is a function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
 for the maximum increments between dose levels, which can calculate from
 the current data
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒟</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\mathcal{D}_{N}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="script">𝒟</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\mathcal{D}_{N}</annotation></semantics></math>
 (including the current dose
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>N</mi></msub><annotation encoding="application/x-tex">x_{N}</annotation></semantics></math>)
 the maximum possible next dose
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>𝒟</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_{N+1}=\tau(\mathcal{D}_{N})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi mathvariant="script">𝒟</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t_{N+1}=\tau(\mathcal{D}_{N})</annotation></semantics></math>
 for the next cohort. The second element is a rule
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>
 indirectly acting on the current data through the posterior distribution
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>𝒟</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\theta |
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi mathvariant="script">𝒟</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\theta |
 \mathcal{D}_{N})</annotation></semantics></math> and the maximum
 possible dose
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">t_{N+1}</annotation></semantics></math>
 to finally give the next dose
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>ν</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>𝒟</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">x_{N+1} = \nu(p(\theta | \mathcal{D}_{N}), t_{N+1})</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>ν</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi mathvariant="script">𝒟</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msub><mi>t</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">x_{N+1} = \nu(p(\theta | \mathcal{D}_{N}), t_{N+1})</annotation></semantics></math>.</p>
 <p>In <code>crmPack</code> maximum increments are specified by
 subclasses of <code>Increments</code>, and the next best dose rule by
 subclasses of <code>NextBest</code>.</p>
@@ -397,7 +400,7 @@ functionality.</p>
 <p>Before we start, we have to install and subsequently load our package
 in <code>R</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/openpharma/crmPack" class="external-link">"crmPack"</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://docs.crmpack.org/">"crmPack"</a></span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p>As indicated in the startup message, try <code><a href="../reference/crmPackHelp.html">crmPackHelp()</a></code>
 and <code><a href="../reference/crmPackExample.html">crmPackExample()</a></code> to open the help page and the package
@@ -409,7 +412,7 @@ vignette.</p>
 <p>Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg
 increments of a novel agent are available in addition to placebo,
 defining our dose grid
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒳</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>0.001</mn><mo>,</mo><mn>25</mn><mo>,</mo><mn>50</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>300</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">𝒳</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>0.001</mn><mo>,</mo><mn>25</mn><mo>,</mo><mn>50</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>300</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}</annotation></semantics></math>,
 with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>=</mo><mn>0.001</mn></mrow><annotation encoding="application/x-tex">x_{1} = 0.001</annotation></semantics></math>
 mg representing placebo and
@@ -444,10 +447,10 @@ dose) to avoid long computation time:</p>
 <code>LogisticLogNormal</code>) has prior parameters</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0.0720313</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu = (0.0720313, 2)</annotation></semantics></math></p>
 <p>and</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.51</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.18</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.18</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.21</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma=
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.78</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.12</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.12</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.01</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma=
  \left(\begin{smallmatrix}
-   1.51 &amp; 0.18 \\
-   0.18 &amp; 0.21
+   1.78 &amp; 0.12 \\
+   0.12 &amp; 0.01
  \end{smallmatrix}\right)</annotation></semantics></math> and will
 approximately have 5% probability each for the DLT rate to exceed 10%
 (<code>threshmin</code> argument) at the 25 mg dose and to be below 20%
@@ -519,7 +522,7 @@ The MCMC sampling can be controlled with an object of class
 <code>mcmc</code> function, together with the <code>data</code> and the
 <code>model</code> objects:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, step <span class="op">=</span> <span class="fl">2</span>, samples <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, step <span class="op">=</span> <span class="fl">2</span>, samples <span class="op">=</span> <span class="fl">10000</span>, rng_kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>, rng_seed <span class="op">=</span> <span class="fl">3819</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">94</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">options</span><span class="op">)</span></span></code></pre></div>
 <p>The posterior mean curve and 95% equi-tailed credible interval curves
@@ -696,7 +699,7 @@ case of 2 DLTs. In the last rows of the output we see that if no DLTs
 were observed before the 250 mg cohort, the maximum considered dose of
 300 mg dose can be reached in the next cohort if also no DLTs are
 observed at 250 mg. If 1, 2 or 3 DLTs are observed, the next dose is
-recommended as 225, 175 and 150 mg, respectively.</p>
+recommended as 275, 200 and 150 mg, respectively.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/examine.html">examine</a></span><span class="op">(</span><span class="va">design</span>, mcmcOptions <span class="op">=</span> <span class="va">options</span><span class="op">)</span></span>
@@ -704,26 +707,26 @@ recommended as 225, 175 and 150 mg, respectively.</p>
 <span><span class="co">#&gt; 1    25    0       50 FALSE       100</span></span>
 <span><span class="co">#&gt; 2    25    1       50 FALSE       100</span></span>
 <span><span class="co">#&gt; 3    25    2       25 FALSE         0</span></span>
-<span><span class="co">#&gt; 4    25    3       NA FALSE        NA</span></span>
+<span><span class="co">#&gt; 4    25    3       25 FALSE         0</span></span>
 <span><span class="co">#&gt; 5    50    0      100 FALSE       100</span></span>
-<span><span class="co">#&gt; 6    50    1       75 FALSE        50</span></span>
+<span><span class="co">#&gt; 6    50    1       50 FALSE         0</span></span>
 <span><span class="co">#&gt; 7    50    2       50 FALSE         0</span></span>
 <span><span class="co">#&gt; 8    50    3       25 FALSE       -50</span></span>
-<span><span class="co">#&gt; 9   100    0      125 FALSE        25</span></span>
+<span><span class="co">#&gt; 9   100    0      150 FALSE        50</span></span>
 <span><span class="co">#&gt; 10  100    1      100 FALSE         0</span></span>
 <span><span class="co">#&gt; 11  100    2       75 FALSE       -25</span></span>
 <span><span class="co">#&gt; 12  100    3       50 FALSE       -50</span></span>
-<span><span class="co">#&gt; 13  125    0      175 FALSE        40</span></span>
-<span><span class="co">#&gt; 14  125    1      125 FALSE         0</span></span>
-<span><span class="co">#&gt; 15  125    2      100 FALSE       -20</span></span>
-<span><span class="co">#&gt; 16  125    3       75 FALSE       -40</span></span>
-<span><span class="co">#&gt; 17  175    0      250 FALSE        43</span></span>
-<span><span class="co">#&gt; 18  175    1      175 FALSE         0</span></span>
-<span><span class="co">#&gt; 19  175    2      125 FALSE       -29</span></span>
-<span><span class="co">#&gt; 20  175    3      100 FALSE       -43</span></span>
+<span><span class="co">#&gt; 13  150    0      200 FALSE        33</span></span>
+<span><span class="co">#&gt; 14  150    1      150 FALSE         0</span></span>
+<span><span class="co">#&gt; 15  150    2      100 FALSE       -33</span></span>
+<span><span class="co">#&gt; 16  150    3       75 FALSE       -50</span></span>
+<span><span class="co">#&gt; 17  200    0      250 FALSE        25</span></span>
+<span><span class="co">#&gt; 18  200    1      200 FALSE         0</span></span>
+<span><span class="co">#&gt; 19  200    2      150 FALSE       -25</span></span>
+<span><span class="co">#&gt; 20  200    3      125 FALSE       -38</span></span>
 <span><span class="co">#&gt; 21  250    0      300 FALSE        20</span></span>
-<span><span class="co">#&gt; 22  250    1      225 FALSE       -10</span></span>
-<span><span class="co">#&gt; 23  250    2      175 FALSE       -30</span></span>
+<span><span class="co">#&gt; 22  250    1      275 FALSE        10</span></span>
+<span><span class="co">#&gt; 23  250    2      200 FALSE       -20</span></span>
 <span><span class="co">#&gt; 24  250    3      150 FALSE       -40</span></span></code></pre></div>
 <p><strong>Simulating operating characteristics</strong> For the many
 trials operating characteristics, we first have to define true
@@ -760,7 +763,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 274 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 57 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -770,9 +773,9 @@ stopping reason for each trial. We can e.g., investigate the number of
 patients and the MTD at the end of the third simulated trial:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mySims</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">nObs</span></span>
-<span><span class="co">#&gt; [1] 32</span></span>
+<span><span class="co">#&gt; [1] 24</span></span>
 <span><span class="va">mySims</span><span class="op">@</span><span class="va">doses</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 25</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 50</span></span></code></pre></div>
 Furthermore, we can plot the <code>Simulations</code> object by calling
 the <code>plot</code> method on it, see Figure @ref(fig:sim-plot). You
 can select the plots by changing the <code>type</code> argument of
@@ -795,22 +798,22 @@ description of the results:</p>
 <span><span class="co">#&gt; Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Number of patients on placebo : mean 7 (6, 8) </span></span>
-<span><span class="co">#&gt; Number of patients on active : mean 22 (18, 24) </span></span>
-<span><span class="co">#&gt; Number of patients overall : mean 30 (24, 32) </span></span>
-<span><span class="co">#&gt; Number of patients treated above target tox interval : mean 3 (0, 3) </span></span>
+<span><span class="co">#&gt; Number of patients on active : mean 21 (18, 24) </span></span>
+<span><span class="co">#&gt; Number of patients overall : mean 29 (24, 32) </span></span>
+<span><span class="co">#&gt; Number of patients treated above target tox interval : mean 2 (0, 3) </span></span>
 <span><span class="co">#&gt; Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
-<span><span class="co">#&gt; Proportions of DLTs in the trials for patients on active : mean 28 % (21 %, 38 %) </span></span>
-<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 27 % (18 %, 33 %) </span></span>
-<span><span class="co">#&gt; Doses selected as MTD : mean 46 (25, 50) </span></span>
-<span><span class="co">#&gt; True toxicity at doses selected : mean 22 % (0 %, 26 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target MTD: 84 %</span></span>
+<span><span class="co">#&gt; Proportions of DLTs in the trials for patients on active : mean 27 % (17 %, 33 %) </span></span>
+<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 27 % (18 %, 34 %) </span></span>
+<span><span class="co">#&gt; Doses selected as MTD : mean 49.5 (50, 50) </span></span>
+<span><span class="co">#&gt; True toxicity at doses selected : mean 27 % (26 %, 26 %) </span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target MTD: 92 %</span></span>
 <span><span class="co">#&gt; Dose most often selected as MTD: 50 </span></span>
-<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 27 %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 30 %) </span></span>
+<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 25 %</span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 28 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
-<span><span class="co">#&gt;  ≥ 30 patients dosed :  65 %</span></span>
-<span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  45 %</span></span>
-<span><span class="co">#&gt;  ≥ 9 patients dosed in 20 % dose range around NBD :  98 %</span></span></code></pre></div>
+<span><span class="co">#&gt;  ≥ 30 patients dosed :  54 %</span></span>
+<span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  62 %</span></span>
+<span><span class="co">#&gt;  ≥ 9 patients dosed in 20 % dose range around NBD :  93 %</span></span></code></pre></div>
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
 <div class="figure" style="text-align: center">
@@ -1073,7 +1076,10 @@ model @ in <code>crmPack</code> we first need to define an appropriate
 <p>Here we specify that the new class is called <code>OneParExp</code>
 and contains three additional slots containing the resulting skeleton
 prior probabilities, the dose grid, and the prior parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.
+Note that in the current version of <code>crmPack</code> the class
+<code>OneParExpPrior</code> already implements this functionality, but
+we show it here nevertheless for illustration purposes.</p>
 <p>Second we have to create a convenient initialization function, which
 specifies the likelihood and prior distributions in the underlying
 <code>GeneralModel</code> in <code>JAGS</code>. We choose to let the

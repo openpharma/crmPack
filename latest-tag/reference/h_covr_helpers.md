@@ -19,7 +19,7 @@ h_covr_detrace_call(expr)
 
 - expr:
 
-  (`language`)  
+  (`language`)\
   an R expression or call to test or strip of `covr` trace counters.
 
 ## Value

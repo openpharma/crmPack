@@ -3,7 +3,7 @@
 **\[stable\]**
 
 A method that updates existing
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object with new data.
 
 ## Usage
@@ -17,32 +17,32 @@ update(object, w, ..., check = TRUE)
 
 - object:
 
-  (`DataDual`)  
+  (`DataDual`)\
   object you want to update.
 
 - w:
 
-  (`numeric`)  
+  (`numeric`)\
   the continuous vector of biomarker values for all the patients in this
   update.
 
 - ...:
 
   further arguments passed to `Data` update method
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md).
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md).
 
 - check:
 
-  (`flag`)  
+  (`flag`)\
   whether the validation of the updated object should be conducted. See
   help for
-  [`update-Data`](https://openpharma.github.io/crmPack/reference/update-Data-method.md)
+  [`update-Data`](https://docs.crmpack.org/reference/update-Data-method.md)
   for more details on the use case of this parameter.
 
 ## Value
 
 The new, updated
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object.
 
 ## Examples
@@ -63,8 +63,8 @@ my_data1 <- update(my_data, x = 20, y = c(0, 1, 1), w = c(0.4, 1.2, 2.2))
 my_data1
 #> An object of class "DataDual"
 #> Slot "w":
-#>  [1] -0.20623012  0.09240299  0.31941239 -0.62852541 -1.37296433 -0.59526685
-#>  [7] -0.37946553  0.09395461  0.40000000  1.20000000  2.20000000
+#>  [1]  1.9282334 -0.3815113  0.1459108  0.2983996 -0.7549335  1.4238041
+#>  [7]  0.5983956  0.3799402  0.4000000  1.2000000  2.2000000
 #> 
 #> Slot "x":
 #>  [1]  0.1  0.5  1.5  3.0  6.0 10.0 10.0 10.0 20.0 20.0 20.0

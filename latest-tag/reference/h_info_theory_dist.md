@@ -15,17 +15,17 @@ h_info_theory_dist(prob, target, asymmetry)
 
 - prob:
 
-  (`numeric`)  
+  (`numeric`)\
   vector or matrix with probabilities of a DLT occurring.
 
 - target:
 
-  (`number `)  
+  (`number `)\
   single target probability of a DLT.
 
 - asymmetry:
 
-  (`number`)  
+  (`number`)\
   describes the rate of penalization for overly toxic does, range 0 to
   2.
 

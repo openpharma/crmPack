@@ -5,8 +5,8 @@
 `DataGrouped` is a class for a two groups dose escalation data set,
 comprised of a monotherapy (`mono`) and a combination therapy (`combo`)
 arm. It inherits from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains the additional group information.
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains the additional group information.
 
 ## Usage
 
@@ -20,20 +20,20 @@ DataGrouped(group = character(), ...)
 
 - group:
 
-  (`factor` or `character`)  
+  (`factor` or `character`)\
   whether `mono` or `combo` was used. If `character` then will be
   coerced to `factor` with the correct levels internally.
 
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 
 - `group`:
 
-  (`factor`)  
+  (`factor`)\
   whether `mono` or `combo` was used.
 
 ## Note

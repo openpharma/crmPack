@@ -17,8 +17,8 @@ Typically, end users will not use the `.DefaultIncrements()` function.
 
 ## See also
 
-[`IncrementsRelative`](https://openpharma.github.io/crmPack/reference/IncrementsRelative-class.md),
-[`IncrementsRelativeDLT`](https://openpharma.github.io/crmPack/reference/IncrementsRelativeDLT-class.md),
-[`IncrementsDoseLevels`](https://openpharma.github.io/crmPack/reference/IncrementsDoseLevels-class.md),
-[`IncrementsHSRBeta`](https://openpharma.github.io/crmPack/reference/IncrementsHSRBeta-class.md),
-[`IncrementsMin`](https://openpharma.github.io/crmPack/reference/IncrementsMin-class.md).
+[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md),
+[`IncrementsRelativeDLT`](https://docs.crmpack.org/reference/IncrementsRelativeDLT-class.md),
+[`IncrementsDoseLevels`](https://docs.crmpack.org/reference/IncrementsDoseLevels-class.md),
+[`IncrementsHSRBeta`](https://docs.crmpack.org/reference/IncrementsHSRBeta-class.md),
+[`IncrementsMin`](https://docs.crmpack.org/reference/IncrementsMin-class.md).

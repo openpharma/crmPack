@@ -5,7 +5,7 @@
 This class captures the trial simulations from model based designs.
 Additional slots `fit`, `stop_reasons`, `stop_report`,`additional_stats`
 compared to the general class
-[`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md).
+[`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md).
 
 ## Usage
 
@@ -19,12 +19,12 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 
 - fit:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - stop_reasons:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - stop_report:
@@ -33,24 +33,24 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 
 - additional_stats:
 
-  (`list`)  
+  (`list`)\
   see slot definition.
 
 - ...:
 
   additional parameters from
-  [`GeneralSimulations`](https://openpharma.github.io/crmPack/reference/GeneralSimulations-class.md)
+  [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 
 ## Slots
 
 - `fit`:
 
-  (`list`)  
+  (`list`)\
   final fits
 
 - `stop_reasons`:
 
-  (`list`)  
+  (`list`)\
   stopping reasons for each simulation run
 
 - `stop_report`:

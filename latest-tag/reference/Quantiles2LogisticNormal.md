@@ -3,7 +3,7 @@
 **\[stable\]**
 
 This function uses generalized simulated annealing to optimize a
-[`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+[`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
 model to be as close as possible to the given prior quantiles.
 
 ## Usage
@@ -23,7 +23,8 @@ Quantiles2LogisticNormal(
   seed = 12345,
   verbose = TRUE,
   control = list(threshold.stop = 0.01, maxit = 50000, temperature = 50000, max.time =
-    600)
+    600),
+  useLogDose = TRUE
 )
 ```
 
@@ -31,80 +32,89 @@ Quantiles2LogisticNormal(
 
 - dosegrid:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid.
 
 - refDose:
 
-  (`number`)  
+  (`number`)\
   the reference dose.
 
 - lower:
 
-  (`numeric`)  
+  (`numeric`)\
   the lower quantiles.
 
 - median:
 
-  (`numeric`)  
+  (`numeric`)\
   the medians.
 
 - upper:
 
-  (`numeric`)  
+  (`numeric`)\
   the upper quantiles.
 
 - level:
 
-  (`number`)  
+  (`number`)\
   the credible level of the (lower, upper) intervals. Default is 0.95.
 
 - logNormal:
 
-  (`flag`)  
+  (`flag`)\
   use the log-normal prior? If `FALSE` (default), the normal prior for
   the logistic regression coefficients is used.
 
 - parstart:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   starting values for the parameters. By default, these are determined
   from the medians supplied.
 
 - parlower:
 
-  (`numeric`)  
+  (`numeric`)\
   lower bounds on the parameters (intercept alpha and the slope beta,
   the corresponding standard deviations and the correlation).
 
 - parupper:
 
-  (`numeric`)  
+  (`numeric`)\
   upper bounds on the parameters.
 
 - seed:
 
-  (`count`)  
+  (`count`)\
   seed for random number generation.
 
 - verbose:
 
-  (`flag`)  
+  (`flag`)\
   should the function be verbose?
 
 - control:
 
-  (`list`)  
+  (`list`)\
   additional options for the optimisation routine, see
   [`GenSA::GenSA()`](https://rdrr.io/pkg/GenSA/man/GenSA.html) for more
   details.
 
+- useLogDose:
+
+  (`flag`)\
+  use `log(dosegrid / refDose)` as dose covariate? If `FALSE`,
+  `logNormal` must be `TRUE` and a
+  [`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md)
+  model is returned.
+
 ## Value
 
 A list with the best approximating `model`
-([`LogisticNormal`](https://openpharma.github.io/crmPack/reference/LogisticNormal-class.md)
+([`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md),
+[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md),
 or
-[`LogisticLogNormal`](https://openpharma.github.io/crmPack/reference/LogisticLogNormal-class.md)),
+[`LogisticLogNormalSub`](https://docs.crmpack.org/reference/LogisticLogNormalSub-class.md)),
 the resulting `quantiles`, the `required` quantiles and the `distance`
 to the required quantiles, as well as the final `parameters` (which
 could be used for running the algorithm a second time).

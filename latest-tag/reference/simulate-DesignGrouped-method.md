@@ -1,9 +1,9 @@
-# Simulate Method for the [`DesignGrouped`](https://openpharma.github.io/crmPack/reference/DesignGrouped-class.md) Class
+# Simulate Method for the [`DesignGrouped`](https://docs.crmpack.org/reference/DesignGrouped-class.md) Class
 
 **\[experimental\]**
 
 A simulate method for
-[`DesignGrouped`](https://openpharma.github.io/crmPack/reference/DesignGrouped-class.md)
+[`DesignGrouped`](https://docs.crmpack.org/reference/DesignGrouped-class.md)
 designs.
 
 ## Usage
@@ -29,35 +29,35 @@ simulate(
 
 - object:
 
-  (`DesignGrouped`)  
+  (`DesignGrouped`)\
   the design we want to simulate trials from.
 
 - nsim:
 
-  (`number`)  
+  (`number`)\
   how many trials should be simulated.
 
 - seed:
 
-  (`RNGstate`)  
+  (`RNGstate`)\
   generated with
-  [`set_seed()`](https://openpharma.github.io/crmPack/reference/set_seed.md).
+  [`set_seed()`](https://docs.crmpack.org/reference/set_seed.md).
 
 - truth:
 
-  (`function`)  
+  (`function`)\
   a function which takes as input a dose (vector) and returns the true
   probability (vector) for toxicity for the mono arm. Additional
   arguments can be supplied in `args`.
 
 - combo_truth:
 
-  (`function`)  
+  (`function`)\
   same as `truth` but for the combo arm.
 
 - args:
 
-  (`data.frame`)  
+  (`data.frame`)\
   optional `data.frame` with arguments that work for both the `truth`
   and `combo_truth` functions. The column names correspond to the
   argument names, the rows to the values of the arguments. The rows are
@@ -65,25 +65,25 @@ simulate(
 
 - firstSeparate:
 
-  (`flag`)  
+  (`flag`)\
   whether to enroll the first patient separately from the rest of the
   cohort and close the cohort in case a DLT occurs in this first
   patient.
 
 - mcmcOptions:
 
-  (`McmcOptions`)  
+  (`McmcOptions`)\
   MCMC options for each evaluation in the trial.
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   whether the simulation runs are parallelized across the cores of the
   computer.
 
 - nCores:
 
-  (`number`)  
+  (`number`)\
   how many cores should be used for parallel computing.
 
 - ...:
@@ -93,7 +93,7 @@ simulate(
 ## Value
 
 A list of `mono` and `combo` simulation results as
-[`Simulations`](https://openpharma.github.io/crmPack/reference/Simulations-class.md)
+[`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
 objects.
 
 ## Examples
@@ -177,12 +177,12 @@ mono_sims_sum
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
 #> Mean toxicity risks for the patients on active : mean 3 % (3 %, 3 %) 
-#> Doses selected as MTD : mean 12 (12, 12) 
+#> Doses selected as MTD : mean 14 (14, 14) 
 #> True toxicity at doses selected : mean 5 % (5 %, 5 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 12 
+#> Dose most often selected as MTD: 14 
 #> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+#> Fitted toxicity rate at dose most often selected : mean 7 % (7 %, 7 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %
@@ -198,10 +198,10 @@ combo_sims_sum
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 17 % (17 %, 17 %) 
 #> Mean toxicity risks for the patients on active : mean 9 % (9 %, 9 %) 
-#> Doses selected as MTD : mean 10 (10, 10) 
-#> True toxicity at doses selected : mean 15 % (15 %, 15 %) 
+#> Doses selected as MTD : mean 12 (12, 12) 
+#> True toxicity at doses selected : mean 17 % (17 %, 17 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 10 
+#> Dose most often selected as MTD: 12 
 #> Observed toxicity rate at dose most often selected: NaN %
 #> Fitted toxicity rate at dose most often selected : mean 18 % (18 %, 18 %) 
 #> Stop reason triggered:

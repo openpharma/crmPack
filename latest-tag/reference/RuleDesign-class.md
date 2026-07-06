@@ -4,9 +4,9 @@
 
 `RuleDesign` is the class for rule-based designs. The difference between
 this class and the
-[`Design`](https://openpharma.github.io/crmPack/reference/Design-class.md)
-class is that `RuleDesign` does not contain `model`, `stopping` and
-`increments` slots.
+[`Design`](https://docs.crmpack.org/reference/Design-class.md) class is
+that `RuleDesign` does not contain `model`, `stopping` and `increments`
+slots.
 
 ## Usage
 
@@ -22,27 +22,27 @@ ThreePlusThreeDesign(doseGrid)
 
 - nextBest:
 
-  (`NextBest`)  
+  (`NextBest`)\
   see slot definition.
 
 - cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - data:
 
-  (`Data`)  
+  (`Data`)\
   see slot definition.
 
 - startingDose:
 
-  (`number`)  
+  (`number`)\
   see slot definition.
 
 - doseGrid:
 
-  (`numeric`)  
+  (`numeric`)\
   the dose grid to be used (sorted).
 
 ## Functions
@@ -54,22 +54,22 @@ ThreePlusThreeDesign(doseGrid)
 
 - `nextBest`:
 
-  (`NextBest`)  
+  (`NextBest`)\
   how to find the next best dose.
 
 - `cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes.
 
 - `data`:
 
-  (`Data`)  
+  (`Data`)\
   specifies dose grid, any previous data, etc.
 
 - `startingDose`:
 
-  (`number`)  
+  (`number`)\
   the starting dose, it must lie on the dose grid in `data`.
 
 ## Note

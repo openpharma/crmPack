@@ -14,7 +14,7 @@ h_null_if_na(x)
 
 - x:
 
-  (`any`)  
+  (`any`)\
   atomic object of length `1`. For the definition of "atomic", see
   [`is.atomic()`](https://rdrr.io/r/base/is.recursive.html).
 

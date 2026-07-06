@@ -15,18 +15,18 @@ e1 | e2
 
 - e1:
 
-  (`Stopping`)  
+  (`Stopping`)\
   first stopping rule object.
 
 - e2:
 
-  (`Stopping`)  
+  (`Stopping`)\
   second stopping rule object.
 
 ## Value
 
 The
-[`StoppingAny`](https://openpharma.github.io/crmPack/reference/StoppingAny-class.md)
+[`StoppingAny`](https://docs.crmpack.org/reference/StoppingAny-class.md)
 object.
 
 ## Examples

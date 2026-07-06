@@ -8,8 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Tidying CrmPackClass objects — tidy • crmPack</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tidying CrmPackClass objects — tidy">
 <meta name="description" content="
@@ -33,6 +33,12 @@ A method that tidies a DataParts object.
 A method that tidies a DataMixture object.
 
 A method that tidies a DataOrdinal object.
+
+A method that tidies a DataCombo object.
+
+A method that tidies a HierarchicalData object.
+
+A method that tidies a HierarchicalModel object.
 
 A method that tidies a LogisticIndepBeta object.
 
@@ -59,10 +65,16 @@ A method that tidies a DataMixture object.
 
 A method that tidies a DataOrdinal object.
 
+A method that tidies a DataCombo object.
+
+A method that tidies a HierarchicalData object.
+
+A method that tidies a HierarchicalModel object.
+
 A method that tidies a LogisticIndepBeta object.
 
 A method that tidies a Effloglog object.">
-<meta property="og:image" content="https://openpharma.github.io/crmPack/logo.png">
+<meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -72,7 +84,7 @@ A method that tidies a Effloglog object.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +114,8 @@ A method that tidies a Effloglog object.">
     <li><a class="dropdown-item" href="../articles/simulations.html">Simulation study example</a></li>
     <li><a class="dropdown-item" href="../articles/rolling-crm.html">Rolling CRM Example</a></li>
     <li><a class="dropdown-item" href="../articles/ordinal-crm.html">Ordinal CRM</a></li>
+    <li><a class="dropdown-item" href="../articles/combo_designs.html">Combination designs</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison_decider.html">Comparison with the decider package</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tools</h6></li>
     <li><a class="dropdown-item" href="../articles/knit_print.html">Describing `crmPack` Objects</a></li>
@@ -122,6 +136,7 @@ A method that tidies a Effloglog object.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.2">v2.0.2</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.0.1">v2.0.1</a>
@@ -142,7 +157,7 @@ A method that tidies a Effloglog object.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Tidying <code>CrmPackClass</code> objects</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/CrmPackClass-methods.R" class="external-link"><code>R/CrmPackClass-methods.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Data-methods.R" class="external-link"><code>R/Data-methods.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.1.0/R/Simulations-class.R" class="external-link"><code>R/Simulations-class.R</code></a>, and 4 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/CrmPackClass-methods.R" class="external-link"><code>R/CrmPackClass-methods.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/Data-methods.R" class="external-link"><code>R/Data-methods.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.2.0/R/Simulations-class.R" class="external-link"><code>R/Simulations-class.R</code></a>, and 5 more</small>
       <div class="d-none name"><code>tidy.Rd</code></div>
     </div>
 
@@ -168,6 +183,12 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <p>A method that tidies a <code><a href="DataMixture-class.html">DataMixture</a></code> object.</p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>A method that tidies a <code><a href="DataOrdinal-class.html">DataOrdinal</a></code> object.</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>A method that tidies a <code><a href="DataCombo-class.html">DataCombo</a></code> object.</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>A method that tidies a <code><a href="HierarchicalData-class.html">HierarchicalData</a></code> object.</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>A method that tidies a <code><a href="HierarchicalModel-class.html">HierarchicalModel</a></code> object.</p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>A method that tidies a <code><a href="LogisticIndepBeta-class.html">LogisticIndepBeta</a></code> object.</p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
@@ -206,7 +227,22 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span><span class="co"># S4 method for class 'DataOrdinal'</span></span>
 <span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S4 method for class 'DataCombo'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'HierarchicalData'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S4 method for class 'Simulations'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'ComboSimulations'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'HierarchicalSimulations'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'HierarchicalModel'</span></span>
 <span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'LogisticIndepBeta'</span></span>
@@ -257,7 +293,22 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span><span class="co"># S4 method for class 'DualDesign'</span></span>
 <span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S4 method for class 'DesignCombo'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'HierarchicalDesign'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'ArmConditionList'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'DesignArm'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S4 method for class 'Samples'</span></span>
+<span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'HierarchicalSamples'</span></span>
 <span><span class="fu">tidy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -282,16 +333,19 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a>
 </h2>
     <p>A (list of) tibble(s) representing the object in tidy form.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> object.</p>
-<p>The <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code> of <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> objects.</p>
-<p>The <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code> of <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble</a></code> objects.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> object.</p>
+<p>The <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code> of <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> objects.</p>
+<p>The <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code> of <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> objects.</p>
+<p>The <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code> of <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></code> objects.</p>
     </div>
     <div class="section level2">
     <h2 id="usage-notes">Usage Notes<a class="anchor" aria-label="anchor" href="#usage-notes"></a>
@@ -645,17 +699,17 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fit</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fit[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        middle        lower     upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.02543116 0.0001004479 0.1503507</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.05574713 0.0015248492 0.2222523</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.08388981 0.0054667211 0.2586646</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.15237643 0.0288619739 0.3309126</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.21896290 0.0698278380 0.4149312</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.28228334 0.1124456490 0.4716041</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.34090583 0.1634082164 0.5281649</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.48287089 0.2730147984 0.6824787</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.55155990 0.3072458718 0.7575930</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.67925168 0.3555320575 0.8979877</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.72838460 0.3828168636 0.9324968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.02627333 0.0000563246 0.1773272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.05477810 0.0009375662 0.2480612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.08001623 0.0033697595 0.2871858</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.13962738 0.0169649781 0.3696217</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.19719448 0.0443753953 0.4133145</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.25252783 0.0769296904 0.4554051</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.30468780 0.1071369967 0.5094607</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.43652366 0.1974855579 0.6696980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.50378836 0.2506257631 0.7600643</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.63581008 0.3317937580 0.8898600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.68913971 0.3664483284 0.9319410</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $stop_report</span>
@@ -668,29 +722,23 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 14 × 11</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1      1     3      2 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2      2     5      3 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3      3    10      4 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4      4    20      6 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5      5    25      7 TRUE  FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6      6    25      7 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7      6    25      7 TRUE  FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8      6    25      7 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9      7    20      6 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10      7    20      6 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>    11      7    20      6 TRUE  FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>    12      8    20      6 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span>    13      8    20      6 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span>    14      8    20      6 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span>    15      9    25      7 TRUE  FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span>    16      9    25      7 TRUE  FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span>    17      9    25      7 TRUE  FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span>    18     10    15      5 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span>    19     10    15      5 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span>    20     10    15      5 FALSE FALSE      20    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1      1     3      2 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2      2     5      3 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3      3    10      4 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4      4    20      6 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5      5    25      7 TRUE  FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6      6    25      7 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7      6    25      7 TRUE  FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8      6    25      7 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9      7    25      7 TRUE  FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10      7    25      7 TRUE  FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>    11      7    25      7 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>    12      8    15      5 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span>    13      8    15      5 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span>    14      8    15      5 FALSE FALSE      14    11 <span style="color: #949494;">&lt;dbl [11]&gt;</span>        1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: Backfilled &lt;lgl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1170,18 +1218,18 @@ object to a (list of) tibbles.  This is a basic, default representation.</p>
 <span class="r-in"><span><span class="va">samples</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,000 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">0.803</span>  2.41        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>         2     1  0.831  0.710       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">1.03</span>   1.06        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">2.07</span>   1.81        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">1.21</span>   2.04        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>         6     1  0.350  1.96        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>         7     1  0.598  0.594       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.14</span>   4.44        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">0.169</span>  0.916       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">0.524</span>  6.91        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>         1     1 -<span style="color: #BB0000;">1.19</span>     1.38       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>         2     1 -<span style="color: #BB0000;">1.51</span>     2.30       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>         3     1 -<span style="color: #BB0000;">0.640</span>    4.10       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>         4     1 -<span style="color: #BB0000;">2.22</span>    23.9        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>         5     1 -<span style="color: #BB0000;">0.719</span>   13.0        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>         6     1  0.020<span style="text-decoration: underline;">1</span>   2.99       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>         7     1 -<span style="color: #BB0000;">0.803</span>   13.1        1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>         8     1 -<span style="color: #BB0000;">1.20</span>     5.35       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>         9     1 -<span style="color: #BB0000;">1.72</span>     4.12       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>        10     1 -<span style="color: #BB0000;">1.81</span>     2.28       1           1        <span style="text-decoration: underline;">2</span>100     100     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,990 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: parallel &lt;lgl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

@@ -3,11 +3,11 @@
 **\[stable\]**
 
 This is a class of design based on DLE responses using the
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
 model without DLE and efficacy samples. It contains all slots from the
-[`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+[`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 and
-[`TDsamplesDesign`](https://openpharma.github.io/crmPack/reference/TDsamplesDesign-class.md)
+[`TDsamplesDesign`](https://docs.crmpack.org/reference/TDsamplesDesign-class.md)
 classes.
 
 ## Usage
@@ -22,49 +22,49 @@ DualResponsesDesign(eff_model, data, ...)
 
 - eff_model:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   see slot definition.
 
 - data:
 
-  (`DataDual`)  
+  (`DataDual`)\
   see slot definition.
 
 - ...:
 
   Arguments passed on to
-  [`TDDesign`](https://openpharma.github.io/crmPack/reference/TDDesign-class.md)
+  [`TDDesign`](https://docs.crmpack.org/reference/TDDesign-class.md)
 
   `model`
 
-  :   (`ModelTox`)  
+  :   (`ModelTox`)\
       see slot definition.
 
   `stopping`
 
-  :   (`Stopping`)  
+  :   (`Stopping`)\
       see slot definition.
 
   `increments`
 
-  :   (`Increments`)  
+  :   (`Increments`)\
       see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
 ## Slots
 
 - `data`:
 
-  (`DataDual`)  
+  (`DataDual`)\
   the data set.
 
 - `eff_model`:
 
-  (`ModelEff`)  
+  (`ModelEff`)\
   the pseudo efficacy model to be used.
 
 ## Note

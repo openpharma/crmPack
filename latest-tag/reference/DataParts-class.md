@@ -3,9 +3,8 @@
 **\[stable\]**
 
 `DataParts` is a class for the data with two study parts. It inherits
-from
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
-and it contains additional information on the two study parts.
+from [`Data`](https://docs.crmpack.org/reference/Data-class.md) and it
+contains additional information on the two study parts.
 
 ## Usage
 
@@ -19,40 +18,40 @@ DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
 
 - part:
 
-  (`integer`)  
+  (`integer`)\
   which part does each of the patients belong to?
 
 - nextPart:
 
-  (`count`)  
+  (`count`)\
   what is the part for the next cohort (1 or 2)?
 
 - part1Ladder:
 
-  (`numeric`)  
+  (`numeric`)\
   what is the escalation ladder for part 1? This shall be an ordered
   subset of the `doseGrid`.
 
 - ...:
 
   parameters passed to
-  [`Data()`](https://openpharma.github.io/crmPack/reference/Data-class.md).
+  [`Data()`](https://docs.crmpack.org/reference/Data-class.md).
 
 ## Slots
 
 - `part`:
 
-  (`integer`)  
+  (`integer`)\
   which part does each of the patients belong to?
 
 - `nextPart`:
 
-  (`count`)  
+  (`count`)\
   what is the part for the next cohort (1 or 2)?
 
 - `part1Ladder`:
 
-  (`numeric`)  
+  (`numeric`)\
   what is the escalation ladder for part 1? This shall be an ordered
   subset of the `doseGrid`.
 

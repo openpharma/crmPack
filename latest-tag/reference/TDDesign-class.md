@@ -3,9 +3,9 @@
 **\[stable\]**
 
 `TDDesign` is the class of design based only on DLT responses using
-[`ModelTox`](https://openpharma.github.io/crmPack/reference/ModelTox-class.md)
-class model (i.e.
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md))
+[`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md) class
+model (i.e.
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md))
 without MCMC samples.
 
 ## Usage
@@ -26,69 +26,74 @@ TDDesign(
 
 - model:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   see slot definition.
 
 - stopping:
 
-  (`Stopping`)  
+  (`Stopping`)\
   see slot definition.
 
 - increments:
 
-  (`Increments`)  
+  (`Increments`)\
   see slot definition.
 
 - pl_cohort_size:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   see slot definition.
 
 - ...:
 
   Arguments passed on to
-  [`RuleDesign`](https://openpharma.github.io/crmPack/reference/RuleDesign-class.md)
+  [`RuleDesign`](https://docs.crmpack.org/reference/RuleDesign-class.md)
 
   `nextBest`
 
-  :   (`NextBest`)  
+  :   (`NextBest`)\
       see slot definition.
 
   `cohort_size`
 
-  :   (`CohortSize`)  
+  :   (`CohortSize`)\
       see slot definition.
 
   `data`
 
-  :   (`Data`)  
+  :   (`Data`)\
       see slot definition.
 
   `startingDose`
 
-  :   (`number`)  
+  :   (`number`)\
       see slot definition.
+
+  `doseGrid`
+
+  :   (`numeric`)\
+      the dose grid to be used (sorted).
 
 ## Slots
 
 - `model`:
 
-  (`ModelTox`)  
+  (`ModelTox`)\
   the pseudo DLT model to be used.
 
 - `stopping`:
 
-  (`Stopping`)  
+  (`Stopping`)\
   stopping rule(s) for the trial.
 
 - `increments`:
 
-  (`Increments`)  
+  (`Increments`)\
   how to control increments between dose levels.
 
 - `pl_cohort_size`:
 
-  (`CohortSize`)  
+  (`CohortSize`)\
   rules for the cohort sizes for placebo, if any planned (defaults to
   constant 0 placebo patients).
 

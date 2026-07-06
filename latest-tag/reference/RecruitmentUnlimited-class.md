@@ -21,7 +21,7 @@ function.
 
 ## See also
 
-[`Recruitment`](https://openpharma.github.io/crmPack/reference/Recruitment-class.md)
+[`Recruitment`](https://docs.crmpack.org/reference/Recruitment-class.md)
 and the other subclasses listed in there.
 
 ## Examples

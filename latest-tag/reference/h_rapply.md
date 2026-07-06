@@ -21,19 +21,19 @@ h_rapply(x, fun, classes, ...)
 
 - x:
 
-  (`any`)  
+  (`any`)\
   "list-like" object for which subsetting operator
   [`[[`](https://rdrr.io/r/base/Extract.html) is defined.
 
 - fun:
 
-  (`function`)  
+  (`function`)\
   a function of one "principal" argument, passing further arguments via
   `...`.
 
 - classes:
 
-  (`character`)  
+  (`character`)\
   class names.
 
 - ...:
@@ -63,7 +63,7 @@ with `h_rapply()` each element of `x`, which has a class included in
 This behavior corresponds to
 [`rapply()`](https://rdrr.io/r/base/rapply.html) when invoked with fixed
 `how = replace`. This function was primarily designed as a helper for
-[`h_jags_write_model()`](https://openpharma.github.io/crmPack/reference/h_jags_write_model.md)
+[`h_jags_write_model()`](https://docs.crmpack.org/reference/h_jags_write_model.md)
 function.
 
 ## Examples

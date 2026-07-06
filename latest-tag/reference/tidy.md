@@ -12,61 +12,77 @@ representation.
 **\[experimental\]**
 
 A method that tidies a
-[`GeneralData`](https://openpharma.github.io/crmPack/reference/GeneralData-class.md)
+[`GeneralData`](https://docs.crmpack.org/reference/GeneralData-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`Data`](https://openpharma.github.io/crmPack/reference/Data-class.md)
+[`Data`](https://docs.crmpack.org/reference/Data-class.md) object.
+
+**\[experimental\]**
+
+A method that tidies a
+[`DataGrouped`](https://docs.crmpack.org/reference/DataGrouped-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataGrouped`](https://openpharma.github.io/crmPack/reference/DataGrouped-class.md)
+[`DataDA`](https://docs.crmpack.org/reference/DataDA-class.md) object.
+
+**\[experimental\]**
+
+A method that tidies a
+[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataDA`](https://openpharma.github.io/crmPack/reference/DataDA-class.md)
+[`DataParts`](https://docs.crmpack.org/reference/DataParts-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataDual`](https://openpharma.github.io/crmPack/reference/DataDual-class.md)
+[`DataMixture`](https://docs.crmpack.org/reference/DataMixture-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataParts`](https://openpharma.github.io/crmPack/reference/DataParts-class.md)
+[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataMixture`](https://openpharma.github.io/crmPack/reference/DataMixture-class.md)
+[`DataCombo`](https://docs.crmpack.org/reference/DataCombo-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`DataOrdinal`](https://openpharma.github.io/crmPack/reference/DataOrdinal-class.md)
+[`HierarchicalData`](https://docs.crmpack.org/reference/HierarchicalData-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`LogisticIndepBeta`](https://openpharma.github.io/crmPack/reference/LogisticIndepBeta-class.md)
+[`HierarchicalModel`](https://docs.crmpack.org/reference/HierarchicalModel-class.md)
 object.
 
 **\[experimental\]**
 
 A method that tidies a
-[`Effloglog`](https://openpharma.github.io/crmPack/reference/Effloglog-class.md)
+[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)
+object.
+
+**\[experimental\]**
+
+A method that tidies a
+[`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)
 object.
 
 ## Usage
@@ -101,7 +117,22 @@ tidy(x, ...)
 # S4 method for class 'DataOrdinal'
 tidy(x, ...)
 
+# S4 method for class 'DataCombo'
+tidy(x, ...)
+
+# S4 method for class 'HierarchicalData'
+tidy(x, ...)
+
 # S4 method for class 'Simulations'
+tidy(x, ...)
+
+# S4 method for class 'ComboSimulations'
+tidy(x, ...)
+
+# S4 method for class 'HierarchicalSimulations'
+tidy(x, ...)
+
+# S4 method for class 'HierarchicalModel'
 tidy(x, ...)
 
 # S4 method for class 'LogisticIndepBeta'
@@ -152,7 +183,22 @@ tidy(x, ...)
 # S4 method for class 'DualDesign'
 tidy(x, ...)
 
+# S4 method for class 'DesignCombo'
+tidy(x, ...)
+
+# S4 method for class 'HierarchicalDesign'
+tidy(x, ...)
+
+# S4 method for class 'ArmConditionList'
+tidy(x, ...)
+
+# S4 method for class 'DesignArm'
+tidy(x, ...)
+
 # S4 method for class 'Samples'
+tidy(x, ...)
+
+# S4 method for class 'HierarchicalSamples'
 tidy(x, ...)
 ```
 
@@ -160,7 +206,7 @@ tidy(x, ...)
 
 - x:
 
-  (`CrmPackClass`)  
+  (`CrmPackClass`)\
   the object to be tidied.
 
 - ...:
@@ -171,45 +217,44 @@ tidy(x, ...)
 
 A (list of) tibble(s) representing the object in tidy form.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
-The
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+object.
+
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
+object.
+
+The [`tibble`](https://tibble.tidyverse.org/reference/tibble.html)
 object.
 
 The [`list`](https://rdrr.io/r/base/list.html) of
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
-objects.
+[`tibble`](https://tibble.tidyverse.org/reference/tibble.html) objects.
 
 The [`list`](https://rdrr.io/r/base/list.html) of
-[`tibble::tibble`](https://tibble.tidyverse.org/reference/tibble.html)
-objects.
+[`tibble`](https://tibble.tidyverse.org/reference/tibble.html) objects.
+
+The [`list`](https://rdrr.io/r/base/list.html) of
+[`tibble`](https://tibble.tidyverse.org/reference/tibble.html) objects.
 
 ## Usage Notes
 
@@ -557,17 +602,17 @@ print(tidied_data)
 #> $fit
 #> $fit[[1]]
 #>        middle        lower     upper
-#> 1  0.02543116 0.0001004479 0.1503507
-#> 2  0.05574713 0.0015248492 0.2222523
-#> 3  0.08388981 0.0054667211 0.2586646
-#> 4  0.15237643 0.0288619739 0.3309126
-#> 5  0.21896290 0.0698278380 0.4149312
-#> 6  0.28228334 0.1124456490 0.4716041
-#> 7  0.34090583 0.1634082164 0.5281649
-#> 8  0.48287089 0.2730147984 0.6824787
-#> 9  0.55155990 0.3072458718 0.7575930
-#> 10 0.67925168 0.3555320575 0.8979877
-#> 11 0.72838460 0.3828168636 0.9324968
+#> 1  0.02627333 0.0000563246 0.1773272
+#> 2  0.05477810 0.0009375662 0.2480612
+#> 3  0.08001623 0.0033697595 0.2871858
+#> 4  0.13962738 0.0169649781 0.3696217
+#> 5  0.19719448 0.0443753953 0.4133145
+#> 6  0.25252783 0.0769296904 0.4554051
+#> 7  0.30468780 0.1071369967 0.5094607
+#> 8  0.43652366 0.1974855579 0.6696980
+#> 9  0.50378836 0.2506257631 0.7600643
+#> 10 0.63581008 0.3317937580 0.8898600
+#> 11 0.68913971 0.3664483284 0.9319410
 #> 
 #> 
 #> $stop_report
@@ -580,29 +625,23 @@ print(tidied_data)
 #> 
 #> $data
 #> $data[[1]]
-#> # A tibble: 20 × 11
+#> # A tibble: 14 × 11
 #>       ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
 #>    <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
-#>  1     1      1     3      2 FALSE FALSE      20    11 <dbl [11]>        1
-#>  2     2      2     5      3 FALSE FALSE      20    11 <dbl [11]>        1
-#>  3     3      3    10      4 FALSE FALSE      20    11 <dbl [11]>        1
-#>  4     4      4    20      6 FALSE FALSE      20    11 <dbl [11]>        1
-#>  5     5      5    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
-#>  6     6      6    25      7 FALSE FALSE      20    11 <dbl [11]>        1
-#>  7     7      6    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
-#>  8     8      6    25      7 FALSE FALSE      20    11 <dbl [11]>        1
-#>  9     9      7    20      6 FALSE FALSE      20    11 <dbl [11]>        1
-#> 10    10      7    20      6 FALSE FALSE      20    11 <dbl [11]>        1
-#> 11    11      7    20      6 TRUE  FALSE      20    11 <dbl [11]>        1
-#> 12    12      8    20      6 FALSE FALSE      20    11 <dbl [11]>        1
-#> 13    13      8    20      6 FALSE FALSE      20    11 <dbl [11]>        1
-#> 14    14      8    20      6 FALSE FALSE      20    11 <dbl [11]>        1
-#> 15    15      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
-#> 16    16      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
-#> 17    17      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
-#> 18    18     10    15      5 FALSE FALSE      20    11 <dbl [11]>        1
-#> 19    19     10    15      5 FALSE FALSE      20    11 <dbl [11]>        1
-#> 20    20     10    15      5 FALSE FALSE      20    11 <dbl [11]>        1
+#>  1     1      1     3      2 FALSE FALSE      14    11 <dbl [11]>        1
+#>  2     2      2     5      3 FALSE FALSE      14    11 <dbl [11]>        1
+#>  3     3      3    10      4 FALSE FALSE      14    11 <dbl [11]>        1
+#>  4     4      4    20      6 FALSE FALSE      14    11 <dbl [11]>        1
+#>  5     5      5    25      7 TRUE  FALSE      14    11 <dbl [11]>        1
+#>  6     6      6    25      7 FALSE FALSE      14    11 <dbl [11]>        1
+#>  7     7      6    25      7 TRUE  FALSE      14    11 <dbl [11]>        1
+#>  8     8      6    25      7 FALSE FALSE      14    11 <dbl [11]>        1
+#>  9     9      7    25      7 TRUE  FALSE      14    11 <dbl [11]>        1
+#> 10    10      7    25      7 TRUE  FALSE      14    11 <dbl [11]>        1
+#> 11    11      7    25      7 FALSE FALSE      14    11 <dbl [11]>        1
+#> 12    12      8    15      5 FALSE FALSE      14    11 <dbl [11]>        1
+#> 13    13      8    15      5 FALSE FALSE      14    11 <dbl [11]>        1
+#> 14    14      8    15      5 FALSE FALSE      14    11 <dbl [11]>        1
 #> # ℹ 1 more variable: Backfilled <lgl>
 #> 
 #> 
@@ -1082,18 +1121,18 @@ samples <- mcmc(emptydata, model, options)
 samples %>% tidy()
 #> $data
 #> # A tibble: 2,000 × 10
-#>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
-#>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -0.803  2.41        1           1        2100     100     1
-#>  2         2     1  0.831  0.710       1           1        2100     100     1
-#>  3         3     1 -1.03   1.06        1           1        2100     100     1
-#>  4         4     1 -2.07   1.81        1           1        2100     100     1
-#>  5         5     1 -1.21   2.04        1           1        2100     100     1
-#>  6         6     1  0.350  1.96        1           1        2100     100     1
-#>  7         7     1  0.598  0.594       1           1        2100     100     1
-#>  8         8     1 -1.14   4.44        1           1        2100     100     1
-#>  9         9     1 -0.169  0.916       1           1        2100     100     1
-#> 10        10     1 -0.524  6.91        1           1        2100     100     1
+#>    Iteration Chain  alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
+#>        <int> <int>   <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
+#>  1         1     1 -1.19     1.38       1           1        2100     100     1
+#>  2         2     1 -1.51     2.30       1           1        2100     100     1
+#>  3         3     1 -0.640    4.10       1           1        2100     100     1
+#>  4         4     1 -2.22    23.9        1           1        2100     100     1
+#>  5         5     1 -0.719   13.0        1           1        2100     100     1
+#>  6         6     1  0.0201   2.99       1           1        2100     100     1
+#>  7         7     1 -0.803   13.1        1           1        2100     100     1
+#>  8         8     1 -1.20     5.35       1           1        2100     100     1
+#>  9         9     1 -1.72     4.12       1           1        2100     100     1
+#> 10        10     1 -1.81     2.28       1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 
