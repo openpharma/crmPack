@@ -1,0 +1,20 @@
+{
+  "name": "crmPack Linux R",
+  "image": "ghcr.io/insightsengineering/rstudio:latest",
+  "platform": "linux/amd64",
+  "workspaceFolder": "/work",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/work,type=bind",
+  "containerEnv": {
+    "CI": "true",
+    "NOT_CRAN": "true",
+    "TESTTHAT_UPDATE_SNAPSHOTS": "true"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "REditorSupport.r"
+      ]
+    }
+  },
+  "postCreateCommand": "Rscript -e 'pkgs <- c(\"languageserver\", \"httpgd\", \"jsonlite\", \"lintr\", \"diffviewer\"); missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) install.packages(missing)'"
+}
