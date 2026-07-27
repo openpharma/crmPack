@@ -15,7 +15,7 @@ test_that("JAGS model compile works as expected for an example model", {
   modfile <- test_path("_jags/model.bug")
   data <- list(
     betaZ_mean = c(0, 1),
-    betaZ_prec = structure(c(1, 0, 0, 1), .Dim = c(2, 2)),
+    betaZ_prec = structure(c(1, 0, 0, 1), dim = c(2, 2)),
     doseGrid = c(
       0.001,
       25,
@@ -87,9 +87,11 @@ test_that("JAGS model compile works as expected for an example model", {
     "Resolving undeclared variables",
     "Allocating nodes",
     "Graph information:",
-    ifelse(rjags::jags.version() >= numeric_version("5.0.0"),
-           "Fully observed stochastic nodes: 24",
-           "Observed stochastic nodes: 24"),
+    ifelse(
+      rjags::jags.version() >= numeric_version("5.0.0"),
+      "Fully observed stochastic nodes: 24",
+      "Observed stochastic nodes: 24"
+    ),
     "Unobserved stochastic nodes: 26",
     "Total graph size: 196",
     ""

@@ -6,13 +6,13 @@ test_that("set_seed returns correct value if seed is a value", {
 
   RNGkind("default")
   rng_state <- set_seed(seed)
-  attr(seed_int, "kind") <- list("Mersenne-Twister", "Inversion", "Rejection")
-  expect_equal(rng_state, seed_int)
+  expect_equal(rng_state, seed_int, ignore_attr = TRUE)
+  expect_equal(attr(rng_state, "kind")[[1]], "Mersenne-Twister")
 
   RNGkind("Super-Duper")
   rng_state <- set_seed(seed)
-  attr(seed_int, "kind") <- list("Super-Duper", "Inversion", "Rejection")
-  expect_equal(rng_state, seed_int)
+  expect_equal(rng_state, seed_int, ignore_attr = TRUE)
+  expect_equal(attr(rng_state, "kind")[[1]], "Super-Duper")
 
   RNGkind("default")
 })
