@@ -1,3 +1,9 @@
+# Version 2.2.1
+
+### Miscellaneous
+
+* Fixed tests to be compatible with the new R development version.
+
 # Version 2.2.0
 
 ### New Features
