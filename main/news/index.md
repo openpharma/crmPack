@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.2.1
+
+#### Miscellaneous
+
+- Fixed tests to be compatible with the new R development version.
+
 ## Version 2.2.0
 
 CRAN release: 2026-07-05
