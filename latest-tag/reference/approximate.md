@@ -131,12 +131,12 @@ approximation <- approximate(
     maxit = 1
   )
 )
-#> Have got accurate energy 0.09399776741 <= 0.1 in smooth search
-#> Emini is: 0.09399776741
+#> Emini is: 0.1180982821
 #> xmini are:
-#> -0.0964428192 0.05206593529 0.7319924801 0.5007060082 0.09628952522 
-#> Totally it used 8.8e-05 secs
+#> -0.1184139801 0.06814884909 0.7245014141 0.4888959179 0.1278212059 
+#> Totally it used 6.5e-05 secs
 #> No. of function call is: 1
+#> Algorithm reached max number of iterations.
 
 posterior <- approximation$model
 
