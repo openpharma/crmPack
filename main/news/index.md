@@ -1,14 +1,16 @@
 # Changelog
 
-## Version 2.2.1
-
-CRAN release: 2026-07-27
+## Version 2.2.1.9000
 
 #### New Features
 
 - Added `StoppingDoseStabilized`, a stopping rule that stops when the
   current next best dose has been administered to a prespecified number
   of consecutive cohorts.
+
+## Version 2.2.1
+
+CRAN release: 2026-07-27
 
 #### Miscellaneous
 
