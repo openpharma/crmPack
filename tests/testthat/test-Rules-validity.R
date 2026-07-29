@@ -939,6 +939,9 @@ test_that("v_stopping_patients_near_dose returns message for invalid include_bac
 test_that("v_stopping_min_cohorts passes for valid object", {
   object <- StoppingMinCohorts(nCohorts = 5L)
   expect_true(v_stopping_min_cohorts(object))
+
+  object <- StoppingDoseStabilized(nCohorts = 5L)
+  expect_true(v_stopping_min_cohorts(object))
 })
 
 test_that("v_stopping_min_cohorts returns message for non-valid nCohorts", {

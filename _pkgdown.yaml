@@ -133,6 +133,7 @@ reference:
       - Stopping
       - StoppingMissingDose
       - StoppingCohortsNearDose
+      - StoppingDoseStabilized
       - StoppingPatientsNearDose
       - StoppingMinCohorts
       - StoppingMinPatients

@@ -456,8 +456,8 @@ v_stopping_patients_near_dose <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingMinCohorts`]
-#'   object contains valid `nCohorts` parameter.
+#' @describeIn v_stopping validates that a [`StoppingMinCohorts`] or
+#'   [`StoppingDoseStabilized`] object contains a valid `nCohorts` parameter.
 v_stopping_min_cohorts <- function(object) {
   v <- Validate()
   v$check(

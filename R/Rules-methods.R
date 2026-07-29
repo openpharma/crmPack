@@ -2298,7 +2298,7 @@ setMethod(
     dlt_tab <- table(y, data@x)
 
     # Ignore placebo if applied.
-    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
+    if (isTRUE(data@placebo) && min(data@x) == data@doseGrid[1]) {
       dlt_tab <- dlt_tab[, -1]
     }
 
@@ -3048,6 +3048,84 @@ setMethod(
     )
 
     # Return both.
+    structure(
+      do_stop,
+      message = text,
+      report_label = stopping@report_label
+    )
+  }
+)
+
+## stopTrial-StoppingDoseStabilized ----
+
+#' @describeIn stopTrial Stop when the next best dose is unchanged over a
+#'   prespecified number of consecutive cohorts.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @aliases stopTrial-StoppingDoseStabilized
+#' @example examples/Rules-method-stopTrial-StoppingDoseStabilized.R
+#' @export
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingDoseStabilized",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "GeneralData"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    cohort_ids <- unique(data@cohort)
+    cohort_matches <- if (anyNA(dose)) {
+      rep(FALSE, length(cohort_ids))
+    } else if (is(data, "Data") || is(data, "DataOrdinal")) {
+      assert_number(dose, finite = TRUE)
+      vapply(
+        cohort_ids,
+        function(cohort_id) {
+          cohort_x <- data@x[data@cohort == cohort_id]
+          h_all_equivalent(cohort_x, rep(dose, length(cohort_x)))
+        },
+        logical(1)
+      )
+    } else if (is(data, "DataCombo")) {
+      assert_numeric(dose, finite = TRUE, len = 2, any.missing = FALSE)
+      vapply(
+        cohort_ids,
+        function(cohort_id) {
+          cohort_doses <- data@x[data@cohort == cohort_id, , drop = FALSE]
+          all(sweep(cohort_doses, 2, dose, FUN = h_all_equivalent))
+        },
+        logical(1)
+      )
+    } else {
+      stop("Unsupported data type for StoppingDoseStabilized.")
+    }
+
+    n_stabilized <- sum(cumprod(rev(as.integer(cohort_matches))))
+    do_stop <- n_stabilized >= stopping@nCohorts
+
+    text <- if (anyNA(dose)) {
+      paste(
+        "The next best dose is NA, and thus cannot be stabilized over",
+        stopping@nCohorts,
+        "most recent consecutive cohorts"
+      )
+    } else {
+      paste(
+        "The next best dose",
+        toString(dose),
+        "matches the dose administered to",
+        n_stabilized,
+        "most recent consecutive cohorts and thus",
+        ifelse(do_stop, "reached", "is below"),
+        "the prespecified number",
+        stopping@nCohorts
+      )
+    }
+
     structure(
       do_stop,
       message = text,
@@ -4873,7 +4951,7 @@ setMethod(
       }
     }
     # Column bind of all list elements have the same number of rows.
-    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+    if (length(rv) > 1 && length(unique(sapply(rv, nrow))) == 1) {
       rv <- rv %>% dplyr::bind_cols()
     }
     rv <- rv %>% h_tidy_class(x)

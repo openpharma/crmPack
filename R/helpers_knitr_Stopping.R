@@ -487,6 +487,37 @@ knit_print.StoppingMinCohorts <- function(
   rv
 }
 
+# StoppingDoseStabilized ----
+
+#' @description `r lifecycle::badge("experimental")`
+#' @param asis (`flag`)\cr Not used at present
+#' @inheritParams knit_print.StoppingTargetProb
+#' @rdname knit_print
+#' @export
+#' @method knit_print StoppingDoseStabilized
+knit_print.StoppingDoseStabilized <- function(
+  x,
+  ...,
+  dose_label = "the next best dose",
+  asis = TRUE
+) {
+  assert_flag(asis)
+  assert_character(dose_label, len = 1, any.missing = FALSE)
+
+  rv <- paste0(
+    ifelse(is.na(x@report_label), "", paste0(x@report_label, ": ")),
+    "If ",
+    dose_label,
+    " is unchanged for ",
+    x@nCohorts,
+    " consecutive cohorts.\n\n"
+  )
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
 # StoppingMinPatients ----
 
 #' @description `r lifecycle::badge("experimental")`
