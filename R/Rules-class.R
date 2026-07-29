@@ -2010,7 +2010,11 @@ StoppingDoseStabilized <- function(
 
   report_label <- h_default_if_empty(
     as.character(report_label),
-    paste("NBD unchanged for", nCohorts, "cohorts")
+    paste(
+      "NBD unchanged for",
+      nCohorts,
+      ifelse(nCohorts == 1, "cohort", "cohorts")
+    )
   )
 
   .StoppingDoseStabilized(

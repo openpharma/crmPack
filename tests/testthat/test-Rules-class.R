@@ -702,8 +702,8 @@ test_that(".StoppingDoseStabilized works as expected", {
 test_that("StoppingDoseStabilized user constructor works", {
   result <- expect_silent(StoppingDoseStabilized())
   expect_valid(result, "StoppingDoseStabilized")
-  expect_identical(result@nCohorts, 2L)
-  expect_identical(result@report_label, "NBD unchanged for 2 cohorts")
+  expect_identical(result@nCohorts, 1L)
+  expect_identical(result@report_label, "NBD unchanged for 1 cohort")
 
   result <- expect_silent(StoppingDoseStabilized(5L, "custom label"))
   expect_valid(result, "StoppingDoseStabilized")
@@ -724,10 +724,7 @@ test_that("StoppingDoseStabilized rejects invalid cohort counts", {
 test_that(".DefaultStoppingDoseStabilized works as expected", {
   expect_equal(
     .DefaultStoppingDoseStabilized(),
-    StoppingDoseStabilized(
-      nCohorts = 3L,
-      report_label = NA_character_
-    )
+    StoppingDoseStabilized()
   )
 })
 
