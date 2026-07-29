@@ -2643,6 +2643,19 @@ test_that("stopTrial works for StoppingDoseStabilized with DataCombo", {
   expect_false(stopTrial(stop_rule, dose = c(2, 2), data = data))
 })
 
+test_that("stopTrial works when dose is NA", {
+  stop_rule <- StoppingDoseStabilized(nCohorts = 1)
+  data <- Data(
+    x = c(1, 1, 1, 1, 2, 2),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = 1:6,
+    doseGrid = 1:2
+  )
+
+  result <- stopTrial(stop_rule, dose = NA_real_, data = data)
+})
+
 ## StoppingPatientsNearDose ----
 
 test_that("StoppingPatientsNearDose can handle when dose is NA", {

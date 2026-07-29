@@ -3085,7 +3085,8 @@ setMethod(
       vapply(
         cohort_ids,
         function(cohort_id) {
-          all(data@x[data@cohort == cohort_id] == dose)
+          cohort_x <- data@x[data@cohort == cohort_id]
+          h_all_equivalent(cohort_x, rep(dose, length(cohort_x)))
         },
         logical(1)
       )
@@ -3094,7 +3095,7 @@ setMethod(
         cohort_ids,
         function(cohort_id) {
           cohort_doses <- data@x[data@cohort == cohort_id, , drop = FALSE]
-          all(sweep(cohort_doses, 2, dose, FUN = "=="))
+          all(sweep(cohort_doses, 2, dose, FUN = h_all_equivalent))
         },
         logical(1)
       )
@@ -3105,16 +3106,24 @@ setMethod(
     n_stabilized <- sum(cumprod(rev(as.integer(cohort_matches))))
     do_stop <- n_stabilized >= stopping@nCohorts
 
-    text <- paste(
-      "The next best dose",
-      toString(dose),
-      "matches the dose administered to",
-      n_stabilized,
-      "most recent consecutive cohorts and thus",
-      ifelse(do_stop, "reached", "is below"),
-      "the prespecified number",
-      stopping@nCohorts
-    )
+    text <- if (anyNA(dose)) {
+      paste(
+        "The next best dose is NA, and thus cannot be stabilized over",
+        stopping@nCohorts,
+        "most recent consecutive cohorts"
+      )
+    } else {
+      paste(
+        "The next best dose",
+        toString(dose),
+        "matches the dose administered to",
+        n_stabilized,
+        "most recent consecutive cohorts and thus",
+        ifelse(do_stop, "reached", "is below"),
+        "the prespecified number",
+        stopping@nCohorts
+      )
+    }
 
     structure(
       do_stop,
