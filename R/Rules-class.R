@@ -1987,7 +1987,7 @@ StoppingCohortsNearDose <- function(
 .StoppingDoseStabilized <- setClass(
   Class = "StoppingDoseStabilized",
   slots = c(nCohorts = "integer"),
-  prototype = prototype(nCohorts = 2L),
+  prototype = prototype(nCohorts = 1L),
   contains = "Stopping",
   validity = v_stopping_min_cohorts
 )
@@ -2003,7 +2003,7 @@ StoppingCohortsNearDose <- function(
 #' @export
 #'
 StoppingDoseStabilized <- function(
-  nCohorts = 2L,
+  nCohorts = 1L,
   report_label = NA_character_
 ) {
   assert_count(nCohorts, positive = TRUE)
@@ -2027,7 +2027,7 @@ StoppingDoseStabilized <- function(
 #' @export
 .DefaultStoppingDoseStabilized <- function() {
   StoppingDoseStabilized(
-    nCohorts = 3L
+    nCohorts = 1L
   )
 }
 

@@ -2654,6 +2654,8 @@ test_that("stopTrial works when dose is NA", {
   )
 
   result <- stopTrial(stop_rule, dose = NA_real_, data = data)
+  expect_false(result)
+  expect_match(attr(result, "message"), "The next best dose is NA")
 })
 
 ## StoppingPatientsNearDose ----

@@ -8,7 +8,7 @@
 \alias{.DefaultStoppingDoseStabilized}
 \title{\code{StoppingDoseStabilized}}
 \usage{
-StoppingDoseStabilized(nCohorts = 2L, report_label = NA_character_)
+StoppingDoseStabilized(nCohorts = 1L, report_label = NA_character_)
 
 .DefaultStoppingDoseStabilized()
 }
