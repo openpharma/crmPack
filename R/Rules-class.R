@@ -1805,10 +1805,12 @@ IncrementsMaxToxProb <- function(prob) {
 #'   then a default, class-specific label will be created for this slot.
 #'   Finally, for the remaining cases, a user can provide a custom label.
 #'
-#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`],
+#'   [`StoppingDoseStabilized`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
-#'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
+#'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`],
+#'   [`StoppingHighestDose`], [`StoppingMTDCV`],
+#'   [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
 #'
 #' @aliases Stopping
 #' @export
@@ -1958,6 +1960,74 @@ StoppingCohortsNearDose <- function(
   StoppingCohortsNearDose(
     nCohorts = 3L,
     percentage = 0.2
+  )
+}
+
+# StoppingDoseStabilized ----
+
+## class ----
+
+#' `StoppingDoseStabilized`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingDoseStabilized`] is the class for stopping when the next best dose
+#' has stabilized. Stabilization occurs when the current next best dose is the
+#' same as the dose administered to each of the most recent consecutive
+#' `nCohorts` cohorts.
+#'
+#' For combination trials, both dose components must be the same.
+#'
+#' @slot nCohorts (`number`)\cr number of consecutive cohorts required to have
+#'   received the current next best dose.
+#'
+#' @aliases StoppingDoseStabilized
+#' @export
+#'
+.StoppingDoseStabilized <- setClass(
+  Class = "StoppingDoseStabilized",
+  slots = c(nCohorts = "integer"),
+  prototype = prototype(nCohorts = 2L),
+  contains = "Stopping",
+  validity = v_stopping_min_cohorts
+)
+
+## constructor ----
+
+#' @rdname StoppingDoseStabilized-class
+#'
+#' @param nCohorts (`number`)\cr see slot definition.
+#' @param report_label (`string` or `NA`)\cr see slot definition.
+#'
+#' @example examples/Rules-class-StoppingDoseStabilized.R
+#' @export
+#'
+StoppingDoseStabilized <- function(
+  nCohorts = 2L,
+  report_label = NA_character_
+) {
+  assert_count(nCohorts, positive = TRUE)
+
+  report_label <- h_default_if_empty(
+    as.character(report_label),
+    paste("NBD unchanged for", nCohorts, "cohorts")
+  )
+
+  .StoppingDoseStabilized(
+    nCohorts = as.integer(nCohorts),
+    report_label = report_label
+  )
+}
+
+## default constructor ----
+
+#' @rdname StoppingDoseStabilized-class
+#' @note Typically, end users will not use the
+#'   `.DefaultStoppingDoseStabilized()` function.
+#' @export
+.DefaultStoppingDoseStabilized <- function() {
+  StoppingDoseStabilized(
+    nCohorts = 3L
   )
 }
 

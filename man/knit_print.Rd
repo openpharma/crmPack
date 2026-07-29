@@ -100,6 +100,7 @@
 \alias{knit_print.StoppingSpecificDose}
 \alias{knit_print.StoppingTargetProb}
 \alias{knit_print.StoppingMinCohorts}
+\alias{knit_print.StoppingDoseStabilized}
 \alias{knit_print.StoppingMinPatients}
 \alias{knit_print.StoppingPatientsNearDose}
 \alias{knit_print.StoppingCohortsNearDose}
@@ -536,6 +537,8 @@
 
 \method{knit_print}{StoppingMinCohorts}(x, ..., asis = TRUE)
 
+\method{knit_print}{StoppingDoseStabilized}(x, ..., dose_label = "the next best dose", asis = TRUE)
+
 \method{knit_print}{StoppingMinPatients}(x, ..., label = "participant", asis = TRUE)
 
 \method{knit_print}{StoppingPatientsNearDose}(
@@ -790,6 +793,8 @@ all design classes, not just those that are direct descendants of \code{Design}.
 
 We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 

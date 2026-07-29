@@ -692,6 +692,45 @@ test_that(".DefaultStoppingCohortsNearDose works as expected", {
   )
 })
 
+## StoppingDoseStabilized ----
+
+test_that(".StoppingDoseStabilized works as expected", {
+  result <- expect_silent(.StoppingDoseStabilized())
+  expect_valid(result, "StoppingDoseStabilized")
+})
+
+test_that("StoppingDoseStabilized user constructor works", {
+  result <- expect_silent(StoppingDoseStabilized())
+  expect_valid(result, "StoppingDoseStabilized")
+  expect_identical(result@nCohorts, 2L)
+  expect_identical(result@report_label, "NBD unchanged for 2 cohorts")
+
+  result <- expect_silent(StoppingDoseStabilized(5L, "custom label"))
+  expect_valid(result, "StoppingDoseStabilized")
+  expect_identical(result@nCohorts, 5L)
+  expect_identical(result@report_label, "custom label")
+})
+
+test_that("StoppingDoseStabilized replaces an empty report label", {
+  result <- expect_silent(StoppingDoseStabilized(5L, character(0)))
+  expect_identical(result@report_label, "NBD unchanged for 5 cohorts")
+})
+
+test_that("StoppingDoseStabilized rejects invalid cohort counts", {
+  expect_error(StoppingDoseStabilized(0), "Must be >= 1")
+  expect_error(StoppingDoseStabilized(1.5), "type 'count'")
+})
+
+test_that(".DefaultStoppingDoseStabilized works as expected", {
+  expect_equal(
+    .DefaultStoppingDoseStabilized(),
+    StoppingDoseStabilized(
+      nCohorts = 3L,
+      report_label = NA_character_
+    )
+  )
+})
+
 ## StoppingPatientsNearDose ----
 
 test_that(".StoppingPatientsNearDose works as expected", {

@@ -2551,6 +2551,98 @@ test_that("stopTrial works correctly for StoppingCohortsNearDose with DataCombo"
   )
 })
 
+## StoppingDoseStabilized ----
+
+test_that("stopTrial counts only consecutive recent stabilized cohorts", {
+  stop_rule <- StoppingDoseStabilized(nCohorts = 3)
+  data <- Data(
+    x = c(2, 2, 1, 2, 2, 2),
+    y = rep(0, 6),
+    cohort = 1:6,
+    ID = 1:6,
+    doseGrid = 1:3
+  )
+
+  result <- stopTrial(
+    stopping = stop_rule,
+    dose = 2,
+    data = data
+  )
+  expect_identical(
+    result,
+    structure(
+      TRUE,
+      message = paste(
+        "The next best dose 2 matches the dose administered to 3 most recent",
+        "consecutive cohorts and thus reached the prespecified number 3"
+      ),
+      report_label = "NBD unchanged for 3 cohorts"
+    )
+  )
+
+  data@x[5] <- 1
+  result <- stopTrial(
+    stopping = stop_rule,
+    dose = 2,
+    data = data
+  )
+  expect_identical(
+    result,
+    structure(
+      FALSE,
+      message = paste(
+        "The next best dose 2 matches the dose administered to 1 most recent",
+        "consecutive cohorts and thus is below the prespecified number 3"
+      ),
+      report_label = "NBD unchanged for 3 cohorts"
+    )
+  )
+})
+
+test_that("StoppingDoseStabilized counts cohorts rather than patients", {
+  stop_rule <- StoppingDoseStabilized(nCohorts = 2)
+  data <- Data(
+    x = c(1, 1, 1, 1, 2, 2),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = 1:6,
+    doseGrid = 1:2
+  )
+
+  result <- stopTrial(
+    stopping = stop_rule,
+    dose = 2,
+    data = data
+  )
+  expect_false(result)
+  expect_match(attr(result, "message"), "to 1 most recent consecutive cohort")
+})
+
+test_that("StoppingDoseStabilized handles missing doses and empty data", {
+  stop_rule <- StoppingDoseStabilized(nCohorts = 1)
+  data <- Data(doseGrid = 1:3)
+
+  expect_false(stopTrial(stop_rule, dose = 2, data = data))
+  expect_false(stopTrial(stop_rule, dose = NA_real_, data = h_get_data()))
+})
+
+test_that("stopTrial works for StoppingDoseStabilized with DataCombo", {
+  stop_rule <- StoppingDoseStabilized(nCohorts = 2)
+  data <- DataCombo(
+    x = cbind(
+      drug1 = c(1, 1, 1, 1, 1, 1),
+      drug2 = c(1, 1, 2, 2, 2, 2)
+    ),
+    y = rep(0, 6),
+    cohort = c(1L, 1L, 2L, 2L, 3L, 3L),
+    ID = 1:6,
+    doseGrid = list(drug1 = c(1, 2), drug2 = c(1, 2))
+  )
+
+  expect_true(stopTrial(stop_rule, dose = c(1, 2), data = data))
+  expect_false(stopTrial(stop_rule, dose = c(2, 2), data = data))
+})
+
 ## StoppingPatientsNearDose ----
 
 test_that("StoppingPatientsNearDose can handle when dose is NA", {

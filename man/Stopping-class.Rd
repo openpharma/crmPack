@@ -22,8 +22,10 @@ Finally, for the remaining cases, a user can provide a custom label.}
 }}
 
 \seealso{
-\code{\link{StoppingList}}, \code{\link{StoppingCohortsNearDose}}, \code{\link{StoppingPatientsNearDose}},
+\code{\link{StoppingList}}, \code{\link{StoppingCohortsNearDose}},
+\code{\link{StoppingDoseStabilized}}, \code{\link{StoppingPatientsNearDose}},
 \code{\link{StoppingMinCohorts}}, \code{\link{StoppingMinPatients}}, \code{\link{StoppingTargetProb}},
-\code{\link{StoppingMTDdistribution}}, \code{\link{StoppingTargetBiomarker}}, \code{\link{StoppingHighestDose}}
-\code{\link{StoppingMTDCV}}, \code{\link{StoppingLowestDoseHSRBeta}}, \code{\link{StoppingSpecificDose}}.
+\code{\link{StoppingMTDdistribution}}, \code{\link{StoppingTargetBiomarker}},
+\code{\link{StoppingHighestDose}}, \code{\link{StoppingMTDCV}},
+\code{\link{StoppingLowestDoseHSRBeta}}, \code{\link{StoppingSpecificDose}}.
 }

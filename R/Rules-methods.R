@@ -3056,6 +3056,74 @@ setMethod(
   }
 )
 
+## stopTrial-StoppingDoseStabilized ----
+
+#' @describeIn stopTrial Stop when the next best dose is unchanged over a
+#'   prespecified number of consecutive cohorts.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @aliases stopTrial-StoppingDoseStabilized
+#' @example examples/Rules-method-stopTrial-StoppingDoseStabilized.R
+#' @export
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingDoseStabilized",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "GeneralData"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    cohort_ids <- unique(data@cohort)
+
+    cohort_matches <- if (anyNA(dose)) {
+      rep(FALSE, length(cohort_ids))
+    } else if (is(data, "Data") || is(data, "DataOrdinal")) {
+      vapply(
+        cohort_ids,
+        function(cohort_id) {
+          all(data@x[data@cohort == cohort_id] == dose)
+        },
+        logical(1)
+      )
+    } else if (is(data, "DataCombo")) {
+      vapply(
+        cohort_ids,
+        function(cohort_id) {
+          cohort_doses <- data@x[data@cohort == cohort_id, , drop = FALSE]
+          all(sweep(cohort_doses, 2, dose, FUN = "=="))
+        },
+        logical(1)
+      )
+    } else {
+      stop("Unsupported data type for StoppingDoseStabilized.")
+    }
+
+    n_stabilized <- sum(cumprod(rev(as.integer(cohort_matches))))
+    do_stop <- n_stabilized >= stopping@nCohorts
+
+    text <- paste(
+      "The next best dose",
+      toString(dose),
+      "matches the dose administered to",
+      n_stabilized,
+      "most recent consecutive cohorts and thus",
+      ifelse(do_stop, "reached", "is below"),
+      "the prespecified number",
+      stopping@nCohorts
+    )
+
+    structure(
+      do_stop,
+      message = text,
+      report_label = stopping@report_label
+    )
+  }
+)
+
 ## stopTrial-StoppingPatientsNearDose ----
 
 #' @describeIn stopTrial Stop based on number of patients near to next best

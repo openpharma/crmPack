@@ -1,5 +1,11 @@
 # Version 2.2.1
 
+### New Features
+
+* Added `StoppingDoseStabilized`, a stopping rule that stops when the current
+  next best dose has been administered to a prespecified number of consecutive
+  cohorts.
+
 ### Miscellaneous
 
 * Fixed tests to be compatible with the new R development version.

@@ -58,8 +58,8 @@ object contains valid \code{nCohorts} and \code{percentage} parameters.
 \item \code{v_stopping_patients_near_dose()}: validates that the \code{\link{StoppingPatientsNearDose}}
 object contains valid \code{nPatients} and \code{percentage} parameters.
 
-\item \code{v_stopping_min_cohorts()}: validates that the \code{\link{StoppingMinCohorts}}
-object contains valid \code{nCohorts} parameter.
+\item \code{v_stopping_min_cohorts()}: validates that a \code{\link{StoppingMinCohorts}} or
+\code{\link{StoppingDoseStabilized}} object contains a valid \code{nCohorts} parameter.
 
 \item \code{v_stopping_min_patients()}: validates that the \code{\link{StoppingMinPatients}}
 object contains valid \code{nPatients} parameter.

@@ -480,6 +480,33 @@ test_that("knit_print.StoppingMinCohorts works correctly", {
   )
 })
 
+test_that("knit_print.StoppingDoseStabilized works correctly", {
+  expect_equal(
+    knit_print(
+      StoppingDoseStabilized(
+        nCohorts = 4,
+        report_label = "DOSE_STABILIZED"
+      ),
+      asis = FALSE
+    ),
+    paste0(
+      "DOSE_STABILIZED: If the next best dose is unchanged for ",
+      "4 consecutive cohorts.\n\n"
+    )
+  )
+  expect_equal(
+    knit_print(
+      StoppingDoseStabilized(nCohorts = 3),
+      dose_label = "the recommended dose",
+      asis = FALSE
+    ),
+    paste0(
+      "NBD unchanged for 3 cohorts: If the recommended dose is unchanged for ",
+      "3 consecutive cohorts.\n\n"
+    )
+  )
+})
+
 test_that("knit_print.StoppingCohortsNearDose works correctly", {
   expect_equal(
     knit_print(
