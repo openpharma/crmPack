@@ -2298,7 +2298,7 @@ setMethod(
     dlt_tab <- table(y, data@x)
 
     # Ignore placebo if applied.
-    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
+    if (isTRUE(data@placebo) && min(data@x) == data@doseGrid[1]) {
       dlt_tab <- dlt_tab[, -1]
     }
 
@@ -4950,7 +4950,7 @@ setMethod(
       }
     }
     # Column bind of all list elements have the same number of rows.
-    if (length(rv) > 1 & length(unique(sapply(rv, nrow))) == 1) {
+    if (length(rv) > 1 && length(unique(sapply(rv, nrow))) == 1) {
       rv <- rv %>% dplyr::bind_cols()
     }
     rv <- rv %>% h_tidy_class(x)
