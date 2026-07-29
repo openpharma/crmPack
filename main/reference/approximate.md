@@ -131,10 +131,10 @@ approximation <- approximate(
     maxit = 1
   )
 )
-#> Emini is: 0.1170397821
+#> Emini is: 0.1122089524
 #> xmini are:
-#> -0.07685581448 0.07274812346 0.7276713228 0.4880079286 0.1986893429 
-#> Totally it used 8.7e-05 secs
+#> -0.1127118575 0.05723516488 0.7162092807 0.4978267797 0.1021662511 
+#> Totally it used 8.6e-05 secs
 #> No. of function call is: 1
 #> Algorithm reached max number of iterations.
 

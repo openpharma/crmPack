@@ -195,6 +195,8 @@ rendition of crmPack objects in Markdown and Quarto files
 
 **\[experimental\]**
 
+**\[experimental\]**
+
 ## Usage
 
 ``` r
@@ -721,6 +723,9 @@ knit_print(
 
 # S3 method for class 'StoppingMinCohorts'
 knit_print(x, ..., asis = TRUE)
+
+# S3 method for class 'StoppingDoseStabilized'
+knit_print(x, ..., dose_label = "the next best dose", asis = TRUE)
 
 # S3 method for class 'StoppingMinPatients'
 knit_print(x, ..., label = "participant", asis = TRUE)

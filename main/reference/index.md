@@ -420,6 +420,12 @@
 
   `StoppingCohortsNearDose`
 
+- [`StoppingDoseStabilized()`](https://docs.crmpack.org/reference/StoppingDoseStabilized-class.md)
+  [`.DefaultStoppingDoseStabilized()`](https://docs.crmpack.org/reference/StoppingDoseStabilized-class.md)
+  **\[experimental\]** :
+
+  `StoppingDoseStabilized`
+
 - [`StoppingPatientsNearDose()`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md)
   [`.DefaultStoppingPatientsNearDose()`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md)
   **\[stable\]** :
@@ -1368,6 +1374,7 @@
   [`knit_print(`*`<StoppingSpecificDose>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<StoppingTargetProb>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<StoppingMinCohorts>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
+  [`knit_print(`*`<StoppingDoseStabilized>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<StoppingMinPatients>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<StoppingPatientsNearDose>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
   [`knit_print(`*`<StoppingCohortsNearDose>`*`)`](https://docs.crmpack.org/reference/knit_print.md)
