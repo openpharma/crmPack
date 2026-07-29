@@ -3078,10 +3078,10 @@ setMethod(
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     cohort_ids <- unique(data@cohort)
-
     cohort_matches <- if (anyNA(dose)) {
       rep(FALSE, length(cohort_ids))
     } else if (is(data, "Data") || is(data, "DataOrdinal")) {
+      assert_number(dose, finite = TRUE)
       vapply(
         cohort_ids,
         function(cohort_id) {
@@ -3091,6 +3091,7 @@ setMethod(
         logical(1)
       )
     } else if (is(data, "DataCombo")) {
+      assert_numeric(dose, finite = TRUE, len = 2, any.missing = FALSE)
       vapply(
         cohort_ids,
         function(cohort_id) {
