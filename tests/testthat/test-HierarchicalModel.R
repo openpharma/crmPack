@@ -359,11 +359,14 @@ test_that("parallel mono and combo prior compiles generically", {
     ) %in%
       names(inits)
   ))
-  expect_false(any(c(
-    "theta_mono_drug1",
-    "theta_drug1_combo",
-    "mu_drug1_intercept"
-  ) %in% names(inits)))
+  expect_false(any(
+    c(
+      "theta_mono_drug1",
+      "theta_drug1_combo",
+      "mu_drug1_intercept"
+    ) %in%
+      names(inits)
+  ))
 })
 
 test_that("parallel mono and combo prior supports correlated parameter pools", {

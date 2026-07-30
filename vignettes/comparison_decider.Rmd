@@ -71,8 +71,8 @@ The overall dose grid for combination Arm B is therefore:
 
 ``` r
 doses_of_interest <- rbind(
-  c(d1, rep(d1, times = length(d2))),
-  c(rep(0, length(d1)), rep(d2, each = length(d1)))
+    c(d1, rep(d1, times = length(d2))),
+    c(rep(0, length(d1)), rep(d2, each = length(d1)))
 )
 ```
 
@@ -97,13 +97,11 @@ The prior for the hypermeans is specified like this:
 
 ``` r
 #                Parameter   Mean         SD
-prior_mu <- list(
-  mu_a1 = c(logit(0.33), 2),
-  mu_b1 = c(0, 1), # standard normal
-  mu_a2 = c(logit(0.33), 2),
-  mu_b2 = c(0, 1), # standard normal
-  mu_eta = c(0, 1.121)
-)
+prior_mu <- list(mu_a1  =  c(logit(0.33), 2),
+                 mu_b1  =  c(0,           1), # standard normal
+                 mu_a2  =  c(logit(0.33), 2),
+                 mu_b2  =  c(0,           1), # standard normal
+                 mu_eta =  c(0,           1.121))
 ```
 
 The prior mean for $\mu_{\alpha_{1}}$ is set to $\text{logit}(0.33)$, which implies that we assume the reference dose has a prior median DLT rate of 33%.
@@ -115,13 +113,11 @@ The prior for the between-trial heterogeneity parameters is specified like this:
 
 ``` r
 #                 Parameter    Mean        SD
-prior_tau <- list(
-  tau_a1 = c(log(0.25), log(2) / 1.96),
-  tau_b1 = c(log(0.125), log(2) / 1.96),
-  tau_a2 = c(log(0.25), log(2) / 1.96),
-  tau_b2 = c(log(0.125), log(2) / 1.96),
-  tau_eta = c(log(0.125), log(2) / 1.96)
-)
+prior_tau <- list(tau_a1  =  c(log(0.25),  log(2) / 1.96),
+                  tau_b1  =  c(log(0.125), log(2) / 1.96),
+                  tau_a2  =  c(log(0.25),  log(2) / 1.96),
+                  tau_b2  =  c(log(0.125), log(2) / 1.96),
+                  tau_eta =  c(log(0.125), log(2) / 1.96))
 ```
 
 These are all the log normal prior parameters for the corresponding $\tau$ parameters. These are all "moderate" degrees of heterogeneity, according to @Neuenschwander2015.
@@ -135,7 +131,7 @@ scenario1 <- list(
   dose2 = c(0, 0),
   n.pat = c(3, 3),
   n.dlt = c(0, 1),
-  trial = c("A", "A")
+  trial = c("A",  "A")
 )
 ```
 
@@ -154,6 +150,8 @@ result1 <- scenario_jointBLRM(
   trials.of.interest = trials_of_interest,
   types.of.interest = types_of_interest,
   prior.mu = prior_mu,
+  prior.tau = prior_tau,
+  seed = 3819
   prior.tau = prior_tau,
   seed = 3819
 )
@@ -175,7 +173,25 @@ result1
 #> 3.6+0 0.45346 0.25275 0.04956 0.43407 0.92687     0.14457        0.22160
 #> 5+0   0.49144 0.26178 0.05658 0.48177 0.95107     0.12236        0.19710
 #> 6+0   0.51177 0.26580 0.06038 0.50800 0.96129     0.11191        0.18482
+#> 0.1+0 0.11479 0.10869 0.00311 0.08149 0.40243     0.74108        0.20509
+#> 0.2+0 0.15362 0.12839 0.00681 0.11868 0.47993     0.61939        0.27436
+#> 0.4+0 0.20692 0.15483 0.01315 0.17076 0.58171     0.47247        0.32265
+#> 0.8+0 0.27562 0.18745 0.02261 0.23940 0.70550     0.33297        0.32360
+#> 1.6+0 0.35580 0.22114 0.03411 0.32326 0.82755     0.22619        0.28467
+#> 2.4+0 0.40489 0.23848 0.04152 0.37742 0.88451     0.18058        0.25176
+#> 3.6+0 0.45346 0.25275 0.04956 0.43407 0.92687     0.14457        0.22160
+#> 5+0   0.49144 0.26178 0.05658 0.48177 0.95107     0.12236        0.19710
+#> 6+0   0.51177 0.26580 0.06038 0.50800 0.96129     0.11191        0.18482
 #>       P([0.33,1])
+#> 0.1+0     0.05383
+#> 0.2+0     0.10625
+#> 0.4+0     0.20488
+#> 0.8+0     0.34343
+#> 1.6+0     0.48914
+#> 2.4+0     0.56766
+#> 3.6+0     0.63383
+#> 5+0       0.68054
+#> 6+0       0.70327
 #> 0.1+0     0.05383
 #> 0.2+0     0.10625
 #> 0.4+0     0.20488
@@ -206,7 +222,43 @@ result1
 #> 3.6+12 0.51454 0.25346 0.08738 0.50860 0.95252     0.08684        0.19640
 #> 5+12   0.54545 0.27432 0.06937 0.55594 0.97407     0.10030        0.16967
 #> 6+12   0.56046 0.28749 0.05723 0.58262 0.98268     0.11168        0.15580
+#> 0.1+8  0.18532 0.12574 0.02792 0.15549 0.50891     0.51642        0.35703
+#> 0.2+8  0.21997 0.14221 0.03572 0.18739 0.57802     0.41292        0.39155
+#> 0.4+8  0.26694 0.16307 0.04672 0.23216 0.66265     0.30404        0.39703
+#> 0.8+8  0.32790 0.18837 0.06055 0.29352 0.75850     0.20644        0.36283
+#> 1.6+8  0.40083 0.21637 0.07448 0.37067 0.85505     0.13707        0.29704
+#> 2.4+8  0.44638 0.23299 0.08127 0.42218 0.90297     0.11115        0.25545
+#> 3.6+8  0.49155 0.24974 0.08260 0.47743 0.94130     0.09733        0.21504
+#> 5+8    0.52620 0.26418 0.07843 0.52496 0.96383     0.09504        0.18686
+#> 6+8    0.54406 0.27297 0.07261 0.55181 0.97352     0.09740        0.17310
+#> 0.1+12 0.22334 0.12679 0.05283 0.19699 0.54017     0.36499        0.45491
+#> 0.2+12 0.25637 0.14136 0.06204 0.22759 0.60438     0.27993        0.46306
+#> 0.4+12 0.30120 0.16029 0.07387 0.27114 0.68231     0.19820        0.43482
+#> 0.8+12 0.35946 0.18418 0.08771 0.32932 0.77416     0.13208        0.36929
+#> 1.6+12 0.42916 0.21272 0.09821 0.40303 0.86742     0.09211        0.28463
+#> 2.4+12 0.47244 0.23171 0.09767 0.45369 0.91511     0.08355        0.23692
+#> 3.6+12 0.51454 0.25346 0.08738 0.50860 0.95252     0.08684        0.19640
+#> 5+12   0.54545 0.27432 0.06937 0.55594 0.97407     0.10030        0.16967
+#> 6+12   0.56046 0.28749 0.05723 0.58262 0.98268     0.11168        0.15580
 #>        P([0.33,1])
+#> 0.1+8      0.12655
+#> 0.2+8      0.19553
+#> 0.4+8      0.29893
+#> 0.8+8      0.43073
+#> 1.6+8      0.56589
+#> 2.4+8      0.63340
+#> 3.6+8      0.68763
+#> 5+8        0.71810
+#> 6+8        0.72950
+#> 0.1+12     0.18010
+#> 0.2+12     0.25701
+#> 0.4+12     0.36698
+#> 0.8+12     0.49863
+#> 1.6+12     0.62326
+#> 2.4+12     0.67953
+#> 3.6+12     0.71676
+#> 5+12       0.73003
+#> 6+12       0.73252
 #> 0.1+8      0.12655
 #> 0.2+8      0.19553
 #> 0.4+8      0.29893
@@ -260,9 +312,9 @@ And for compound 2 the same:
 
 ``` r
 mono_model2 <- LogisticLogNormal(
-  mean = c(logit(0.33), 0),
-  cov = diag(c(2, 1)^2),
-  ref_dose = dose_ref2
+    mean = c(logit(0.33), 0),
+    cov = diag(c(2, 1)^2),
+    ref_dose = dose_ref2
 )
 ```
 
@@ -271,12 +323,12 @@ Then we define the combination model:
 
 ``` r
 combo_model <- TwoDrugsCombo(
-  list(
-    compound1 = mono_model1,
-    compound2 = mono_model2
-  ),
-  gamma = 0, # prior mean for the interaction parameter
-  tau = 1 / (1.121^2) # prior precision for the interaction parameter
+    list(
+        compound1 = mono_model1,
+        compound2 = mono_model2
+    ),
+    gamma = 0, # prior mean for the interaction parameter
+    tau = 1 / (1.121^2) # prior precision for the interaction parameter
 )
 ```
 
@@ -285,15 +337,15 @@ We define the historical data which is already available:
 
 ``` r
 hist_data_comp2 <- Data(
-  x = rep(historical_data$dose2, historical_data$n.pat),
-  y = unlist(Map(
-    function(n_pat, n_dlt) {
-      c(rep(0, n_pat - n_dlt), rep(1, n_dlt))
-    },
-    historical_data$n.pat,
-    historical_data$n.dlt
-  )),
-  doseGrid = historical_data$dose2
+    x = rep(historical_data$dose2, historical_data$n.pat),
+    y = unlist(Map(
+        function(n_pat, n_dlt) {
+            c(rep(0, n_pat - n_dlt), rep(1, n_dlt))
+        },
+        historical_data$n.pat,
+        historical_data$n.dlt
+    )),
+    doseGrid = historical_data$dose2
 )
 hist_data_comp2
 ```
@@ -506,9 +558,9 @@ We are going to use simple rules here (they are not relevant for the current sce
 my_stopping <- StoppingMinPatients(nPatients = 50)
 my_increments <- IncrementsRelative(0, 2)
 myNextBest <- NextBestNCRM(
-  target = c(0.16, 0.33),
-  overdose = c(0.33, 1),
-  max_overdose_prob = 0.25
+    target = c(0.16, 0.33), 
+    overdose = c(0.33, 1), 
+    max_overdose_prob = 0.25
 )
 my_cohort_size <- CohortSizeConst(size = 3)
 my_increments_combo <- IncrementsComboOneDrugOnly()
@@ -519,36 +571,36 @@ Then we define the design arms accordingly:
 
 ``` r
 designArmA <- DesignArm(
-  "A",
-  design = Design(
-    data = Data(doseGrid = d1),
-    startingDose = d1[1],
-    model = mono_model1,
-    stopping = my_stopping,
-    increments = my_increments,
-    nextBest = myNextBest,
-    cohort_size = my_cohort_size
-  )
+    "A",
+    design = Design(
+        data = Data(doseGrid = d1),
+        startingDose = d1[1],
+        model = mono_model1,
+        stopping = my_stopping,
+        increments = my_increments,
+        nextBest = myNextBest,
+        cohort_size = my_cohort_size
+    )
 )
 
 designArmB <- DesignArm(
-  "B",
-  design = DesignCombo(
-    data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
-    startingDose = c(compound1 = d1[1], compound2 = 0),
-    model = combo_model,
-    stopping = my_stopping,
-    increments = my_increments_combo,
-    nextBest = myNextBest,
-    cohort_size = my_cohort_size
-  ),
-  open_when = ArmMinDoseCondition("A", min_dose = d1[2])
+    "B",
+    design = DesignCombo(
+        data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
+        startingDose = c(compound1 = d1[1], compound2 = 0),
+        model = combo_model,
+        stopping = my_stopping,
+        increments = my_increments_combo,
+        nextBest = myNextBest,
+        cohort_size = my_cohort_size
+    ),
+    open_when = ArmMinDoseCondition("A", min_dose = d1[2])
 )
 
 designArmC <- HistoricalArm(
-  "C",
-  data = hist_data_comp2,
-  model = mono_model2
+    "C",
+    data = hist_data_comp2,
+    model = mono_model2
 )
 ```
 
@@ -621,13 +673,13 @@ Then we define the scenario:
 
 ``` r
 scenario_hierarchical <- HierarchicalData(
-  A = Data(
-    x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
-    y = c(0, 0, 0, 0, 0, 1),
-    doseGrid = designArmA@design@data@doseGrid
-  ),
-  B = designArmB@design@data,
-  C = designArmC@design@data
+    A = Data(
+        x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
+        y = c(0, 0, 0, 0, 0, 1),
+        doseGrid = designArmA@design@data@doseGrid
+    ),
+    B = designArmB@design@data,
+    C = designArmC@design@data
 )
 ```
 
@@ -762,12 +814,12 @@ fitTrialADecider <- result1$`trial-A` |> as.data.frame()
 fitTrialACrmPack <- result1CrmPack$fit$A
 probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
 diffTrialA <- data.frame(
-  dose = fitTrialACrmPack$dose,
-  center = fitTrialADecider$mean - fitTrialACrmPack$middle,
-  lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
-  upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
-  target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
-  overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
+    dose = fitTrialACrmPack$dose,
+    center = fitTrialADecider$mean - fitTrialACrmPack$middle,
+    lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
+    upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
+    target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
+    overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
 )
 diffTrialA
 #>   dose       center         lower         upper   target overdose
@@ -789,16 +841,16 @@ And then the results for Arm B:
 fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
 fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
 probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
-  as.data.frame() |>
-  dplyr::filter(compound2 > 0)
+    as.data.frame() |>
+    dplyr::filter(compound2 > 0)
 diffTrialB <- data.frame(
-  dose1 = fitTrialBCrmPack$compound1,
-  dose2 = fitTrialBCrmPack$compound2,
-  center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
-  lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
-  upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
-  target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
-  overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
+    dose1 = fitTrialBCrmPack$compound1,
+    dose2 = fitTrialBCrmPack$compound2,
+    center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
+    lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
+    upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
+    target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
+    overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
 )
 diffTrialB
 #>    dose1 dose2       center         lower        upper   target overdose
