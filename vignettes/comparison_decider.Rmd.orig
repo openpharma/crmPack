@@ -153,8 +153,6 @@ result1 <- scenario_jointBLRM(
   prior.mu = prior_mu,
   prior.tau = prior_tau,
   seed = 3819
-  prior.tau = prior_tau,
-  seed = 3819
 )
 ```
 
@@ -308,9 +306,6 @@ design_hierarchical <- HierarchicalDesign(
         ),
         eta = list(
             B = "eta"
-        ),
-        eta = list(
-            B = "eta"
         )
     ),
     pool_correlations = list(
@@ -333,10 +328,6 @@ design_hierarchical <- HierarchicalDesign(
         comp2_slope = list(
             mu = prior_mu$mu_b2,
             tau = prior_tau$tau_b2
-        ),
-        eta = list(
-            mu = prior_mu$mu_eta,
-            tau = prior_tau$tau_eta
         ),
         eta = list(
             mu = prior_mu$mu_eta,
@@ -374,9 +365,7 @@ result1CrmPack <- scenario(
     data = scenario_hierarchical,
     mcmcOptions = McmcOptions(
         burnin = 20000,
-        burnin = 20000,
         step = 2,
-        samples = 100000,
         samples = 100000,
         rng_kind = "Mersenne-Twister", 
         rng_seed = 3819
