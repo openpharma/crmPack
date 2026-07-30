@@ -4,6 +4,8 @@
 
 Wraps the per-arm `init` functions and renames their outputs so they
 match the dynamically generated hierarchical JAGS variable names.
+Initial values for pooled latent parameters are omitted because those
+nodes are deterministic under the non-centered parameterization.
 
 ## Usage
 
