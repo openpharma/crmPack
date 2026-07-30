@@ -8,7 +8,7 @@ test_that("hierarchical helper primitives return expected metadata", {
   expect_equal(h_hierarchical_supported_refs(mono_model), c("alpha0", "alpha1"))
   expect_equal(
     h_hierarchical_supported_refs(combo_model),
-    c("alpha0[1]", "alpha1[1]", "alpha0[2]", "alpha1[2]")
+    c("alpha0[1]", "alpha1[1]", "alpha0[2]", "alpha1[2]", "eta")
   )
 
   expect_equal(
@@ -28,6 +28,28 @@ test_that("hierarchical helper primitives return expected metadata", {
       arm_index = 2L,
       latent = "theta_drug2_my_combo[2]",
       sample = "alpha1_my_combo[2]"
+    )
+  )
+  expect_equal(
+    h_hierarchical_parse_ref(combo_model, "my_combo", "eta"),
+    list(
+      kind = "eta",
+      index = NA_integer_,
+      latent = "eta_my_combo",
+      sample = "eta_my_combo"
+    )
+  )
+  expect_equal(
+    h_hierarchical_parse_ref(
+      local_hierarchical_combo_model(log_normal_eta = TRUE),
+      "my_combo",
+      "eta"
+    ),
+    list(
+      kind = "log_eta",
+      index = NA_integer_,
+      latent = "log_eta_my_combo",
+      sample = "eta_my_combo"
     )
   )
 })
@@ -111,7 +133,7 @@ test_that("HierarchicalModel supports TwoDrugsCombo without alpha parameters", {
   expect_valid(result, "HierarchicalModel")
   expect_equal(
     h_hierarchical_supported_refs(result@models_to_arms$raw_combo),
-    c("beta0[1]", "beta1[1]", "beta0[2]", "beta1[2]")
+    c("beta0[1]", "beta1[1]", "beta0[2]", "beta1[2]", "eta")
   )
   expect_subset(
     c(
@@ -456,6 +478,136 @@ test_that("hierarchical pool priors can be customized", {
   expect_equal(prior_specs$tau_drug1_slope_meanlog, log(0.125))
   expect_equal(prior_specs$tau_drug1_slope_sdlog, log(2) / 1.96)
   expect_false("kappa_hier" %in% names(prior_specs))
+})
+
+test_that("interaction parameters support a singleton hierarchical pool", {
+  combo_model <- local_hierarchical_combo_model()
+  model <- HierarchicalModel(
+    mono = combo_model@single_models$drug1,
+    combo = combo_model,
+    exchangeable_parameters = list(
+      interaction = list(combo = "eta")
+    ),
+    pool_priors = list(
+      interaction = list(
+        mu = c(mean = 0, sd = 1.121),
+        tau = c(
+          meanlog = log(0.125),
+          sdlog = log(2) / 1.96
+        )
+      )
+    )
+  )
+  body_priormodel <- gsub(
+    "\\s+",
+    "",
+    paste(deparse(body(model@priormodel)), collapse = "\n")
+  )
+  prior_specs <- model@modelspecs(arms = list(), from_prior = TRUE)
+
+  expect_valid(model, "HierarchicalModel")
+  expect_match(
+    body_priormodel,
+    "eta_combo~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+  )
+  expect_false(grepl("eta_gamma_combo", body_priormodel, fixed = TRUE))
+  expect_false(grepl("eta_tau_combo", body_priormodel, fixed = TRUE))
+  expect_equal(prior_specs$mu_interaction_mean, 0)
+  expect_equal(prior_specs$mu_interaction_sd, 1.121)
+  expect_equal(prior_specs$tau_interaction_meanlog, log(0.125))
+  expect_equal(prior_specs$tau_interaction_sdlog, log(2) / 1.96)
+  expect_false("eta_gamma_combo" %in% names(prior_specs))
+  expect_false("eta_tau_combo" %in% names(prior_specs))
+})
+
+test_that("singleton hierarchical pools are limited to interaction parameters", {
+  combo_model <- local_hierarchical_combo_model()
+
+  expect_error(
+    HierarchicalModel(
+      mono = combo_model@single_models$drug1,
+      combo = combo_model,
+      exchangeable_parameters = list(
+        singleton_intercept = list(mono = "alpha0")
+      )
+    ),
+    "only supported for a TwoDrugsCombo 'eta' reference",
+    fixed = TRUE
+  )
+})
+
+test_that("combination arms keep separate exchangeable interaction parameters", {
+  combo_model <- local_hierarchical_combo_model()
+  model <- HierarchicalModel(
+    combo_a = combo_model,
+    combo_b = combo_model,
+    exchangeable_parameters = list(
+      interaction = list(
+        combo_a = "eta",
+        combo_b = "eta"
+      )
+    ),
+    pool_priors = list(
+      interaction = list(
+        mu = c(mean = 0, sd = 1.121),
+        tau = c(
+          meanlog = log(0.125),
+          sdlog = log(2) / 1.96
+        )
+      )
+    )
+  )
+  body_priormodel <- gsub(
+    "\\s+",
+    "",
+    paste(deparse(body(model@priormodel)), collapse = "\n")
+  )
+
+  expect_valid(model, "HierarchicalModel")
+  expect_match(
+    body_priormodel,
+    "eta_combo_a~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+  )
+  expect_match(
+    body_priormodel,
+    "eta_combo_b~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+  )
+  expect_subset(
+    c(
+      "eta_combo_a",
+      "eta_combo_b",
+      "mu_interaction",
+      "tau_interaction"
+    ),
+    model@sample
+  )
+})
+
+test_that("log-normal interaction pools operate on log eta", {
+  combo_model <- local_hierarchical_combo_model(log_normal_eta = TRUE)
+  model <- HierarchicalModel(
+    mono = combo_model@single_models$drug1,
+    combo = combo_model,
+    exchangeable_parameters = list(
+      interaction = list(combo = "eta")
+    )
+  )
+  body_priormodel <- gsub(
+    "\\s+",
+    "",
+    paste(deparse(body(model@priormodel)), collapse = "\n")
+  )
+
+  expect_match(
+    body_priormodel,
+    "log_eta_combo~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+  )
+  expect_match(
+    body_priormodel,
+    "eta_combo<-exp\\(log_eta_combo\\)"
+  )
+  expect_false(grepl("eta_gamma_combo", body_priormodel, fixed = TRUE))
+  expect_false(grepl("eta_tau_combo", body_priormodel, fixed = TRUE))
 })
 
 test_that("hierarchical specs pass all tau hyperpriors explicitly", {

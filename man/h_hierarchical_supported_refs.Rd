@@ -16,6 +16,8 @@ Character vector of supported references.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Returns the parameter reference syntax that may be used for a model in the
-\code{exchangeable_parameters} argument of \code{\link[=HierarchicalModel]{HierarchicalModel()}}.
+\code{exchangeable_parameters} argument of \code{\link[=HierarchicalModel]{HierarchicalModel()}}. Combination
+models additionally support \code{"eta"}, which pools the arm-specific interaction
+parameters (or their logarithms when \code{log_normal_eta = TRUE}).
 }
 \keyword{internal}

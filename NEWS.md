@@ -6,6 +6,14 @@
   next best dose has been administered to a prespecified number of consecutive
   cohorts.
 
+### Enhancements
+
+* `HierarchicalModel` and `HierarchicalDesign` now support exchangeable
+  `"eta"` pools for `TwoDrugsCombo` arms. Each combination arm retains its own
+  interaction parameter while sharing hyperparameters, and singleton
+  interaction pools are supported so that the same hierarchical marginal prior
+  can be used with one combination arm.
+
 # Version 2.2.1
 
 ### Miscellaneous

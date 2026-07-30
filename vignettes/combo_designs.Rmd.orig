@@ -229,18 +229,20 @@ We use logistic log normal models for the monotherapy arm parameters, and the sa
   - current combination of drugs 1 and 2 trial, which will inform the two single-agent parameter pairs and the combination interaction parameter $\eta$
   - mono drug 2 trial, which will only inform the parameters $\alpha_2$ and $\log(\beta_2)$ for drug 2
 - On top of these sits a pool-specific hierarchical prior. For an exchangeable pool $k$ and arm $j$ belonging to that pool, the implementation uses $\theta_{j,k} \sim \textrm{Normal}(\mu_k, \tau_k^2)$, or a correlated bivariate normal block for the two pairs named in `pool_correlations`.
-- Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)})^\top$ e.g.:
+- Hyperpriors on $\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)}, \mu_\eta)^\top$ e.g.:
   - $\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)$, $i=1,2$
   - $\mu_{\log(\beta_1)} \sim \textrm{Normal}(0, 0.7^2)$
   - $\mu_{\log(\beta_2)} \sim \textrm{Normal}(0, 1)$
-- The interaction parameter $\eta$ is not included in an exchangeable pool in the implementation below. It keeps the `TwoDrugsCombo` prior, here $\eta \sim \textrm{Normal}(\gamma, 1/\tau)$ with `gamma = 0` and `tau = 1`. If `log_normal_eta = TRUE`, the same `gamma` and `tau` are used for $\log(\eta)$ instead.
+  - $\mu_\eta \sim \textrm{Normal}(0, 1.121^2)$
+- Each combination arm has its own interaction parameter $\eta_j$, and these parameters form an exchangeable pool with $\eta_j \sim \textrm{Normal}(\mu_\eta, \tau_\eta^2)$. A one-member pool is valid when only one combination arm is present; with multiple combination arms the parameters remain distinct while borrowing through the shared hyperparameters. If `log_normal_eta = TRUE`, the corresponding pool is defined on $\log(\eta_j)$.
 - Structured assumptions for the hierarchical covariance
-  - Assume that only $\alpha_{1}$ and $\log(\beta_1)$, as well as $\alpha_{2}$ and $\log(\beta_2)$ are correlated, but not the other parameters. This can be represented by two entries in `pool_correlations`, giving a block diagonal structure with 6 hyperparameters
-  (standard deviations $\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}$ plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\log(\beta_i)$ for $i=1,2$).
+  - Assume that only $\alpha_{1}$ and $\log(\beta_1)$, as well as $\alpha_{2}$ and $\log(\beta_2)$ are correlated, but not the other parameters. This can be represented by two entries in `pool_correlations`, giving a block diagonal structure with 7 hyperparameters
+  (standard deviations $\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}, \tau_\eta$ plus the two correlations $\rho_1$ and $\rho_2$ between $\alpha_i$ and $\log(\beta_i)$ for $i=1,2$).
   - We don't fix the $\Sigma$ entries but instead assign hyperpriors. Defaults are used unless overridden in `pool_priors`, e.g. with $\kappa = \log(2)/1.96$
     - $\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)$
     - $\tau_{\alpha_2} \sim \textrm{LogNormal}(\log(0.75), \kappa^2)$
     - $\tau_{\log(\beta_1)}, \tau_{\log(\beta_2)} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)$
+    - $\tau_\eta \sim \textrm{LogNormal}(\log(0.125), \kappa^2)$
     - $\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)$
 
 ### Model implementation
@@ -264,6 +266,9 @@ parameter_pools <- list(
   drug2_slope = list(
     mono_drug2 = "alpha1",
     combo = "alpha1[2]"
+  ),
+  interaction = list(
+    combo = "eta"
   )
 )
 
@@ -288,6 +293,10 @@ pool_priors <- list(
   drug2_slope = list(
     mu = c(mean = 0, sd = 1),
     tau = c(meanlog = log(0.25), sdlog = log(2) / 1.96)
+  ),
+  interaction = list(
+    mu = c(mean = 0, sd = 1.121),
+    tau = c(meanlog = log(0.125), sdlog = log(2) / 1.96)
   )
 )
 
@@ -303,7 +312,7 @@ hierarchical_model <- HierarchicalModel(
 hierarchical_model
 ```
 
-The public constructor argument is called `exchangeable_parameters` because it specifies which parameters are exchangeable across arms. The fitted object stores the same specification in its `parameter_pools` slot, and the optional `pool_correlations` and `pool_priors` arguments customize those pools.
+The public constructor argument is called `exchangeable_parameters` because it specifies which parameters are exchangeable across arms. The fitted object stores the same specification in its `parameter_pools` slot, and the optional `pool_correlations` and `pool_priors` arguments customize those pools. The `interaction` entry is a one-member pool in this example. This retains the hierarchical marginal prior for $\eta$; additional combination arms can be added to that pool without making their interaction parameters identical.
 
 We can look at the JAGS code, which has been automatically compiled for this model.
 

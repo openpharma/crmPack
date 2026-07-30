@@ -48,7 +48,9 @@ h_hierarchical_model_type <- function(model) {
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' Returns the parameter reference syntax that may be used for a model in the
-#' `exchangeable_parameters` argument of [HierarchicalModel()].
+#' `exchangeable_parameters` argument of [HierarchicalModel()]. Combination
+#' models additionally support `"eta"`, which pools the arm-specific interaction
+#' parameters (or their logarithms when `log_normal_eta = TRUE`).
 #'
 #' @param model (`GeneralModel`)\cr arm-specific model object.
 #'
@@ -57,12 +59,13 @@ h_hierarchical_model_type <- function(model) {
 #' @keywords internal
 h_hierarchical_supported_refs <- function(model) {
   if (is(model, "TwoDrugsCombo")) {
-    return(as.character(unlist(lapply(
+    single_model_refs <- as.character(unlist(lapply(
       seq_along(model@single_models),
       function(index) {
         paste0(model@single_models[[index]]@sample, "[", index, "]")
       }
-    ))))
+    )))
+    return(c(single_model_refs, "eta"))
   }
 
   if (h_hierarchical_is_single_model(model)) {
@@ -129,6 +132,19 @@ h_hierarchical_parse_ref <- function(model, arm_name, ref) {
   }
 
   if (type == "combo") {
+    if (identical(ref, "eta")) {
+      return(list(
+        kind = if (model@log_normal_eta) "log_eta" else "eta",
+        index = NA_integer_,
+        latent = h_hierarchical_reference_stochastic_node(
+          model = model,
+          arm_name = arm_name,
+          ref = ref
+        ),
+        sample = paste0("eta_", safe_arm)
+      ))
+    }
+
     m <- regexec("^(.+)\\[([0-9]+)\\]$", ref)
     capture <- regmatches(ref, m)[[1L]]
     if (length(capture) == 3L) {
@@ -175,6 +191,10 @@ h_hierarchical_reference_expr <- function(model, arm_name, ref) {
 
   if (h_hierarchical_is_single_model(model)) {
     return(as.name(paste0(ref, "_", safe_arm)))
+  }
+
+  if (is(model, "TwoDrugsCombo") && identical(ref, "eta")) {
+    return(as.name(paste0("eta_", safe_arm)))
   }
 
   m <- regexec("^(.+)\\[([0-9]+)\\]$", ref)
@@ -721,6 +741,10 @@ h_hierarchical_filter_pooled_specs <- function(
         specs <- specs[!names(specs) %in% remove_names]
       }
     }
+    if ("eta" %in% pooled_refs) {
+      remove_names <- paste0(c("eta_gamma", "eta_tau"), "_", safe_arm)
+      specs <- specs[!names(specs) %in% remove_names]
+    }
   }
 
   specs
@@ -1243,7 +1267,10 @@ h_hierarchical_compile_init <- function(
 #'   which parameters are exchangeable across arms. This will be
 #'   used to define the hierarchical structure of the model. Each
 #'   list entry contains the arms as names and the parameters to be shared
-#'   as a string.
+#'   as a string. For [`TwoDrugsCombo`] arms, `"eta"` refers to the
+#'   arm-specific interaction parameter. A one-member pool is permitted so that
+#'   a hierarchical marginal prior can be used even when only one combination
+#'   arm is present.
 #' @param pool_correlations optional named list pairing exactly two scalar
 #'   entries from `exchangeable_parameters` into a correlated bivariate
 #'   hierarchy. Each pair must refer to indices 1 and 2 of the same latent
