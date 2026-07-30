@@ -190,7 +190,8 @@ test_that("scenario-HierarchicalDesign returns next_best probabilities for empty
   expect_equal(result$next_dose$B, result$next_best$B$value)
   expect_match(
     prior_text,
-    "eta_B~dnorm\\(mu_eta,pow\\(tau_eta,-2\\)\\)"
+    "eta_B<-mu_eta\\+tau_eta\\*eta_B_z"
   )
+  expect_match(prior_text, "eta_B_z~dnorm\\(0,1\\)")
   expect_false(grepl("eta_gamma_B", prior_text, fixed = TRUE))
 })

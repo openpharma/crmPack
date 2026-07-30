@@ -33,6 +33,9 @@ A list with entries \code{priormodel} and \code{sample}.
 
 Builds the prior part of a hierarchical JAGS model. Unpooled parameters keep
 their arm-specific fixed priors, while pooled parameters are linked through
-exchangeable normal distributions with simple hyperpriors.
+exchangeable normal distributions with simple hyperpriors. The hierarchy is
+generated in non-centered form using standard-normal nodes and affine
+transformations; correlated pairs use the analytic bivariate Cholesky
+factor.
 }
 \keyword{internal}

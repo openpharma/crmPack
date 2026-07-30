@@ -49,7 +49,9 @@ arms.
 \details{
 The class currently stores the structural pieces from the design
 prototype as a named list of arm-specific models and a named list of
-exchangeable parameter pools used to dynamically compile a joint JAGS model.
+exchangeable parameter pools used to dynamically compile a joint JAGS
+model. Exchangeable normal priors and their hypermeans use a non-centered
+parameterization.
 }
 \section{Slots}{
 

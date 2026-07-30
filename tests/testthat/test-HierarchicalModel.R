@@ -212,19 +212,22 @@ test_that("HierarchicalModel supports TwoDrugsCombo without alpha parameters", {
   expect_valid(exchangeable_result, "HierarchicalModel")
   expect_match(
     exchangeable_prior_text,
-    "beta0_raw_mono ~ dnorm\\(mu_shared_beta0, pow\\(tau_shared_beta0,\\s*-2\\)\\)"
+    "beta0_raw_mono_z ~ dnorm\\(0.00000E\\+00,  1\\)"
   )
   expect_match(
     exchangeable_prior_text,
-    "beta0_drug1_raw_combo ~ dnorm\\(mu_shared_beta0, pow\\(tau_shared_beta0,\\s*-2\\)\\)" # nolint
+    "beta0_raw_mono <- mu_shared_beta0 \\+ tau_shared_beta0 \\* beta0_raw_mono_z"
   )
   expect_match(
     exchangeable_prior_text,
-    "beta1_raw_mono ~ dnorm\\(mu_shared_beta1, pow\\(tau_shared_beta1,\\s*-2\\)\\)"
+    "beta0_drug1_raw_combo_z ~ dnorm\\(0.00000E\\+00,  1\\)"
   )
   expect_match(
     exchangeable_prior_text,
-    "beta1_drug1_raw_combo ~ dnorm\\(mu_shared_beta1, pow\\(tau_shared_beta1,\\s*-2\\)\\)" # nolint
+    paste0(
+      "beta0_drug1_raw_combo <- mu_shared_beta0 \\+ tau_shared_beta0 \\*\\s*",
+      "beta0_drug1_raw_combo_z"
+    )
   )
   expect_false(grepl(
     "beta0_raw_mono ~ dnorm(beta_mean_raw_mono[1], 1)",
@@ -274,7 +277,11 @@ test_that("parallel mono and combo prior compiles generically", {
     gsub(
       "\\s+",
       "",
-      "theta_mono_drug1[1] ~ dnorm(mu_drug1_intercept, pow(tau_drug1_intercept, -2))"
+      paste0(
+        "theta_mono_drug1_z[1] ~ dnorm(0, 1)",
+        "theta_mono_drug1[1] <- mu_drug1_intercept + ",
+        "tau_drug1_intercept * theta_mono_drug1_z[1]"
+      )
     ),
     body_priormodel,
     fixed = TRUE
@@ -283,7 +290,11 @@ test_that("parallel mono and combo prior compiles generically", {
     gsub(
       "\\s+",
       "",
-      "theta_drug1_combo[1] ~ dnorm(mu_drug1_intercept, pow(tau_drug1_intercept, -2))"
+      paste0(
+        "theta_drug1_combo_z[1] ~ dnorm(0, 1)",
+        "theta_drug1_combo[1] <- mu_drug1_intercept + ",
+        "tau_drug1_intercept * theta_drug1_combo_z[1]"
+      )
     ),
     body_priormodel,
     fixed = TRUE
@@ -292,7 +303,11 @@ test_that("parallel mono and combo prior compiles generically", {
     gsub(
       "\\s+",
       "",
-      "theta_mono_drug2[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))"
+      paste0(
+        "theta_mono_drug2_z[2] ~ dnorm(0, 1)",
+        "theta_mono_drug2[2] <- mu_drug2_slope + ",
+        "tau_drug2_slope * theta_mono_drug2_z[2]"
+      )
     ),
     body_priormodel,
     fixed = TRUE
@@ -301,7 +316,11 @@ test_that("parallel mono and combo prior compiles generically", {
     gsub(
       "\\s+",
       "",
-      "theta_drug2_combo[2] ~ dnorm(mu_drug2_slope, pow(tau_drug2_slope, -2))"
+      paste0(
+        "theta_drug2_combo_z[2] ~ dnorm(0, 1)",
+        "theta_drug2_combo[2] <- mu_drug2_slope + ",
+        "tau_drug2_slope * theta_drug2_combo_z[2]"
+      )
     ),
     body_priormodel,
     fixed = TRUE
@@ -334,11 +353,17 @@ test_that("parallel mono and combo prior compiles generically", {
   ))
   expect_true(all(
     c(
+      "eta_combo",
+      "z_mu_drug1_intercept",
+      "tau_drug2_slope"
+    ) %in%
+      names(inits)
+  ))
+  expect_false(any(
+    c(
       "theta_mono_drug1",
       "theta_drug1_combo",
-      "eta_combo",
-      "mu_drug1_intercept",
-      "tau_drug2_slope"
+      "mu_drug1_intercept"
     ) %in%
       names(inits)
   ))
@@ -363,7 +388,7 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
     gsub(
       "\\s+",
       "",
-      "theta_mono_drug1[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[,])"
+      "theta_mono_drug1_z[1] ~ dnorm(0, 1)"
     ),
     body_priormodel,
     fixed = TRUE
@@ -372,7 +397,7 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
     gsub(
       "\\s+",
       "",
-      "theta_drug1_combo[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[,])"
+      "theta_drug1_combo_z[2] ~ dnorm(0, 1)"
     ),
     body_priormodel,
     fixed = TRUE
@@ -381,7 +406,10 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
     gsub(
       "\\s+",
       "",
-      "theta_drug2_combo[1:2] ~ dmnorm(mu_drug2_corr[], prec_drug2_corr[,])"
+      paste0(
+        "theta_drug2_combo[1] <- mu_drug2_intercept + ",
+        "tau_drug2_intercept * theta_drug2_combo_z[1]"
+      )
     ),
     body_priormodel,
     fixed = TRUE
@@ -390,7 +418,11 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
     gsub(
       "\\s+",
       "",
-      "theta_mono_drug2[1:2] ~ dmnorm(mu_drug2_corr[], prec_drug2_corr[,])"
+      paste0(
+        "theta_mono_drug2[2] <- mu_drug2_slope + ",
+        "tau_drug2_slope * (rho_drug2 * theta_mono_drug2_z[1] + ",
+        "sqrt(1 - pow(rho_drug2, 2)) * theta_mono_drug2_z[2])"
+      )
     ),
     body_priormodel,
     fixed = TRUE
@@ -410,9 +442,9 @@ test_that("parallel mono and combo prior supports correlated parameter pools", {
       "\\s+",
       "",
       paste0(
-        "prec_drug1_corr[1, 2] <- -rho_drug1 / ",
-        "(tau_drug1_intercept * tau_drug1_slope * ",
-        "(1 - pow(rho_drug1, 2)))"
+        "theta_drug1_combo[2] <- mu_drug1_slope + ",
+        "tau_drug1_slope * (rho_drug1 * theta_drug1_combo_z[1] + ",
+        "sqrt(1 - pow(rho_drug1, 2)) * theta_drug1_combo_z[2])"
       )
     ),
     body_priormodel,
@@ -464,7 +496,10 @@ test_that("hierarchical pool priors can be customized", {
   prior_specs <- model@modelspecs(arms = list(), from_prior = TRUE)
 
   expect_true(grepl(
-    "mu_drug1_intercept~dnorm\\(mu_drug1_intercept_mean,pow\\(mu_drug1_intercept_sd,-2\\)\\)",
+    paste0(
+      "mu_drug1_intercept<-mu_drug1_intercept_mean\\+",
+      "mu_drug1_intercept_sd\\*z_mu_drug1_intercept"
+    ),
     body_priormodel,
     fixed = FALSE
   ))
@@ -478,6 +513,52 @@ test_that("hierarchical pool priors can be customized", {
   expect_equal(prior_specs$tau_drug1_slope_meanlog, log(0.125))
   expect_equal(prior_specs$tau_drug1_slope_sdlog, log(2) / 1.96)
   expect_false("kappa_hier" %in% names(prior_specs))
+})
+
+test_that("non-centered hypermean nodes cannot collide with pool hypermeans", {
+  model <- HierarchicalModel(
+    my_mono = local_hierarchical_mono_model(),
+    my_combo = local_hierarchical_combo_model(),
+    exchangeable_parameters = list(
+      x = list(
+        my_mono = "alpha0",
+        my_combo = "alpha0[1]"
+      ),
+      x_z = list(
+        my_mono = "alpha1",
+        my_combo = "alpha1[1]"
+      )
+    )
+  )
+  body_priormodel <- gsub(
+    "\\s+",
+    "",
+    paste(deparse(body(model@priormodel)), collapse = "\n")
+  )
+  data <- local_hierarchical_data()
+  inits <- model@init(arms = data@arms)
+
+  expect_match(body_priormodel, "z_mu_x~dnorm\\(0,1\\)")
+  expect_match(
+    body_priormodel,
+    "mu_x_z<-mu_x_z_mean\\+mu_x_z_sd\\*z_mu_x_z"
+  )
+  expect_subset(c("z_mu_x", "z_mu_x_z"), names(inits))
+  expect_false(any(c("mu_x", "mu_x_z") %in% names(inits)))
+
+  samples <- mcmc(
+    data = data,
+    model = model,
+    options = McmcOptions(
+      burnin = 10L,
+      step = 1L,
+      samples = 20L,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12345L
+    )
+  )
+  expect_s4_class(samples, "HierarchicalSamples")
+  expect_subset(c("mu_x", "mu_x_z"), names(samples@data))
 })
 
 test_that("interaction parameters support a singleton hierarchical pool", {
@@ -508,8 +589,9 @@ test_that("interaction parameters support a singleton hierarchical pool", {
   expect_valid(model, "HierarchicalModel")
   expect_match(
     body_priormodel,
-    "eta_combo~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+    "eta_combo<-mu_interaction\\+tau_interaction\\*eta_combo_z"
   )
+  expect_match(body_priormodel, "eta_combo_z~dnorm\\(0,1\\)")
   expect_false(grepl("eta_gamma_combo", body_priormodel, fixed = TRUE))
   expect_false(grepl("eta_tau_combo", body_priormodel, fixed = TRUE))
   expect_equal(prior_specs$mu_interaction_mean, 0)
@@ -566,11 +648,11 @@ test_that("combination arms keep separate exchangeable interaction parameters", 
   expect_valid(model, "HierarchicalModel")
   expect_match(
     body_priormodel,
-    "eta_combo_a~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+    "eta_combo_a<-mu_interaction\\+tau_interaction\\*eta_combo_a_z"
   )
   expect_match(
     body_priormodel,
-    "eta_combo_b~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+    "eta_combo_b<-mu_interaction\\+tau_interaction\\*eta_combo_b_z"
   )
   expect_subset(
     c(
@@ -600,7 +682,7 @@ test_that("log-normal interaction pools operate on log eta", {
 
   expect_match(
     body_priormodel,
-    "log_eta_combo~dnorm\\(mu_interaction,pow\\(tau_interaction,-2\\)\\)"
+    "log_eta_combo<-mu_interaction\\+tau_interaction\\*log_eta_combo_z"
   )
   expect_match(
     body_priormodel,

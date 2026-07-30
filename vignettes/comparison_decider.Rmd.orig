@@ -430,10 +430,14 @@ diffTrialB
 The original version of this comparison used 10,000 retained draws from one
 centered JAGS chain. That was not sufficient for this hierarchical model:
 changing the random seed materially changed some target and overdose
-probabilities. The longer run above brings the results much closer, but the
-comparison should still be interpreted together with the different MCMC
-parameterizations: `decider` uses a non-centered Stan parameterization, whereas
-`crmPack` currently uses a centered JAGS parameterization.
+probabilities. The hierarchical JAGS model now uses the same type of non-centered
+parameterization as the Stan model: independent standard-normal variables are
+transformed using the pool means, between-trial standard deviations, and the
+analytic Cholesky factor for each correlated pair. The generated
+standard-normal hypermean nodes use a reserved `z_mu_` prefix, keeping them
+distinct from public hypermeans even for pool-name pairs such as `"x"` and
+`"x_z"`. This helps to increase the effective sample size (ESS) a lot for the
+arm-level and hypermean parameters, which mixed poorly in the centered model.
 
 ## Comparison of model code
 
@@ -483,8 +487,6 @@ interaction parameter while allowing exchangeable borrowing between them.
 
 The remaining implementation difference is that JAGS uses patient-level
 Bernoulli observations whereas Stan uses binomial cohort counts. These
-likelihoods are equivalent. The probabilistic models therefore match, while
-their centered and non-centered MCMC implementations can have substantially
-different sampling efficiency.
+likelihoods are equivalent.
 
 ## References
