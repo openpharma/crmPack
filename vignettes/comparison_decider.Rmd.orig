@@ -585,6 +585,205 @@ ggplot2::ggplot(
     ggplot2::theme(legend.position = "top")
 ```
 
+## Monte Carlo uncertainty of the differences
+
+Overlapping densities alone cannot establish that two posterior distributions
+are equivalent. We therefore calculate chain-aware Monte Carlo standard errors
+(MCSEs) for the quantities compared below. The four Stan chains are kept
+separate; `crmPack` currently uses one JAGS chain. For each implementation,
+`posterior::mcse_mean()` accounts for serial autocorrelation through the bulk
+effective sample size. Because the Stan and JAGS fits are independent, the MCSE
+of their difference is
+
+$$
+\operatorname{MCSE}(\hat\theta_{\text{decider}} -
+                    \hat\theta_{\text{crmPack}})
+=
+\sqrt{\operatorname{MCSE}(\hat\theta_{\text{decider}})^2 +
+      \operatorname{MCSE}(\hat\theta_{\text{crmPack}})^2}.
+$$
+
+The overdose probability is itself the posterior mean of the indicator
+$I\{p_{\text{DLT}} \geq 0.33\}$, so the same calculation applies.
+
+```{r}
+#' Summarize MCMC Means While Preserving Chain Structure
+#'
+#' @param draws A numeric matrix with draws in rows and estimands in columns.
+#' @param n_chains Number of chains, stored as consecutive row blocks.
+#'
+#' @return A data frame with posterior means, MCSEs, ESSs, and split R-hat.
+vignette_mcmc_summary <- function(draws, n_chains) {
+    draws <- as.matrix(draws)
+    storage.mode(draws) <- "double"
+    stopifnot(nrow(draws) %% n_chains == 0L)
+
+    draws_array <- array(
+        draws,
+        dim = c(nrow(draws) / n_chains, n_chains, ncol(draws)),
+        dimnames = list(
+            iteration = NULL,
+            chain = paste0("chain", seq_len(n_chains)),
+            variable = colnames(draws)
+        )
+    )
+
+    posterior::summarise_draws(
+        posterior::as_draws_array(draws_array),
+        mean = mean,
+        mcse = posterior::mcse_mean,
+        ess = posterior::ess_bulk,
+        rhat = posterior::rhat
+    ) |>
+        as.data.frame()
+}
+
+#' Compare Independent MCMC Estimates
+#'
+#' @param decider_draws A matrix containing the four Stan chains.
+#' @param crmPack_draws A matrix containing the single JAGS chain.
+#'
+#' @return A data frame with each estimate and uncertainty of their difference.
+vignette_compare_mcmc <- function(decider_draws, crmPack_draws) {
+    decider_summary <- vignette_mcmc_summary(decider_draws, n_chains = 4L)
+    crmPack_summary <- vignette_mcmc_summary(crmPack_draws, n_chains = 1L)
+    difference <- decider_summary$mean - crmPack_summary$mean
+    difference_mcse <- sqrt(
+        decider_summary$mcse^2 + crmPack_summary$mcse^2
+    )
+
+    data.frame(
+        decider = decider_summary$mean,
+        crmPack = crmPack_summary$mean,
+        difference = difference,
+        difference_mcse = difference_mcse,
+        z_mcse = difference / difference_mcse,
+        decider_ess = decider_summary$ess,
+        crmPack_ess = crmPack_summary$ess,
+        decider_rhat = decider_summary$rhat,
+        crmPack_rhat = crmPack_summary$rhat
+    )
+}
+
+# Calculate DLT probabilities from the decider parameter draws.
+prob_samples_A_decider <- plogis(
+    outer(
+        decider_samples[
+            ,
+            sprintf("log_ab[%i,1]", decider_study_index["A"])
+        ],
+        rep(1, length(d1))
+    ) +
+        outer(
+            exp(decider_samples[
+                ,
+                sprintf("log_ab[%i,2]", decider_study_index["A"])
+            ]),
+            log(d1 / dose_ref1)
+        )
+)
+
+combo_grid <- as.matrix(expand.grid(designArmB@design@data@doseGrid))
+prob_samples_B_decider_comp1 <- plogis(
+    outer(
+        decider_samples[
+            ,
+            sprintf("log_ab[%i,1]", decider_study_index["B"])
+        ],
+        rep(1, nrow(combo_grid))
+    ) +
+        outer(
+            exp(decider_samples[
+                ,
+                sprintf("log_ab[%i,2]", decider_study_index["B"])
+            ]),
+            log(combo_grid[, 1] / dose_ref1)
+        )
+)
+prob_samples_B_decider_comp2 <- plogis(
+    outer(
+        decider_samples[
+            ,
+            sprintf("log_ab[%i,3]", decider_study_index["B"])
+        ],
+        rep(1, nrow(combo_grid))
+    ) +
+        outer(
+            exp(decider_samples[
+                ,
+                sprintf("log_ab[%i,4]", decider_study_index["B"])
+            ]),
+            log(combo_grid[, 2] / dose_ref2)
+        )
+)
+prob_samples_B_decider_independent <- prob_samples_B_decider_comp1 +
+    prob_samples_B_decider_comp2 -
+    prob_samples_B_decider_comp1 * prob_samples_B_decider_comp2
+prob_samples_B_decider <- plogis(
+    qlogis(prob_samples_B_decider_independent) +
+        outer(
+            decider_samples[
+                ,
+                sprintf("log_ab[%i,5]", decider_study_index["B"])
+            ],
+            (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
+        )
+)
+
+# Apply the same algebra to the crmPack parameter draws.
+prob_samples_A_formula <- plogis(
+    outer(crm_samples_A@data$alpha0, rep(1, length(d1))) +
+        outer(crm_samples_A@data$alpha1, log(d1 / dose_ref1))
+)
+prob_samples_B_comp1 <- plogis(
+    outer(crm_samples_B@data$alpha0[, 1], rep(1, nrow(combo_grid))) +
+        outer(
+            crm_samples_B@data$alpha1[, 1],
+            log(combo_grid[, 1] / dose_ref1)
+        )
+)
+prob_samples_B_comp2 <- plogis(
+    outer(crm_samples_B@data$alpha0[, 2], rep(1, nrow(combo_grid))) +
+        outer(
+            crm_samples_B@data$alpha1[, 2],
+            log(combo_grid[, 2] / dose_ref2)
+        )
+)
+prob_samples_B_independent <- prob_samples_B_comp1 +
+    prob_samples_B_comp2 -
+    prob_samples_B_comp1 * prob_samples_B_comp2
+prob_samples_B_formula <- plogis(
+    qlogis(prob_samples_B_independent) +
+        outer(
+            crm_samples_B@data$eta,
+            (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
+        )
+)
+
+colnames(prob_samples_A_decider) <- colnames(prob_samples_A_formula) <-
+    paste0("dose_", d1)
+colnames(prob_samples_B_decider) <- colnames(prob_samples_B_formula) <-
+    paste0("dose_", combo_grid[, 1], "_", combo_grid[, 2])
+
+combo_interest <- combo_grid[, 2] > 0
+mcse_A_center <- vignette_compare_mcmc(
+    prob_samples_A_decider,
+    prob_samples_A_formula
+)
+mcse_A_overdose <- vignette_compare_mcmc(
+    prob_samples_A_decider >= 0.33,
+    prob_samples_A_formula > 0.33
+)
+mcse_B_center <- vignette_compare_mcmc(
+    prob_samples_B_decider[, combo_interest],
+    prob_samples_B_formula[, combo_interest]
+)
+mcse_B_overdose <- vignette_compare_mcmc(
+    prob_samples_B_decider[, combo_interest] >= 0.33,
+    prob_samples_B_formula[, combo_interest] > 0.33
+)
+```
+
 ## Comparison of fit
 
 Based on this we can first compare the fit results.
@@ -606,6 +805,23 @@ diffTrialA <- data.frame(
 diffTrialA
 ```
 
+The corresponding differences relative to their combined MCSEs are:
+They are recomputed from the unrounded posterior draws, so they can differ
+slightly from the five-decimal `decider` summaries above.
+
+```{r}
+mcseDiffTrialA <- data.frame(
+    dose = d1,
+    center = mcse_A_center$difference,
+    center_mcse = mcse_A_center$difference_mcse,
+    center_z = mcse_A_center$z_mcse,
+    overdose = mcse_A_overdose$difference,
+    overdose_mcse = mcse_A_overdose$difference_mcse,
+    overdose_z = mcse_A_overdose$z_mcse
+)
+mcseDiffTrialA
+```
+
 And then the results for Arm B:
 
 ```{r}
@@ -625,6 +841,62 @@ diffTrialB <- data.frame(
 )
 diffTrialB
 ```
+
+And the MCSE-standardized differences for Arm B are:
+
+```{r}
+mcseDiffTrialB <- data.frame(
+    dose1 = combo_grid[combo_interest, 1],
+    dose2 = combo_grid[combo_interest, 2],
+    center = mcse_B_center$difference,
+    center_mcse = mcse_B_center$difference_mcse,
+    center_z = mcse_B_center$z_mcse,
+    overdose = mcse_B_overdose$difference,
+    overdose_mcse = mcse_B_overdose$difference_mcse,
+    overdose_z = mcse_B_overdose$z_mcse
+)
+mcseDiffTrialB
+```
+
+For context, these are the minimum bulk ESS and maximum split R-hat values
+across doses:
+
+```{r}
+mcseDiagnostics <- data.frame(
+    arm = rep(c("A", "B"), each = 2),
+    estimand = rep(c("center", "overdose"), times = 2),
+    min_decider_ess = c(
+        min(mcse_A_center$decider_ess),
+        min(mcse_A_overdose$decider_ess),
+        min(mcse_B_center$decider_ess),
+        min(mcse_B_overdose$decider_ess)
+    ),
+    min_crmPack_ess = c(
+        min(mcse_A_center$crmPack_ess),
+        min(mcse_A_overdose$crmPack_ess),
+        min(mcse_B_center$crmPack_ess),
+        min(mcse_B_overdose$crmPack_ess)
+    ),
+    max_decider_rhat = c(
+        max(mcse_A_center$decider_rhat),
+        max(mcse_A_overdose$decider_rhat),
+        max(mcse_B_center$decider_rhat),
+        max(mcse_B_overdose$decider_rhat)
+    ),
+    max_crmPack_rhat = c(
+        max(mcse_A_center$crmPack_rhat),
+        max(mcse_A_overdose$crmPack_rhat),
+        max(mcse_B_center$crmPack_rhat),
+        max(mcse_B_overdose$crmPack_rhat)
+    )
+)
+mcseDiagnostics[, -(1:2)] <- signif(mcseDiagnostics[, -(1:2)], 6)
+mcseDiagnostics
+```
+
+For the single JAGS chain, split R-hat compares the first and second halves of
+the chain; unlike the four-chain Stan R-hat, it cannot detect disagreement
+between independently initialized chains.
 
 The overdose differences do not need to be balanced around zero across doses.
 All rows in each table use the same posterior parameter draws, so their Monte
@@ -653,73 +925,49 @@ prob_samples_A_crmPack <- vapply(
     },
     numeric(length(crm_samples_A@data$alpha0))
 )
-prob_samples_A_decider_formula <- plogis(
-    outer(crm_samples_A@data$alpha0, rep(1, length(d1))) +
-        outer(crm_samples_A@data$alpha1, log(d1 / dose_ref1))
-)
 
-combo_grid <- as.matrix(expand.grid(designArmB@design@data@doseGrid))
 prob_samples_B_crmPack <- prob(
     dose = combo_grid,
     model = combo_model,
     samples = crm_samples_B
 )
-prob_samples_B_comp1 <- plogis(
-    outer(crm_samples_B@data$alpha0[, 1], rep(1, nrow(combo_grid))) +
-        outer(
-            crm_samples_B@data$alpha1[, 1],
-            log(combo_grid[, 1] / dose_ref1)
-        )
-)
-prob_samples_B_comp2 <- plogis(
-    outer(crm_samples_B@data$alpha0[, 2], rep(1, nrow(combo_grid))) +
-        outer(
-            crm_samples_B@data$alpha1[, 2],
-            log(combo_grid[, 2] / dose_ref2)
-        )
-)
-prob_samples_B_independent <- prob_samples_B_comp1 +
-    prob_samples_B_comp2 -
-    prob_samples_B_comp1 * prob_samples_B_comp2
-prob_samples_B_decider_formula <- plogis(
-    qlogis(prob_samples_B_independent) +
-        outer(
-            crm_samples_B@data$eta,
-            (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
-        )
-)
 
 all_formula_probabilities <- c(
-    prob_samples_A_decider_formula,
-    prob_samples_B_decider_formula
+    prob_samples_A_formula,
+    prob_samples_B_formula
 )
 downstream_check <- c(
     max_abs_probability_difference_A = max(abs(
-        prob_samples_A_crmPack - prob_samples_A_decider_formula
+        prob_samples_A_crmPack - prob_samples_A_formula
     )),
     max_abs_probability_difference_B = max(abs(
-        prob_samples_B_crmPack - prob_samples_B_decider_formula
+        prob_samples_B_crmPack - prob_samples_B_formula
     )),
     draws_exactly_at_0.33 = sum(all_formula_probabilities == 0.33),
     max_overdose_difference_due_to_boundary = max(abs(
-        colMeans(prob_samples_B_decider_formula >= 0.33) -
-            colMeans(prob_samples_B_decider_formula > 0.33)
+        colMeans(prob_samples_B_formula >= 0.33) -
+            colMeans(prob_samples_B_formula > 0.33)
     ))
 )
 signif(downstream_check, 3)
 ```
 
 Thus the probability transformation and overdose counting do not explain the
-small systematic sign. The remaining differences are consistent with
-independent Monte Carlo error from Stan and JAGS. In particular, the most
-visible small displacement in the plots is shared by the compound 1 parameters
-in Arms A and B, as expected because those parameters use the same hierarchical
-pool. Because an MCMC draw moves the entire dose-toxicity curve coherently, its
-Monte Carlo error is also expected to have a coherent direction across doses.
-The parameter-density plots above provide a more direct check: a meaningful
-model mismatch would appear as non-overlapping or persistently shifted
-parameter posteriors, rather than only as differences of a few thousandths in
-correlated tail-area estimates.
+small systematic sign. Whether the remaining differences can be attributed to
+Monte Carlo error must instead be assessed using the MCSE-standardized
+differences above. Because an MCMC draw moves the entire dose-toxicity curve
+coherently, neither the raw number of positive signs nor the number of doses
+whose standardized difference exceeds a threshold should be treated as a set
+of independent tests.
+
+For this run, all overdose differences are within 1.95 combined MCSEs. The Arm
+B posterior mean differences are within 1.80 MCSEs. The Arm A posterior mean
+differences increase with dose and reach 2.01, 2.15, and 2.22 MCSEs at the
+three highest doses. The overdose results are therefore compatible with Monte
+Carlo uncertainty at the resolution of these fits, but the coherent Arm A mean
+shift is mild evidence that Monte Carlo error may not explain every observed
+difference. Repeated independent fits, ideally with multiple JAGS chains, are
+needed before concluding that the implementations are equivalent.
 
 The original version of this comparison used 10,000 retained draws from one
 centered JAGS chain. That was not sufficient for this hierarchical model:
