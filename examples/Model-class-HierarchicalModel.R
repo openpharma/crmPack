@@ -32,6 +32,18 @@ my_model <- HierarchicalModel(
     mono_slope = list(
       my_mono = "alpha1",
       my_combo = "alpha1[1]"
+    ),
+    interaction = list(
+      my_combo = "eta"
+    )
+  ),
+  pool_priors = list(
+    interaction = list(
+      mu = c(mean = 0, sd = 1.121),
+      tau = c(
+        meanlog = log(0.125),
+        sdlog = log(2) / 1.96
+      )
     )
   )
 )

@@ -315,11 +315,11 @@ v_hierarchical_model <- function(object) {
     for (pool_name in names(parameter_pools)) {
       pool <- parameter_pools[[pool_name]]
       v$check(
-        test_list(pool, types = "character", any.missing = FALSE, min.len = 2L),
+        test_list(pool, types = "character", any.missing = FALSE, min.len = 1L),
         paste0(
           "parameter pool '",
           pool_name,
-          "' must be a named list of at least two character references"
+          "' must be a named non-empty list of character references"
         )
       )
 
@@ -328,7 +328,7 @@ v_hierarchical_model <- function(object) {
           pool,
           types = "character",
           any.missing = FALSE,
-          min.len = 2L
+          min.len = 1L
         ))
       ) {
         next
@@ -350,6 +350,20 @@ v_hierarchical_model <- function(object) {
       )
       if (!all(pool_arms %in% names(models_to_arms))) {
         next
+      }
+
+      if (length(pool) == 1L) {
+        singleton_arm <- pool_arms[[1L]]
+        singleton_is_interaction <- identical(pool[[1L]], "eta") &&
+          is(models_to_arms[[singleton_arm]], "TwoDrugsCombo")
+        v$check(
+          singleton_is_interaction,
+          paste0(
+            "singleton parameter pool '",
+            pool_name,
+            "' is only supported for a TwoDrugsCombo 'eta' reference"
+          )
+        )
       }
 
       kinds <- vapply(

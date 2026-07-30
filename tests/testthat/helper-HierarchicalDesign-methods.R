@@ -43,13 +43,15 @@ local_comparison_decider_hierarchical_design <- function() {
     mu_a1 = c(qlogis(0.33), 2),
     mu_b1 = c(0, 1),
     mu_a2 = c(qlogis(0.33), 2),
-    mu_b2 = c(0, 1)
+    mu_b2 = c(0, 1),
+    mu_eta = c(0, 1.121)
   )
   prior_tau <- list(
     tau_a1 = c(log(0.25), log(2) / 1.96),
     tau_b1 = c(log(0.125), log(2) / 1.96),
     tau_a2 = c(log(0.25), log(2) / 1.96),
-    tau_b2 = c(log(0.125), log(2) / 1.96)
+    tau_b2 = c(log(0.125), log(2) / 1.96),
+    tau_eta = c(log(0.125), log(2) / 1.96)
   )
 
   mono_model1 <- LogisticLogNormal(
@@ -148,6 +150,9 @@ local_comparison_decider_hierarchical_design <- function() {
       comp2_slope = list(
         B = "alpha1[2]",
         C = "alpha1"
+      ),
+      eta = list(
+        B = "eta"
       )
     ),
     pool_correlations = list(
@@ -170,6 +175,10 @@ local_comparison_decider_hierarchical_design <- function() {
       comp2_slope = list(
         mu = prior_mu$mu_b2,
         tau = prior_tau$tau_b2
+      ),
+      eta = list(
+        mu = prior_mu$mu_eta,
+        tau = prior_tau$tau_eta
       )
     )
   )

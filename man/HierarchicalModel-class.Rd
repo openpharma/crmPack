@@ -24,7 +24,10 @@ HierarchicalModel(
 which parameters are exchangeable across arms. This will be
 used to define the hierarchical structure of the model. Each
 list entry contains the arms as names and the parameters to be shared
-as a string.}
+as a string. For \code{\link{TwoDrugsCombo}} arms, \code{"eta"} refers to the
+arm-specific interaction parameter. A one-member pool is permitted so that
+a hierarchical marginal prior can be used even when only one combination
+arm is present.}
 
 \item{pool_correlations}{optional named list pairing exactly two scalar
 entries from \code{exchangeable_parameters} into a correlated bivariate
@@ -107,6 +110,18 @@ my_model <- HierarchicalModel(
     mono_slope = list(
       my_mono = "alpha1",
       my_combo = "alpha1[1]"
+    ),
+    interaction = list(
+      my_combo = "eta"
+    )
+  ),
+  pool_priors = list(
+    interaction = list(
+      mu = c(mean = 0, sd = 1.121),
+      tau = c(
+        meanlog = log(0.125),
+        sdlog = log(2) / 1.96
+      )
     )
   )
 )

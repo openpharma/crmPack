@@ -144,7 +144,7 @@ The implementation in branch `936-combo-dev` has now two layers:
 The fixed-prior combination layer is closest to the original 5-parameter BLRM idea.
 
 - `DataCombo` stores two-drug dose-combination observations. Its `x` slot is an `n x 2` matrix, `doseGrid` is a named list of two dose grids, and `drugNames` records the two drug names. It also carries `backfilled` and optional efficacy `response` fields.
-- `LogisticLogNormalCombo` combines two single-agent `LogisticLogNormal` models with the linear interaction term described above. The interaction parameter `eta` has an arm-specific normal or log-normal prior.
+- `TwoDrugsCombo` combines two single-agent models with the linear interaction term described above. Each combination arm has its own interaction parameter `eta`; in a `HierarchicalModel`, these parameters can receive a shared exchangeable normal prior through an `"eta"` parameter pool.
 - `mcmc(DataCombo, LogisticLogNormalCombo, ...)` runs MCMC on the combination data and model, and returns `SamplesCombo` with the same structure as `Samples`, but with arm-specific parameter names.
 
 This layer can be used either for a combination-only design with fixed priors, or be reused by the hierarchical model as the combination-arm likelihood.
@@ -166,7 +166,7 @@ The more general hierarchical prototype keeps the original principle that each a
 - `models_to_arms`: named list of arm-specific models;
 - `parameter_pools`: named list of exchangeable parameter mappings.
 
-The user-facing parameter references are deliberately simple. For a `LogisticLogNormal` arm, supported references are `"alpha0"` and `"alpha1"`. For a `LogisticLogNormalCombo` arm, supported references are `"alpha0[1]"`, `"alpha1[1]"`, `"alpha0[2]"`, and `"alpha1[2]"`. The interaction parameter `eta` remains arm-specific in the current prototype.
+The user-facing parameter references are deliberately simple. For a `LogisticLogNormal` arm, supported references are `"alpha0"` and `"alpha1"`. For a `TwoDrugsCombo` arm with two `LogisticLogNormal` components, supported references are `"alpha0[1]"`, `"alpha1[1]"`, `"alpha0[2]"`, `"alpha1[2]"`, and `"eta"`. Pooling `"eta"` retains separate arm-specific interaction parameters while placing them under common hyperparameters. Singleton pools are permitted to retain the corresponding hierarchical marginal prior when only one combination arm is present.
 
 For example, a mono arm can share the first drug's intercept and slope with a combo arm as follows:
 
@@ -270,5 +270,5 @@ The current hierarchical prototype is much more concrete than the original sketc
 - Currently all arms open at the same time. We still need to allow separate start of arms. Here we need to think about a sensible API design. One direction could be to use something similar to the `Opening` class for the `Backfill` objects.
 - `exchangeable_parameters` encodes symmetric exchangeability, not explicit source/borrower direction. The earlier idea that combo could borrow from mono without mono borrowing from combo is not yet represented as a first-class API concept. Note that this would be more complex and potentially require either data duplication or separate MCMC runs.
 - Only `LogisticLogNormal` and `LogisticLogNormalCombo` arms are supported in `HierarchicalModel`.
-- Only selected intercept and slope parameters can be pooled. The combo interaction parameter `eta` remains unpooled.
+- Intercepts, slopes, and the combo interaction parameter `eta` can be pooled. Correlated blocks remain limited to selected pairs of indexed latent parameters.
 - A future `scenario()` helper remains attractive for quickly showing posterior summaries and next-dose recommendations across multiple arms.
