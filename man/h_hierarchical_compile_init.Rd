@@ -28,6 +28,8 @@ A function returning a named list of JAGS initial values.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Wraps the per-arm \code{init} functions and renames their outputs so they match
-the dynamically generated hierarchical JAGS variable names.
+the dynamically generated hierarchical JAGS variable names. Initial values
+for pooled latent parameters are omitted because those nodes are
+deterministic under the non-centered parameterization.
 }
 \keyword{internal}
