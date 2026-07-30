@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette we want to compare the combination design implemented in `crmPack` and explained in this [vignette](combo_designs.Rmd) with the implementation in the [`decider` package](https://boehringer-ingelheim.github.io/decider/) [@Schroeter2023]. 
+In this vignette we want to compare the combination design implemented in `crmPack` and explained in this [vignette](combo_designs.Rmd) with the implementation in the [`decider` package](https://boehringer-ingelheim.github.io/decider/) [@Schroeter2023].
 Please note that the `decider` package is not available on CRAN, therefore this vignette is precomputed from a source file that runs with `decider` installed.
 
 ## Example
@@ -164,6 +164,50 @@ result1
 
 For each trial of interest, the posterior toxicities previously designated to be of interest are shown.
 
+The public scenario helper returns these posterior summaries, but not the
+underlying parameter draws. For the parameter-level comparison below, we call
+the same internal sampler with the same data, settings, and internal seed used
+by `scenario_jointBLRM()`. Thus, `decider_samples` contains the draws from which
+the summaries in `result1` were calculated.
+
+```{r}
+decider_data <- list(
+    dose1 = c(historical_data$dose1, scenario1$dose1),
+    dose2 = c(historical_data$dose2, scenario1$dose2),
+    n.pat = c(historical_data$n.pat, scenario1$n.pat),
+    n.dlt = c(historical_data$n.dlt, scenario1$n.dlt),
+    trial = c(historical_data$trial, scenario1$trial)
+)
+decider_trial <- factor(decider_data$trial)
+decider_study_index <- c(
+    A = match("A", levels(decider_trial)),
+    B = nlevels(decider_trial) + 1L,
+    C = match("H1", levels(decider_trial))
+)
+
+set.seed(3819)
+decider_internal_seed <- sample.int(.Machine$integer.max, 1)
+decider_samples <- decider:::sampling_jointBLRM(
+    dose1 = decider_data$dose1,
+    dose2 = decider_data$dose2,
+    dose.ref1 = dose_ref1,
+    dose.ref2 = dose_ref2,
+    n.pat = decider_data$n.pat,
+    n.dlt = decider_data$n.dlt,
+    n.study = as.integer(decider_trial),
+    MAP.prior = TRUE,
+    prior.mu = prior_mu,
+    prior.tau = prior_tau,
+    iter = 26000,
+    warmup = 1000,
+    refresh = 0,
+    adapt_delta = 0.8,
+    max_treedepth = 15,
+    chains = 4,
+    seed = decider_internal_seed
+)
+```
+
 Under the hood, the implementation works as follows:
 
 - [`post_tox_jointBLRM()`](https://github.com/Boehringer-Ingelheim/decider/blob/main/R/sampling_jointBLRM.R#L232) is called to sample from the posterior, which in turn uses
@@ -175,7 +219,7 @@ So we can compare this with the implementation in `crmPack` which is based on JA
 
 ## Using `crmPack`
 
-Now we are going to define the same design and scenario in `crmPack`. 
+Now we are going to define the same design and scenario in `crmPack`.
 
 We start with the monotherapy model for compound 1:
 
@@ -235,8 +279,8 @@ We are going to use simple rules here (they are not relevant for the current sce
 my_stopping <- StoppingMinPatients(nPatients = 50)
 my_increments <- IncrementsRelative(0, 2)
 myNextBest <- NextBestNCRM(
-    target = c(0.16, 0.33), 
-    overdose = c(0.33, 1), 
+    target = c(0.16, 0.33),
+    overdose = c(0.33, 1),
     max_overdose_prob = 0.25
 )
 my_cohort_size <- CohortSizeConst(size = 3)
@@ -302,7 +346,7 @@ design_hierarchical <- HierarchicalDesign(
         ),
         comp2_slope = list(
             B = "alpha1[2]",
-            C = "alpha1"    
+            C = "alpha1"
         ),
         eta = list(
             B = "eta"
@@ -367,7 +411,7 @@ result1CrmPack <- scenario(
         burnin = 20000,
         step = 2,
         samples = 100000,
-        rng_kind = "Mersenne-Twister", 
+        rng_kind = "Mersenne-Twister",
         rng_seed = 3819
     )
 )
@@ -384,6 +428,161 @@ We can also check the probabilities to be in target and overdosing intervals:
 ```{r}
 result1CrmPack$next_best$A$probs
 result1CrmPack$next_best$B$probs
+```
+
+## Comparison of parameter posteriors
+
+The toxicity summaries at different doses are strongly dependent because they
+are all transformations of the same small set of model parameters. We therefore
+compare those parameter posteriors directly. The slopes are shown on their
+positive, natural scale: `decider` stores their logarithms, whereas `crmPack`
+stores the exponentiated slopes.
+
+```{r}
+crm_samples_A <- armSamples(result1CrmPack$samples, "A")
+crm_samples_B <- armSamples(result1CrmPack$samples, "B")
+crm_samples_C <- armSamples(result1CrmPack$samples, "C")
+
+# Thin only for plotting; all retained draws are still used in the tables.
+n_plot_draws <- 5000L
+decider_plot_index <- unique(round(seq(
+    1,
+    nrow(decider_samples),
+    length.out = min(n_plot_draws, nrow(decider_samples))
+)))
+crm_plot_index <- unique(round(seq(
+    1,
+    length(crm_samples_A@data$alpha0),
+    length.out = min(n_plot_draws, length(crm_samples_A@data$alpha0))
+)))
+
+parameter_labels <- c(
+    "Arm A: compound 1 intercept",
+    "Arm A: compound 1 slope",
+    "Arm B: compound 1 intercept",
+    "Arm B: compound 1 slope",
+    "Arm B: compound 2 intercept",
+    "Arm B: compound 2 slope",
+    "Arm B: interaction",
+    "Arm C: compound 2 intercept",
+    "Arm C: compound 2 slope"
+)
+
+decider_parameter_draws <- data.frame(
+    implementation = "decider",
+    parameter = rep(parameter_labels, each = length(decider_plot_index)),
+    value = c(
+        decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,1]", decider_study_index["A"])
+        ],
+        exp(decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,2]", decider_study_index["A"])
+        ]),
+        decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,1]", decider_study_index["B"])
+        ],
+        exp(decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,2]", decider_study_index["B"])
+        ]),
+        decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,3]", decider_study_index["B"])
+        ],
+        exp(decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,4]", decider_study_index["B"])
+        ]),
+        decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,5]", decider_study_index["B"])
+        ],
+        decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,3]", decider_study_index["C"])
+        ],
+        exp(decider_samples[
+            decider_plot_index,
+            sprintf("log_ab[%i,4]", decider_study_index["C"])
+        ])
+    )
+)
+
+crm_parameter_draws <- data.frame(
+    implementation = "crmPack",
+    parameter = rep(parameter_labels, each = length(crm_plot_index)),
+    value = c(
+        crm_samples_A@data$alpha0[crm_plot_index],
+        crm_samples_A@data$alpha1[crm_plot_index],
+        crm_samples_B@data$alpha0[crm_plot_index, 1],
+        crm_samples_B@data$alpha1[crm_plot_index, 1],
+        crm_samples_B@data$alpha0[crm_plot_index, 2],
+        crm_samples_B@data$alpha1[crm_plot_index, 2],
+        crm_samples_B@data$eta[crm_plot_index],
+        crm_samples_C@data$alpha0[crm_plot_index],
+        crm_samples_C@data$alpha1[crm_plot_index]
+    )
+)
+
+parameter_draws <- rbind(decider_parameter_draws, crm_parameter_draws)
+parameter_draws$implementation <- factor(
+    parameter_draws$implementation,
+    levels = c("decider", "crmPack")
+)
+parameter_draws$parameter <- factor(
+    parameter_draws$parameter,
+    levels = parameter_labels
+)
+```
+
+First we compare the parameters for the two monotherapy arms:
+
+```{r, fig.height=5}
+ggplot2::ggplot(
+    parameter_draws[grepl("^Arm [AC]", parameter_draws$parameter), ],
+    ggplot2::aes(
+        x = value,
+        colour = implementation,
+        fill = implementation
+    )
+) +
+    ggplot2::geom_density(alpha = 0.15, linewidth = 0.6) +
+    ggplot2::facet_wrap(ggplot2::vars(parameter), scales = "free", ncol = 2) +
+    ggplot2::labs(
+        x = NULL,
+        y = "Posterior density",
+        colour = NULL,
+        fill = NULL
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "top")
+```
+
+And then the parameters for the combination arm, including the interaction
+parameter:
+
+```{r, fig.height=7}
+ggplot2::ggplot(
+    parameter_draws[grepl("^Arm B", parameter_draws$parameter), ],
+    ggplot2::aes(
+        x = value,
+        colour = implementation,
+        fill = implementation
+    )
+) +
+    ggplot2::geom_density(alpha = 0.15, linewidth = 0.6) +
+    ggplot2::facet_wrap(ggplot2::vars(parameter), scales = "free", ncol = 2) +
+    ggplot2::labs(
+        x = NULL,
+        y = "Posterior density",
+        colour = NULL,
+        fill = NULL
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "top")
 ```
 
 ## Comparison of fit
@@ -426,6 +625,101 @@ diffTrialB <- data.frame(
 )
 diffTrialB
 ```
+
+The overdose differences do not need to be balanced around zero across doses.
+All rows in each table use the same posterior parameter draws, so their Monte
+Carlo errors are strongly correlated. Indeed, the posterior mean toxicity from
+`decider` is slightly higher at every dose in both arms. A small coherent
+location or slope difference therefore tends to move all overdose
+probabilities in the same direction as well. The rows are not independent
+replicates for which an approximately equal number of positive and negative
+signs would be expected.
+
+We can also isolate the downstream calculation from MCMC variation. The
+following code applies the algebra used by `decider` to the `crmPack` parameter
+draws and compares it with `crmPack::prob()`. It also checks the only syntactic
+interval difference: `decider` counts toxicity probabilities greater than or
+equal to 0.33, while `crmPack` uses probabilities strictly greater than 0.33.
+
+```{r}
+prob_samples_A_crmPack <- vapply(
+    d1,
+    function(current_dose) {
+        prob(
+            dose = rep(current_dose, length(crm_samples_A@data$alpha0)),
+            model = mono_model1,
+            samples = crm_samples_A
+        )
+    },
+    numeric(length(crm_samples_A@data$alpha0))
+)
+prob_samples_A_decider_formula <- plogis(
+    outer(crm_samples_A@data$alpha0, rep(1, length(d1))) +
+        outer(crm_samples_A@data$alpha1, log(d1 / dose_ref1))
+)
+
+combo_grid <- as.matrix(expand.grid(designArmB@design@data@doseGrid))
+prob_samples_B_crmPack <- prob(
+    dose = combo_grid,
+    model = combo_model,
+    samples = crm_samples_B
+)
+prob_samples_B_comp1 <- plogis(
+    outer(crm_samples_B@data$alpha0[, 1], rep(1, nrow(combo_grid))) +
+        outer(
+            crm_samples_B@data$alpha1[, 1],
+            log(combo_grid[, 1] / dose_ref1)
+        )
+)
+prob_samples_B_comp2 <- plogis(
+    outer(crm_samples_B@data$alpha0[, 2], rep(1, nrow(combo_grid))) +
+        outer(
+            crm_samples_B@data$alpha1[, 2],
+            log(combo_grid[, 2] / dose_ref2)
+        )
+)
+prob_samples_B_independent <- prob_samples_B_comp1 +
+    prob_samples_B_comp2 -
+    prob_samples_B_comp1 * prob_samples_B_comp2
+prob_samples_B_decider_formula <- plogis(
+    qlogis(prob_samples_B_independent) +
+        outer(
+            crm_samples_B@data$eta,
+            (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
+        )
+)
+
+all_formula_probabilities <- c(
+    prob_samples_A_decider_formula,
+    prob_samples_B_decider_formula
+)
+downstream_check <- c(
+    max_abs_probability_difference_A = max(abs(
+        prob_samples_A_crmPack - prob_samples_A_decider_formula
+    )),
+    max_abs_probability_difference_B = max(abs(
+        prob_samples_B_crmPack - prob_samples_B_decider_formula
+    )),
+    draws_exactly_at_0.33 = sum(all_formula_probabilities == 0.33),
+    max_overdose_difference_due_to_boundary = max(abs(
+        colMeans(prob_samples_B_decider_formula >= 0.33) -
+            colMeans(prob_samples_B_decider_formula > 0.33)
+    ))
+)
+signif(downstream_check, 3)
+```
+
+Thus the probability transformation and overdose counting do not explain the
+small systematic sign. The remaining differences are consistent with
+independent Monte Carlo error from Stan and JAGS. In particular, the most
+visible small displacement in the plots is shared by the compound 1 parameters
+in Arms A and B, as expected because those parameters use the same hierarchical
+pool. Because an MCMC draw moves the entire dose-toxicity curve coherently, its
+Monte Carlo error is also expected to have a coherent direction across doses.
+The parameter-density plots above provide a more direct check: a meaningful
+model mismatch would appear as non-overlapping or persistently shifted
+parameter posteriors, rather than only as differences of a few thousandths in
+correlated tail-area estimates.
 
 The original version of this comparison used 10,000 retained draws from one
 centered JAGS chain. That was not sufficient for this hierarchical model:
