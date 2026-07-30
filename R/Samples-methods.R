@@ -798,7 +798,7 @@ setMethod(
     gdata %>%
       ggplot(aes(x = .data$dose1, y = .data$dose2, fill = .data$prob)) +
       geom_tile(colour = "white", linewidth = 0.5) +
-      facet_wrap(~.data$Type, nrow = 1L) +
+      facet_wrap(~ .data$Type, nrow = 1L) +
       scale_fill_gradient(
         name = fillLab,
         low = "grey95",
@@ -1914,7 +1914,7 @@ setMethod(
       upper = max(data@doseGrid)
     )$value)
 
-    if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
+    if ((TD30 < min(data@doseGrid)) || (TD30 > max(data@doseGrid))) {
       plot1 <- plot1
       message(paste("TD30", paste(TD30, " not within dose Grid")))
     } else {
@@ -1947,7 +1947,7 @@ setMethod(
       .rows = 0
     )
 
-    if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
+    if ((TD30 < min(data@doseGrid)) || (TD30 > max(data@doseGrid))) {
       message(paste("TD30", paste(TD30, " not within dose Grid")))
     } else {
       point_data <- point_data %>%
@@ -1960,7 +1960,7 @@ setMethod(
           Text = "p(DLE=0.3)"
         )
     }
-    if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
+    if ((Gstar < min(data@doseGrid)) || (Gstar > max(data@doseGrid))) {
       print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
     } else {
       plot1 <- plot1 +

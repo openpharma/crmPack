@@ -85,7 +85,7 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
           ) {
             # Already tidied to a list.
             x
-          } else if (is.numeric(x) | is.character(x)) {
+          } else if (is.numeric(x) || is.character(x)) {
             # tidy.numeric & tidy.character are deprecated
             tibble::tibble(!!{{ slot_name }} := x)
           } else {

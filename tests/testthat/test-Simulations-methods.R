@@ -182,7 +182,7 @@ test_that("summary-GeneralSimulations works correctly", {
   expect_true(is.numeric(result@n_obs))
   expect_true(all(result@prop_dlts >= 0 & result@prop_dlts <= 1))
   expect_true(all(result@mean_tox_risk >= 0 & result@mean_tox_risk <= 1))
-  expect_true(result@prop_at_target >= 0 & result@prop_at_target <= 1)
+  expect_true(result@prop_at_target >= 0 && result@prop_at_target <= 1)
   expect_equal(length(result@dose_selected), result@nsim)
 
   # Test with custom target interval

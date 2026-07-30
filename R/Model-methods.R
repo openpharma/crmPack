@@ -1781,7 +1781,7 @@ setMethod(
         ref_dose <- as.numeric(model@ref_dose)
 
         cumulative_prob <- plogis(alpha + beta * log(dose / ref_dose))
-        if (cumulative | g == as.integer(length(model@params@mean) - 1)) {
+        if (cumulative || g == as.integer(length(model@params@mean) - 1)) {
           return(cumulative_prob)
         }
 
