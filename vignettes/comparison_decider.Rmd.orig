@@ -980,8 +980,7 @@ differences increase with dose and reach 2.01, 2.15, and 2.22 MCSEs at the
 three highest doses. The overdose results are therefore compatible with Monte
 Carlo uncertainty at the resolution of these fits, but the coherent Arm A mean
 shift is mild evidence that Monte Carlo error may not explain every observed
-difference. Repeated independent fits, ideally with multiple JAGS chains, are
-needed before concluding that the implementations are equivalent.
+difference.
 
 The original version of this comparison used 10,000 retained draws from one
 centered JAGS chain. That was not sufficient for this hierarchical model:
