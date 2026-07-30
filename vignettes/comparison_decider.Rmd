@@ -828,9 +828,11 @@ changing the random seed materially changed some target and overdose
 probabilities. The hierarchical JAGS model now uses the same type of non-centered
 parameterization as the Stan model: independent standard-normal variables are
 transformed using the pool means, between-trial standard deviations, and the
-analytic Cholesky factor for each correlated pair. This helps to increase the 
-effective sample size (ESS) a lot for the arm-level and hypermean parameters, which mixed
-poorly in the centered model.
+analytic Cholesky factor for each correlated pair. The generated
+standard-normal hypermean nodes use a reserved `z_mu_` prefix, keeping them
+distinct from public hypermeans even for pool-name pairs such as `"x"` and
+`"x_z"`. This helps to increase the effective sample size (ESS) a lot for the
+arm-level and hypermean parameters, which mixed poorly in the centered model.
 
 ## Comparison of model code
 
@@ -1143,14 +1145,14 @@ Here we have the following JAGS model:
     theta_drug1_B[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 * 
         theta_drug1_B_z[1] + sqrt(1 - pow(rho_comp1, 2)) * theta_drug1_B_z[2])
     rho_comp1 ~ dunif(rho_comp1_lower, rho_comp1_upper)
-    mu_comp1_intercept_z ~ dnorm(0, 1)
+    z_mu_comp1_intercept ~ dnorm(0, 1)
     mu_comp1_intercept <- mu_comp1_intercept_mean + mu_comp1_intercept_sd * 
-        mu_comp1_intercept_z
+        z_mu_comp1_intercept
     tau_comp1_intercept ~ dlnorm(tau_comp1_intercept_meanlog, 
         pow(tau_comp1_intercept_sdlog, -2))
-    mu_comp1_slope_z ~ dnorm(0, 1)
+    z_mu_comp1_slope ~ dnorm(0, 1)
     mu_comp1_slope <- mu_comp1_slope_mean + mu_comp1_slope_sd * 
-        mu_comp1_slope_z
+        z_mu_comp1_slope
     tau_comp1_slope ~ dlnorm(tau_comp1_slope_meanlog, pow(tau_comp1_slope_sdlog, 
         -2))
     theta_drug2_B_z[1] ~ dnorm(0, 1)
@@ -1166,20 +1168,20 @@ Here we have the following JAGS model:
     theta_C[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 * 
         theta_C_z[1] + sqrt(1 - pow(rho_comp2, 2)) * theta_C_z[2])
     rho_comp2 ~ dunif(rho_comp2_lower, rho_comp2_upper)
-    mu_comp2_intercept_z ~ dnorm(0, 1)
+    z_mu_comp2_intercept ~ dnorm(0, 1)
     mu_comp2_intercept <- mu_comp2_intercept_mean + mu_comp2_intercept_sd * 
-        mu_comp2_intercept_z
+        z_mu_comp2_intercept
     tau_comp2_intercept ~ dlnorm(tau_comp2_intercept_meanlog, 
         pow(tau_comp2_intercept_sdlog, -2))
-    mu_comp2_slope_z ~ dnorm(0, 1)
+    z_mu_comp2_slope ~ dnorm(0, 1)
     mu_comp2_slope <- mu_comp2_slope_mean + mu_comp2_slope_sd * 
-        mu_comp2_slope_z
+        z_mu_comp2_slope
     tau_comp2_slope ~ dlnorm(tau_comp2_slope_meanlog, pow(tau_comp2_slope_sdlog, 
         -2))
     eta_B_z ~ dnorm(0, 1)
     eta_B <- mu_eta + tau_eta * eta_B_z
-    mu_eta_z ~ dnorm(0, 1)
-    mu_eta <- mu_eta_mean + mu_eta_sd * mu_eta_z
+    z_mu_eta ~ dnorm(0, 1)
+    mu_eta <- mu_eta_mean + mu_eta_sd * z_mu_eta
     tau_eta ~ dlnorm(tau_eta_meanlog, pow(tau_eta_sdlog, -2))
 }
 ````

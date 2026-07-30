@@ -81,9 +81,9 @@
           theta_drug1_my_combo_z[1] ~ dnorm(0, 1)
           theta_drug1_my_combo[1] <- mu_mono_intercept + tau_mono_intercept * 
               theta_drug1_my_combo_z[1]
-          mu_mono_intercept_z ~ dnorm(0, 1)
+          z_mu_mono_intercept ~ dnorm(0, 1)
           mu_mono_intercept <- mu_mono_intercept_mean + mu_mono_intercept_sd * 
-              mu_mono_intercept_z
+              z_mu_mono_intercept
           tau_mono_intercept ~ dlnorm(tau_mono_intercept_meanlog, pow(tau_mono_intercept_sdlog, 
               -2))
           theta_my_mono_z[2] ~ dnorm(0, 1)
@@ -91,9 +91,9 @@
           theta_drug1_my_combo_z[2] ~ dnorm(0, 1)
           theta_drug1_my_combo[2] <- mu_mono_slope + tau_mono_slope * 
               theta_drug1_my_combo_z[2]
-          mu_mono_slope_z ~ dnorm(0, 1)
+          z_mu_mono_slope ~ dnorm(0, 1)
           mu_mono_slope <- mu_mono_slope_mean + mu_mono_slope_sd * 
-              mu_mono_slope_z
+              z_mu_mono_slope
           tau_mono_slope ~ dlnorm(tau_mono_slope_meanlog, pow(tau_mono_slope_sdlog, 
               -2))
       }
@@ -121,8 +121,8 @@
 
 ---
 
-    list(theta_drug2_my_combo = c(0, 1), eta_my_combo = 0, mu_mono_intercept_z = 0, 
-        tau_mono_intercept = 0.5, mu_mono_slope_z = 0, tau_mono_slope = 0.5)
+    list(theta_drug2_my_combo = c(0, 1), eta_my_combo = 0, z_mu_mono_intercept = 0, 
+        tau_mono_intercept = 0.5, z_mu_mono_slope = 0, tau_mono_slope = 0.5)
 
 # h_mcmc_get_hierarchical_data flattens arm data for JAGS
 

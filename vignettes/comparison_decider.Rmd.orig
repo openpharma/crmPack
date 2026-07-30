@@ -433,9 +433,11 @@ changing the random seed materially changed some target and overdose
 probabilities. The hierarchical JAGS model now uses the same type of non-centered
 parameterization as the Stan model: independent standard-normal variables are
 transformed using the pool means, between-trial standard deviations, and the
-analytic Cholesky factor for each correlated pair. This helps to increase the 
-effective sample size (ESS) a lot for the arm-level and hypermean parameters, which mixed
-poorly in the centered model.
+analytic Cholesky factor for each correlated pair. The generated
+standard-normal hypermean nodes use a reserved `z_mu_` prefix, keeping them
+distinct from public hypermeans even for pool-name pairs such as `"x"` and
+`"x_z"`. This helps to increase the effective sample size (ESS) a lot for the
+arm-level and hypermean parameters, which mixed poorly in the centered model.
 
 ## Comparison of model code
 

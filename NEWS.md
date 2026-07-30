@@ -10,9 +10,11 @@
 
 * `HierarchicalModel` now compiles exchangeable normal priors in non-centered
   form for JAGS, including analytic Cholesky transformations for correlated
-  parameter pairs. In the `comparison_decider` example, this increased the
-  minimum effective sample size across monitored parameters from approximately
-  450 to 47,000 for 100,000 retained draws, without increasing runtime.
+  parameter pairs. Non-centered hypermean nodes use a reserved `z_mu_` prefix
+  so pool names such as `"x"` and `"x_z"` cannot generate conflicting JAGS
+  nodes. In the `comparison_decider` example, this increased the minimum
+  effective sample size across monitored parameters from approximately 450 to
+  47,000 for 100,000 retained draws, without increasing runtime.
 
 * `HierarchicalModel` and `HierarchicalDesign` now support exchangeable
   `"eta"` pools for `TwoDrugsCombo` arms. Each combination arm retains its own

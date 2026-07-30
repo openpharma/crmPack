@@ -354,7 +354,7 @@ test_that("parallel mono and combo prior compiles generically", {
   expect_true(all(
     c(
       "eta_combo",
-      "mu_drug1_intercept_z",
+      "z_mu_drug1_intercept",
       "tau_drug2_slope"
     ) %in%
       names(inits)
@@ -498,7 +498,7 @@ test_that("hierarchical pool priors can be customized", {
   expect_true(grepl(
     paste0(
       "mu_drug1_intercept<-mu_drug1_intercept_mean\\+",
-      "mu_drug1_intercept_sd\\*mu_drug1_intercept_z"
+      "mu_drug1_intercept_sd\\*z_mu_drug1_intercept"
     ),
     body_priormodel,
     fixed = FALSE
@@ -513,6 +513,52 @@ test_that("hierarchical pool priors can be customized", {
   expect_equal(prior_specs$tau_drug1_slope_meanlog, log(0.125))
   expect_equal(prior_specs$tau_drug1_slope_sdlog, log(2) / 1.96)
   expect_false("kappa_hier" %in% names(prior_specs))
+})
+
+test_that("non-centered hypermean nodes cannot collide with pool hypermeans", {
+  model <- HierarchicalModel(
+    my_mono = local_hierarchical_mono_model(),
+    my_combo = local_hierarchical_combo_model(),
+    exchangeable_parameters = list(
+      x = list(
+        my_mono = "alpha0",
+        my_combo = "alpha0[1]"
+      ),
+      x_z = list(
+        my_mono = "alpha1",
+        my_combo = "alpha1[1]"
+      )
+    )
+  )
+  body_priormodel <- gsub(
+    "\\s+",
+    "",
+    paste(deparse(body(model@priormodel)), collapse = "\n")
+  )
+  data <- local_hierarchical_data()
+  inits <- model@init(arms = data@arms)
+
+  expect_match(body_priormodel, "z_mu_x~dnorm\\(0,1\\)")
+  expect_match(
+    body_priormodel,
+    "mu_x_z<-mu_x_z_mean\\+mu_x_z_sd\\*z_mu_x_z"
+  )
+  expect_subset(c("z_mu_x", "z_mu_x_z"), names(inits))
+  expect_false(any(c("mu_x", "mu_x_z") %in% names(inits)))
+
+  samples <- mcmc(
+    data = data,
+    model = model,
+    options = McmcOptions(
+      burnin = 10L,
+      step = 1L,
+      samples = 20L,
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 12345L
+    )
+  )
+  expect_s4_class(samples, "HierarchicalSamples")
+  expect_subset(c("mu_x", "mu_x_z"), names(samples@data))
 })
 
 test_that("interaction parameters support a singleton hierarchical pool", {

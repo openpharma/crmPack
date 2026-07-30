@@ -529,6 +529,18 @@ h_hierarchical_pool_hyperprior_specs <- function(
   )
 }
 
+#' Name a Non-Centered Hypermean Node
+#'
+#' @param pool_name (`string`)\cr hierarchical pool name.
+#'
+#' @return A character scalar naming the pool's standard-normal hypermean node.
+#'
+#' @keywords internal
+#' @noRd
+h_hierarchical_noncentered_mu_node <- function(pool_name) {
+  paste0("z_mu_", h_hierarchical_safe_name(pool_name))
+}
+
 #' Get Pool-Specific Hyperprior Lines
 #'
 #' @param pool_name (`string`)\cr pool name.
@@ -540,7 +552,7 @@ h_hierarchical_pool_hyperprior_specs <- function(
 h_hierarchical_pool_hyperprior_lines <- function(pool_name) {
   safe_pool <- h_hierarchical_safe_name(pool_name)
   mu_name <- paste0("mu_", safe_pool)
-  mu_z_name <- paste0(mu_name, "_z")
+  mu_z_name <- h_hierarchical_noncentered_mu_node(pool_name)
   tau_name <- paste0("tau_", safe_pool)
 
   c(
@@ -1231,7 +1243,7 @@ h_hierarchical_compile_init <- function(
 
     for (pool_name in names(parameter_pools)) {
       safe_pool <- h_hierarchical_safe_name(pool_name)
-      init[[paste0("mu_", safe_pool, "_z")]] <- 0
+      init[[h_hierarchical_noncentered_mu_node(pool_name)]] <- 0
       init[[paste0("tau_", safe_pool)]] <- 0.5
     }
     for (correlation_name in names(pool_correlations)) {
