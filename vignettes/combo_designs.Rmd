@@ -253,7 +253,7 @@ combo_model2@datamodel
 #>         y[i] ~ dbern(p[i])
 #>     }
 #> }
-#> <environment: 0x7a652b690>
+#> <environment: 0xc1296f620>
 ```
 
 The prior is as follows:
@@ -277,7 +277,7 @@ combo_model2@priormodel
 #>     log_eta ~ dnorm(eta_gamma, eta_tau)
 #>     eta <- exp(log_eta)
 #> }
-#> <environment: 0x7a9b6ec80>
+#> <environment: 0xc0f85c858>
 ```
 
 So everything looks as expected. Note that for the interaction term `crmPack` uses the normalized dose $x_1/x_1^{*}$ for drug 1, while it just uses the raw dose $x_2$ for drug 2, because it sees that there is no normalized dose concept available for the `LogisticKadane` model.
@@ -435,7 +435,7 @@ hierarchical_model@datamodel
 #>         y_combo[i] ~ dbern(p_combo[i])
 #>     }
 #> }
-#> <environment: 0x7a82ea040>
+#> <environment: 0xc035d95e8>
 ```
 
 The prior is as follows:
@@ -443,8 +443,7 @@ The prior is as follows:
 
 ``` r
 hierarchical_model@priormodel
-#> function () 
-#> {
+#> function() {
 #>     alpha0_mono_drug1 <- theta_mono_drug1[1]
 #>     alpha1_mono_drug1 <- exp(theta_mono_drug1[2])
 #>     alpha0_mono_drug2 <- theta_mono_drug2[1]
@@ -457,57 +456,43 @@ hierarchical_model@priormodel
 #>     alpha0_combo[2L] <- alpha0_drug2_combo
 #>     alpha1_combo[1L] <- alpha1_drug1_combo
 #>     alpha1_combo[2L] <- alpha1_drug2_combo
-#>     theta_mono_drug1[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[, 
-#>         ])
-#>     theta_drug1_combo[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[, 
-#>         ])
-#>     mu_drug1_corr[1] <- mu_drug1_intercept
-#>     mu_drug1_corr[2] <- mu_drug1_slope
-#>     rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)
-#>     prec_drug1_corr[1, 1] <- 1/(pow(tau_drug1_intercept, 2) * 
-#>         (1 - pow(rho_drug1, 2)))
-#>     prec_drug1_corr[2, 2] <- 1/(pow(tau_drug1_slope, 2) * (1 - 
-#>         pow(rho_drug1, 2)))
-#>     prec_drug1_corr[1, 2] <- -rho_drug1/(tau_drug1_intercept * 
-#>         tau_drug1_slope * (1 - pow(rho_drug1, 2)))
-#>     prec_drug1_corr[2, 1] <- prec_drug1_corr[1, 2]
-#>     mu_drug1_intercept ~ dnorm(mu_drug1_intercept_mean, pow(mu_drug1_intercept_sd, 
-#>         -2))
-#>     tau_drug1_intercept ~ dlnorm(tau_drug1_intercept_meanlog, 
-#>         pow(tau_drug1_intercept_sdlog, -2))
-#>     mu_drug1_slope ~ dnorm(mu_drug1_slope_mean, pow(mu_drug1_slope_sd, 
-#>         -2))
-#>     tau_drug1_slope ~ dlnorm(tau_drug1_slope_meanlog, pow(tau_drug1_slope_sdlog, 
-#>         -2))
-#>     theta_mono_drug2[1:2] ~ dmnorm(mu_drug2_corr[], prec_drug2_corr[, 
-#>         ])
-#>     theta_drug2_combo[1:2] ~ dmnorm(mu_drug2_corr[], prec_drug2_corr[, 
-#>         ])
-#>     mu_drug2_corr[1] <- mu_drug2_intercept
-#>     mu_drug2_corr[2] <- mu_drug2_slope
-#>     rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)
-#>     prec_drug2_corr[1, 1] <- 1/(pow(tau_drug2_intercept, 2) * 
-#>         (1 - pow(rho_drug2, 2)))
-#>     prec_drug2_corr[2, 2] <- 1/(pow(tau_drug2_slope, 2) * (1 - 
-#>         pow(rho_drug2, 2)))
-#>     prec_drug2_corr[1, 2] <- -rho_drug2/(tau_drug2_intercept * 
-#>         tau_drug2_slope * (1 - pow(rho_drug2, 2)))
-#>     prec_drug2_corr[2, 1] <- prec_drug2_corr[1, 2]
-#>     mu_drug2_intercept ~ dnorm(mu_drug2_intercept_mean, pow(mu_drug2_intercept_sd, 
-#>         -2))
-#>     tau_drug2_intercept ~ dlnorm(tau_drug2_intercept_meanlog, 
-#>         pow(tau_drug2_intercept_sdlog, -2))
-#>     mu_drug2_slope ~ dnorm(mu_drug2_slope_mean, pow(mu_drug2_slope_sd, 
-#>         -2))
-#>     tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, 
-#>         -2))
-#>     eta_combo ~ dnorm(mu_interaction, pow(tau_interaction, -2))
-#>     mu_interaction ~ dnorm(mu_interaction_mean, pow(mu_interaction_sd, 
-#>         -2))
-#>     tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, 
-#>         -2))
+#> theta_mono_drug1_z[1] ~ dnorm(0, 1)
+#> theta_mono_drug1_z[2] ~ dnorm(0, 1)
+#> theta_mono_drug1[1] <- mu_drug1_intercept + tau_drug1_intercept * theta_mono_drug1_z[1]
+#> theta_mono_drug1[2] <- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_mono_drug1_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_mono_drug1_z[2])
+#> theta_drug1_combo_z[1] ~ dnorm(0, 1)
+#> theta_drug1_combo_z[2] ~ dnorm(0, 1)
+#> theta_drug1_combo[1] <- mu_drug1_intercept + tau_drug1_intercept * theta_drug1_combo_z[1]
+#> theta_drug1_combo[2] <- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_drug1_combo_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_drug1_combo_z[2])
+#> rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)
+#> z_mu_drug1_intercept ~ dnorm(0, 1)
+#> mu_drug1_intercept <- mu_drug1_intercept_mean + mu_drug1_intercept_sd * z_mu_drug1_intercept
+#> tau_drug1_intercept ~ dlnorm(tau_drug1_intercept_meanlog, pow(tau_drug1_intercept_sdlog, -2))
+#> z_mu_drug1_slope ~ dnorm(0, 1)
+#> mu_drug1_slope <- mu_drug1_slope_mean + mu_drug1_slope_sd * z_mu_drug1_slope
+#> tau_drug1_slope ~ dlnorm(tau_drug1_slope_meanlog, pow(tau_drug1_slope_sdlog, -2))
+#> theta_mono_drug2_z[1] ~ dnorm(0, 1)
+#> theta_mono_drug2_z[2] ~ dnorm(0, 1)
+#> theta_mono_drug2[1] <- mu_drug2_intercept + tau_drug2_intercept * theta_mono_drug2_z[1]
+#> theta_mono_drug2[2] <- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_mono_drug2_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_mono_drug2_z[2])
+#> theta_drug2_combo_z[1] ~ dnorm(0, 1)
+#> theta_drug2_combo_z[2] ~ dnorm(0, 1)
+#> theta_drug2_combo[1] <- mu_drug2_intercept + tau_drug2_intercept * theta_drug2_combo_z[1]
+#> theta_drug2_combo[2] <- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_drug2_combo_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_drug2_combo_z[2])
+#> rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)
+#> z_mu_drug2_intercept ~ dnorm(0, 1)
+#> mu_drug2_intercept <- mu_drug2_intercept_mean + mu_drug2_intercept_sd * z_mu_drug2_intercept
+#> tau_drug2_intercept ~ dlnorm(tau_drug2_intercept_meanlog, pow(tau_drug2_intercept_sdlog, -2))
+#> z_mu_drug2_slope ~ dnorm(0, 1)
+#> mu_drug2_slope <- mu_drug2_slope_mean + mu_drug2_slope_sd * z_mu_drug2_slope
+#> tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, -2))
+#> eta_combo_z ~ dnorm(0, 1)
+#> eta_combo <- mu_interaction + tau_interaction * eta_combo_z
+#> z_mu_interaction ~ dnorm(0, 1)
+#> mu_interaction <- mu_interaction_mean + mu_interaction_sd * z_mu_interaction
+#> tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, -2))
 #> }
-#> <environment: 0x7accb4b68>
+#> <environment: 0xc105169a8>
 ```
 
 ### Design implementation
@@ -623,19 +608,19 @@ summary(hierarchical_sims, truth = list(
 #> Target dose interval corresponding to this was 32.7, 42.3 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 14 (3, 21) 
-#> Number of patients treated above target tox interval : mean 2 (0, 6) 
-#> Proportions of DLTs in the trials : mean 16 % (0 %, 29 %) 
-#> Mean toxicity risks for the patients on active : mean 13 % (4 %, 23 %) 
-#> Doses selected as MTD : mean 20.2 (0, 36.5) 
-#> True toxicity at doses selected : mean 15 % (2 %, 26 %) 
-#> Proportion of trials selecting target MTD: 20 %
-#> Dose most often selected as MTD: 0 
-#> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean NA % (NA %, NA %) 
+#> Number of patients overall : mean 21 (21, 21) 
+#> Number of patients treated above target tox interval : mean 3 (0, 9) 
+#> Proportions of DLTs in the trials : mean 20 % (14 %, 29 %) 
+#> Mean toxicity risks for the patients on active : mean 18 % (8 %, 28 %) 
+#> Doses selected as MTD : mean 31.8 (20, 40.5) 
+#> True toxicity at doses selected : mean 21 % (8 %, 32 %) 
+#> Proportion of trials selecting target MTD: 35 %
+#> Dose most often selected as MTD: 30 
+#> Observed toxicity rate at dose most often selected: 19 %
+#> Fitted toxicity rate at dose most often selected : mean 25 % (15 %, 34 %) 
 #> Stop reason triggered:
-#>  ≥ 20 patients dosed :  60 %
-#>  Stopped because of missing dose :  40 %
+#>  ≥ 20 patients dosed :  100 %
+#>  Stopped because of missing dose :  0 %
 #> 
 #> Arm: mono_drug2 
 #> Summary of 20 simulations
@@ -644,35 +629,35 @@ summary(hierarchical_sims, truth = list(
 #> Target dose interval corresponding to this was 43.6, NA 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 18 (3, 21) 
+#> Number of patients overall : mean 21 (21, 21) 
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
-#> Proportions of DLTs in the trials : mean 17 % (5 %, 33 %) 
-#> Mean toxicity risks for the patients on active : mean 15 % (6 %, 20 %) 
-#> Doses selected as MTD : mean 37.8 (0, 50) 
-#> True toxicity at doses selected : mean 19 % (2 %, 27 %) 
-#> Proportion of trials selecting target MTD: 55 %
+#> Proportions of DLTs in the trials : mean 13 % (5 %, 20 %) 
+#> Mean toxicity risks for the patients on active : mean 15 % (7 %, 24 %) 
+#> Doses selected as MTD : mean 44.5 (34.5, 50) 
+#> True toxicity at doses selected : mean 22 % (13 %, 27 %) 
+#> Proportion of trials selecting target MTD: 75 %
 #> Dose most often selected as MTD: 50 
-#> Observed toxicity rate at dose most often selected: 30 %
-#> Fitted toxicity rate at dose most often selected : mean 26 % (9 %, 45 %) 
+#> Observed toxicity rate at dose most often selected: 15 %
+#> Fitted toxicity rate at dose most often selected : mean 23 % (8 %, 44 %) 
 #> Stop reason triggered:
-#>  ≥ 20 patients dosed :  85 %
-#>  Stopped because of missing dose :  15 %
+#>  ≥ 20 patients dosed :  100 %
+#>  Stopped because of missing dose :  0 %
 #> 
 #> Arm: combo 
 #> Summary of 20 combination simulations
 #> 
-#> Number of patients overall : mean 17 (3, 21) 
-#> Proportions of DLTs in the trials : mean 24 % (14 %, 33 %) 
-#> Mean toxicity risks from fitted surfaces : mean 42 % (13 %, 85 %) 
-#> Selected dose for drug 1: mean 13.2 (0, 30) 
-#> Selected dose for drug 2: mean 15 (0, 35) 
+#> Number of patients overall : mean 19 (19, 21) 
+#> Proportions of DLTs in the trials : mean 25 % (14 %, 33 %) 
+#> Mean toxicity risks from fitted surfaces : mean 50 % (28 %, 72 %) 
+#> Selected dose for drug 1: mean 18.2 (9, 30) 
+#> Selected dose for drug 2: mean 13 (9, 20.5) 
 #> Target toxicity interval was 20, 35 %
-#> True toxicity at selected combinations : mean 21 % (2 %, 34 %) 
-#> Proportion of trials selecting target combination: 25 %
-#> Most frequently selected combination: 0, 0 
-#> Observed toxicity rate at most selected combination: NA %
+#> True toxicity at selected combinations : mean 21 % (10 %, 33 %) 
+#> Proportion of trials selecting target combination: 40 %
+#> Most frequently selected combination: 20, 10 
+#> Observed toxicity rate at most selected combination: 23.3 %
 #> Stop reason triggered:
-#>  ≥ 20 patients dosed :  75 %
+#>  ≥ 20 patients dosed :  90 %
 ```
 
 It is also possible to extract the arm specific simulations to produce separate plots etc.:
@@ -767,7 +752,7 @@ immediate-opening condition. Conditions can be combined with `&` and `|` logic:
 design_arm_combo_delayed <- DesignArm(
   name = "combo",
   design = design_combo,
-  open_when = ArmMinDoseCondition("mono_drug1", min_dose = 20) & 
+  open_when = ArmMinDoseCondition("mono_drug1", min_dose = 20) &
     ArmMinDoseCondition("mono_drug2", min_dose = 20)
 )
 
@@ -826,12 +811,14 @@ fixed_scenario <- HierarchicalData(
   ),
   combo = DataCombo(
     x = matrix(
-      c(10, 10,
+      c(
         10, 10,
-        10, 10, 
+        10, 10,
+        10, 10,
         10, 20,
         10, 20,
-        10, 20),
+        10, 20
+      ),
       ncol = 2,
       byrow = TRUE
     ),
