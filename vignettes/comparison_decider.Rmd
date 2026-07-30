@@ -71,8 +71,8 @@ The overall dose grid for combination Arm B is therefore:
 
 ``` r
 doses_of_interest <- rbind(
-    c(d1, rep(d1, times = length(d2))),
-    c(rep(0, length(d1)), rep(d2, each = length(d1)))
+  c(d1, rep(d1, times = length(d2))),
+  c(rep(0, length(d1)), rep(d2, each = length(d1)))
 )
 ```
 
@@ -97,11 +97,13 @@ The prior for the hypermeans is specified like this:
 
 ``` r
 #                Parameter   Mean         SD
-prior_mu <- list(mu_a1  =  c(logit(0.33), 2),
-                 mu_b1  =  c(0,           1), # standard normal
-                 mu_a2  =  c(logit(0.33), 2),
-                 mu_b2  =  c(0,           1), # standard normal
-                 mu_eta =  c(0,           1.121))
+prior_mu <- list(
+  mu_a1 = c(logit(0.33), 2),
+  mu_b1 = c(0, 1), # standard normal
+  mu_a2 = c(logit(0.33), 2),
+  mu_b2 = c(0, 1), # standard normal
+  mu_eta = c(0, 1.121)
+)
 ```
 
 The prior mean for $\mu_{\alpha_{1}}$ is set to $\text{logit}(0.33)$, which implies that we assume the reference dose has a prior median DLT rate of 33%.
@@ -113,11 +115,13 @@ The prior for the between-trial heterogeneity parameters is specified like this:
 
 ``` r
 #                 Parameter    Mean        SD
-prior_tau <- list(tau_a1  =  c(log(0.25),  log(2) / 1.96),
-                  tau_b1  =  c(log(0.125), log(2) / 1.96),
-                  tau_a2  =  c(log(0.25),  log(2) / 1.96),
-                  tau_b2  =  c(log(0.125), log(2) / 1.96),
-                  tau_eta =  c(log(0.125), log(2) / 1.96))
+prior_tau <- list(
+  tau_a1 = c(log(0.25), log(2) / 1.96),
+  tau_b1 = c(log(0.125), log(2) / 1.96),
+  tau_a2 = c(log(0.25), log(2) / 1.96),
+  tau_b2 = c(log(0.125), log(2) / 1.96),
+  tau_eta = c(log(0.125), log(2) / 1.96)
+)
 ```
 
 These are all the log normal prior parameters for the corresponding $\tau$ parameters. These are all "moderate" degrees of heterogeneity, according to @Neuenschwander2015.
@@ -131,7 +135,7 @@ scenario1 <- list(
   dose2 = c(0, 0),
   n.pat = c(3, 3),
   n.dlt = c(0, 1),
-  trial = c("A",  "A")
+  trial = c("A", "A")
 )
 ```
 
@@ -181,7 +185,7 @@ result1
 #> 3.6+0     0.63383
 #> 5+0       0.68054
 #> 6+0       0.70327
-#>
+#> 
 #> $`trial-B`
 #>           mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
 #> 0.1+8  0.18532 0.12574 0.02792 0.15549 0.50891     0.51642        0.35703
@@ -234,39 +238,39 @@ the summaries in `result1` were calculated.
 
 ``` r
 decider_data <- list(
-    dose1 = c(historical_data$dose1, scenario1$dose1),
-    dose2 = c(historical_data$dose2, scenario1$dose2),
-    n.pat = c(historical_data$n.pat, scenario1$n.pat),
-    n.dlt = c(historical_data$n.dlt, scenario1$n.dlt),
-    trial = c(historical_data$trial, scenario1$trial)
+  dose1 = c(historical_data$dose1, scenario1$dose1),
+  dose2 = c(historical_data$dose2, scenario1$dose2),
+  n.pat = c(historical_data$n.pat, scenario1$n.pat),
+  n.dlt = c(historical_data$n.dlt, scenario1$n.dlt),
+  trial = c(historical_data$trial, scenario1$trial)
 )
 decider_trial <- factor(decider_data$trial)
 decider_study_index <- c(
-    A = match("A", levels(decider_trial)),
-    B = nlevels(decider_trial) + 1L,
-    C = match("H1", levels(decider_trial))
+  A = match("A", levels(decider_trial)),
+  B = nlevels(decider_trial) + 1L,
+  C = match("H1", levels(decider_trial))
 )
 
 set.seed(3819)
 decider_internal_seed <- sample.int(.Machine$integer.max, 1)
 decider_samples <- decider:::sampling_jointBLRM(
-    dose1 = decider_data$dose1,
-    dose2 = decider_data$dose2,
-    dose.ref1 = dose_ref1,
-    dose.ref2 = dose_ref2,
-    n.pat = decider_data$n.pat,
-    n.dlt = decider_data$n.dlt,
-    n.study = as.integer(decider_trial),
-    MAP.prior = TRUE,
-    prior.mu = prior_mu,
-    prior.tau = prior_tau,
-    iter = 26000,
-    warmup = 1000,
-    refresh = 0,
-    adapt_delta = 0.8,
-    max_treedepth = 15,
-    chains = 4,
-    seed = decider_internal_seed
+  dose1 = decider_data$dose1,
+  dose2 = decider_data$dose2,
+  dose.ref1 = dose_ref1,
+  dose.ref2 = dose_ref2,
+  n.pat = decider_data$n.pat,
+  n.dlt = decider_data$n.dlt,
+  n.study = as.integer(decider_trial),
+  MAP.prior = TRUE,
+  prior.mu = prior_mu,
+  prior.tau = prior_tau,
+  iter = 26000,
+  warmup = 1000,
+  refresh = 0,
+  adapt_delta = 0.8,
+  max_treedepth = 15,
+  chains = 4,
+  seed = decider_internal_seed
 )
 ```
 
@@ -301,9 +305,9 @@ And for compound 2 the same:
 
 ``` r
 mono_model2 <- LogisticLogNormal(
-    mean = c(logit(0.33), 0),
-    cov = diag(c(2, 1)^2),
-    ref_dose = dose_ref2
+  mean = c(logit(0.33), 0),
+  cov = diag(c(2, 1)^2),
+  ref_dose = dose_ref2
 )
 ```
 
@@ -312,12 +316,12 @@ Then we define the combination model:
 
 ``` r
 combo_model <- TwoDrugsCombo(
-    list(
-        compound1 = mono_model1,
-        compound2 = mono_model2
-    ),
-    gamma = 0, # prior mean for the interaction parameter
-    tau = 1 / (1.121^2) # prior precision for the interaction parameter
+  list(
+    compound1 = mono_model1,
+    compound2 = mono_model2
+  ),
+  gamma = 0, # prior mean for the interaction parameter
+  tau = 1 / (1.121^2) # prior precision for the interaction parameter
 )
 ```
 
@@ -326,15 +330,15 @@ We define the historical data which is already available:
 
 ``` r
 hist_data_comp2 <- Data(
-    x = rep(historical_data$dose2, historical_data$n.pat),
-    y = unlist(Map(
-        function(n_pat, n_dlt) {
-            c(rep(0, n_pat - n_dlt), rep(1, n_dlt))
-        },
-        historical_data$n.pat,
-        historical_data$n.dlt
-    )),
-    doseGrid = historical_data$dose2
+  x = rep(historical_data$dose2, historical_data$n.pat),
+  y = unlist(Map(
+    function(n_pat, n_dlt) {
+      c(rep(0, n_pat - n_dlt), rep(1, n_dlt))
+    },
+    historical_data$n.pat,
+    historical_data$n.dlt
+  )),
+  doseGrid = historical_data$dose2
 )
 hist_data_comp2
 ```
@@ -547,9 +551,9 @@ We are going to use simple rules here (they are not relevant for the current sce
 my_stopping <- StoppingMinPatients(nPatients = 50)
 my_increments <- IncrementsRelative(0, 2)
 myNextBest <- NextBestNCRM(
-    target = c(0.16, 0.33),
-    overdose = c(0.33, 1),
-    max_overdose_prob = 0.25
+  target = c(0.16, 0.33),
+  overdose = c(0.33, 1),
+  max_overdose_prob = 0.25
 )
 my_cohort_size <- CohortSizeConst(size = 3)
 my_increments_combo <- IncrementsComboOneDrugOnly()
@@ -560,36 +564,36 @@ Then we define the design arms accordingly:
 
 ``` r
 designArmA <- DesignArm(
-    "A",
-    design = Design(
-        data = Data(doseGrid = d1),
-        startingDose = d1[1],
-        model = mono_model1,
-        stopping = my_stopping,
-        increments = my_increments,
-        nextBest = myNextBest,
-        cohort_size = my_cohort_size
-    )
+  "A",
+  design = Design(
+    data = Data(doseGrid = d1),
+    startingDose = d1[1],
+    model = mono_model1,
+    stopping = my_stopping,
+    increments = my_increments,
+    nextBest = myNextBest,
+    cohort_size = my_cohort_size
+  )
 )
 
 designArmB <- DesignArm(
-    "B",
-    design = DesignCombo(
-        data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
-        startingDose = c(compound1 = d1[1], compound2 = 0),
-        model = combo_model,
-        stopping = my_stopping,
-        increments = my_increments_combo,
-        nextBest = myNextBest,
-        cohort_size = my_cohort_size
-    ),
-    open_when = ArmMinDoseCondition("A", min_dose = d1[2])
+  "B",
+  design = DesignCombo(
+    data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
+    startingDose = c(compound1 = d1[1], compound2 = 0),
+    model = combo_model,
+    stopping = my_stopping,
+    increments = my_increments_combo,
+    nextBest = myNextBest,
+    cohort_size = my_cohort_size
+  ),
+  open_when = ArmMinDoseCondition("A", min_dose = d1[2])
 )
 
 designArmC <- HistoricalArm(
-    "C",
-    data = hist_data_comp2,
-    model = mono_model2
+  "C",
+  data = hist_data_comp2,
+  model = mono_model2
 )
 ```
 
@@ -598,58 +602,72 @@ Now we can define the hierarchical design:
 
 ``` r
 design_hierarchical <- HierarchicalDesign(
-    designArmA,
-    designArmB,
-    designArmC,
-    exchangeable_parameters = list(
-        comp1_intercept = list(
-            A = "alpha0",
-            B = "alpha0[1]"
-        ),
-        comp1_slope = list(
-            A = "alpha1",
-            B = "alpha1[1]"
-        ),
-        comp2_intercept = list(
-            B = "alpha0[2]",
-            C = "alpha0"
-        ),
-        comp2_slope = list(
-            B = "alpha1[2]",
-            C = "alpha1"
-        ),
-        eta = list(
-            B = "eta"
-        )
+  designArmA,
+  designArmB,
+  designArmC,
+  exchangeable_parameters = list(
+    comp1_intercept = list(
+      A = "alpha0",
+      B = "alpha0[1]"
     ),
-    pool_correlations = list(
-        comp1 = c("comp1_intercept", "comp1_slope"),
-        comp2 = c("comp2_intercept", "comp2_slope")
+    comp1_slope = list(
+      A = "alpha1",
+      B = "alpha1[1]"
     ),
-    pool_priors = list(
-        comp1_intercept = list(
-            mu = prior_mu$mu_a1,
-            tau = prior_tau$tau_a1
-        ),
-        comp1_slope = list(
-            mu = prior_mu$mu_b1,
-            tau = prior_tau$tau_b1
-        ),
-        comp2_intercept = list(
-            mu = prior_mu$mu_a2,
-            tau = prior_tau$tau_a2
-        ),
-        comp2_slope = list(
-            mu = prior_mu$mu_b2,
-            tau = prior_tau$tau_b2
-        ),
-        eta = list(
-            mu = prior_mu$mu_eta,
-            tau = prior_tau$tau_eta
-        )
+    comp2_intercept = list(
+      B = "alpha0[2]",
+      C = "alpha0"
+    ),
+    comp2_slope = list(
+      B = "alpha1[2]",
+      C = "alpha1"
+    ),
+    eta = list(
+      B = "eta"
     )
+  ),
+  pool_correlations = list(
+    comp1 = c("comp1_intercept", "comp1_slope"),
+    comp2 = c("comp2_intercept", "comp2_slope")
+  ),
+  pool_priors = list(
+    comp1_intercept = list(
+      mu = prior_mu$mu_a1,
+      tau = prior_tau$tau_a1
+    ),
+    comp1_slope = list(
+      mu = prior_mu$mu_b1,
+      tau = prior_tau$tau_b1
+    ),
+    comp2_intercept = list(
+      mu = prior_mu$mu_a2,
+      tau = prior_tau$tau_a2
+    ),
+    comp2_slope = list(
+      mu = prior_mu$mu_b2,
+      tau = prior_tau$tau_b2
+    ),
+    eta = list(
+      mu = prior_mu$mu_eta,
+      tau = prior_tau$tau_eta
+    )
+  )
 )
 ```
+
+The interaction parameter is included in its own exchangeable pool. Thus each
+combination arm has a separate interaction parameter $\eta_j$, conditionally
+distributed as
+
+$$
+\eta_j \mid \mu_\eta, \tau_\eta \sim
+\textrm{Normal}(\mu_\eta, \tau_\eta^2),
+$$
+
+with the same hyperpriors for $\mu_\eta$ and $\tau_\eta$ as in `decider`. A
+one-member pool is used here because there is only one combination arm; with
+multiple combination arms the same definition gives each arm its own
+interaction parameter while allowing exchangeable borrowing between them.
 
 Note that each entry in `pool_correlations` can correlate exactly two scalar
 exchangeable parameter pools. In this example, `comp1` correlates the compound 1
@@ -662,13 +680,13 @@ Then we define the scenario:
 
 ``` r
 scenario_hierarchical <- HierarchicalData(
-    A = Data(
-        x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
-        y = c(0, 0, 0, 0, 0, 1),
-        doseGrid = designArmA@design@data@doseGrid
-    ),
-    B = designArmB@design@data,
-    C = designArmC@design@data
+  A = Data(
+    x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
+    y = c(0, 0, 0, 0, 0, 1),
+    doseGrid = designArmA@design@data@doseGrid
+  ),
+  B = designArmB@design@data,
+  C = designArmC@design@data
 )
 ```
 
@@ -677,15 +695,15 @@ And then we can use the `scenario()` function:
 
 ``` r
 result1CrmPack <- scenario(
-    design_hierarchical,
-    data = scenario_hierarchical,
-    mcmcOptions = McmcOptions(
-        burnin = 20000,
-        step = 2,
-        samples = 100000,
-        rng_kind = "Mersenne-Twister",
-        rng_seed = 3819
-    )
+  design_hierarchical,
+  data = scenario_hierarchical,
+  mcmcOptions = McmcOptions(
+    burnin = 20000,
+    step = 2,
+    samples = 100000,
+    rng_kind = "Mersenne-Twister",
+    rng_seed = 3819
+  )
 )
 ```
 
@@ -705,7 +723,7 @@ result1CrmPack$fit
 #> 7  3.6 0.4507303 0.048607949 0.9250483
 #> 8  5.0 0.4883849 0.055278969 0.9497937
 #> 9  6.0 0.5085354 0.059025056 0.9600121
-#>
+#> 
 #> $B
 #>    compound1 compound2    middle       lower     upper
 #> 1        0.1         0 0.1182987 0.001874605 0.4559461
@@ -735,7 +753,7 @@ result1CrmPack$fit
 #> 25       3.6        12 0.5124794 0.086888993 0.9519413
 #> 26       5.0        12 0.5433086 0.069807168 0.9736904
 #> 27       6.0        12 0.5583265 0.056910280 0.9823670
-#>
+#> 
 #> $C
 #>   dose     middle        lower     upper
 #> 1    2 0.02460650 4.793384e-06 0.1133971
@@ -808,95 +826,95 @@ crm_samples_C <- armSamples(result1CrmPack$samples, "C")
 # Thin only for plotting; all retained draws are still used in the tables.
 n_plot_draws <- 5000L
 decider_plot_index <- unique(round(seq(
-    1,
-    nrow(decider_samples),
-    length.out = min(n_plot_draws, nrow(decider_samples))
+  1,
+  nrow(decider_samples),
+  length.out = min(n_plot_draws, nrow(decider_samples))
 )))
 crm_plot_index <- unique(round(seq(
-    1,
-    length(crm_samples_A@data$alpha0),
-    length.out = min(n_plot_draws, length(crm_samples_A@data$alpha0))
+  1,
+  length(crm_samples_A@data$alpha0),
+  length.out = min(n_plot_draws, length(crm_samples_A@data$alpha0))
 )))
 
 parameter_labels <- c(
-    "Arm A: compound 1 intercept",
-    "Arm A: compound 1 slope",
-    "Arm B: compound 1 intercept",
-    "Arm B: compound 1 slope",
-    "Arm B: compound 2 intercept",
-    "Arm B: compound 2 slope",
-    "Arm B: interaction",
-    "Arm C: compound 2 intercept",
-    "Arm C: compound 2 slope"
+  "Arm A: compound 1 intercept",
+  "Arm A: compound 1 slope",
+  "Arm B: compound 1 intercept",
+  "Arm B: compound 1 slope",
+  "Arm B: compound 2 intercept",
+  "Arm B: compound 2 slope",
+  "Arm B: interaction",
+  "Arm C: compound 2 intercept",
+  "Arm C: compound 2 slope"
 )
 
 decider_parameter_draws <- data.frame(
-    implementation = "decider",
-    parameter = rep(parameter_labels, each = length(decider_plot_index)),
-    value = c(
-        decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,1]", decider_study_index["A"])
-        ],
-        exp(decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,2]", decider_study_index["A"])
-        ]),
-        decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,1]", decider_study_index["B"])
-        ],
-        exp(decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,2]", decider_study_index["B"])
-        ]),
-        decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,3]", decider_study_index["B"])
-        ],
-        exp(decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,4]", decider_study_index["B"])
-        ]),
-        decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,5]", decider_study_index["B"])
-        ],
-        decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,3]", decider_study_index["C"])
-        ],
-        exp(decider_samples[
-            decider_plot_index,
-            sprintf("log_ab[%i,4]", decider_study_index["C"])
-        ])
-    )
+  implementation = "decider",
+  parameter = rep(parameter_labels, each = length(decider_plot_index)),
+  value = c(
+    decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,1]", decider_study_index["A"])
+    ],
+    exp(decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,2]", decider_study_index["A"])
+    ]),
+    decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,1]", decider_study_index["B"])
+    ],
+    exp(decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,2]", decider_study_index["B"])
+    ]),
+    decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,3]", decider_study_index["B"])
+    ],
+    exp(decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,4]", decider_study_index["B"])
+    ]),
+    decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,5]", decider_study_index["B"])
+    ],
+    decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,3]", decider_study_index["C"])
+    ],
+    exp(decider_samples[
+      decider_plot_index,
+      sprintf("log_ab[%i,4]", decider_study_index["C"])
+    ])
+  )
 )
 
 crm_parameter_draws <- data.frame(
-    implementation = "crmPack",
-    parameter = rep(parameter_labels, each = length(crm_plot_index)),
-    value = c(
-        crm_samples_A@data$alpha0[crm_plot_index],
-        crm_samples_A@data$alpha1[crm_plot_index],
-        crm_samples_B@data$alpha0[crm_plot_index, 1],
-        crm_samples_B@data$alpha1[crm_plot_index, 1],
-        crm_samples_B@data$alpha0[crm_plot_index, 2],
-        crm_samples_B@data$alpha1[crm_plot_index, 2],
-        crm_samples_B@data$eta[crm_plot_index],
-        crm_samples_C@data$alpha0[crm_plot_index],
-        crm_samples_C@data$alpha1[crm_plot_index]
-    )
+  implementation = "crmPack",
+  parameter = rep(parameter_labels, each = length(crm_plot_index)),
+  value = c(
+    crm_samples_A@data$alpha0[crm_plot_index],
+    crm_samples_A@data$alpha1[crm_plot_index],
+    crm_samples_B@data$alpha0[crm_plot_index, 1],
+    crm_samples_B@data$alpha1[crm_plot_index, 1],
+    crm_samples_B@data$alpha0[crm_plot_index, 2],
+    crm_samples_B@data$alpha1[crm_plot_index, 2],
+    crm_samples_B@data$eta[crm_plot_index],
+    crm_samples_C@data$alpha0[crm_plot_index],
+    crm_samples_C@data$alpha1[crm_plot_index]
+  )
 )
 
 parameter_draws <- rbind(decider_parameter_draws, crm_parameter_draws)
 parameter_draws$implementation <- factor(
-    parameter_draws$implementation,
-    levels = c("decider", "crmPack")
+  parameter_draws$implementation,
+  levels = c("decider", "crmPack")
 )
 parameter_draws$parameter <- factor(
-    parameter_draws$parameter,
-    levels = parameter_labels
+  parameter_draws$parameter,
+  levels = parameter_labels
 )
 ```
 
@@ -905,23 +923,23 @@ First we compare the parameters for the two monotherapy arms:
 
 ``` r
 ggplot2::ggplot(
-    parameter_draws[grepl("^Arm [AC]", parameter_draws$parameter), ],
-    ggplot2::aes(
-        x = value,
-        colour = implementation,
-        fill = implementation
-    )
+  parameter_draws[grepl("^Arm [AC]", parameter_draws$parameter), ],
+  ggplot2::aes(
+    x = value,
+    colour = implementation,
+    fill = implementation
+  )
 ) +
-    ggplot2::geom_density(alpha = 0.15, linewidth = 0.6) +
-    ggplot2::facet_wrap(ggplot2::vars(parameter), scales = "free", ncol = 2) +
-    ggplot2::labs(
-        x = NULL,
-        y = "Posterior density",
-        colour = NULL,
-        fill = NULL
-    ) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(legend.position = "top")
+  ggplot2::geom_density(alpha = 0.15, linewidth = 0.6) +
+  ggplot2::facet_wrap(ggplot2::vars(parameter), scales = "free", ncol = 2) +
+  ggplot2::labs(
+    x = NULL,
+    y = "Posterior density",
+    colour = NULL,
+    fill = NULL
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "top")
 ```
 
 <div class="figure">
@@ -935,23 +953,23 @@ parameter:
 
 ``` r
 ggplot2::ggplot(
-    parameter_draws[grepl("^Arm B", parameter_draws$parameter), ],
-    ggplot2::aes(
-        x = value,
-        colour = implementation,
-        fill = implementation
-    )
+  parameter_draws[grepl("^Arm B", parameter_draws$parameter), ],
+  ggplot2::aes(
+    x = value,
+    colour = implementation,
+    fill = implementation
+  )
 ) +
-    ggplot2::geom_density(alpha = 0.15, linewidth = 0.6) +
-    ggplot2::facet_wrap(ggplot2::vars(parameter), scales = "free", ncol = 2) +
-    ggplot2::labs(
-        x = NULL,
-        y = "Posterior density",
-        colour = NULL,
-        fill = NULL
-    ) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(legend.position = "top")
+  ggplot2::geom_density(alpha = 0.15, linewidth = 0.6) +
+  ggplot2::facet_wrap(ggplot2::vars(parameter), scales = "free", ncol = 2) +
+  ggplot2::labs(
+    x = NULL,
+    y = "Posterior density",
+    colour = NULL,
+    fill = NULL
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "top")
 ```
 
 <div class="figure">
@@ -989,28 +1007,28 @@ $I\{p_{\text{DLT}} \geq 0.33\}$, so the same calculation applies.
 #'
 #' @return A data frame with posterior means, MCSEs, ESSs, and split R-hat.
 vignette_mcmc_summary <- function(draws, n_chains) {
-    draws <- as.matrix(draws)
-    storage.mode(draws) <- "double"
-    stopifnot(nrow(draws) %% n_chains == 0L)
+  draws <- as.matrix(draws)
+  storage.mode(draws) <- "double"
+  stopifnot(nrow(draws) %% n_chains == 0L)
 
-    draws_array <- array(
-        draws,
-        dim = c(nrow(draws) / n_chains, n_chains, ncol(draws)),
-        dimnames = list(
-            iteration = NULL,
-            chain = paste0("chain", seq_len(n_chains)),
-            variable = colnames(draws)
-        )
+  draws_array <- array(
+    draws,
+    dim = c(nrow(draws) / n_chains, n_chains, ncol(draws)),
+    dimnames = list(
+      iteration = NULL,
+      chain = paste0("chain", seq_len(n_chains)),
+      variable = colnames(draws)
     )
+  )
 
-    posterior::summarise_draws(
-        posterior::as_draws_array(draws_array),
-        mean = mean,
-        mcse = posterior::mcse_mean,
-        ess = posterior::ess_bulk,
-        rhat = posterior::rhat
-    ) |>
-        as.data.frame()
+  posterior::summarise_draws(
+    posterior::as_draws_array(draws_array),
+    mean = mean,
+    mcse = posterior::mcse_mean,
+    ess = posterior::ess_bulk,
+    rhat = posterior::rhat
+  ) |>
+    as.data.frame()
 }
 
 #' Compare Independent MCMC Estimates
@@ -1020,142 +1038,142 @@ vignette_mcmc_summary <- function(draws, n_chains) {
 #'
 #' @return A data frame with each estimate and uncertainty of their difference.
 vignette_compare_mcmc <- function(decider_draws, crmPack_draws) {
-    decider_summary <- vignette_mcmc_summary(decider_draws, n_chains = 4L)
-    crmPack_summary <- vignette_mcmc_summary(crmPack_draws, n_chains = 1L)
-    difference <- decider_summary$mean - crmPack_summary$mean
-    difference_mcse <- sqrt(
-        decider_summary$mcse^2 + crmPack_summary$mcse^2
-    )
+  decider_summary <- vignette_mcmc_summary(decider_draws, n_chains = 4L)
+  crmPack_summary <- vignette_mcmc_summary(crmPack_draws, n_chains = 1L)
+  difference <- decider_summary$mean - crmPack_summary$mean
+  difference_mcse <- sqrt(
+    decider_summary$mcse^2 + crmPack_summary$mcse^2
+  )
 
-    data.frame(
-        decider = decider_summary$mean,
-        crmPack = crmPack_summary$mean,
-        difference = difference,
-        difference_mcse = difference_mcse,
-        z_mcse = difference / difference_mcse,
-        decider_ess = decider_summary$ess,
-        crmPack_ess = crmPack_summary$ess,
-        decider_rhat = decider_summary$rhat,
-        crmPack_rhat = crmPack_summary$rhat
-    )
+  data.frame(
+    decider = decider_summary$mean,
+    crmPack = crmPack_summary$mean,
+    difference = difference,
+    difference_mcse = difference_mcse,
+    z_mcse = difference / difference_mcse,
+    decider_ess = decider_summary$ess,
+    crmPack_ess = crmPack_summary$ess,
+    decider_rhat = decider_summary$rhat,
+    crmPack_rhat = crmPack_summary$rhat
+  )
 }
 
 # Calculate DLT probabilities from the decider parameter draws.
 prob_samples_A_decider <- plogis(
+  outer(
+    decider_samples[
+      ,
+      sprintf("log_ab[%i,1]", decider_study_index["A"])
+    ],
+    rep(1, length(d1))
+  ) +
     outer(
-        decider_samples[
-            ,
-            sprintf("log_ab[%i,1]", decider_study_index["A"])
-        ],
-        rep(1, length(d1))
-    ) +
-        outer(
-            exp(decider_samples[
-                ,
-                sprintf("log_ab[%i,2]", decider_study_index["A"])
-            ]),
-            log(d1 / dose_ref1)
-        )
+      exp(decider_samples[
+        ,
+        sprintf("log_ab[%i,2]", decider_study_index["A"])
+      ]),
+      log(d1 / dose_ref1)
+    )
 )
 
 combo_grid <- as.matrix(expand.grid(designArmB@design@data@doseGrid))
 prob_samples_B_decider_comp1 <- plogis(
+  outer(
+    decider_samples[
+      ,
+      sprintf("log_ab[%i,1]", decider_study_index["B"])
+    ],
+    rep(1, nrow(combo_grid))
+  ) +
     outer(
-        decider_samples[
-            ,
-            sprintf("log_ab[%i,1]", decider_study_index["B"])
-        ],
-        rep(1, nrow(combo_grid))
-    ) +
-        outer(
-            exp(decider_samples[
-                ,
-                sprintf("log_ab[%i,2]", decider_study_index["B"])
-            ]),
-            log(combo_grid[, 1] / dose_ref1)
-        )
+      exp(decider_samples[
+        ,
+        sprintf("log_ab[%i,2]", decider_study_index["B"])
+      ]),
+      log(combo_grid[, 1] / dose_ref1)
+    )
 )
 prob_samples_B_decider_comp2 <- plogis(
+  outer(
+    decider_samples[
+      ,
+      sprintf("log_ab[%i,3]", decider_study_index["B"])
+    ],
+    rep(1, nrow(combo_grid))
+  ) +
     outer(
-        decider_samples[
-            ,
-            sprintf("log_ab[%i,3]", decider_study_index["B"])
-        ],
-        rep(1, nrow(combo_grid))
-    ) +
-        outer(
-            exp(decider_samples[
-                ,
-                sprintf("log_ab[%i,4]", decider_study_index["B"])
-            ]),
-            log(combo_grid[, 2] / dose_ref2)
-        )
+      exp(decider_samples[
+        ,
+        sprintf("log_ab[%i,4]", decider_study_index["B"])
+      ]),
+      log(combo_grid[, 2] / dose_ref2)
+    )
 )
 prob_samples_B_decider_independent <- prob_samples_B_decider_comp1 +
-    prob_samples_B_decider_comp2 -
-    prob_samples_B_decider_comp1 * prob_samples_B_decider_comp2
+  prob_samples_B_decider_comp2 -
+  prob_samples_B_decider_comp1 * prob_samples_B_decider_comp2
 prob_samples_B_decider <- plogis(
-    qlogis(prob_samples_B_decider_independent) +
-        outer(
-            decider_samples[
-                ,
-                sprintf("log_ab[%i,5]", decider_study_index["B"])
-            ],
-            (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
-        )
+  qlogis(prob_samples_B_decider_independent) +
+    outer(
+      decider_samples[
+        ,
+        sprintf("log_ab[%i,5]", decider_study_index["B"])
+      ],
+      (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
+    )
 )
 
 # Apply the same algebra to the crmPack parameter draws.
 prob_samples_A_formula <- plogis(
-    outer(crm_samples_A@data$alpha0, rep(1, length(d1))) +
-        outer(crm_samples_A@data$alpha1, log(d1 / dose_ref1))
+  outer(crm_samples_A@data$alpha0, rep(1, length(d1))) +
+    outer(crm_samples_A@data$alpha1, log(d1 / dose_ref1))
 )
 prob_samples_B_comp1 <- plogis(
-    outer(crm_samples_B@data$alpha0[, 1], rep(1, nrow(combo_grid))) +
-        outer(
-            crm_samples_B@data$alpha1[, 1],
-            log(combo_grid[, 1] / dose_ref1)
-        )
+  outer(crm_samples_B@data$alpha0[, 1], rep(1, nrow(combo_grid))) +
+    outer(
+      crm_samples_B@data$alpha1[, 1],
+      log(combo_grid[, 1] / dose_ref1)
+    )
 )
 prob_samples_B_comp2 <- plogis(
-    outer(crm_samples_B@data$alpha0[, 2], rep(1, nrow(combo_grid))) +
-        outer(
-            crm_samples_B@data$alpha1[, 2],
-            log(combo_grid[, 2] / dose_ref2)
-        )
+  outer(crm_samples_B@data$alpha0[, 2], rep(1, nrow(combo_grid))) +
+    outer(
+      crm_samples_B@data$alpha1[, 2],
+      log(combo_grid[, 2] / dose_ref2)
+    )
 )
 prob_samples_B_independent <- prob_samples_B_comp1 +
-    prob_samples_B_comp2 -
-    prob_samples_B_comp1 * prob_samples_B_comp2
+  prob_samples_B_comp2 -
+  prob_samples_B_comp1 * prob_samples_B_comp2
 prob_samples_B_formula <- plogis(
-    qlogis(prob_samples_B_independent) +
-        outer(
-            crm_samples_B@data$eta,
-            (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
-        )
+  qlogis(prob_samples_B_independent) +
+    outer(
+      crm_samples_B@data$eta,
+      (combo_grid[, 1] / dose_ref1) * (combo_grid[, 2] / dose_ref2)
+    )
 )
 
 colnames(prob_samples_A_decider) <- colnames(prob_samples_A_formula) <-
-    paste0("dose_", d1)
+  paste0("dose_", d1)
 colnames(prob_samples_B_decider) <- colnames(prob_samples_B_formula) <-
-    paste0("dose_", combo_grid[, 1], "_", combo_grid[, 2])
+  paste0("dose_", combo_grid[, 1], "_", combo_grid[, 2])
 
 combo_interest <- combo_grid[, 2] > 0
 mcse_A_center <- vignette_compare_mcmc(
-    prob_samples_A_decider,
-    prob_samples_A_formula
+  prob_samples_A_decider,
+  prob_samples_A_formula
 )
 mcse_A_overdose <- vignette_compare_mcmc(
-    prob_samples_A_decider >= 0.33,
-    prob_samples_A_formula > 0.33
+  prob_samples_A_decider >= 0.33,
+  prob_samples_A_formula > 0.33
 )
 mcse_B_center <- vignette_compare_mcmc(
-    prob_samples_B_decider[, combo_interest],
-    prob_samples_B_formula[, combo_interest]
+  prob_samples_B_decider[, combo_interest],
+  prob_samples_B_formula[, combo_interest]
 )
 mcse_B_overdose <- vignette_compare_mcmc(
-    prob_samples_B_decider[, combo_interest] >= 0.33,
-    prob_samples_B_formula[, combo_interest] > 0.33
+  prob_samples_B_decider[, combo_interest] >= 0.33,
+  prob_samples_B_formula[, combo_interest] > 0.33
 )
 ```
 
@@ -1171,12 +1189,12 @@ fitTrialADecider <- result1$`trial-A` |> as.data.frame()
 fitTrialACrmPack <- result1CrmPack$fit$A
 probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
 diffTrialA <- data.frame(
-    dose = fitTrialACrmPack$dose,
-    center = fitTrialADecider$mean - fitTrialACrmPack$middle,
-    lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
-    upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
-    target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
-    overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
+  dose = fitTrialACrmPack$dose,
+  center = fitTrialADecider$mean - fitTrialACrmPack$middle,
+  lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
+  upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
+  target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
+  overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
 )
 diffTrialA
 #>   dose       center         lower         upper   target overdose
@@ -1198,13 +1216,13 @@ slightly from the five-decimal `decider` summaries above.
 
 ``` r
 mcseDiffTrialA <- data.frame(
-    dose = d1,
-    center = mcse_A_center$difference,
-    center_mcse = mcse_A_center$difference_mcse,
-    center_z = mcse_A_center$z_mcse,
-    overdose = mcse_A_overdose$difference,
-    overdose_mcse = mcse_A_overdose$difference_mcse,
-    overdose_z = mcse_A_overdose$z_mcse
+  dose = d1,
+  center = mcse_A_center$difference,
+  center_mcse = mcse_A_center$difference_mcse,
+  center_z = mcse_A_center$z_mcse,
+  overdose = mcse_A_overdose$difference,
+  overdose_mcse = mcse_A_overdose$difference_mcse,
+  overdose_z = mcse_A_overdose$z_mcse
 )
 mcseDiffTrialA
 #>   dose       center  center_mcse  center_z overdose overdose_mcse overdose_z
@@ -1226,16 +1244,16 @@ And then the results for Arm B:
 fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
 fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
 probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
-    as.data.frame() |>
-    dplyr::filter(compound2 > 0)
+  as.data.frame() |>
+  dplyr::filter(compound2 > 0)
 diffTrialB <- data.frame(
-    dose1 = fitTrialBCrmPack$compound1,
-    dose2 = fitTrialBCrmPack$compound2,
-    center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
-    lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
-    upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
-    target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
-    overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
+  dose1 = fitTrialBCrmPack$compound1,
+  dose2 = fitTrialBCrmPack$compound2,
+  center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
+  lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
+  upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
+  target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
+  overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
 )
 diffTrialB
 #>    dose1 dose2       center         lower        upper   target overdose
@@ -1264,14 +1282,14 @@ And the MCSE-standardized differences for Arm B are:
 
 ``` r
 mcseDiffTrialB <- data.frame(
-    dose1 = combo_grid[combo_interest, 1],
-    dose2 = combo_grid[combo_interest, 2],
-    center = mcse_B_center$difference,
-    center_mcse = mcse_B_center$difference_mcse,
-    center_z = mcse_B_center$z_mcse,
-    overdose = mcse_B_overdose$difference,
-    overdose_mcse = mcse_B_overdose$difference_mcse,
-    overdose_z = mcse_B_overdose$z_mcse
+  dose1 = combo_grid[combo_interest, 1],
+  dose2 = combo_grid[combo_interest, 2],
+  center = mcse_B_center$difference,
+  center_mcse = mcse_B_center$difference_mcse,
+  center_z = mcse_B_center$z_mcse,
+  overdose = mcse_B_overdose$difference,
+  overdose_mcse = mcse_B_overdose$difference_mcse,
+  overdose_z = mcse_B_overdose$z_mcse
 )
 mcseDiffTrialB
 #>    dose1 dose2       center  center_mcse  center_z overdose overdose_mcse
@@ -1320,32 +1338,32 @@ across doses:
 
 ``` r
 mcseDiagnostics <- data.frame(
-    arm = rep(c("A", "B"), each = 2),
-    estimand = rep(c("center", "overdose"), times = 2),
-    min_decider_ess = c(
-        min(mcse_A_center$decider_ess),
-        min(mcse_A_overdose$decider_ess),
-        min(mcse_B_center$decider_ess),
-        min(mcse_B_overdose$decider_ess)
-    ),
-    min_crmPack_ess = c(
-        min(mcse_A_center$crmPack_ess),
-        min(mcse_A_overdose$crmPack_ess),
-        min(mcse_B_center$crmPack_ess),
-        min(mcse_B_overdose$crmPack_ess)
-    ),
-    max_decider_rhat = c(
-        max(mcse_A_center$decider_rhat),
-        max(mcse_A_overdose$decider_rhat),
-        max(mcse_B_center$decider_rhat),
-        max(mcse_B_overdose$decider_rhat)
-    ),
-    max_crmPack_rhat = c(
-        max(mcse_A_center$crmPack_rhat),
-        max(mcse_A_overdose$crmPack_rhat),
-        max(mcse_B_center$crmPack_rhat),
-        max(mcse_B_overdose$crmPack_rhat)
-    )
+  arm = rep(c("A", "B"), each = 2),
+  estimand = rep(c("center", "overdose"), times = 2),
+  min_decider_ess = c(
+    min(mcse_A_center$decider_ess),
+    min(mcse_A_overdose$decider_ess),
+    min(mcse_B_center$decider_ess),
+    min(mcse_B_overdose$decider_ess)
+  ),
+  min_crmPack_ess = c(
+    min(mcse_A_center$crmPack_ess),
+    min(mcse_A_overdose$crmPack_ess),
+    min(mcse_B_center$crmPack_ess),
+    min(mcse_B_overdose$crmPack_ess)
+  ),
+  max_decider_rhat = c(
+    max(mcse_A_center$decider_rhat),
+    max(mcse_A_overdose$decider_rhat),
+    max(mcse_B_center$decider_rhat),
+    max(mcse_B_overdose$decider_rhat)
+  ),
+  max_crmPack_rhat = c(
+    max(mcse_A_center$crmPack_rhat),
+    max(mcse_A_overdose$crmPack_rhat),
+    max(mcse_B_center$crmPack_rhat),
+    max(mcse_B_overdose$crmPack_rhat)
+  )
 )
 mcseDiagnostics[, -(1:2)] <- signif(mcseDiagnostics[, -(1:2)], 6)
 mcseDiagnostics
@@ -1383,44 +1401,44 @@ equal to 0.33, while `crmPack` uses probabilities strictly greater than 0.33.
 
 ``` r
 prob_samples_A_crmPack <- vapply(
-    d1,
-    function(current_dose) {
-        prob(
-            dose = rep(current_dose, length(crm_samples_A@data$alpha0)),
-            model = mono_model1,
-            samples = crm_samples_A
-        )
-    },
-    numeric(length(crm_samples_A@data$alpha0))
+  d1,
+  function(current_dose) {
+    prob(
+      dose = rep(current_dose, length(crm_samples_A@data$alpha0)),
+      model = mono_model1,
+      samples = crm_samples_A
+    )
+  },
+  numeric(length(crm_samples_A@data$alpha0))
 )
 
 prob_samples_B_crmPack <- prob(
-    dose = combo_grid,
-    model = combo_model,
-    samples = crm_samples_B
+  dose = combo_grid,
+  model = combo_model,
+  samples = crm_samples_B
 )
 
 all_formula_probabilities <- c(
-    prob_samples_A_formula,
-    prob_samples_B_formula
+  prob_samples_A_formula,
+  prob_samples_B_formula
 )
 downstream_check <- c(
-    max_abs_probability_difference_A = max(abs(
-        prob_samples_A_crmPack - prob_samples_A_formula
-    )),
-    max_abs_probability_difference_B = max(abs(
-        prob_samples_B_crmPack - prob_samples_B_formula
-    )),
-    draws_exactly_at_0.33 = sum(all_formula_probabilities == 0.33),
-    max_overdose_difference_due_to_boundary = max(abs(
-        colMeans(prob_samples_B_formula >= 0.33) -
-            colMeans(prob_samples_B_formula > 0.33)
-    ))
+  max_abs_probability_difference_A = max(abs(
+    prob_samples_A_crmPack - prob_samples_A_formula
+  )),
+  max_abs_probability_difference_B = max(abs(
+    prob_samples_B_crmPack - prob_samples_B_formula
+  )),
+  draws_exactly_at_0.33 = sum(all_formula_probabilities == 0.33),
+  max_overdose_difference_due_to_boundary = max(abs(
+    colMeans(prob_samples_B_formula >= 0.33) -
+      colMeans(prob_samples_B_formula > 0.33)
+  ))
 )
 signif(downstream_check, 3)
-#>        max_abs_probability_difference_A        max_abs_probability_difference_B
-#>                                0.00e+00                                2.22e-16
-#>                   draws_exactly_at_0.33 max_overdose_difference_due_to_boundary
+#>        max_abs_probability_difference_A        max_abs_probability_difference_B 
+#>                                0.00e+00                                2.22e-16 
+#>                   draws_exactly_at_0.33 max_overdose_difference_due_to_boundary 
 #>                                0.00e+00                                0.00e+00
 ```
 
@@ -1710,7 +1728,7 @@ Here we have the following JAGS model:
         x_drug1_B[i] <- x_B[i, 1L]
     }
     for (i in 1:nObs_B) {
-        logit(p_drug1_B[i]) <- alpha0_drug1_B + alpha1_drug1_B *
+        logit(p_drug1_B[i]) <- alpha0_drug1_B + alpha1_drug1_B * 
             log(x_drug1_B[i]/ref_dose_drug1_B)
         p_single_B[i, 1L] <- p_drug1_B[i]
     }
@@ -1718,18 +1736,18 @@ Here we have the following JAGS model:
         x_drug2_B[i] <- x_B[i, 2L]
     }
     for (i in 1:nObs_B) {
-        logit(p_drug2_B[i]) <- alpha0_drug2_B + alpha1_drug2_B *
+        logit(p_drug2_B[i]) <- alpha0_drug2_B + alpha1_drug2_B * 
             log(x_drug2_B[i]/ref_dose_drug2_B)
         p_single_B[i, 2L] <- p_drug2_B[i]
     }
     for (i in 1:nObs_B) {
-        combo_interaction_B[i] <- x_drug1_B[i]/ref_dose_drug1_B *
+        combo_interaction_B[i] <- x_drug1_B[i]/ref_dose_drug1_B * 
             (x_drug2_B[i]/ref_dose_drug2_B)
     }
     for (i in 1:nObs_B) {
-        p0_B[i] <- p_single_B[i, 1] + p_single_B[i, 2] - p_single_B[i,
+        p0_B[i] <- p_single_B[i, 1] + p_single_B[i, 2] - p_single_B[i, 
             1] * p_single_B[i, 2]
-        logit(p_B[i]) <- log(p0_B[i]/(1 - p0_B[i])) + eta_B *
+        logit(p_B[i]) <- log(p0_B[i]/(1 - p0_B[i])) + eta_B * 
             combo_interaction_B[i]
         y_B[i] ~ dbern(p_B[i])
     }
@@ -1753,49 +1771,49 @@ Here we have the following JAGS model:
     alpha1_C <- exp(theta_C[2])
     theta_A_z[1] ~ dnorm(0, 1)
     theta_A_z[2] ~ dnorm(0, 1)
-    theta_A[1] <- mu_comp1_intercept + tau_comp1_intercept *
+    theta_A[1] <- mu_comp1_intercept + tau_comp1_intercept * 
         theta_A_z[1]
-    theta_A[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 *
+    theta_A[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 * 
         theta_A_z[1] + sqrt(1 - pow(rho_comp1, 2)) * theta_A_z[2])
     theta_drug1_B_z[1] ~ dnorm(0, 1)
     theta_drug1_B_z[2] ~ dnorm(0, 1)
-    theta_drug1_B[1] <- mu_comp1_intercept + tau_comp1_intercept *
+    theta_drug1_B[1] <- mu_comp1_intercept + tau_comp1_intercept * 
         theta_drug1_B_z[1]
-    theta_drug1_B[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 *
+    theta_drug1_B[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 * 
         theta_drug1_B_z[1] + sqrt(1 - pow(rho_comp1, 2)) * theta_drug1_B_z[2])
     rho_comp1 ~ dunif(rho_comp1_lower, rho_comp1_upper)
     z_mu_comp1_intercept ~ dnorm(0, 1)
-    mu_comp1_intercept <- mu_comp1_intercept_mean + mu_comp1_intercept_sd *
+    mu_comp1_intercept <- mu_comp1_intercept_mean + mu_comp1_intercept_sd * 
         z_mu_comp1_intercept
-    tau_comp1_intercept ~ dlnorm(tau_comp1_intercept_meanlog,
+    tau_comp1_intercept ~ dlnorm(tau_comp1_intercept_meanlog, 
         pow(tau_comp1_intercept_sdlog, -2))
     z_mu_comp1_slope ~ dnorm(0, 1)
-    mu_comp1_slope <- mu_comp1_slope_mean + mu_comp1_slope_sd *
+    mu_comp1_slope <- mu_comp1_slope_mean + mu_comp1_slope_sd * 
         z_mu_comp1_slope
-    tau_comp1_slope ~ dlnorm(tau_comp1_slope_meanlog, pow(tau_comp1_slope_sdlog,
+    tau_comp1_slope ~ dlnorm(tau_comp1_slope_meanlog, pow(tau_comp1_slope_sdlog, 
         -2))
     theta_drug2_B_z[1] ~ dnorm(0, 1)
     theta_drug2_B_z[2] ~ dnorm(0, 1)
-    theta_drug2_B[1] <- mu_comp2_intercept + tau_comp2_intercept *
+    theta_drug2_B[1] <- mu_comp2_intercept + tau_comp2_intercept * 
         theta_drug2_B_z[1]
-    theta_drug2_B[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 *
+    theta_drug2_B[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 * 
         theta_drug2_B_z[1] + sqrt(1 - pow(rho_comp2, 2)) * theta_drug2_B_z[2])
     theta_C_z[1] ~ dnorm(0, 1)
     theta_C_z[2] ~ dnorm(0, 1)
-    theta_C[1] <- mu_comp2_intercept + tau_comp2_intercept *
+    theta_C[1] <- mu_comp2_intercept + tau_comp2_intercept * 
         theta_C_z[1]
-    theta_C[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 *
+    theta_C[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 * 
         theta_C_z[1] + sqrt(1 - pow(rho_comp2, 2)) * theta_C_z[2])
     rho_comp2 ~ dunif(rho_comp2_lower, rho_comp2_upper)
     z_mu_comp2_intercept ~ dnorm(0, 1)
-    mu_comp2_intercept <- mu_comp2_intercept_mean + mu_comp2_intercept_sd *
+    mu_comp2_intercept <- mu_comp2_intercept_mean + mu_comp2_intercept_sd * 
         z_mu_comp2_intercept
-    tau_comp2_intercept ~ dlnorm(tau_comp2_intercept_meanlog,
+    tau_comp2_intercept ~ dlnorm(tau_comp2_intercept_meanlog, 
         pow(tau_comp2_intercept_sdlog, -2))
     z_mu_comp2_slope ~ dnorm(0, 1)
-    mu_comp2_slope <- mu_comp2_slope_mean + mu_comp2_slope_sd *
+    mu_comp2_slope <- mu_comp2_slope_mean + mu_comp2_slope_sd * 
         z_mu_comp2_slope
-    tau_comp2_slope ~ dlnorm(tau_comp2_slope_meanlog, pow(tau_comp2_slope_sdlog,
+    tau_comp2_slope ~ dlnorm(tau_comp2_slope_meanlog, pow(tau_comp2_slope_sdlog, 
         -2))
     eta_B_z ~ dnorm(0, 1)
     eta_B <- mu_eta + tau_eta * eta_B_z
@@ -1807,22 +1825,7 @@ Here we have the following JAGS model:
 
 ### Conclusion
 
-The interaction parameter is included in its own exchangeable pool. Thus each
-combination arm has a separate interaction parameter $\eta_j$, conditionally
-distributed as
-
-$$
-\eta_j \mid \mu_\eta, \tau_\eta \sim
-\textrm{Normal}(\mu_\eta, \tau_\eta^2),
-$$
-
-with the same hyperpriors for $\mu_\eta$ and $\tau_\eta$ as in `decider`. A
-one-member pool is used here because there is only one combination arm; with
-multiple combination arms the same definition gives each arm its own
-interaction parameter while allowing exchangeable borrowing between them.
-
-The remaining implementation difference is that JAGS uses patient-level
-Bernoulli observations whereas Stan uses binomial cohort counts. These
-likelihoods are equivalent.
+We could see in this example that the `crmPack` and `decider` models are equivalent. This is a welcome independent validation of both of the packages with regards to the implementation of the hierarchical combination model. 
+The MCMC results in the given fit example are compatible. Further improvements can be made in the future with multiple JAGS chains.
 
 ## References

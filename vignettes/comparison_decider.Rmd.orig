@@ -381,6 +381,20 @@ design_hierarchical <- HierarchicalDesign(
 )
 ```
 
+The interaction parameter is included in its own exchangeable pool. Thus each
+combination arm has a separate interaction parameter $\eta_j$, conditionally
+distributed as
+
+$$
+\eta_j \mid \mu_\eta, \tau_\eta \sim
+\textrm{Normal}(\mu_\eta, \tau_\eta^2),
+$$
+
+with the same hyperpriors for $\mu_\eta$ and $\tau_\eta$ as in `decider`. A
+one-member pool is used here because there is only one combination arm; with
+multiple combination arms the same definition gives each arm its own
+interaction parameter while allowing exchangeable borrowing between them.
+
 Note that each entry in `pool_correlations` can correlate exactly two scalar
 exchangeable parameter pools. In this example, `comp1` correlates the compound 1
 intercept pool with the compound 1 slope pool, and `comp2` does the same for
@@ -540,7 +554,7 @@ parameter_draws$parameter <- factor(
 
 First we compare the parameters for the two monotherapy arms:
 
-```{r, fig.height=5}
+```{r, fig.width=10, fig.height=5, dpi=144}
 ggplot2::ggplot(
     parameter_draws[grepl("^Arm [AC]", parameter_draws$parameter), ],
     ggplot2::aes(
@@ -564,7 +578,7 @@ ggplot2::ggplot(
 And then the parameters for the combination arm, including the interaction
 parameter:
 
-```{r, fig.height=7}
+```{r, fig.width=10, fig.height=7, dpi=144}
 ggplot2::ggplot(
     parameter_draws[grepl("^Arm B", parameter_draws$parameter), ],
     ggplot2::aes(
@@ -1013,22 +1027,7 @@ cat("````", deparse(body(design_hierarchical@model@priormodel)), "````", sep = "
 
 ### Conclusion
 
-The interaction parameter is included in its own exchangeable pool. Thus each
-combination arm has a separate interaction parameter $\eta_j$, conditionally
-distributed as
-
-$$
-\eta_j \mid \mu_\eta, \tau_\eta \sim
-\textrm{Normal}(\mu_\eta, \tau_\eta^2),
-$$
-
-with the same hyperpriors for $\mu_\eta$ and $\tau_\eta$ as in `decider`. A
-one-member pool is used here because there is only one combination arm; with
-multiple combination arms the same definition gives each arm its own
-interaction parameter while allowing exchangeable borrowing between them.
-
-The remaining implementation difference is that JAGS uses patient-level
-Bernoulli observations whereas Stan uses binomial cohort counts. These
-likelihoods are equivalent.
+We could see in this example that the `crmPack` and `decider` models are equivalent. This is a welcome independent validation of both of the packages with regards to the implementation of the hierarchical combination model. 
+The MCMC results in the given fit example are compatible. Further improvements can be made in the future with multiple JAGS chains.
 
 ## References
