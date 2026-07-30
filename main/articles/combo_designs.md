@@ -276,7 +276,7 @@ combo_model2@datamodel
 #>         y[i] ~ dbern(p[i])
 #>     }
 #> }
-#> <environment: 0x93966f0a8>
+#> <environment: 0x7a652b690>
 ```
 
 The prior is as follows:
@@ -300,7 +300,7 @@ combo_model2@priormodel
 #>     log_eta ~ dnorm(eta_gamma, eta_tau)
 #>     eta <- exp(log_eta)
 #> }
-#> <environment: 0x93b97ebd8>
+#> <environment: 0x7a9b6ec80>
 ```
 
 So everything looks as expected. Note that for the interaction term
@@ -341,24 +341,27 @@ below.
   correlated bivariate normal block for the two pairs named in
   `pool_correlations`.
 - Hyperpriors on
-  $`\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)})^\top`$
+  $`\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)}, \mu_\eta)^\top`$
   e.g.:
   - $`\mu_{\alpha_i} \sim \textrm{Normal}(\textrm{logit}(0.25), 2.5^2)`$,
     $`i=1,2`$
   - $`\mu_{\log(\beta_1)} \sim \textrm{Normal}(0, 0.7^2)`$
   - $`\mu_{\log(\beta_2)} \sim \textrm{Normal}(0, 1)`$
-- The interaction parameter $`\eta`$ is not included in an exchangeable
-  pool in the implementation below. It keeps the `TwoDrugsCombo` prior,
-  here $`\eta \sim \textrm{Normal}(\gamma, 1/\tau)`$ with `gamma = 0`
-  and `tau = 1`. If `log_normal_eta = TRUE`, the same `gamma` and `tau`
-  are used for $`\log(\eta)`$ instead.
+  - $`\mu_\eta \sim \textrm{Normal}(0, 1.121^2)`$
+- Each combination arm has its own interaction parameter $`\eta_j`$, and
+  these parameters form an exchangeable pool with
+  $`\eta_j \sim \textrm{Normal}(\mu_\eta, \tau_\eta^2)`$. A one-member
+  pool is valid when only one combination arm is present; with multiple
+  combination arms the parameters remain distinct while borrowing
+  through the shared hyperparameters. If `log_normal_eta = TRUE`, the
+  corresponding pool is defined on $`\log(\eta_j)`$.
 - Structured assumptions for the hierarchical covariance
   - Assume that only $`\alpha_{1}`$ and $`\log(\beta_1)`$, as well as
     $`\alpha_{2}`$ and $`\log(\beta_2)`$ are correlated, but not the
     other parameters. This can be represented by two entries in
-    `pool_correlations`, giving a block diagonal structure with 6
+    `pool_correlations`, giving a block diagonal structure with 7
     hyperparameters (standard deviations
-    $`\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}`$
+    $`\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}, \tau_\eta`$
     plus the two correlations $`\rho_1`$ and $`\rho_2`$ between
     $`\alpha_i`$ and $`\log(\beta_i)`$ for $`i=1,2`$).
   - We don’t fix the $`\Sigma`$ entries but instead assign hyperpriors.
@@ -367,6 +370,7 @@ below.
     - $`\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)`$
     - $`\tau_{\alpha_2} \sim \textrm{LogNormal}(\log(0.75), \kappa^2)`$
     - $`\tau_{\log(\beta_1)}, \tau_{\log(\beta_2)} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)`$
+    - $`\tau_\eta \sim \textrm{LogNormal}(\log(0.125), \kappa^2)`$
     - $`\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)`$
 
 ### Model implementation
@@ -392,6 +396,9 @@ parameter_pools <- list(
   drug2_slope = list(
     mono_drug2 = "alpha1",
     combo = "alpha1[2]"
+  ),
+  interaction = list(
+    combo = "eta"
   )
 )
 
@@ -416,6 +423,10 @@ pool_priors <- list(
   drug2_slope = list(
     mu = c(mean = 0, sd = 1),
     tau = c(meanlog = log(0.25), sdlog = log(2) / 1.96)
+  ),
+  interaction = list(
+    mu = c(mean = 0, sd = 1.121),
+    tau = c(meanlog = log(0.125), sdlog = log(2) / 1.96)
   )
 )
 
@@ -436,13 +447,16 @@ LogisticLogNormal, mono_drug2 = LogisticLogNormal, combo =
 TwoDrugsCombo.
 
 Exchangeable parameter pools: drug1_intercept, drug1_slope,
-drug2_intercept, drug2_slope.
+drug2_intercept, drug2_slope, interaction.
 
 The public constructor argument is called `exchangeable_parameters`
 because it specifies which parameters are exchangeable across arms. The
 fitted object stores the same specification in its `parameter_pools`
 slot, and the optional `pool_correlations` and `pool_priors` arguments
-customize those pools.
+customize those pools. The `interaction` entry is a one-member pool in
+this example. This retains the hierarchical marginal prior for $`\eta`$;
+additional combination arms can be added to that pool without making
+their interaction parameters identical.
 
 We can look at the JAGS code, which has been automatically compiled for
 this model.
@@ -492,7 +506,7 @@ hierarchical_model@datamodel
 #>         y_combo[i] ~ dbern(p_combo[i])
 #>     }
 #> }
-#> <environment: 0x93800b700>
+#> <environment: 0x7a82ea040>
 ```
 
 The prior is as follows:
@@ -514,7 +528,6 @@ hierarchical_model@priormodel
 #>     alpha0_combo[2L] <- alpha0_drug2_combo
 #>     alpha1_combo[1L] <- alpha1_drug1_combo
 #>     alpha1_combo[2L] <- alpha1_drug2_combo
-#>     eta_combo ~ dnorm(eta_gamma_combo, eta_tau_combo)
 #>     theta_mono_drug1[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[, 
 #>         ])
 #>     theta_drug1_combo[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[, 
@@ -559,8 +572,13 @@ hierarchical_model@priormodel
 #>         -2))
 #>     tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, 
 #>         -2))
+#>     eta_combo ~ dnorm(mu_interaction, pow(tau_interaction, -2))
+#>     mu_interaction ~ dnorm(mu_interaction_mean, pow(mu_interaction_sd, 
+#>         -2))
+#>     tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, 
+#>         -2))
 #> }
-#> <environment: 0x93cfc58f8>
+#> <environment: 0x7accb4b68>
 ```
 
 ### Design implementation
@@ -632,7 +650,7 @@ hierarchical_design
 #> Arms (3): mono_drug1, mono_drug2, combo
 #> Active arms: mono_drug1, mono_drug2, combo
 #> Inactive arms: <none>
-#> Exchangeable parameter pools (4): drug1_intercept, drug1_slope, drug2_intercept, drug2_slope
+#> Exchangeable parameter pools (5): drug1_intercept, drug1_slope, drug2_intercept, drug2_slope, interaction
 ```
 
 Here the arm names match the model implementation above, which makes it
@@ -685,19 +703,19 @@ summary(hierarchical_sims, truth = list(
 #> Target dose interval corresponding to this was 32.7, 42.3 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 16 (3, 21) 
-#> Number of patients treated above target tox interval : mean 3 (0, 6) 
-#> Proportions of DLTs in the trials : mean 15 % (0 %, 24 %) 
-#> Mean toxicity risks for the patients on active : mean 13 % (4 %, 22 %) 
-#> Doses selected as MTD : mean 22.5 (0, 45.5) 
-#> True toxicity at doses selected : mean 16 % (2 %, 41 %) 
-#> Proportion of trials selecting target MTD: 10 %
+#> Number of patients overall : mean 14 (3, 21) 
+#> Number of patients treated above target tox interval : mean 2 (0, 6) 
+#> Proportions of DLTs in the trials : mean 16 % (0 %, 29 %) 
+#> Mean toxicity risks for the patients on active : mean 13 % (4 %, 23 %) 
+#> Doses selected as MTD : mean 20.2 (0, 36.5) 
+#> True toxicity at doses selected : mean 15 % (2 %, 26 %) 
+#> Proportion of trials selecting target MTD: 20 %
 #> Dose most often selected as MTD: 0 
 #> Observed toxicity rate at dose most often selected: NaN %
 #> Fitted toxicity rate at dose most often selected : mean NA % (NA %, NA %) 
 #> Stop reason triggered:
-#>  ≥ 20 patients dosed :  70 %
-#>  Stopped because of missing dose :  30 %
+#>  ≥ 20 patients dosed :  60 %
+#>  Stopped because of missing dose :  40 %
 #> 
 #> Arm: mono_drug2 
 #> Summary of 20 simulations
@@ -706,35 +724,35 @@ summary(hierarchical_sims, truth = list(
 #> Target dose interval corresponding to this was 43.6, NA 
 #> Intervals are corresponding to 10 and 90 % quantiles
 #> 
-#> Number of patients overall : mean 21 (21, 21) 
+#> Number of patients overall : mean 18 (3, 21) 
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
-#> Proportions of DLTs in the trials : mean 13 % (5 %, 20 %) 
-#> Mean toxicity risks for the patients on active : mean 15 % (10 %, 20 %) 
-#> Doses selected as MTD : mean 42.8 (25, 50) 
-#> True toxicity at doses selected : mean 21 % (8 %, 27 %) 
-#> Proportion of trials selecting target MTD: 65 %
+#> Proportions of DLTs in the trials : mean 17 % (5 %, 33 %) 
+#> Mean toxicity risks for the patients on active : mean 15 % (6 %, 20 %) 
+#> Doses selected as MTD : mean 37.8 (0, 50) 
+#> True toxicity at doses selected : mean 19 % (2 %, 27 %) 
+#> Proportion of trials selecting target MTD: 55 %
 #> Dose most often selected as MTD: 50 
-#> Observed toxicity rate at dose most often selected: 24 %
-#> Fitted toxicity rate at dose most often selected : mean 25 % (11 %, 50 %) 
+#> Observed toxicity rate at dose most often selected: 30 %
+#> Fitted toxicity rate at dose most often selected : mean 26 % (9 %, 45 %) 
 #> Stop reason triggered:
-#>  ≥ 20 patients dosed :  100 %
-#>  Stopped because of missing dose :  0 %
+#>  ≥ 20 patients dosed :  85 %
+#>  Stopped because of missing dose :  15 %
 #> 
 #> Arm: combo 
 #> Summary of 20 combination simulations
 #> 
-#> Number of patients overall : mean 12 (3, 21) 
-#> Proportions of DLTs in the trials : mean 29 % (14 %, 33 %) 
-#> Mean toxicity risks from fitted surfaces : mean 50 % (30 %, 62 %) 
-#> Selected dose for drug 1: mean 9.8 (0, 21) 
-#> Selected dose for drug 2: mean 7.2 (0, 20) 
+#> Number of patients overall : mean 17 (3, 21) 
+#> Proportions of DLTs in the trials : mean 24 % (14 %, 33 %) 
+#> Mean toxicity risks from fitted surfaces : mean 42 % (13 %, 85 %) 
+#> Selected dose for drug 1: mean 13.2 (0, 30) 
+#> Selected dose for drug 2: mean 15 (0, 35) 
 #> Target toxicity interval was 20, 35 %
-#> True toxicity at selected combinations : mean 12 % (2 %, 26 %) 
-#> Proportion of trials selecting target combination: 30 %
+#> True toxicity at selected combinations : mean 21 % (2 %, 34 %) 
+#> Proportion of trials selecting target combination: 25 %
 #> Most frequently selected combination: 0, 0 
 #> Observed toxicity rate at most selected combination: NA %
 #> Stop reason triggered:
-#>  ≥ 20 patients dosed :  50 %
+#>  ≥ 20 patients dosed :  75 %
 ```
 
 It is also possible to extract the arm specific simulations to produce

@@ -31,7 +31,11 @@ HierarchicalModel(
   a named list describing which parameters are exchangeable across arms.
   This will be used to define the hierarchical structure of the model.
   Each list entry contains the arms as names and the parameters to be
-  shared as a string.
+  shared as a string. For
+  [`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)
+  arms, `"eta"` refers to the arm-specific interaction parameter. A
+  one-member pool is permitted so that a hierarchical marginal prior can
+  be used even when only one combination arm is present.
 
 - pool_correlations:
 
@@ -131,6 +135,18 @@ my_model <- HierarchicalModel(
     mono_slope = list(
       my_mono = "alpha1",
       my_combo = "alpha1[1]"
+    ),
+    interaction = list(
+      my_combo = "eta"
+    )
+  ),
+  pool_priors = list(
+    interaction = list(
+      mu = c(mean = 0, sd = 1.121),
+      tau = c(
+        meanlog = log(0.125),
+        sdlog = log(2) / 1.96
+      )
     )
   )
 )
@@ -139,5 +155,5 @@ my_model
 #> An object of class 'HierarchicalModel'
 #> Arms (2): my_mono, my_combo
 #> Arm models: my_mono = LogisticLogNormal, my_combo = TwoDrugsCombo
-#> Exchangeable parameter pools (2): mono_intercept, mono_slope
+#> Exchangeable parameter pools (3): mono_intercept, mono_slope, interaction
 ```
