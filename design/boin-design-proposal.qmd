@@ -1,0 +1,811 @@
+---
+title: "A poposal for the implementation of the BOIN design in `crmPack`"
+author: "John Kirkpatrick & Oliver Boix"
+format: html
+editor: visual
+embed-resources: TRUE
+reference-location: margin
+citation-location: margin
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+suppressPackageStartupMessages({
+  library(crmPack)
+  library(tidyverse)
+  library(knitr)
+  library(kableExtra)
+  library(BOIN)
+})
+```
+
+> This document assumes that the development version of `crmPack`, available via GitHub, has been installed.
+
+## Background
+
+The BOIN design by [@Liu2015] sits between fully rule-based designs such as the 3 + 3 or Rolling 6 and model based designs such as the CRM. We believe it is better to go beyond a basic implementation such as is used for `ThreePlusThreeDesign` and provide ancillary classes, such as (eg) `BOINModel` will be required to support a richer implementation based on `Design`.
+
+The only `Rule` implemented for `ThreePlusThree` design is `NextBestThreePlusThree`. This is appropriate because the 3 + 3 design involves no estimation or model fitting. The BOIN design, however, does update the posterior based on observed toxicity rates. The natural way to view the posterior would be using the `fit` method, whose generic has signature `Samples`, `GeneralModel`, `Data`. Since the original BOIN design uses conjugate priors, there would be no reason to use MCMC methods to obtain the posterior. On the other hand, there is no reason why Liu & Yuan's original method couldn't be extended to use more sophisticated models such as the logistic logNormal that is already supported in `crmPack`. Similarly, BOIN's original stopping rules are based on futility: either the recruitment limit is reached or all doses are toxic. Allowing `crmPack` to apply it's various sophistications to BOIN designs would, we believe, be a worthwhile effort.
+
+In the remainder of this document, we will explore the more flexible implementation based on `Design.`
+
+> Liu & Yuan descibe methods for identifying both the local and global optimums. They state that their simulation study "suggests that the local BOIN design has \[the\] better operating characteristics". We believe that the locally optimum method is almost universally used, so we do not propose to implement the globally optimum method in this first iteration.
+
+## The `BOINModel` class
+
+Definition of a `BOINModel` class as a subclass of `GeneralModel` presents difficulties. `GeneralModel` implicitly assumes that the model it defines will be fitted by JAGS and its slots are defined accordingly: `datamodel`, `priormodel`, `sample` and the like. whilst we could set up a `BOINModel` class using this paradigm, it seems inappropriate as the original BOIN model uses conjugate priors.
+
+> We may need to revisit this issue if we decide to open up our implementation to a wider set of models.
+
+The optimiser described in the next section takes the place of a `fit` method for BOIN designs.
+
+## The locally optimal solution
+
+### The optimiser
+
+```{r}
+#| label: local-optimiser
+
+#' Calculate the Locally Optimum Lambda Values
+#' 
+#' Implement equations 2 and 3 of Liu & Yuan
+#' 
+#' @param data (Data)\cr the observed data in the trial
+#' @param dose (numeric) The dose index for which lambda values are required.  If `NA`,
+#' the default, lamdas are calculated for all doses in the dose grid
+#' @param target (numeric) the target toxicity rate.  equivalent to phi in Liu & Yuan
+#' @param phiLower (numeric) the lower bound of the target toxicity interval.
+#' Equivalent to phi1 in Liu & Yuan.
+#' @param phiUpper (numeric) the upper bound of the target toxicity interval.
+#' Equivalent to phi2 in Liu & Yuan.
+#' @param pi(numeric) a vector of length 3 giving the prior probabilities that
+#' H0j, H1j and H2j are true.  See section 2.2.1 of Liu & Yaun and Usage Notes 
+#' below.
+#' 
+#' @section Usage Notes:
+#' Because R vectors are one-based, pi[1] holds the value of Liu & Yuan's pi0,
+#' and so on.
+#' @return If `dose` is not `NA`, a vector containing lambda1 and lambda2 as defined
+#' by equations 2 and 3 of Liu & Yuan for the given `dose`.  Otherwise, a `list` 
+#' of such vectors.  The length of the list is equal to the length of 
+#' `data@doseGrid`.
+h_boin_local_optimiser <- function(
+  data,
+  dose = NA,
+  target = 0.3,
+  phiLower = target * 0.6,
+  phiUpper = target * 1.4,
+  pi = rep(1, 3)/3
+) {
+  # TODO: parameter validation
+  if (is.na(dose)) {
+    lapply(
+      data@doseGrid,
+      \(d) h_boin_local_optimiser(data, d, target, phiLower, phiUpper, pi)
+    )
+  } else {
+    n <- length(data@y[data@y == dose])
+    # Equation 2
+    top1 <- log((1 - phiLower) / (1 - target))
+    top2 <- ifelse(n == 0, 0, log(pi[2] / pi[1]) / n)
+    bottom <- log((target * (1 - phiLower)) / (phiLower * (1 - target)))
+    lambda1 <- (top1 + top2) / bottom
+    # Equation 3
+    top1 <- log((1 - target) / (1 - phiUpper))
+    top2 <- ifelse(n == 0, 0, log(pi[1] / pi[3]) / n)
+    bottom <- log((phiUpper * (1 - target)) / (target * (1 - phiUpper)))
+    lambda2 <- (top1 + top2) / bottom
+    c(lambda1 = lambda1, lambda2 = lambda2)
+  }
+}
+```
+
+As an initial validation of the code, we reproduce Table 1 of Liu & Yuan and compare the result to that of `BOIN::get.boundary()`.
+
+```{r}
+#| label: table-1
+#| echo: FALSE
+
+set.seed(123)
+
+observedData <- .DefaultData()
+
+crmPackResults <- lapply(
+  seq(0.15, 0.4, 0.05),
+  function(phi) {
+    x <- h_boin_local_optimiser(
+      observedData,
+      observedData@doseGrid[1],
+      target = phi
+    )
+    tibble(
+      Phi = phi,
+      Lambda1 = x["lambda1"],
+      Lambda2 = x["lambda2"]
+    )
+  }
+) %>% 
+bind_rows() 
+
+BOINResults <- lapply(
+  seq(0.15, 0.4, 0.05),
+  function(phi) {
+    x <- get.boundary(
+      target = phi,
+      ncohort = 1,
+      cohortsize = 3,
+      p.saf = phi * 0.6,
+      p.tox = phi * 1.4,
+      cutoff.eli = 0.9999999999
+    )
+    tibble(
+      Phi = phi,
+      Lambda1 = x[["lambda_e"]],
+      Lambda2 = x[["lambda_d"]]
+    )
+  }
+) %>% 
+bind_rows()
+
+results <- crmPackResults %>% 
+  left_join(BOINResults, by = "Phi") %>% 
+  left_join(
+    tibble(
+      Phi = seq(0.15, 0.4, 0.05),
+      Lambda1.z = c(0.118, 0.157, 0.197, 0.236, 0.276, 0.316),
+      Lambda2.z = c(0.179, 0.238, 0.298, 0.359, 0.419, 0.480)
+    ),
+    by = "Phi"
+  ) %>% 
+  select(Phi, Lambda1.z, Lambda1.x, Lambda1.y, Lambda2.z, Lambda2.x, Lambda2.y)
+
+results %>% 
+kable(
+  digits = 3,
+  caption = "Reproducing Table 1 of Liu & Yuan",
+  col.names = c(
+    "&phi;", "&lambda;~1j~ [Table 1]","&lambda;~1j~ [crmPack]", "&lambda;~1j~ [BOIN]", 
+    "&lambda;~2j~ [Table 1]", "&lambda;~2j~ [crmPack]", "&lambda;~2j~ [BOIN]"
+  ),
+  escape = FALSE
+) 
+```
+
+The results are identical to three significant figures.
+
+### The `Increments` rule - Liu & Yuan's eliminator
+
+Liu & Yuan provide a textual description of a rule to eliminate doses from further consideration on page 515. Their rule is based on a beta(1, 1) prior for p~j~, a minimum sample size of 3 at dose d~j~ and a fixed threshold of 0.95 for the posterior probability that p(Toxicity \| dose = d~j~) is greater than φ.
+
+`crmPack` almost supports this rule already, using `IncrementsHSRBeta` (and `StoppingLowestDoseHSRBeta`). The only missing element is the minimum number of evaluable participants at a given dose. By adding a new slot to `IncrementsHSRBeta` this could also be easily supported. If the default for this new slot is `0`, then this is a non-breaking change for existing code.
+
+```{r}
+#| echo: FALSE
+#| label: increments-hsr-validator-1
+
+v_increments_hsr_beta <- function(object) {
+  v <- crmPack:::Validate()
+  v$check(
+    crmPack::test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    crmPack:::test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    checkmate::test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
+    "Beta distribution shape parameter a must be a positive scalar"
+  )
+  v$check(
+    checkmate::test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
+    "Beta distribution shape parameter b must be a positive scalar"
+  )
+  v$check(
+    checkmate::test_count(object@n_min),
+    "The minimum number of participants must be a non-negative scalar"
+  )
+  v$result()
+}
+```
+
+```{r}
+#| label: increments-hsr-class
+
+.IncrementsHSRBeta <- setClass(
+  Class = "IncrementsHSRBeta",
+  slots = c(
+    target = "numeric",
+    prob = "numeric",
+    a = "numeric",
+    b = "numeric",
+    n_min = "numeric"
+  ),
+  prototype = prototype(
+    target = 0.3,
+    prob = 0.95,
+    a = 1,
+    b = 1,
+    n_min = 0
+  ),
+  contains = "Increments",
+  validity = v_increments_hsr_beta
+)
+
+IncrementsHSRBeta <- function(target = 0.3,
+                              prob = 0.95,
+                              a = 1,
+                              b = 1,
+                              n_min = 0) {
+  .IncrementsHSRBeta(
+    target = target,
+    prob = prob,
+    a = a,
+    b = b,
+    n_min = n_min
+  )
+}
+```
+
+The default constructor needs no change. The validator becomes
+
+```{r}
+#| label: increments-hsr-validator-2
+#| eval: FALSE
+
+v_increments_hsr_beta <- function(object) {
+  v <- Validate()
+  v$check(
+    crmPack:::test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    crmPack:::test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    checkmate::test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
+    "Beta distribution shape parameter a must be a positive scalar"
+  )
+  v$check(
+    checkmate::test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
+    "Beta distribution shape parameter b must be a positive scalar"
+  )
+  v$check(
+    checkmate::test_count(object@n_min),
+    "The minimum number of participants must be a non-negative scalar"
+  )
+  v$result()
+}
+```
+
+A simple change to `maxDose` supports the new slot: the final line of the method changes from
+
+```{r}
+#| label: increments-hsr-maxDose-1
+#| eval: FALSE
+
+max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
+```
+
+to
+
+```{r}
+#| label: increments-hsr-maxDose-2
+#| eval: FALSE
+
+max(
+  data@doseGrid[data@doseGrid < dose_tox | n < increments@n_min],
+  data@doseGrid[data@placebo + 1]
+)
+```
+
+```{r}
+#| label: increments-hsr-redefinition
+#| echo: FALSE
+
+## IncrementsHSRBeta ----
+
+#' @describeIn maxDose determine the maximum possible next dose for escalation.
+#'
+#' @aliases maxDose-IncrementsHSRBeta
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsHSRBeta",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    # Summary of observed data per dose level.
+    y <- factor(data@y, levels = c("0", "1"))
+    dlt_tab <- table(y, data@x)
+
+    # Ignore placebo if applied.
+    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
+      dlt_tab <- dlt_tab[, -1]
+    }
+
+    # Extract dose names as these get lost if only one dose available.
+    non_plcb_doses <- unique(sort(as.numeric(colnames(dlt_tab))))
+
+    # Toxicity probability per dose level.
+    x <- dlt_tab[2, ]
+    n <- apply(dlt_tab, 2, sum)
+    tox_prob <- pbeta(
+      increments@target,
+      x + increments@a,
+      n - x + increments@b,
+      lower.tail = FALSE
+    )
+
+    # Return the min toxic dose level or maximum dose level if no dose is toxic,
+    # while ignoring placebo.
+    dose_tox <- if (sum(tox_prob > increments@prob) > 0) {
+      min(non_plcb_doses[which(tox_prob > increments@prob)])
+    } else {
+      # Add small value to max dose, so that the max dose is always smaller.
+      max(data@doseGrid) + 0.01
+    }
+
+    # Determine the next maximum possible dose.
+    # In case that the first active dose is above probability threshold,
+    # the first active dose is reported as maximum. I.e. in case that placebo is used,
+    # the second dose is reported. Please note that this rule should be used together
+    # with the hard safety stopping rule to avoid inconsistent results.
+    max(
+      data@doseGrid[data@doseGrid < dose_tox | n < increments@n_min],
+      data@doseGrid[data@placebo + 1]
+    )  
+  }
+)
+```
+
+## The `CohortSize` rule
+
+We see no need for modification of any existing classes, nor the addition of any new classes.
+
+## The `NextBest` rule
+
+Liu & Yuan propose the use of isotonic regression [@Barlow1972] to identify the MTD. This is straightforward.
+
+> Something that can not directly be seen from Liu & Yuan is how the observed data are used. E.g. some epsilon is added to the observed DLT (0.05) and number of patients (0.1), before calculating the rate that is used in the regression. This can only be seen when looking into the code of the R BOIN package. It is important to know in case that results from the isotonic regression are compared.
+
+### Class definition, constructor and validation
+
+```{r}
+#| label: next-best  
+
+#' @describeIn v_next_best validates that the [`NextBestBOIN`] object
+#'   contains valid `target` probability and `derive` function.
+v_next_best_boin <- function(object) {
+  v <- crmPack:::Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    checkmate::test_numeric(
+      object@x_epsilon, 
+      lower = 0, 
+      any.missing = FALSE, 
+      finite = TRUE, 
+      len = 1
+    ),
+    "x_epsilon must be a non-negative scalar"
+  )
+  v$check(
+    checkmate::test_numeric(
+      object@y_epsilon, 
+      lower = 0, 
+      any.missing = FALSE, 
+      finite = TRUE, 
+      len = 1
+    ),
+    "y_epsilon must be a non-negative scalar"
+  )
+  v$result()
+}
+
+# NextBestBOIN ----
+
+## class ----
+
+#' `NextBestBOIN`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestMTD`] is the class for next best dose based Liu & Yuan's BOIN rule.
+#'
+#' @slot target (`proportion`)\cr target toxicity probability, except 0 or 1.
+#' @slot x_epsilon (`numeric`)\cr the offset applied to dose values
+#' @slot y_epsilon (`numeric`)\cr the offset applied to toxicity counts
+#'
+#' @aliases NextBestBOIN
+#' @export
+#'
+.NextBestBOIN <- setClass(
+  Class = "NextBestBOIN",
+  slots = c(
+    target = "numeric",
+    x_epsilon = "numeric",
+    y_epsilon = "numeric"
+  ),
+  prototype = prototype(
+    target = 0.3,
+    x_epsilon = 0,
+    y_epsilon = 0
+  ),
+  contains = "NextBest",
+  validity = v_next_best_boin
+)
+
+## constructor ----
+
+#' @rdname NextBestBOIN-class
+#'
+#' @param target (`proportion`)\cr see slot definition.
+#' @param x_epsilon (`numeric`)\cr see slot definition.
+#' @param y_epsilon (`numeric`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestBOIN.R
+#'
+NextBestBOIN <- function(target, x_epsilon = 0, y_epsilon = 0) {
+  .NextBestBOIN(
+    target = target,
+    x_epsilon = x_epsilon,
+    y_epsilon = y_epsilon
+  )
+}
+```
+
+### The `nextBest` method
+
+```{r}
+#| label: nextBest-method
+#| error: TRUE
+
+## NextBestBOIN ----
+
+#' @describeIn nextBest find the next best dose based on the MTD rule.
+#'
+#' @aliases nextBest-NextBestBOIN
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestBOIN.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestBOIN",
+    doselimit = "numeric",
+    samples = "missing",
+    model = "missing",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+    # Perform isotonic regression
+    iso <- isoreg(
+      x = data@x + nextBest@x_epsilon, 
+      y = data@y + nextBest@y_epsilon
+    )$yf   
+    fitted <- rep(NA, length(data@doseGrid))   
+    for (i in seq_along(data@x)) {
+      fitted[data@x[i]] <- iso[i]   
+    }   
+
+    next_dose_level <- which.max(fitted < nextBest@target)
+    next_dose_level <- min(next_dose_level, which(data@doseGrid < doselimit))
+    next_dose <- data@doseGrid[next_dose_level]
+    
+    tmp <- tibble(
+      Dose = data@x,
+      Y = data@y
+    ) %>% 
+    group_by(Dose) %>% 
+    summarise(
+      N = n(),
+      R = sum(Y == 1),
+      .groups = "drop"
+    )
+
+    plotData <- h_boin_local_optimiser(data, target = nextBest@target) %>% 
+      bind_rows() %>% 
+      add_column(Dose = data@doseGrid, .before = 1) %>% 
+      full_join(tmp, by = "Dose") %>% 
+      replace_na(list(N = 0, R = 0)) %>% 
+      add_column(Fitted = fitted) %>% 
+      add_column(Target = nextBest@target) %>% 
+      add_column(DoseLimit = doselimit)
+    print(plotData)
+    
+    # Create a plot.
+    p <- plotData %>% 
+      ggplot(aes(x = Dose)) +
+        geom_ribbon(
+          aes(ymin = lambda1, ymax = lambda2), 
+          alpha = 0.25, 
+          fill = "steelblue"
+        ) +
+        geom_col(aes(y = Fitted)) +
+        # geom_vline(aes(xintercept = NextDose, colour = NextDose)) +
+        geom_hline(
+          aes(yintercept = Target, colour = Target), 
+          linetype = "dashed"
+        ) +
+        labs(
+          x = "Dose",
+          y = "Posterior p(Tox | dose)",
+          caption = expression(
+            paste(
+              "The shaded area is bounded by ", 
+              lambda[1], 
+              " and ", 
+              lambda[2]
+            )
+          )
+        )
+
+    if (is.finite(doselimit)) {
+      p <- p +
+        geom_vline(aes(xintercept = DoseLimit, colour = DoseLimit))
+    }
+    list(value = next_dose, plot = p)
+  }
+)
+```
+
+### Example usage
+
+```{r}
+#| label: nextBest-example
+#| 
+isotonicTestData <- Data(
+  x = c(1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5),   
+  y = c(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1),   
+  ID = 1:18,   
+  cohort =  c(1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6),   
+  doseGrid = 1:8 
+)  
+
+nb <- NextBestBOIN(target = 0.25)
+inc <- IncrementsHSRBeta(target = 0.25, n_min = 3)
+dose_limit <- maxDose(inc, isotonicTestData)
+nextBest(nb, dose_limit, data = isotonicTestData)
+
+knitr::knit_exit()
+```
+
+Note that fitted toxicity rates are available only for doses for which observed responses are available.
+
+Again, as an initial validation of the code, I reproduce Table 2 of Liu & Yuan.
+
+> This table does not match Table 2 in the paper
+
+```{r}
+#| label: table2
+#| echo: FALSE
+lapply(
+  1:15,
+  function(n) {
+    inc <- IncrementsHSRBeta(target = 0.25, n_min = min(n, 3))
+    lapply(
+      0:n,
+      function(r, n) {
+        d <- maxDose(
+          inc, 
+          Data(
+            x=rep(2, n), 
+            y = c(rep(0, n-r), rep(1, r)), 
+            doseGrid = 1:3,
+            cohort = as.integer(rep(1, n)),
+            ID = as.integer(1:n)
+          )
+        )
+        tibble(
+          N = n,
+          R = r,
+          Lambda2 = d
+        ) 
+      },
+      n = n
+    ) %>% 
+    bind_rows()%>% 
+    filter(Lambda2 == 1) %>% 
+    head(1) %>% 
+    mutate(Lambda2 = paste0(R, "/", N))
+  }
+) %>% 
+bind_rows()
+```
+
+## The `Stopping` rule
+
+> TODO: consider StoppingLowestDoseHSRBeta
+
+## The `BOINDesign` class
+
+```{r}
+#| label: rule-nextbest-definition
+
+# NextBestBOIN ----
+
+## class ----
+
+#' `NextBestBOIN`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestBOIN`] is the class for next best dose based on BOIN rule.
+#'
+#' @slot target (`proportion`)\cr target toxicity probability, except 0 or 1,
+#' denoted by phi in Liu & Yuan.
+#' @slot phi (`proportion`)\cr a vector of length two defining phi1 and phi2 in 
+#' Liu & Yuan.
+#' #' @slot pi (`proportion`)\cr a vector of length three whose elements sum to 1
+#' and give the prior probabilities for H0, H1 and H2, denoted by pi in Liu & Yuan.
+#'
+#' @aliases NextBestBOIN
+#' @export
+#'
+.NextBestBOIN <- setClass(
+  Class = "NextBestBOIN",
+  slots = c(
+    target = "numeric",
+    phi = "numeric", 
+    pi = "numeric"
+  ),
+  prototype = prototype(
+    target = 0.25,
+    phi = c(0.15, 0.35), 
+    pi = rep(1, 3) / 3
+  ),
+  contains = "NextBest"
+  # ,
+  # validity = v_next_best_boin
+)
+```
+
+```{r}
+## constructor ----
+
+#' @rdname NextBestBOIN-class
+#'
+#' @param target (`proportion`)\cr see slot definition.
+#' @param phi (`proportion`)\cr see slot definition.
+#' @param pi (`proportion`)\cr see slot definition.
+#' @param type (`character`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestBOIN.R
+#'
+NextBestBOIN <- function(
+    target, 
+    phi = c(target - 0.1, target + 0.1), 
+    pi = rep(1, 3) / 3, 
+) {
+  .NextBestBOIN(target, phi, pi, type)
+}
+```
+
+```{r}
+## default constructor ----
+
+#' @rdname NextBestBOIN-class
+#' @note Typically, end users will not use the `.DefaultNextBestBOIN()` function.
+#' @export
+.DefaultNextBestBOIN <- function() {
+  NextBestBOIN(
+    target = 0.25,
+    phi = c(target - 0.1, target + 0.1),
+    pi = rep(1, 3) / 3
+  )
+}
+```
+
+```{r}
+#| eval: FALSE
+## NextBestBOIN ----
+
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @describeIn nextBest find the next best dose based on the BOIN rule.
+#'
+#' @aliases nextBest-NextBestBOIN
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestBOIN.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestBOIN",
+    doselimit = "numeric",
+    samples = "ANY", 
+    model = "ANY",
+    data = "Data"
+  ),
+  definition = function(
+    nextBest, 
+    doselimit = Inf, 
+    samples, 
+    model, 
+    data, 
+    ...
+  ) {
+    type <- match.arg(type)
+    assert_probabilities(pi)
+    assert_equal(sum(pi), 1)
+    assert_probabilities(phi)
+    assert_numeric(phi, length = 3)
+    if (!missing(samples)) {
+      warning("The nextBest method for the NextBestBOIN class ignores any value provided in the samples argument.")
+    }
+    if (!missing(model)) {
+      warning("The nextBest method for the NextBestBOIN class ignores any value provided in the model argument.")
+    }
+    # Determine number of participants treated at each dose
+    n <- data %>% 
+      tidy() %>% 
+      group_by(Dose) %>% 
+      summaruse(N = n(), .groups = "drop")
+    print(n)
+    if (type == "local") {
+      lambda <- c(
+        log((1-phi[1])/(1 - target)) + log(pi[2]/pi[1])
+      )
+    } else {
+      stop("Global lambda not yet supported")
+    }
+  }
+)
+
+NextBestBOIN(0.33)
+```
+
+```{r}
+#| label: rule-design-definition
+#| eval: FALSE
+
+#' BIONDesign ----
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RuleDesign`] is the class for rule-based designs. The difference between
+#' this class and the [`Design`] class is that [`RuleDesign`] does not contain
+#' `model`, `stopping` and `increments` slots.
+#'
+#' @slot nextBest (`NextBest`)\cr how to find the next best dose.
+#' @slot cohort_size (`CohortSize`)\cr rules for the cohort sizes.
+#' @slot data (`Data`)\cr specifies dose grid, any previous data, etc.
+#' @slot startingDose (`number`)\cr the starting dose, it must lie on the dose
+#'   grid in `data`.
+#'
+#' @aliases RuleDesign
+#' @export
+#'
+.RuleDesign <- setClass(
+  Class = "RuleDesign",
+  slots = c(
+    nextBest = "NextBest",
+    cohort_size = "CohortSize",
+    data = "Data",
+    startingDose = "numeric"
+  ),
+  prototype = prototype(
+    nextBest = .NextBestThreePlusThree(),
+    cohort_size = CohortSizeConst(3),
+    data = Data(doseGrid = 1:3),
+    startingDose = 1
+  ),
+  # contains = "RuleDesign"
+  # ,
+  validity = v_rule_design
+)
+
+```
