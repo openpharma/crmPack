@@ -53,9 +53,10 @@ h_barplot_percentages <- function(
   if (x_is_discrete) {
     plot + scale_x_discrete(drop = FALSE)
   } else {
-    plot + scale_x_continuous(
-      breaks = round(dat$x, xaxisround)
-    )
+    plot +
+      scale_x_continuous(
+        breaks = round(dat$x, xaxisround)
+      )
   }
 }
 
@@ -82,7 +83,7 @@ h_histogram_percentages <- function(x, description, bins = 30L) {
 
   ggplot(data.frame(x = x), aes(x = x)) +
     geom_histogram(
-      aes(y = after_stat(count / sum(count) * 100)),
+      aes(y = after_stat(.data$count / sum(.data$count) * 100)),
       bins = bins,
       boundary = 0
     ) +
