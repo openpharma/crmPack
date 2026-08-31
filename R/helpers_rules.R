@@ -236,6 +236,77 @@ h_next_best_eligible_doses <- function(
 
 ## plot ----
 
+#' Plot a Probability Across a Dose Grid
+#'
+#' Creates a one-dimensional probability plot using either lollipops or the
+#' legacy bars.
+#'
+#' @param dose_grid (`numeric`)
+#'   dose grid.
+#' @param probability (`proportion`)
+#'   probability at each dose-grid value.
+#' @param description (`string`)
+#'   y-axis label.
+#' @param colour (`string`)
+#'   colour used for the probability geometry.
+#' @param prob_plot_type (`string`)
+#'   probability geometry, either `"lollipop"` or `"bar"`.
+#'
+#' @return A `ggplot2` object.
+#'
+#' @keywords internal
+h_next_best_probability_plot <- function(
+  dose_grid,
+  probability,
+  description,
+  colour,
+  prob_plot_type = c("lollipop", "bar")
+) {
+  assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
+  assert_probabilities(probability)
+  assert_true(length(dose_grid) == length(probability))
+  assert_string(description)
+  assert_string(colour)
+  prob_plot_type <- match.arg(prob_plot_type)
+
+  plot_data <- data.frame(Dose = dose_grid, y = probability * 100)
+  plot <- ggplot()
+
+  plot <- if (identical(prob_plot_type, "lollipop")) {
+    plot +
+      geom_segment(
+        data = plot_data,
+        aes(x = .data$Dose, xend = .data$Dose, y = 0, yend = .data$y),
+        linewidth = 1.1,
+        lineend = "round",
+        colour = colour
+      ) +
+      geom_point(
+        data = plot_data,
+        aes(x = .data$Dose, y = .data$y),
+        size = 2.2,
+        colour = colour
+      )
+  } else {
+    bar_width <- if (length(dose_grid) > 1L) {
+      min(diff(dose_grid)) / 2
+    } else {
+      1
+    }
+    plot + geom_bar(
+      data = plot_data,
+      aes(x = .data$Dose, y = .data$y),
+      stat = "identity",
+      position = "identity",
+      width = bar_width,
+      colour = colour,
+      fill = colour
+    )
+  }
+
+  plot + ylab(description)
+}
+
 #' Building the Plot for `nextBest-NextBestNCRMLoss` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -258,6 +329,8 @@ h_next_best_eligible_doses <- function(
 #' @param doselimit (`number`)\cr the maximum allowed next dose.
 #' @param next_dose (`number`)\cr next best dose.
 #' @param is_unacceptable_specified (`flag`)\cr is unacceptable interval specified?
+#' @param prob_plot_type (`string`)\cr probability geometry, either
+#'   `"lollipop"` or `"bar"`.
 #'
 #' @export
 h_next_best_ncrm_loss_plot <- function(
@@ -268,7 +341,8 @@ h_next_best_ncrm_loss_plot <- function(
   max_eligible_dose_level,
   doselimit,
   next_dose,
-  is_unacceptable_specified
+  is_unacceptable_specified,
+  prob_plot_type = c("lollipop", "bar")
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   n_grid <- length(dose_grid)
@@ -302,20 +376,17 @@ h_next_best_ncrm_loss_plot <- function(
   assert_number(max_eligible_dose_level, lower = 0, upper = n_grid)
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
+  prob_plot_type <- match.arg(prob_plot_type)
 
   # Build plots, first for the target probability.
-  p1 <- ggplot() +
-    geom_bar(
-      data = data.frame(Dose = dose_grid, y = prob_mat[, "target"] * 100),
-      aes(x = .data$Dose, y = .data$y),
-      stat = "identity",
-      position = "identity",
-      width = min(diff(dose_grid)) / 2,
-      colour = "darkgreen",
-      fill = "darkgreen"
-    ) +
-    ylim(c(0, 100)) +
-    ylab(paste("Target probability [%]"))
+  p1 <- h_next_best_probability_plot(
+    dose_grid = dose_grid,
+    probability = prob_mat[, "target"],
+    description = "Target probability [%]",
+    colour = "darkgreen",
+    prob_plot_type = prob_plot_type
+  ) +
+    ylim(c(0, 100))
 
   if (is.finite(doselimit)) {
     p1 <- p1 +
@@ -354,58 +425,43 @@ h_next_best_ncrm_loss_plot <- function(
 
   if (!is_unacceptable_specified) {
     # Second, for the overdosing probability.
-    p2 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = dose_grid, y = prob_mat[, "overdose"] * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(dose_grid)) / 2,
-        colour = "red",
-        fill = "red"
-      ) +
+    p2 <- h_next_best_probability_plot(
+      dose_grid = dose_grid,
+      probability = prob_mat[, "overdose"],
+      description = "Overdose probability [%]",
+      colour = "red",
+      prob_plot_type = prob_plot_type
+    ) +
       geom_hline(
         yintercept = max_overdose_prob * 100,
         lwd = 1.1,
         lty = 2,
         colour = "black"
       ) +
-      ylim(c(0, 100)) +
-      ylab("Overdose probability [%]")
+      ylim(c(0, 100))
 
     # Combine it all together.
     plots_single <- list(plot1 = p1, plot2 = p2, plot_loss = p_loss)
     plot_joint <- gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3)
   } else {
     # Plot in case of 4 toxicity intervals. Second, for the overdosing probability.
-    p2 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = dose_grid, y = prob_mat[, "excessive"] * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(dose_grid)) / 2,
-        colour = "red",
-        fill = "red"
-      ) +
-      ylim(c(0, 100)) +
-      ylab("Excessive probability [%]")
+    p2 <- h_next_best_probability_plot(
+      dose_grid = dose_grid,
+      probability = prob_mat[, "excessive"],
+      description = "Excessive probability [%]",
+      colour = "red",
+      prob_plot_type = prob_plot_type
+    ) +
+      ylim(c(0, 100))
 
-    p3 <- ggplot() +
-      geom_bar(
-        data = data.frame(
-          Dose = dose_grid,
-          y = prob_mat[, "unacceptable"] * 100
-        ),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(dose_grid)) / 2,
-        colour = "red",
-        fill = "red"
-      ) +
-      ylim(c(0, 100)) +
-      ylab("Unacceptable probability [%]")
+    p3 <- h_next_best_probability_plot(
+      dose_grid = dose_grid,
+      probability = prob_mat[, "unacceptable"],
+      description = "Unacceptable probability [%]",
+      colour = "red",
+      prob_plot_type = prob_plot_type
+    ) +
+      ylim(c(0, 100))
 
     # Combine it all together.
     plots_single <- list(plot1 = p1, plot2 = p2, plot3 = p3, plot_loss = p_loss)

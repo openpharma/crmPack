@@ -245,6 +245,43 @@ test_that("h_next_best_eligible_doses throws the error for empty dose grid or no
 
 ## plot ----
 
+### h_next_best_probability_plot ----
+
+test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
+  dose_grid <- c(0.001, 0.01, 0.1, 1, 10)
+  probability <- c(0.05, 0.1, 0.2, 0.4, 0.8)
+
+  lollipop <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red"
+  )
+  bars <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    prob_plot_type = "bar"
+  )
+
+  expect_s3_class(lollipop$layers[[1L]]$geom, "GeomSegment")
+  expect_s3_class(lollipop$layers[[2L]]$geom, "GeomPoint")
+  expect_equal(lollipop$layers[[1L]]$aes_params$linewidth, 1.1)
+  expect_equal(lollipop$layers[[2L]]$aes_params$size, 2.2)
+  expect_s3_class(bars$layers[[1L]]$geom, "GeomBar")
+  expect_error(
+    h_next_best_probability_plot(
+      dose_grid,
+      probability,
+      "Probability [%]",
+      "red",
+      prob_plot_type = "invalid"
+    ),
+    "should be one of"
+  )
+})
+
 ### h_next_best_ncrm_loss_plot ----
 
 test_that("h_next_best_ncrm_loss_plot works as expected", {
@@ -283,7 +320,8 @@ test_that("h_next_best_ncrm_loss_plot works as expected", {
     5,
     20,
     15,
-    FALSE
+    FALSE,
+    prob_plot_type = "bar"
   )
   expect_doppel("h_next_best_ncrm_loss_plot", result$plot_joint)
   expect_doppel("h_next_best_ncrm_loss_plot_p1", result$plots_single$plot1)
@@ -339,7 +377,8 @@ test_that("h_next_best_ncrm_loss_plot works as expected (unacceptable specified)
     5,
     20,
     15,
-    TRUE
+    TRUE,
+    prob_plot_type = "bar"
   )
   expect_doppel("h_next_best_ncrm_loss_plot_unacpt", result$plot_joint)
   expect_doppel(
@@ -392,7 +431,8 @@ test_that("h_next_best_ncrm_loss_plot works as expected (no doselimit)", {
     5,
     Inf,
     25,
-    FALSE
+    FALSE,
+    prob_plot_type = "bar"
   )
   expect_doppel("h_next_best_ncrm_loss_plot_nodoselim", result$plot_joint)
 })

@@ -40,21 +40,61 @@
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestEWOC,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestEWOC,numeric,Samples,GeneralModel,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  ...
+)
 
 \S4method{nextBest}{NextBestMTD,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  ...
+)
 
 \S4method{nextBest}{NextBestNCRM,matrix,Samples,TwoDrugsCombo,DataCombo}(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  ...
+)
 
-\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,GeneralModel,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  ...
+)
 
 \S4method{nextBest}{NextBestThreePlusThree,missing,missing,missing,Data}(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  ...
+)
 
 \S4method{nextBest}{NextBestMinDist,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
@@ -110,6 +150,10 @@ used for two drug combinations.}
 \item{data}{(\code{Data} or \code{DataCombo})\cr data that was used to generate the samples.}
 
 \item{...}{additional arguments without method dispatch.}
+
+\item{prob_plot_type}{(\code{string})\cr for one-dimensional target or overdose
+probability plots, use \code{"lollipop"} (default) or the legacy \code{"bar"}
+geometry.}
 
 \item{in_sim}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)

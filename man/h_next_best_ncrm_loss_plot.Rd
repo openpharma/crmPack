@@ -12,7 +12,8 @@ h_next_best_ncrm_loss_plot(
   max_eligible_dose_level,
   doselimit,
   next_dose,
-  is_unacceptable_specified
+  is_unacceptable_specified,
+  prob_plot_type = c("lollipop", "bar")
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ the \code{dose_grid}.}
 \item{next_dose}{(\code{number})\cr next best dose.}
 
 \item{is_unacceptable_specified}{(\code{flag})\cr is unacceptable interval specified?}
+
+\item{prob_plot_type}{(\code{string})\cr probability geometry, either
+\code{"lollipop"} or \code{"bar"}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
