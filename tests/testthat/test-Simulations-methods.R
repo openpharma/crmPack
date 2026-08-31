@@ -841,6 +841,7 @@ test_that("plot-SimulationsSummary keeps MTD bars visible on an uneven dose grid
   )
 
   expect_gte(relative_bar_width, 0.005)
+  expect_doppel("plot-simulations-summary-dose-selected-uneven-grid", mtd_plot)
 })
 
 test_that("plot-SimulationsSummary uses a histogram for DLT proportions", {
@@ -853,6 +854,19 @@ test_that("plot-SimulationsSummary uses a histogram for DLT proportions", {
   dlt_plot <- plot(sim_summary, type = "propDLTs")
 
   expect_s3_class(dlt_plot$layers[[1L]]$stat, "StatBin")
+  expect_doppel("plot-simulations-summary-prop-dlts-histogram", dlt_plot)
+})
+
+test_that("plot-PseudoSimulationsSummary uses a histogram for DLE proportions", {
+  pseudo_summary <- new(
+    "PseudoSimulationsSummary",
+    prop_dle = seq(0, 1, length.out = 100)
+  )
+
+  dle_plot <- plot(pseudo_summary, type = "propDLE")
+
+  expect_s3_class(dle_plot$layers[[1L]]$stat, "StatBin")
+  expect_doppel("plot-pseudo-simulations-summary-prop-dle-histogram", dle_plot)
 })
 
 test_that("plot-SimulationsSummary works correctly", {
