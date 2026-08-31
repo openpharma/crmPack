@@ -276,9 +276,7 @@ test_that("nextBest-NextBestNCRM optionally plots probabilities on a log dose sc
   expect_identical(result_log$value, result_linear$value)
   expect_equal(result_log$probs, result_linear$probs)
 
-  # Known failure: dose_scale currently travels through ... to prob() and is
-  # ignored by the plots. Remove expect_failure() when this option is added.
-  expect_failure(expect_true(uses_log_scale))
+  expect_true(uses_log_scale)
 })
 
 test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {

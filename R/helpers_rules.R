@@ -251,6 +251,9 @@ h_next_best_eligible_doses <- function(
 #'   colour used for the probability geometry.
 #' @param prob_plot_type (`string`)
 #'   probability geometry, either `"lollipop"` or `"bar"`.
+#' @param dose_scale (`string`)
+#'   dose-axis scale, either `"linear"` or `"log"`. The log scale requires all
+#'   doses to be strictly positive.
 #'
 #' @return A `ggplot2` object.
 #'
@@ -260,7 +263,8 @@ h_next_best_probability_plot <- function(
   probability,
   description,
   colour,
-  prob_plot_type = c("lollipop", "bar")
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log")
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   assert_probabilities(probability)
@@ -268,6 +272,13 @@ h_next_best_probability_plot <- function(
   assert_string(description)
   assert_string(colour)
   prob_plot_type <- match.arg(prob_plot_type)
+  dose_scale <- match.arg(dose_scale)
+  if (identical(dose_scale, "log") && any(dose_grid <= 0)) {
+    stop(
+      "`dose_scale = \"log\"` requires all doses to be strictly positive.",
+      call. = FALSE
+    )
+  }
 
   plot_data <- data.frame(Dose = dose_grid, y = probability * 100)
   plot <- ggplot()
@@ -287,7 +298,7 @@ h_next_best_probability_plot <- function(
         size = 2.2,
         colour = colour
       )
-  } else {
+  } else if (identical(dose_scale, "linear")) {
     bar_width <- if (length(dose_grid) > 1L) {
       min(diff(dose_grid)) / 2
     } else {
@@ -302,9 +313,36 @@ h_next_best_probability_plot <- function(
       colour = colour,
       fill = colour
     )
+  } else {
+    # On a log scale, define bar boundaries in transformed space so bars remain
+    # visible and evenly sized across an uneven dose grid.
+    log_dose <- log10(dose_grid)
+    half_width <- if (length(dose_grid) > 1L) {
+      min(diff(log_dose)) / 4
+    } else {
+      0.25
+    }
+    plot_data$xmin <- 10^(log_dose - half_width)
+    plot_data$xmax <- 10^(log_dose + half_width)
+    plot + geom_rect(
+      data = plot_data,
+      aes(
+        xmin = .data$xmin,
+        xmax = .data$xmax,
+        ymin = 0,
+        ymax = .data$y
+      ),
+      colour = colour,
+      fill = colour
+    )
   }
 
-  plot + ylab(description)
+  plot <- plot + ylab(description)
+  if (identical(dose_scale, "log")) {
+    plot + scale_x_log10()
+  } else {
+    plot
+  }
 }
 
 #' Building the Plot for `nextBest-NextBestNCRMLoss` Method.
@@ -331,6 +369,8 @@ h_next_best_probability_plot <- function(
 #' @param is_unacceptable_specified (`flag`)\cr is unacceptable interval specified?
 #' @param prob_plot_type (`string`)\cr probability geometry, either
 #'   `"lollipop"` or `"bar"`.
+#' @param dose_scale (`string`)\cr dose-axis scale, either `"linear"` or
+#'   `"log"`. The log scale requires all doses to be strictly positive.
 #'
 #' @export
 h_next_best_ncrm_loss_plot <- function(
@@ -342,7 +382,8 @@ h_next_best_ncrm_loss_plot <- function(
   doselimit,
   next_dose,
   is_unacceptable_specified,
-  prob_plot_type = c("lollipop", "bar")
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log")
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   n_grid <- length(dose_grid)
@@ -377,6 +418,7 @@ h_next_best_ncrm_loss_plot <- function(
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
   prob_plot_type <- match.arg(prob_plot_type)
+  dose_scale <- match.arg(dose_scale)
 
   # Build plots, first for the target probability.
   p1 <- h_next_best_probability_plot(
@@ -384,7 +426,8 @@ h_next_best_ncrm_loss_plot <- function(
     probability = prob_mat[, "target"],
     description = "Target probability [%]",
     colour = "darkgreen",
-    prob_plot_type = prob_plot_type
+    prob_plot_type = prob_plot_type,
+    dose_scale = dose_scale
   ) +
     ylim(c(0, 100))
 
@@ -430,7 +473,8 @@ h_next_best_ncrm_loss_plot <- function(
       probability = prob_mat[, "overdose"],
       description = "Overdose probability [%]",
       colour = "red",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       geom_hline(
         yintercept = max_overdose_prob * 100,
@@ -450,7 +494,8 @@ h_next_best_ncrm_loss_plot <- function(
       probability = prob_mat[, "excessive"],
       description = "Excessive probability [%]",
       colour = "red",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       ylim(c(0, 100))
 
@@ -459,7 +504,8 @@ h_next_best_ncrm_loss_plot <- function(
       probability = prob_mat[, "unacceptable"],
       description = "Unacceptable probability [%]",
       colour = "red",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       ylim(c(0, 100))
 

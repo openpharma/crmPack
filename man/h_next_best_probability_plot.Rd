@@ -9,7 +9,8 @@ h_next_best_probability_plot(
   probability,
   description,
   colour,
-  prob_plot_type = c("lollipop", "bar")
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log")
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ colour used for the probability geometry.}
 
 \item{prob_plot_type}{(\code{string})
 probability geometry, either \code{"lollipop"} or \code{"bar"}.}
+
+\item{dose_scale}{(\code{string})
+dose-axis scale, either \code{"linear"} or \code{"log"}. The log scale requires all
+doses to be strictly positive.}
 }
 \value{
 A \code{ggplot2} object.

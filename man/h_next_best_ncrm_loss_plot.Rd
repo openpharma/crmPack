@@ -13,7 +13,8 @@ h_next_best_ncrm_loss_plot(
   doselimit,
   next_dose,
   is_unacceptable_specified,
-  prob_plot_type = c("lollipop", "bar")
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log")
 )
 }
 \arguments{
@@ -42,6 +43,9 @@ the \code{dose_grid}.}
 
 \item{prob_plot_type}{(\code{string})\cr probability geometry, either
 \code{"lollipop"} or \code{"bar"}.}
+
+\item{dose_scale}{(\code{string})\cr dose-axis scale, either \code{"linear"} or
+\code{"log"}. The log scale requires all doses to be strictly positive.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

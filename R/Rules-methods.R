@@ -31,6 +31,9 @@ NULL
 #' @param prob_plot_type (`string`)\cr for one-dimensional target or overdose
 #'   probability plots, use `"lollipop"` (default) or the legacy `"bar"`
 #'   geometry.
+#' @param dose_scale (`string`)\cr for one-dimensional target or overdose
+#'   probability plots, use a `"linear"` (default) or `"log"` dose axis. The
+#'   log scale requires all doses to be strictly positive.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A list with the next best dose recommendation  (element named `value`)
@@ -84,9 +87,11 @@ setMethod(
     model,
     data,
     prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -127,7 +132,8 @@ setMethod(
       probability = prob_overdose,
       description = "Overdose probability [%]",
       colour = "red",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       geom_hline(
         yintercept = nextBest@max_overdose_prob * 100,
@@ -260,9 +266,11 @@ setMethod(
     model,
     data,
     prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -314,7 +322,8 @@ setMethod(
       probability = prob_target,
       description = "Target probability [%]",
       colour = "darkgreen",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       coord_cartesian(ylim = c(0, 100))
 
@@ -350,7 +359,8 @@ setMethod(
       probability = prob_overdose,
       description = "Overdose probability [%]",
       colour = "red",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       geom_hline(
         yintercept = nextBest@max_overdose_prob * 100,
@@ -579,9 +589,11 @@ setMethod(
     model,
     data,
     prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
     # Exception when we are in part I or about to start part II!
     if (all(data@part == 1L)) {
       # Propose the highest possible dose (assuming that the dose limit came
@@ -599,6 +611,7 @@ setMethod(
         model,
         data,
         prob_plot_type = prob_plot_type,
+        dose_scale = dose_scale,
         ...
       )
     }
@@ -631,9 +644,11 @@ setMethod(
     model,
     data,
     prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -717,7 +732,8 @@ setMethod(
       doselimit = doselimit,
       next_dose = next_dose,
       is_unacceptable_specified = is_unacceptable_specified,
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     )
 
     c(list(value = next_dose, probs = probs), p)
@@ -811,9 +827,11 @@ setMethod(
     model,
     data,
     prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
@@ -886,7 +904,8 @@ setMethod(
       probability = prob_target,
       description = "Target probability [%]",
       colour = "darkgreen",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       ylim(c(0, 100))
 
@@ -922,7 +941,8 @@ setMethod(
       probability = prob_overdose,
       description = "Overdose probability [%]",
       colour = "red",
-      prob_plot_type = prob_plot_type
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale
     ) +
       geom_hline(
         yintercept = nextBest@max_overdose_prob * 100,

@@ -47,6 +47,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
   ...
 )
 
@@ -59,6 +60,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
   ...
 )
 
@@ -71,6 +73,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
   ...
 )
 
@@ -81,6 +84,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
   ...
 )
 
@@ -93,6 +97,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
   ...
 )
 
@@ -154,6 +159,10 @@ used for two drug combinations.}
 \item{prob_plot_type}{(\code{string})\cr for one-dimensional target or overdose
 probability plots, use \code{"lollipop"} (default) or the legacy \code{"bar"}
 geometry.}
+
+\item{dose_scale}{(\code{string})\cr for one-dimensional target or overdose
+probability plots, use a \code{"linear"} (default) or \code{"log"} dose axis. The
+log scale requires all doses to be strictly positive.}
 
 \item{in_sim}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)
