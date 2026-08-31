@@ -826,47 +826,51 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
 
 ## plot-SimulationsSummary ----
 
-test_that("plot-SimulationsSummary keeps MTD bars visible on an uneven dose grid", {
+test_that("plot-SimulationsSummary shows representative MTD selections", {
   sim_summary <- new(
     "SimulationsSummary",
-    dose_selected = c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16),
+    dose_selected = rep(
+      c(1, 3, 5, 10, 15, 20, 25),
+      times = c(2, 8, 20, 35, 22, 10, 3)
+    ),
     placebo = FALSE
   )
 
   mtd_plot <- plot(sim_summary, type = "doseSelected")
-  mtd_bars <- ggplot_build(mtd_plot)$data[[1L]]
-  relative_bar_width <- with(
-    mtd_bars,
-    min(xmax - xmin) / diff(range(x))
-  )
 
-  expect_gte(relative_bar_width, 0.005)
-  expect_doppel("plot-simulations-summary-dose-selected-uneven-grid", mtd_plot)
+  expect_true(mtd_plot$scales$get_scales("x")$is_discrete())
+  expect_doppel("plot-simulations-summary-dose-selected-representative", mtd_plot)
 })
 
-test_that("plot-SimulationsSummary uses a histogram for DLT proportions", {
+test_that("plot-SimulationsSummary shows representative DLT proportions", {
   sim_summary <- new(
     "SimulationsSummary",
-    prop_dlts = seq(0, 1, length.out = 100),
+    prop_dlts = rep(
+      c(0, 1 / 12, 2 / 12, 3 / 12, 4 / 12, 5 / 12),
+      times = c(3, 16, 28, 25, 18, 10)
+    ),
     placebo = FALSE
   )
 
   dlt_plot <- plot(sim_summary, type = "propDLTs")
 
   expect_s3_class(dlt_plot$layers[[1L]]$stat, "StatBin")
-  expect_doppel("plot-simulations-summary-prop-dlts-histogram", dlt_plot)
+  expect_doppel("plot-simulations-summary-prop-dlts-representative", dlt_plot)
 })
 
-test_that("plot-PseudoSimulationsSummary uses a histogram for DLE proportions", {
+test_that("plot-PseudoSimulationsSummary shows representative DLE proportions", {
   pseudo_summary <- new(
     "PseudoSimulationsSummary",
-    prop_dle = seq(0, 1, length.out = 100)
+    prop_dle = rep(
+      c(0, 1 / 8, 2 / 8, 3 / 8, 4 / 8, 5 / 8, 6 / 8),
+      times = c(2, 10, 24, 30, 20, 10, 4)
+    )
   )
 
   dle_plot <- plot(pseudo_summary, type = "propDLE")
 
   expect_s3_class(dle_plot$layers[[1L]]$stat, "StatBin")
-  expect_doppel("plot-pseudo-simulations-summary-prop-dle-histogram", dle_plot)
+  expect_doppel("plot-pseudo-simulations-summary-prop-dle-representative", dle_plot)
 })
 
 test_that("plot-SimulationsSummary works correctly", {
