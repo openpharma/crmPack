@@ -2145,7 +2145,8 @@ setMethod(
       plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@dose_selected,
-          description = "MTD estimate"
+          description = "MTD estimate",
+          x_is_discrete = TRUE
         )
     }
 
@@ -2153,19 +2154,17 @@ setMethod(
     if (x@placebo) {
       if ("propDLTs" %in% type) {
         plot_list[[plot_index <- plot_index + 1L]] <-
-          h_barplot_percentages(
+          h_histogram_percentages(
             x = x@prop_dlts[1, ] * 100,
-            description = "Proportion of DLTs [%] on active",
-            xaxisround = 1
+            description = "Proportion of DLTs [%] on active"
           )
       }
     } else {
       if ("propDLTs" %in% type) {
         plot_list[[plot_index <- plot_index + 1L]] <-
-          h_barplot_percentages(
+          h_histogram_percentages(
             x = x@prop_dlts * 100,
-            description = "Proportion of DLTs [%]",
-            xaxisround = 1
+            description = "Proportion of DLTs [%]"
           )
       }
     }
@@ -2251,7 +2250,8 @@ setMethod(
       plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@dose_selected[, 1L],
-          description = "Selected dose for drug 1"
+          description = "Selected dose for drug 1",
+          x_is_discrete = TRUE
         )
     }
 
@@ -2259,16 +2259,16 @@ setMethod(
       plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@dose_selected[, 2L],
-          description = "Selected dose for drug 2"
+          description = "Selected dose for drug 2",
+          x_is_discrete = TRUE
         )
     }
 
     if ("propDLTs" %in% type) {
       plot_list[[plot_index <- plot_index + 1L]] <-
-        h_barplot_percentages(
+        h_histogram_percentages(
           x = x@prop_dlts * 100,
-          description = "Proportion of DLTs [%]",
-          xaxisround = 1
+          description = "Proportion of DLTs [%]"
         )
     }
 
@@ -3198,17 +3198,17 @@ setMethod(
       plot_list[[plot_index <- plot_index + 1L]] <-
         h_barplot_percentages(
           x = x@dose_selected,
-          description = "MTD estimate"
+          description = "MTD estimate",
+          x_is_discrete = TRUE
         )
     }
 
     # Distribution of proportion of DLTs.
     if ("propDLE" %in% type) {
       plot_list[[plot_index <- plot_index + 1L]] <-
-        h_barplot_percentages(
+        h_histogram_percentages(
           x = x@prop_dle * 100,
-          description = "Proportion of DLE [%]",
-          xaxisround = 1
+          description = "Proportion of DLE [%]"
         )
     }
 

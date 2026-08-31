@@ -809,11 +809,11 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
 
   result_dose_selected <- plot(simSummary, type = "doseSelected")
   expect_s3_class(result_dose_selected, "ggplot")
-  expect_doppel("plot_generalSimsSummary_doseSelected", result_dose_selected)
+  expect_true(result_dose_selected$scales$get_scales("x")$is_discrete())
 
   result_prop_dlts <- plot(simSummary, type = "propDLTs")
   expect_s3_class(result_prop_dlts, "ggplot")
-  expect_doppel("plot_generalSimsSummary_propDLTs", result_prop_dlts)
+  expect_s3_class(result_prop_dlts$layers[[1L]]$stat, "StatBin")
 
   result_n_above_target <- plot(simSummary, type = "nAboveTarget")
   expect_s3_class(result_n_above_target, "ggplot")
@@ -840,10 +840,7 @@ test_that("plot-SimulationsSummary keeps MTD bars visible on an uneven dose grid
     min(xmax - xmin) / diff(range(x))
   )
 
-  # Known failure: all bars use half the smallest dose gap (0.0045 here),
-  # making them hairlines across the full dose range. Remove expect_failure()
-  # when the bar placement is made robust to unevenly spaced dose grids.
-  expect_failure(expect_gte(relative_bar_width, 0.005))
+  expect_gte(relative_bar_width, 0.005)
 })
 
 test_that("plot-SimulationsSummary uses a histogram for DLT proportions", {
@@ -855,10 +852,7 @@ test_that("plot-SimulationsSummary uses a histogram for DLT proportions", {
 
   dlt_plot <- plot(sim_summary, type = "propDLTs")
 
-  # Known failure: h_barplot_percentages() tabulates every exact value and
-  # plots the result with StatIdentity. A histogram should use StatBin.
-  # Remove expect_failure() once propDLTs is changed to a true histogram.
-  expect_failure(expect_s3_class(dlt_plot$layers[[1L]]$stat, "StatBin"))
+  expect_s3_class(dlt_plot$layers[[1L]]$stat, "StatBin")
 })
 
 test_that("plot-SimulationsSummary works correctly", {
@@ -955,8 +949,8 @@ test_that("plot-DualSimulationsSummary works correctly", {
   expect_s3_class(result_n_obs, "ggplot")
 
   result_dose_selected <- plot(simSummary, type = "doseSelected")
-  expect_doppel("plot_dualSimsSummary_doseSelected", result_dose_selected)
   expect_s3_class(result_dose_selected, "ggplot")
+  expect_true(result_dose_selected$scales$get_scales("x")$is_discrete())
 })
 
 ## summary-PseudoSimulations ----
@@ -1094,25 +1088,28 @@ test_that("plot-PseudoSimulationsSummary works correctly", {
     resultD1 <- plot(simSummary, type = "doseSelectedDrug1")
     expect_s3_class(resultD1, "ggplot")
     expect_equal(resultD1$labels$x, "Selected dose for drug 1")
+    expect_true(resultD1$scales$get_scales("x")$is_discrete())
 
     result_d2 <- plot(simSummary, type = "doseSelectedDrug2")
     expect_s3_class(result_d2, "ggplot")
     expect_equal(result_d2$labels$x, "Selected dose for drug 2")
+    expect_true(result_d2$scales$get_scales("x")$is_discrete())
 
     result_prop <- plot(simSummary, type = "propDLTs")
     expect_s3_class(result_prop, "ggplot")
     expect_equal(result_prop$labels$x, "Proportion of DLTs [%]")
+    expect_s3_class(result_prop$layers[[1L]]$stat, "StatBin")
   })
 
   result_dose <- plot(pseudo_summary, type = "doseSelected")
   expect_s3_class(result_dose, "ggplot")
-  expect_doppel("plot_pseudoSimsSummary_doseSelected", result_dose)
   expect_equal(result_dose$labels$x, "MTD estimate")
+  expect_true(result_dose$scales$get_scales("x")$is_discrete())
 
   result_prop <- plot(pseudo_summary, type = "propDLE")
   expect_s3_class(result_prop, "ggplot")
-  expect_doppel("plot_pseudoSimsSummary_propDLE", result_prop)
   expect_equal(result_prop$labels$x, "Proportion of DLE [%]")
+  expect_s3_class(result_prop$layers[[1L]]$stat, "StatBin")
 
   result_target <- plot(pseudo_summary, type = "nAboveTargetEndOfTrial")
   expect_s3_class(result_target, "ggplot")

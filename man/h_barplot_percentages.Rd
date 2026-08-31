@@ -4,7 +4,7 @@
 \alias{h_barplot_percentages}
 \title{Convenience function to make barplots of percentages}
 \usage{
-h_barplot_percentages(x, description, xaxisround = 0)
+h_barplot_percentages(x, description, xaxisround = 0, x_is_discrete = FALSE)
 }
 \arguments{
 \item{x}{vector of samples}
@@ -13,6 +13,9 @@ h_barplot_percentages(x, description, xaxisround = 0)
 
 \item{xaxisround}{rounding for xaxis labels (default: 0, i.e. integers will
 be used)}
+
+\item{x_is_discrete}{whether the values on the x-axis should be treated as
+discrete categories}
 }
 \value{
 the ggplot2 object
