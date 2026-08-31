@@ -8,7 +8,7 @@ test_that("nextBest-NextBestEWOC returns expected next dose based on overdose co
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+    list(alpha0 = c(-1, 0, 0.5, 1), alpha1 = c(0.1, 0.2, 0.3, 0.4))
   )
 
   nb_ewoc <- NextBestEWOC(
@@ -43,7 +43,7 @@ test_that("nextBest-NextBestEWOC returns expected next dose when no doselimit", 
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+    list(alpha0 = c(-1, 0, 0.5, 1), alpha1 = c(0.1, 0.2, 0.3, 0.4))
   )
 
   nb_ewoc <- NextBestEWOC(
@@ -235,6 +235,10 @@ test_that("nextBest-NextBestNCRM supports lollipop and legacy bar plots", {
   )))
   expect_identical(result_bar$value, result_lollipop$value)
   expect_equal(result_bar$probs, result_lollipop$probs)
+  expect_doppel(
+    "plot-nextbest-nextbestncrm-lollipop-uneven-dose-grid",
+    result_lollipop$plot
+  )
 })
 
 test_that("nextBest-NextBestNCRM optionally plots probabilities on a log dose scale", {
@@ -277,6 +281,7 @@ test_that("nextBest-NextBestNCRM optionally plots probabilities on a log dose sc
   expect_equal(result_log$probs, result_linear$probs)
 
   expect_true(uses_log_scale)
+  expect_doppel("plot-nextbest-nextbestncrm-log-dose-scale", result_log$plot)
 })
 
 test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
