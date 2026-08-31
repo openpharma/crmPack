@@ -173,6 +173,66 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   expect_doppel("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
+test_that("nextBest-NextBestNCRM optionally plots probabilities on a log dose scale", {
+  data <- Data(
+    doseGrid = c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16)
+  )
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result_linear <- nextBest(nb_ncrm, 16, samples, model, data)
+  probability_bar_widths <- vapply(
+    result_linear$singlePlots,
+    function(probability_plot) {
+      probability_bars <- ggplot_build(probability_plot)$data[[1L]]
+      with(
+        probability_bars,
+        min(xmax - xmin) / diff(range(x))
+      )
+    },
+    numeric(1L)
+  )
+  result_log <- nextBest(
+    nb_ncrm,
+    16,
+    samples,
+    model,
+    data,
+    dose_scale = "log"
+  )
+
+  target_scale <- result_log$singlePlots$plot1$scales$get_scales("x")
+  overdose_scale <- result_log$singlePlots$plot2$scales$get_scales("x")
+  uses_log_scale <- all(vapply(
+    list(target_scale, overdose_scale),
+    function(scale) {
+      !is.null(scale) && grepl("^log", scale$trans$name)
+    },
+    logical(1L)
+  ))
+
+  # Changing the display scale must not change the dose recommendation or the
+  # probabilities used to derive it.
+  expect_identical(result_log$value, result_linear$value)
+  expect_equal(result_log$probs, result_linear$probs)
+
+  # Known failure: both panels use half the smallest raw dose gap as the bar
+  # width, making the probability marks look like hairlines on this grid.
+  # Remove expect_failure() when their geometry is made robust to uneven grids.
+  expect_failure(expect_true(all(probability_bar_widths >= 0.005)))
+
+  # Known failure: dose_scale currently travels through ... to prob() and is
+  # ignored by the plots. Remove expect_failure() when this option is added.
+  expect_failure(expect_true(uses_log_scale))
+})
+
 test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
   my_data <- h_get_data_grouped()
   my_model <- .DefaultLogisticLogNormalGrouped()

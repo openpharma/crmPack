@@ -826,6 +826,41 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
 
 ## plot-SimulationsSummary ----
 
+test_that("plot-SimulationsSummary keeps MTD bars visible on an uneven dose grid", {
+  sim_summary <- new(
+    "SimulationsSummary",
+    dose_selected = c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16),
+    placebo = FALSE
+  )
+
+  mtd_plot <- plot(sim_summary, type = "doseSelected")
+  mtd_bars <- ggplot_build(mtd_plot)$data[[1L]]
+  relative_bar_width <- with(
+    mtd_bars,
+    min(xmax - xmin) / diff(range(x))
+  )
+
+  # Known failure: all bars use half the smallest dose gap (0.0045 here),
+  # making them hairlines across the full dose range. Remove expect_failure()
+  # when the bar placement is made robust to unevenly spaced dose grids.
+  expect_failure(expect_gte(relative_bar_width, 0.005))
+})
+
+test_that("plot-SimulationsSummary uses a histogram for DLT proportions", {
+  sim_summary <- new(
+    "SimulationsSummary",
+    prop_dlts = seq(0, 1, length.out = 100),
+    placebo = FALSE
+  )
+
+  dlt_plot <- plot(sim_summary, type = "propDLTs")
+
+  # Known failure: h_barplot_percentages() tabulates every exact value and
+  # plots the result with StatIdentity. A histogram should use StatBin.
+  # Remove expect_failure() once propDLTs is changed to a true histogram.
+  expect_failure(expect_s3_class(dlt_plot$layers[[1L]]$stat, "StatBin"))
+})
+
 test_that("plot-SimulationsSummary works correctly", {
   skip_on_cran()
 
