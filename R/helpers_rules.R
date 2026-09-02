@@ -254,6 +254,9 @@ h_next_best_eligible_doses <- function(
 #' @param dose_scale (`string`)
 #'   dose-axis scale, either `"linear"` or `"log"`. The log scale requires all
 #'   doses to be strictly positive.
+#' @param axis_ticks (`string`)
+#'   x-axis tick positions, either at each dose-grid value (`"dosegrid"`, the
+#'   default) or at regular positions selected by `ggplot2` (`"regular"`).
 #'
 #' @return A `ggplot2` object.
 #'
@@ -264,7 +267,8 @@ h_next_best_probability_plot <- function(
   description,
   colour,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log")
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular")
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   assert_probabilities(probability)
@@ -273,6 +277,7 @@ h_next_best_probability_plot <- function(
   assert_string(colour)
   prob_plot_type <- match.arg(prob_plot_type)
   dose_scale <- match.arg(dose_scale)
+  axis_ticks <- match.arg(axis_ticks)
   if (identical(dose_scale, "log") && any(dose_grid <= 0)) {
     stop(
       "`dose_scale = \"log\"` requires all doses to be strictly positive.",
@@ -339,7 +344,13 @@ h_next_best_probability_plot <- function(
 
   plot <- plot + ylab(description)
   if (identical(dose_scale, "log")) {
-    plot + scale_x_log10()
+    if (identical(axis_ticks, "dosegrid")) {
+      plot + scale_x_log10(breaks = dose_grid)
+    } else {
+      plot + scale_x_log10()
+    }
+  } else if (identical(axis_ticks, "dosegrid")) {
+    plot + scale_x_continuous(breaks = dose_grid)
   } else {
     plot
   }
@@ -371,6 +382,9 @@ h_next_best_probability_plot <- function(
 #'   `"lollipop"` or `"bar"`.
 #' @param dose_scale (`string`)\cr dose-axis scale, either `"linear"` or
 #'   `"log"`. The log scale requires all doses to be strictly positive.
+#' @param axis_ticks (`string`)\cr x-axis tick positions, either at each
+#'   dose-grid value (`"dosegrid"`, the default) or at regular positions
+#'   selected by `ggplot2` (`"regular"`).
 #'
 #' @export
 h_next_best_ncrm_loss_plot <- function(
@@ -383,7 +397,8 @@ h_next_best_ncrm_loss_plot <- function(
   next_dose,
   is_unacceptable_specified,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log")
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular")
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   n_grid <- length(dose_grid)
@@ -419,6 +434,7 @@ h_next_best_ncrm_loss_plot <- function(
   assert_number(next_dose, na.ok = TRUE)
   prob_plot_type <- match.arg(prob_plot_type)
   dose_scale <- match.arg(dose_scale)
+  axis_ticks <- match.arg(axis_ticks)
 
   # Build plots, first for the target probability.
   p1 <- h_next_best_probability_plot(
@@ -427,7 +443,8 @@ h_next_best_ncrm_loss_plot <- function(
     description = "Target probability [%]",
     colour = "darkgreen",
     prob_plot_type = prob_plot_type,
-    dose_scale = dose_scale
+    dose_scale = dose_scale,
+    axis_ticks = axis_ticks
   ) +
     ylim(c(0, 100))
 
@@ -474,7 +491,8 @@ h_next_best_ncrm_loss_plot <- function(
       description = "Overdose probability [%]",
       colour = "red",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       geom_hline(
         yintercept = max_overdose_prob * 100,
@@ -495,7 +513,8 @@ h_next_best_ncrm_loss_plot <- function(
       description = "Excessive probability [%]",
       colour = "red",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       ylim(c(0, 100))
 
@@ -505,7 +524,8 @@ h_next_best_ncrm_loss_plot <- function(
       description = "Unacceptable probability [%]",
       colour = "red",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       ylim(c(0, 100))
 

@@ -284,6 +284,43 @@ test_that("nextBest-NextBestNCRM optionally plots probabilities on a log dose sc
   expect_doppel("plot-nextbest-nextbestncrm-log-dose-scale", result_log$plot)
 })
 
+test_that("nextBest-NextBestNCRM uses dose-grid ticks by default", {
+  dose_grid <- c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16)
+  data <- Data(doseGrid = dose_grid)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result_dosegrid <- nextBest(nb_ncrm, 16, samples, model, data)
+  result_regular <- nextBest(
+    nb_ncrm,
+    16,
+    samples,
+    model,
+    data,
+    axis_ticks = "regular"
+  )
+
+  expect_true(all(vapply(
+    result_dosegrid$singlePlots,
+    function(plot) identical(plot$scales$get_scales("x")$breaks, dose_grid),
+    logical(1L)
+  )))
+  expect_true(all(vapply(
+    result_regular$singlePlots,
+    function(plot) is.null(plot$scales$get_scales("x")),
+    logical(1L)
+  )))
+  expect_identical(result_regular$value, result_dosegrid$value)
+  expect_equal(result_regular$probs, result_dosegrid$probs)
+})
+
 test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
   my_data <- h_get_data_grouped()
   my_model <- .DefaultLogisticLogNormalGrouped()

@@ -10,7 +10,8 @@ h_next_best_probability_plot(
   description,
   colour,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log")
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular")
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ probability geometry, either \code{"lollipop"} or \code{"bar"}.}
 \item{dose_scale}{(\code{string})
 dose-axis scale, either \code{"linear"} or \code{"log"}. The log scale requires all
 doses to be strictly positive.}
+
+\item{axis_ticks}{(\code{string})
+x-axis tick positions, either at each dose-grid value (\code{"dosegrid"}, the
+default) or at regular positions selected by \code{ggplot2} (\code{"regular"}).}
 }
 \value{
 A \code{ggplot2} object.

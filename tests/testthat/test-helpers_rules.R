@@ -279,15 +279,25 @@ test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
     prob_plot_type = "bar",
     dose_scale = "log"
   )
+  regular_ticks <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    axis_ticks = "regular"
+  )
 
   expect_s3_class(lollipop$layers[[1L]]$geom, "GeomSegment")
   expect_s3_class(lollipop$layers[[2L]]$geom, "GeomPoint")
   expect_equal(lollipop$layers[[1L]]$aes_params$linewidth, 1.1)
   expect_equal(lollipop$layers[[2L]]$aes_params$size, 2.2)
   expect_s3_class(bars$layers[[1L]]$geom, "GeomBar")
+  expect_equal(lollipop$scales$get_scales("x")$breaks, dose_grid)
   expect_match(log_lollipop$scales$get_scales("x")$trans$name, "^log")
+  expect_equal(log_lollipop$scales$get_scales("x")$breaks, dose_grid)
   expect_s3_class(log_bars$layers[[1L]]$geom, "GeomRect")
   expect_equal(nrow(ggplot_build(log_bars)$data[[1L]]), length(dose_grid))
+  expect_null(regular_ticks$scales$get_scales("x"))
   expect_error(
     h_next_best_probability_plot(
       dose_grid,
@@ -295,6 +305,16 @@ test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
       "Probability [%]",
       "red",
       prob_plot_type = "invalid"
+    ),
+    "should be one of"
+  )
+  expect_error(
+    h_next_best_probability_plot(
+      dose_grid,
+      probability,
+      "Probability [%]",
+      "red",
+      axis_ticks = "invalid"
     ),
     "should be one of"
   )

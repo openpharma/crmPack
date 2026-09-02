@@ -34,6 +34,10 @@ NULL
 #' @param dose_scale (`string`)\cr for one-dimensional target or overdose
 #'   probability plots, use a `"linear"` (default) or `"log"` dose axis. The
 #'   log scale requires all doses to be strictly positive.
+#' @param axis_ticks (`string`)\cr for one-dimensional target or overdose
+#'   probability plots, place x-axis ticks at each dose-grid value
+#'   (`"dosegrid"`, the default) or at regular positions selected by `ggplot2`
+#'   (`"regular"`).
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A list with the next best dose recommendation  (element named `value`)
@@ -88,10 +92,12 @@ setMethod(
     data,
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("linear", "log"),
+    axis_ticks = c("dosegrid", "regular"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -133,7 +139,8 @@ setMethod(
       description = "Overdose probability [%]",
       colour = "red",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       geom_hline(
         yintercept = nextBest@max_overdose_prob * 100,
@@ -267,10 +274,12 @@ setMethod(
     data,
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("linear", "log"),
+    axis_ticks = c("dosegrid", "regular"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -323,7 +332,8 @@ setMethod(
       description = "Target probability [%]",
       colour = "darkgreen",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       coord_cartesian(ylim = c(0, 100))
 
@@ -360,7 +370,8 @@ setMethod(
       description = "Overdose probability [%]",
       colour = "red",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       geom_hline(
         yintercept = nextBest@max_overdose_prob * 100,
@@ -590,10 +601,12 @@ setMethod(
     data,
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("linear", "log"),
+    axis_ticks = c("dosegrid", "regular"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
     # Exception when we are in part I or about to start part II!
     if (all(data@part == 1L)) {
       # Propose the highest possible dose (assuming that the dose limit came
@@ -612,6 +625,7 @@ setMethod(
         data,
         prob_plot_type = prob_plot_type,
         dose_scale = dose_scale,
+        axis_ticks = axis_ticks,
         ...
       )
     }
@@ -645,10 +659,12 @@ setMethod(
     data,
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("linear", "log"),
+    axis_ticks = c("dosegrid", "regular"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -733,7 +749,8 @@ setMethod(
       next_dose = next_dose,
       is_unacceptable_specified = is_unacceptable_specified,
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     )
 
     c(list(value = next_dose, probs = probs), p)
@@ -828,10 +845,12 @@ setMethod(
     data,
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("linear", "log"),
+    axis_ticks = c("dosegrid", "regular"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
@@ -905,7 +924,8 @@ setMethod(
       description = "Target probability [%]",
       colour = "darkgreen",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       ylim(c(0, 100))
 
@@ -942,7 +962,8 @@ setMethod(
       description = "Overdose probability [%]",
       colour = "red",
       prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks
     ) +
       geom_hline(
         yintercept = nextBest@max_overdose_prob * 100,

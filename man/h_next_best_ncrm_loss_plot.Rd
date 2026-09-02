@@ -14,7 +14,8 @@ h_next_best_ncrm_loss_plot(
   next_dose,
   is_unacceptable_specified,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log")
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular")
 )
 }
 \arguments{
@@ -46,6 +47,10 @@ the \code{dose_grid}.}
 
 \item{dose_scale}{(\code{string})\cr dose-axis scale, either \code{"linear"} or
 \code{"log"}. The log scale requires all doses to be strictly positive.}
+
+\item{axis_ticks}{(\code{string})\cr x-axis tick positions, either at each
+dose-grid value (\code{"dosegrid"}, the default) or at regular positions
+selected by \code{ggplot2} (\code{"regular"}).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
