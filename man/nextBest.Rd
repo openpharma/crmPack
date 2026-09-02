@@ -49,6 +49,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
 )
 
@@ -63,6 +64,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
 )
 
@@ -77,6 +79,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
 )
 
@@ -89,6 +92,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
 )
 
@@ -103,6 +107,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
 )
 
@@ -173,6 +178,10 @@ log scale requires all doses to be strictly positive.}
 probability plots, place x-axis ticks at each dose-grid value
 (\code{"dosegrid"}, the default) or at regular positions selected by \code{ggplot2}
 (\code{"regular"}).}
+
+\item{axis_text_angle}{(\code{number})\cr rotation angle for x-axis tick labels.
+Defaults to 45 degrees for \code{axis_ticks = "dosegrid"} and 0 degrees for
+\code{axis_ticks = "regular"}.}
 
 \item{in_sim}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)

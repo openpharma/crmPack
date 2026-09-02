@@ -313,8 +313,18 @@ test_that("nextBest-NextBestNCRM uses dose-grid ticks by default", {
     logical(1L)
   )))
   expect_true(all(vapply(
+    result_dosegrid$singlePlots,
+    function(plot) identical(plot$theme$axis.text.x$angle, 45),
+    logical(1L)
+  )))
+  expect_true(all(vapply(
     result_regular$singlePlots,
     function(plot) is.null(plot$scales$get_scales("x")),
+    logical(1L)
+  )))
+  expect_true(all(vapply(
+    result_regular$singlePlots,
+    function(plot) identical(plot$theme$axis.text.x$angle, 0),
     logical(1L)
   )))
   expect_identical(result_regular$value, result_dosegrid$value)
