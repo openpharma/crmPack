@@ -236,6 +236,25 @@ h_next_best_eligible_doses <- function(
 
 ## plot ----
 
+#' Format Dose-Axis Labels
+#'
+#' Formats dose values without scientific notation or trailing zeroes so the
+#' same labels can be used across dose-related plots.
+#'
+#' @param x (`numeric`)\cr dose values.
+#'
+#' @return A character vector of formatted dose labels.
+#'
+#' @keywords internal
+h_dose_axis_labels <- function(x) {
+  format(
+    x,
+    scientific = FALSE,
+    trim = TRUE,
+    drop0trailing = TRUE
+  )
+}
+
 #' Plot a Probability Across a Dose Grid
 #'
 #' Creates a one-dimensional probability plot using either lollipops or the
@@ -355,22 +374,17 @@ h_next_best_probability_plot <- function(
         hjust = ifelse(axis_text_angle == 0, 0.5, 1)
       )
     )
-  dose_labels <- function(x) {
-    format(
-      x,
-      scientific = FALSE,
-      trim = TRUE,
-      drop0trailing = TRUE
-    )
-  }
   if (identical(dose_scale, "log")) {
     if (identical(axis_ticks, "dosegrid")) {
-      plot + scale_x_log10(breaks = dose_grid, labels = dose_labels)
+      plot + scale_x_log10(breaks = dose_grid, labels = h_dose_axis_labels)
     } else {
       plot + scale_x_log10()
     }
   } else if (identical(axis_ticks, "dosegrid")) {
-    plot + scale_x_continuous(breaks = dose_grid, labels = dose_labels)
+    plot + scale_x_continuous(
+      breaks = dose_grid,
+      labels = h_dose_axis_labels
+    )
   } else {
     plot
   }

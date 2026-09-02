@@ -60,6 +60,10 @@ test_that("plot-GeneralSimulations works correctly", {
   expect_s3_class(result_trajectory, "ggplot")
   expect_equal(result_trajectory$labels$x, "Patient")
   expect_equal(result_trajectory$labels$y, "Dose Level")
+  expect_equal(
+    result_trajectory$scales$get_scales("y")$breaks,
+    mySims@data[[1L]]@doseGrid
+  )
   expect_doppel("plot_generalSims_trajectory", result_trajectory)
 
   # Test dosesTried plot only
@@ -83,6 +87,136 @@ test_that("plot-GeneralSimulations fails gracefully with bad input", {
   result_mixed <- plot(mySims, type = c("trajectory", "invalid"))
   expect_s3_class(result_mixed, "ggplot")
   expect_error(plot(mySims, type = character(0)), "must be of length")
+})
+
+test_that("plot-GeneralSimulations supports log dose axes", {
+  mySims <- .DefaultSimulations()
+
+  trajectory <- plot(
+    mySims,
+    type = "trajectory",
+    dose_scale = "log"
+  )
+  doses_tried <- plot(
+    mySims,
+    type = "dosesTried",
+    dose_scale = "log"
+  )
+
+  expect_equal(
+    trajectory$scales$get_scales("y")$trans$name,
+    "log-10"
+  )
+  expect_equal(
+    trajectory$scales$get_scales("y")$breaks,
+    mySims@data[[1L]]@doseGrid
+  )
+  expect_equal(
+    doses_tried$scales$get_scales("x")$trans$name,
+    "log-10"
+  )
+  expect_equal(
+    doses_tried$scales$get_scales("x")$breaks,
+    mySims@data[[1L]]@doseGrid
+  )
+})
+
+test_that("doses tried uses lollipops by default", {
+  mySims <- .DefaultSimulations()
+  result <- plot(mySims, type = "dosesTried")
+
+  expect_s3_class(result$layers[[1L]]$geom, "GeomSegment")
+  expect_s3_class(result$layers[[2L]]$geom, "GeomPoint")
+  expect_equal(
+    result$scales$get_scales("x")$breaks,
+    mySims@data[[1L]]@doseGrid
+  )
+  expect_equal(result$theme$axis.text.x$angle, 45)
+})
+
+test_that("doses tried optionally uses regular axis ticks", {
+  mySims <- .DefaultSimulations()
+  doses_tried <- plot(
+    mySims,
+    type = "dosesTried",
+    axis_ticks = "regular"
+  )
+  trajectory <- plot(
+    mySims,
+    type = "trajectory",
+    axis_ticks = "regular"
+  )
+
+  expect_null(doses_tried$scales$get_scales("x"))
+  expect_equal(doses_tried$theme$axis.text.x$angle, 0)
+  expect_null(trajectory$scales$get_scales("y"))
+})
+
+test_that("doses tried uses equal-width bars and automatically logs clashes", {
+  dose_grid <- 2^(-2:4)
+  sim_doses <- list(
+    c(0.25, 0.5, 1, 2, 4, 8, 16),
+    c(0.25, 1, 4, 16)
+  )
+
+  automatic <- h_plot_doses_tried(
+    sim_doses = sim_doses,
+    dose_grid = dose_grid,
+    prob_plot_type = "bar"
+  )
+  automatic_data <- ggplot_build(automatic)$data[[1L]]
+  explicit_linear <- h_plot_doses_tried(
+    sim_doses = sim_doses,
+    dose_grid = dose_grid,
+    prob_plot_type = "bar",
+    dose_scale = "linear"
+  )
+  linear_data <- ggplot_build(explicit_linear)$data[[1L]]
+
+  expect_equal(
+    automatic$scales$get_scales("x")$trans$name,
+    "log-10"
+  )
+  expect_equal(
+    automatic_data$xmax - automatic_data$xmin,
+    rep(diff(log10(dose_grid))[1L] / 2, length(dose_grid))
+  )
+  expect_equal(
+    linear_data$xmax - linear_data$xmin,
+    rep(min(diff(dose_grid)) / 2, length(dose_grid))
+  )
+})
+
+test_that("simulation dose plots reject nonpositive doses on log axes", {
+  expect_error(
+    h_plot_simulation_trajectory(
+      sim_doses = list(c(0, 1)),
+      dose_grid = c(0, 1),
+      max_patients = 2L,
+      has_placebo = FALSE,
+      dose_scale = "log"
+    ),
+    "requires all doses to be strictly positive",
+    fixed = TRUE
+  )
+  expect_error(
+    h_plot_doses_tried(
+      sim_doses = list(c(0, 1)),
+      dose_grid = c(0, 1),
+      dose_scale = "log"
+    ),
+    "requires all doses to be strictly positive",
+    fixed = TRUE
+  )
+  expect_error(
+    h_plot_doses_tried(
+      sim_doses = list(c(0, 0.1, 1, 2)),
+      dose_grid = c(0, 0.1, 1, 2),
+      prob_plot_type = "bar"
+    ),
+    "Automatic log scaling for overlapping bars requires all doses",
+    fixed = TRUE
+  )
 })
 
 ## plot-DualSimulations ----
