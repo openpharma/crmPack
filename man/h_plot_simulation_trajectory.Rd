@@ -4,14 +4,31 @@
 \alias{h_plot_simulation_trajectory}
 \title{Helper Function to Create Trajectory Plot}
 \usage{
-h_plot_simulation_trajectory(sim_doses, max_patients, has_placebo)
+h_plot_simulation_trajectory(
+  sim_doses,
+  dose_grid,
+  max_patients,
+  has_placebo,
+  dose_scale = c("auto", "linear", "log"),
+  axis_ticks = c("dosegrid", "regular")
+)
 }
 \arguments{
 \item{sim_doses}{(\code{list})\cr list of simulated doses per trial.}
 
+\item{dose_grid}{(\code{numeric})\cr dose grid used for y-axis tick positions.}
+
 \item{max_patients}{(\code{integer})\cr maximum number of patients.}
 
 \item{has_placebo}{(\code{flag})\cr whether the design includes placebo.}
+
+\item{dose_scale}{(\code{string})\cr dose-axis scale, one of \code{"auto"}, \code{"linear"},
+or \code{"log"}. \code{"auto"} uses a linear scale for this plot. The log scale
+requires all doses to be strictly positive.}
+
+\item{axis_ticks}{(\code{string})\cr y-axis tick positions, either at each
+dose-grid value (\code{"dosegrid"}, the default) or at regular positions selected
+by \code{ggplot2} (\code{"regular"}).}
 }
 \value{
 A \code{ggplot} object.

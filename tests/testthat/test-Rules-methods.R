@@ -8,7 +8,7 @@ test_that("nextBest-NextBestEWOC returns expected next dose based on overdose co
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+    list(alpha0 = c(-1, 0, 0.5, 1), alpha1 = c(0.1, 0.2, 0.3, 0.4))
   )
 
   nb_ewoc <- NextBestEWOC(
@@ -18,7 +18,14 @@ test_that("nextBest-NextBestEWOC returns expected next dose based on overdose co
   )
 
   doselimit <- 45
-  result <- nextBest(nb_ewoc, doselimit, samples, model, data)
+  result <- nextBest(
+    nb_ewoc,
+    doselimit,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
 
   # Eligible doses satisfy the EWOC overdose probability constraint and doselimit
   eligible <- with(
@@ -36,7 +43,7 @@ test_that("nextBest-NextBestEWOC returns expected next dose when no doselimit", 
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+    list(alpha0 = c(-1, 0, 0.5, 1), alpha1 = c(0.1, 0.2, 0.3, 0.4))
   )
 
   nb_ewoc <- NextBestEWOC(
@@ -147,7 +154,14 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
     max_overdose_prob = 0.25
   )
 
-  result <- nextBest(nb_ncrm, 45, samples, model, data)
+  result <- nextBest(
+    nb_ncrm,
+    45,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM", result$plot)
@@ -167,10 +181,154 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
     max_overdose_prob = 0.25
   )
 
-  result <- nextBest(nb_ncrm, Inf, samples, model, data)
+  result <- nextBest(
+    nb_ncrm,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 75)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
+})
+
+test_that("nextBest-NextBestNCRM supports lollipop and legacy bar plots", {
+  data <- Data(
+    doseGrid = c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16)
+  )
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result_lollipop <- nextBest(nb_ncrm, 16, samples, model, data)
+  result_bar <- nextBest(
+    nb_ncrm,
+    16,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+
+  expect_true(all(vapply(
+    result_lollipop$singlePlots,
+    function(probability_plot) {
+      inherits(probability_plot$layers[[1L]]$geom, "GeomSegment") &&
+        inherits(probability_plot$layers[[2L]]$geom, "GeomPoint")
+    },
+    logical(1L)
+  )))
+  expect_true(all(vapply(
+    result_bar$singlePlots,
+    function(probability_plot) {
+      inherits(probability_plot$layers[[1L]]$geom, "GeomBar")
+    },
+    logical(1L)
+  )))
+  expect_identical(result_bar$value, result_lollipop$value)
+  expect_equal(result_bar$probs, result_lollipop$probs)
+  expect_doppel(
+    "plot-nextbest-nextbestncrm-lollipop-uneven-dose-grid",
+    result_lollipop$plot
+  )
+})
+
+test_that("nextBest-NextBestNCRM optionally plots probabilities on a log dose scale", {
+  data <- Data(
+    doseGrid = c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16)
+  )
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result_linear <- nextBest(nb_ncrm, 16, samples, model, data)
+  result_log <- nextBest(
+    nb_ncrm,
+    16,
+    samples,
+    model,
+    data,
+    dose_scale = "log"
+  )
+
+  target_scale <- result_log$singlePlots$plot1$scales$get_scales("x")
+  overdose_scale <- result_log$singlePlots$plot2$scales$get_scales("x")
+  uses_log_scale <- all(vapply(
+    list(target_scale, overdose_scale),
+    function(scale) {
+      !is.null(scale) && grepl("^log", scale$trans$name)
+    },
+    logical(1L)
+  ))
+
+  # Changing the display scale must not change the dose recommendation or the
+  # probabilities used to derive it.
+  expect_identical(result_log$value, result_linear$value)
+  expect_equal(result_log$probs, result_linear$probs)
+
+  expect_true(uses_log_scale)
+  expect_doppel("plot-nextbest-nextbestncrm-log-dose-scale", result_log$plot)
+})
+
+test_that("nextBest-NextBestNCRM uses dose-grid ticks by default", {
+  dose_grid <- c(0.001, 0.01, 0.05, 0.15, 0.5, 1, 2, 4, 8, 16)
+  data <- Data(doseGrid = dose_grid)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result_dosegrid <- nextBest(nb_ncrm, 16, samples, model, data)
+  result_regular <- nextBest(
+    nb_ncrm,
+    16,
+    samples,
+    model,
+    data,
+    axis_ticks = "regular"
+  )
+
+  expect_true(all(vapply(
+    result_dosegrid$singlePlots,
+    function(plot) identical(plot$scales$get_scales("x")$breaks, dose_grid),
+    logical(1L)
+  )))
+  expect_true(all(vapply(
+    result_dosegrid$singlePlots,
+    function(plot) identical(plot$theme$axis.text.x$angle, 45),
+    logical(1L)
+  )))
+  expect_true(all(vapply(
+    result_regular$singlePlots,
+    function(plot) is.null(plot$scales$get_scales("x")),
+    logical(1L)
+  )))
+  expect_true(all(vapply(
+    result_regular$singlePlots,
+    function(plot) identical(plot$theme$axis.text.x$angle, 0),
+    logical(1L)
+  )))
+  expect_identical(result_regular$value, result_dosegrid$value)
+  expect_equal(result_regular$probs, result_dosegrid$probs)
 })
 
 test_that("nextBest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
@@ -316,7 +474,14 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
     max_overdose_prob = 0.25
   )
 
-  result <- nextBest(nb_ncrm, 45, samples, model, data)
+  result <- nextBest(
+    nb_ncrm,
+    45,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM-DataParts", result$plot)
@@ -334,7 +499,14 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
     max_overdose_prob = 0.25
   )
 
-  result <- nextBest(nb_ncrm, Inf, samples, model, data)
+  result <- nextBest(
+    nb_ncrm,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 75)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
@@ -390,7 +562,14 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
     losses = c(1, 0, 2)
   )
 
-  result <- nextBest(nb_ncrm_loss, 60, samples, model, data)
+  result <- nextBest(
+    nb_ncrm_loss,
+    60,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestNCRMLoss", result$plot_joint)
@@ -422,7 +601,14 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
     losses = c(1, 0, 1, 2)
   )
 
-  result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
+  result <- nextBest(
+    nb_ncrm_loss,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
   expect_doppel(
@@ -444,7 +630,14 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
     losses = c(1, 0, 2)
   )
 
-  result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
+  result <- nextBest(
+    nb_ncrm_loss,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
   expect_doppel(
@@ -533,7 +726,14 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements", {
     max_overdose_prob = 0.25
   )
 
-  result <- nextBest(nb_de, 133, samples, model, data)
+  result <- nextBest(
+    nb_de,
+    133,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestDualEndpoint", result$plot)
@@ -557,7 +757,14 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (with Emax pa
     max_overdose_prob = 0.25
   )
 
-  result <- nextBest(nb_de, 133, samples, model, data)
+  result <- nextBest(
+    nb_de,
+    133,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 50)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestDualEndpoint_Emax", result$plot)
@@ -574,7 +781,14 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
     target_relative = FALSE
   )
 
-  result <- nextBest(nb_de, 90, samples, model, data)
+  result <- nextBest(
+    nb_de,
+    90,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 75)
   expect_snap(result$probs)
   expect_doppel("Plot of nextBest-NextBestDualEndpoint_abstarget", result$plot)
@@ -591,7 +805,14 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
     target_relative = FALSE
   )
 
-  result <- nextBest(nb_de, Inf, samples, model, data)
+  result <- nextBest(
+    nb_de,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
   expect_identical(result$value, 100)
   expect_snap(result$probs)
   expect_doppel("nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)

@@ -245,6 +245,126 @@ test_that("h_next_best_eligible_doses throws the error for empty dose grid or no
 
 ## plot ----
 
+### h_next_best_probability_plot ----
+
+test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
+  dose_grid <- c(0.0005, 0.01, 0.1, 0.6, 10)
+  probability <- c(0.05, 0.1, 0.2, 0.4, 0.8)
+
+  lollipop <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red"
+  )
+  bars <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    prob_plot_type = "bar"
+  )
+  log_lollipop <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    dose_scale = "log"
+  )
+  log_bars <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    prob_plot_type = "bar",
+    dose_scale = "log"
+  )
+  regular_ticks <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    axis_ticks = "regular"
+  )
+  angled_ticks <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    axis_ticks = "regular",
+    axis_text_angle = 30
+  )
+
+  expect_s3_class(lollipop$layers[[1L]]$geom, "GeomSegment")
+  expect_s3_class(lollipop$layers[[2L]]$geom, "GeomPoint")
+  expect_equal(lollipop$layers[[1L]]$aes_params$linewidth, 1.1)
+  expect_equal(lollipop$layers[[2L]]$aes_params$size, 2.2)
+  expect_s3_class(bars$layers[[1L]]$geom, "GeomBar")
+  expect_equal(lollipop$scales$get_scales("x")$breaks, dose_grid)
+  expect_equal(
+    lollipop$scales$get_scales("x")$labels(c(0.0005, 0.6)),
+    c("0.0005", "0.6")
+  )
+  expect_equal(lollipop$theme$axis.text.x$angle, 45)
+  expect_match(log_lollipop$scales$get_scales("x")$trans$name, "^log")
+  expect_equal(log_lollipop$scales$get_scales("x")$breaks, dose_grid)
+  expect_s3_class(log_bars$layers[[1L]]$geom, "GeomRect")
+  expect_equal(nrow(ggplot_build(log_bars)$data[[1L]]), length(dose_grid))
+  expect_null(regular_ticks$scales$get_scales("x"))
+  expect_equal(regular_ticks$theme$axis.text.x$angle, 0)
+  expect_equal(angled_ticks$theme$axis.text.x$angle, 30)
+  expect_error(
+    h_next_best_probability_plot(
+      dose_grid,
+      probability,
+      "Probability [%]",
+      "red",
+      prob_plot_type = "invalid"
+    ),
+    "should be one of"
+  )
+  expect_error(
+    h_next_best_probability_plot(
+      dose_grid,
+      probability,
+      "Probability [%]",
+      "red",
+      axis_text_angle = Inf
+    ),
+    "Must be finite"
+  )
+  expect_error(
+    h_next_best_probability_plot(
+      dose_grid,
+      probability,
+      "Probability [%]",
+      "red",
+      axis_ticks = "invalid"
+    ),
+    "should be one of"
+  )
+  expect_error(
+    h_next_best_probability_plot(
+      dose_grid,
+      probability,
+      "Probability [%]",
+      "red",
+      dose_scale = "invalid"
+    ),
+    "should be one of"
+  )
+  expect_error(
+    h_next_best_probability_plot(
+      c(0, dose_grid),
+      c(0, probability),
+      "Probability [%]",
+      "red",
+      dose_scale = "log"
+    ),
+    "requires all doses to be strictly positive"
+  )
+})
+
 ### h_next_best_ncrm_loss_plot ----
 
 test_that("h_next_best_ncrm_loss_plot works as expected", {
@@ -283,7 +403,8 @@ test_that("h_next_best_ncrm_loss_plot works as expected", {
     5,
     20,
     15,
-    FALSE
+    FALSE,
+    prob_plot_type = "bar"
   )
   expect_doppel("h_next_best_ncrm_loss_plot", result$plot_joint)
   expect_doppel("h_next_best_ncrm_loss_plot_p1", result$plots_single$plot1)
@@ -339,7 +460,8 @@ test_that("h_next_best_ncrm_loss_plot works as expected (unacceptable specified)
     5,
     20,
     15,
-    TRUE
+    TRUE,
+    prob_plot_type = "bar"
   )
   expect_doppel("h_next_best_ncrm_loss_plot_unacpt", result$plot_joint)
   expect_doppel(
@@ -392,7 +514,8 @@ test_that("h_next_best_ncrm_loss_plot works as expected (no doselimit)", {
     5,
     Inf,
     25,
-    FALSE
+    FALSE,
+    prob_plot_type = "bar"
   )
   expect_doppel("h_next_best_ncrm_loss_plot_nodoselim", result$plot_joint)
 })

@@ -5,7 +5,15 @@
 \alias{plot-DualSimulations-missing}
 \title{Plot \code{DualSimulations}}
 \usage{
-\S4method{plot}{DualSimulations,missing}(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
+\S4method{plot}{DualSimulations,missing}(
+  x,
+  y,
+  type = c("trajectory", "dosesTried", "sigma2W", "rho"),
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("auto", "linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  ...
+)
 }
 \arguments{
 \item{x}{(\code{DualSimulations})\cr the object we want to plot from.}
@@ -14,7 +22,18 @@
 
 \item{type}{(\code{character})\cr the type of plots you want to obtain.}
 
-\item{...}{not used.}
+\item{prob_plot_type}{(\code{string})\cr for the doses tried plot, use a
+\code{"lollipop"} (default) or \code{"bar"} geometry.}
+
+\item{dose_scale}{(\code{string})\cr for dose axes, use \code{"auto"} (default),
+\code{"linear"}, or \code{"log"}. See the \code{\link{GeneralSimulations}} plot method for
+automatic scaling details.}
+
+\item{axis_ticks}{(\code{string})\cr place dose-axis ticks at each dose-grid value
+(\code{"dosegrid"}, the default) or at regular positions selected by \code{ggplot2}
+(\code{"regular"}). This controls the trajectory y-axis and doses tried x-axis.}
+
+\item{...}{additional arguments without method dispatch.}
 }
 \value{
 A single \code{ggplot} object if a single plot is asked for,

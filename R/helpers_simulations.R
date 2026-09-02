@@ -4,31 +4,101 @@
 #' @param description xlab string
 #' @param xaxisround rounding for xaxis labels (default: 0, i.e. integers will
 #' be used)
+#' @param x_is_discrete whether the values on the x-axis should be treated as
+#'   discrete categories
+#' @param axis_text_angle (`number`) rotation angle for x-axis tick labels.
 #'
 #' @return the ggplot2 object
 #'
 #' @keywords internal
 #' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
-h_barplot_percentages <- function(x, description, xaxisround = 0) {
+h_barplot_percentages <- function(
+  x,
+  description,
+  xaxisround = 0,
+  x_is_discrete = FALSE,
+  axis_text_angle = 0
+) {
   assert_number(xaxisround, lower = 0)
   assert_character(description, len = 1, any.missing = FALSE)
   assert_numeric(x)
+  assert_flag(x_is_discrete)
+  assert_number(axis_text_angle, finite = TRUE)
 
   tabx <- table(x) / length(x)
-  dat <- data.frame(x = as.numeric(names(tabx)), perc = as.numeric(tabx) * 100)
-  ggplot() +
+  dat <- data.frame(
+    x = if (x_is_discrete) {
+      factor(names(tabx), levels = names(tabx))
+    } else {
+      as.numeric(names(tabx))
+    },
+    perc = as.numeric(tabx) * 100
+  )
+  bar_width <- if (x_is_discrete) {
+    0.8
+  } else if (nrow(dat) > 1L) {
+    min(diff(dat$x)) / 2
+  } else {
+    1
+  }
+
+  plot <- ggplot() +
     geom_bar(
       aes(x = x, y = perc),
       data = dat,
       stat = "identity",
       position = "identity",
-      width = ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)
+      width = bar_width
     ) +
     xlab(description) +
-    ylab("Percent") +
-    scale_x_continuous(
-      breaks = round(dat$x, xaxisround)
-    )
+    ylab("Percent")
+
+  if (x_is_discrete) {
+    plot +
+      scale_x_discrete(drop = FALSE) +
+      theme(
+        axis.text.x = element_text(
+          angle = axis_text_angle,
+          hjust = ifelse(axis_text_angle == 0, 0.5, 1)
+        )
+      )
+  } else {
+    plot +
+      scale_x_continuous(
+        breaks = round(dat$x, xaxisround)
+      )
+  }
+}
+
+
+#' Convenience Function to Make Histograms of Percentages
+#'
+#' Creates a histogram where the height of each bin is the percentage of all
+#' observations in that bin.
+#'
+#' @param x (`numeric`)
+#'   vector of samples.
+#' @param description (`string`)
+#'   x-axis label.
+#' @param bins (`count`)
+#'   number of histogram bins.
+#'
+#' @return A `ggplot2` object.
+#'
+#' @keywords internal
+h_histogram_percentages <- function(x, description, bins = 30L) {
+  assert_numeric(x, any.missing = FALSE)
+  assert_character(description, len = 1L, any.missing = FALSE)
+  assert_count(bins, positive = TRUE)
+
+  ggplot(data.frame(x = x), aes(x = x)) +
+    geom_histogram(
+      aes(y = after_stat(.data$count / sum(.data$count) * 100)),
+      bins = bins,
+      boundary = 0
+    ) +
+    xlab(description) +
+    ylab("Percent")
 }
 
 
