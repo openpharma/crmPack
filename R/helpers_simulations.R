@@ -6,6 +6,7 @@
 #' be used)
 #' @param x_is_discrete whether the values on the x-axis should be treated as
 #'   discrete categories
+#' @param axis_text_angle (`number`) rotation angle for x-axis tick labels.
 #'
 #' @return the ggplot2 object
 #'
@@ -15,12 +16,14 @@ h_barplot_percentages <- function(
   x,
   description,
   xaxisround = 0,
-  x_is_discrete = FALSE
+  x_is_discrete = FALSE,
+  axis_text_angle = 0
 ) {
   assert_number(xaxisround, lower = 0)
   assert_character(description, len = 1, any.missing = FALSE)
   assert_numeric(x)
   assert_flag(x_is_discrete)
+  assert_number(axis_text_angle, finite = TRUE)
 
   tabx <- table(x) / length(x)
   dat <- data.frame(
@@ -51,7 +54,14 @@ h_barplot_percentages <- function(
     ylab("Percent")
 
   if (x_is_discrete) {
-    plot + scale_x_discrete(drop = FALSE)
+    plot +
+      scale_x_discrete(drop = FALSE) +
+      theme(
+        axis.text.x = element_text(
+          angle = axis_text_angle,
+          hjust = ifelse(axis_text_angle == 0, 0.5, 1)
+        )
+      )
   } else {
     plot +
       scale_x_continuous(

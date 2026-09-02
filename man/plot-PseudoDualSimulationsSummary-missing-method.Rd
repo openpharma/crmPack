@@ -10,6 +10,7 @@
   y,
   type = c("nObs", "doseSelected", "propDLE", "nAboveTargetEndOfTrial", "meanFit",
     "meanEffFit"),
+  axis_text_angle = 45,
   ...
 )
 }
@@ -20,6 +21,9 @@ from.}
 \item{y}{(\code{missing})\cr not used.}
 
 \item{type}{(\code{character})\cr the types of plots you want to obtain.}
+
+\item{axis_text_angle}{(\code{number})\cr rotation angle for the MTD estimate
+x-axis tick labels. Defaults to 45 degrees.}
 
 \item{...}{not used.}
 }

@@ -21,6 +21,18 @@ test_that("h_barplot_percentages supports fixed-width discrete bars", {
   expect_equal(plot_data$xmax - plot_data$xmin, rep(0.8, 4L))
 })
 
+test_that("h_barplot_percentages rotates discrete x-axis labels", {
+  plot <- h_barplot_percentages(
+    x = c(0.001, 0.01, 0.1, 1),
+    description = "MTD estimate",
+    x_is_discrete = TRUE,
+    axis_text_angle = 30
+  )
+
+  expect_equal(plot$theme$axis.text.x$angle, 30)
+  expect_equal(plot$theme$axis.text.x$hjust, 1)
+})
+
 test_that("h_histogram_percentages creates a percentage histogram", {
   plot <- h_histogram_percentages(
     x = seq(0, 100, length.out = 100),

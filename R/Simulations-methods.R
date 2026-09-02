@@ -2088,6 +2088,8 @@ setMethod(
 #' @param x (`GeneralSimulationsSummary`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
+#'   x-axis tick labels. Defaults to 45 degrees.
 #' @param ... not used.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -2111,11 +2113,13 @@ setMethod(
       "propDLTs",
       "nAboveTarget"
     ),
+    axis_text_angle = 45,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
+    assert_number(axis_text_angle, finite = TRUE)
 
     # Start the plot list.
     plot_list <- list()
@@ -2146,7 +2150,8 @@ setMethod(
         h_barplot_percentages(
           x = x@dose_selected,
           description = "MTD estimate",
-          x_is_discrete = TRUE
+          x_is_discrete = TRUE,
+          axis_text_angle = axis_text_angle
         )
     }
 
@@ -2307,6 +2312,8 @@ setMethod(
 #' @param x (`SimulationsSummary`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
+#'   x-axis tick labels. Defaults to 45 degrees.
 #' @param ... not used.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -2332,11 +2339,13 @@ setMethod(
       "nAboveTarget",
       "meanFit"
     ),
+    axis_text_angle = 45,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
+    assert_number(axis_text_angle, finite = TRUE)
 
     # Subtract the specific plot types for model-based designs.
     type_reduced <- setdiff(
@@ -2349,7 +2358,12 @@ setMethod(
 
     # If so, then produce these plots.
     if (more_from_general) {
-      ret <- callNextMethod(x = x, y = y, type = type_reduced)
+      ret <- callNextMethod(
+        x = x,
+        y = y,
+        type = type_reduced,
+        axis_text_angle = axis_text_angle
+      )
     }
 
     # Is the meanFit plot requested?
@@ -2444,6 +2458,8 @@ setMethod(
 #' @param x (`DualSimulationsSummary`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
+#'   x-axis tick labels. Defaults to 45 degrees.
 #' @param ... not used.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -2470,11 +2486,13 @@ setMethod(
       "meanFit",
       "meanBiomarkerFit"
     ),
+    axis_text_angle = 45,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
+    assert_number(axis_text_angle, finite = TRUE)
 
     # Subtract the specific plot types for dual-endpoint designs.
     type_reduced <- setdiff(
@@ -2487,7 +2505,12 @@ setMethod(
 
     # If so, then produce these plots.
     if (more_from_general) {
-      ret <- callNextMethod(x = x, y = y, type = type_reduced)
+      ret <- callNextMethod(
+        x = x,
+        y = y,
+        type = type_reduced,
+        axis_text_angle = axis_text_angle
+      )
     }
 
     # Is the meanBiomarkerFit plot requested?
@@ -3149,6 +3172,8 @@ setMethod(
 #' @param x (`PseudoSimulationsSummary`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr missing object, not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
+#'   x-axis tick labels. Defaults to 45 degrees.
 #' @param ... not used.
 #'
 #' @return A single `ggplot2` object if a single plot is asked for, otherwise a
@@ -3174,11 +3199,13 @@ setMethod(
       "nAboveTargetEndOfTrial",
       "meanFit"
     ),
+    axis_text_angle = 45,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
+    assert_number(axis_text_angle, finite = TRUE)
 
     # Start the plot list.
     plot_list <- list()
@@ -3199,7 +3226,8 @@ setMethod(
         h_barplot_percentages(
           x = x@dose_selected,
           description = "MTD estimate",
-          x_is_discrete = TRUE
+          x_is_discrete = TRUE,
+          axis_text_angle = axis_text_angle
         )
     }
 
@@ -3959,6 +3987,8 @@ setMethod(
 #'   from.
 #' @param y (`missing`)\cr not used.
 #' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
+#'   x-axis tick labels. Defaults to 45 degrees.
 #' @param ... not used.
 #'
 #' @return A single `ggplot2` object if a single plot is asked for, otherwise a
@@ -3985,11 +4015,13 @@ setMethod(
       "meanFit",
       "meanEffFit"
     ),
+    axis_text_angle = 45,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
+    assert_number(axis_text_angle, finite = TRUE)
 
     # Subtract the specific plot types for dual-endpoint designs.
     type_reduced <- setdiff(
@@ -4002,7 +4034,12 @@ setMethod(
 
     # If so, then produce these plots.
     if (more_from_general) {
-      ret <- callNextMethod(x = x, y = y, type = type_reduced)
+      ret <- callNextMethod(
+        x = x,
+        y = y,
+        type = type_reduced,
+        axis_text_angle = axis_text_angle
+      )
     }
 
     # Is the meanEffFit plot requested?

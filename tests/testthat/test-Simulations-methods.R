@@ -839,7 +839,16 @@ test_that("plot-SimulationsSummary shows representative MTD selections", {
   mtd_plot <- plot(sim_summary, type = "doseSelected")
 
   expect_true(mtd_plot$scales$get_scales("x")$is_discrete())
+  expect_equal(mtd_plot$theme$axis.text.x$angle, 45)
   expect_doppel("plot-simulations-summary-dose-selected-representative", mtd_plot)
+
+  unrotated_mtd_plot <- plot(
+    sim_summary,
+    type = "doseSelected",
+    axis_text_angle = 0
+  )
+  expect_equal(unrotated_mtd_plot$theme$axis.text.x$angle, 0)
+  expect_equal(unrotated_mtd_plot$theme$axis.text.x$hjust, 0.5)
 })
 
 test_that("plot-SimulationsSummary shows representative DLT proportions", {

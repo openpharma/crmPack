@@ -4,7 +4,13 @@
 \alias{h_barplot_percentages}
 \title{Convenience function to make barplots of percentages}
 \usage{
-h_barplot_percentages(x, description, xaxisround = 0, x_is_discrete = FALSE)
+h_barplot_percentages(
+  x,
+  description,
+  xaxisround = 0,
+  x_is_discrete = FALSE,
+  axis_text_angle = 0
+)
 }
 \arguments{
 \item{x}{vector of samples}
@@ -16,6 +22,8 @@ be used)}
 
 \item{x_is_discrete}{whether the values on the x-axis should be treated as
 discrete categories}
+
+\item{axis_text_angle}{(\code{number}) rotation angle for x-axis tick labels.}
 }
 \value{
 the ggplot2 object
