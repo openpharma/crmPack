@@ -20,34 +20,43 @@ three topics:
 
 1. **Scenario characterization**: assumed true DLT probability for each dose
    (or dose combination), as a table and as a plot.
-2. **Prior characterization**: summary of the prior distribution of the DLT
-   probability at each dose — as a table (mean, SD, quantiles, interval
-   probabilities), as a plot (central estimate with credible band, optional
-   target interval overlay), and as a "spaghetti" plot of random prior draws.
-3. **Operating characteristics**: an *overview* table with scenarios as
+
+1. **Prior characterization**: summary of the prior distribution of the DLT
+   probability at each dose
+
+   - as a table (mean, SD, quantiles, interval probabilities), 
+   - as a plot (central estimate with credible band, optional target interval overlay), and 
+   - as a "spaghetti" plot of random prior draws.
+
+1. **Operating characteristics**: 
+
+   - an *overview* table with scenarios as
    columns and summary statistics as rows (PMDA-style, cf.
-   [PMDA guidance, section 3.1](https://www.pmda.go.jp/files/000272426.pdf)),
-   a *detail* table with per-dose-level results and scenarios as row groups,
+   [PMDA guidance, section 3.1, "Evaluation metrics for operating characteristics"](https://www.pmda.go.jp/files/000272426.pdf)), and
+   - a *detail* table with per-dose-level results and scenarios as row groups,
    and simple per-dose barplots (selection probability, patients treated),
    optionally faceted by scenario.
+   - Sponsor-specific needs on top of the PMDA core statistics: stop reason
+   percentages, per-dose selection percentages, correct-dose-selected
+   percentage, SD/quantiles/min–max of patient numbers, patients above target,
+   trial duration, per-dose average patients and DLTs with optional SD, interval
+   probabilities, and arm-specific results (sub-columns) for hierarchical
+   designs.
 
 Cross-cutting requirements:
 
-- **User-level flexibility**: users must be able to add/remove statistics
-  (rows) in the operating characteristics tables, choose display variants
-  (e.g. "mean" vs. "mean (sd)", min–max, quantiles), and control row labels
-  and column headers programmatically (to produce many table variants with
-  different assumptions).
+- **User-level flexibility**: users must be able to 
+
+  - add/remove statistics (rows) in the operating characteristics tables, 
+  - choose display variants (e.g. "mean" vs. "mean (sd)", min–max, quantiles), and 
+  - control row labels and column headers programmatically (to produce many table variants with
+    different assumptions).
+
 - **Export**: tables must render to markdown (the "easy" path) and be easy to
   copy/paste or export into Word documents.
+
 - **Pagination**: a mechanism for automatic table breaks when there are too
   many columns (many scenarios or many dose levels).
-- Sponsor-specific needs on top of the PMDA core statistics: stop reason
-  percentages, per-dose selection percentages, correct-dose-selected
-  percentage, SD/quantiles/min–max of patient numbers, patients above target,
-  trial duration, per-dose average patients and DLTs with optional SD, interval
-  probabilities, and arm-specific results (sub-columns) for hierarchical
-  designs.
 
 # Current state
 
@@ -87,26 +96,31 @@ What already exists in `crmPack` and is relevant here:
   - `knit_print()` S3 methods ([helpers_knitr_*.R](../../R/helpers_knitr.R),
     `design/767-reporting-crmpack-objects/`) rendering objects in Quarto/R
     Markdown documents via `knitr::kable` + `kableExtra`.
-  - Notably, there is **no** `knit_print` or `tidy`-based table for any
-    `*SimulationsSummary` class yet — that is the gap this design fills.
+  - Notably, there is not yet a `knit_print` or `tidy`-based table for any
+    `*SimulationsSummary` class yet — that is part of the gap that this design fills.
 - **Dependencies**: `knitr`, `kableExtra`, `dplyr`, `tibble` are in Imports;
-  `broom`, `tidyr` in Suggests. No `gt`, `flextable`, or `rtables` anywhere.
+  `broom`, `tidyr` in Suggests. No `gt`, `flextable`, or `rtables` yet.
 
 # Design overview
 
 We propose a strict **three-layer architecture**. Each layer is usable on its
 own, and only the last layer knows anything about table rendering engines:
 
-```
-(1) Statistics layer      tidy tibbles from crmPack objects
-        |                 (exported accessor functions + tidy() methods)
-        v
-(2) Assembly layer        report specification -> long "table skeleton" tibble
-        |                 (which statistics, which scenarios, labels, formats)
-        v
-(3) Rendering layer       gt (rich HTML/Word) or knitr::kable (markdown)
-                          + knit_print() defaults, pagination, export helpers
-```
+1. Statistics layer      
+   
+   - tidy tibbles from crmPack objects
+   - exported accessor functions + tidy() methods
+        
+1. Assembly layer
+
+   - report specification -> long "table skeleton" tibble
+   - which statistics, which scenarios, labels, formats
+        
+1. Rendering layer
+
+   - gt (rich HTML/Word) or knitr::kable (markdown)
+   - knit_print() defaults, pagination, export helpers
+
 
 The guiding principles:
 
@@ -126,22 +140,14 @@ The guiding principles:
 
 ## Rendering engine choice
 
-Requirements: programmatic headers/spanners, row groups, footnotes, digit
-formatting, markdown output, Word transferability, low maintenance burden.
-
-| Option | Pros | Cons |
-|---|---|---|
-| `knitr::kable` (+ `kableExtra`) | Already in Imports; native markdown output; simple | Weak Word story (HTML copy/paste only); `kableExtra` features are HTML/LaTeX-specific; limited programmatic layout |
-| **`gt`** | Modern, actively developed; spanners, row groups, footnotes, `fmt_*` formatting; exports HTML, LaTeX, RTF and **`.docx`** (`gt::gtsave("table.docx")`); `as_raw_html()` pastes cleanly into Word; widely known API | New dependency; markdown output not native (but we get markdown from the kable fallback) |
-| `flextable` | Best-in-class Word/officer integration | Heavier API; overlaps with gt; would add `officer` stack |
-| `rtables` | Regulatory pedigree, pagination built in | Steep API; layout model is overkill here; smaller user base outside Roche |
-
 **Recommendation**: `gt` in **Suggests** as the primary rich renderer, with
 `knitr::kable`-based markdown as the always-available fallback (uses only
 existing Imports). All `format = "gt"` code paths check
 `requireNamespace("gt")` and fail with an informative message. This keeps the
 hard dependency footprint unchanged while covering both the "easy markdown"
 and the "Word document" requirements.
+
+Advantages: Modern, actively developed; spanners, row groups, footnotes, `fmt_*` formatting; exports HTML, LaTeX, RTF and **`.docx`** (`gt::gtsave("table.docx")`); `as_raw_html()` pastes cleanly into Word; widely known API
 
 # Topic 1: Scenario characterization
 
@@ -446,17 +452,36 @@ columns), `DASimulations` duration statistics beyond mean/SD.
    `report_*` or `tabulate_*`), or S4 generics (`summary` on a list is
    somewhat unusual; a dedicated constructor like
    `SimulationsSummaryList(...)` may be cleaner than overloading `summary`)?
+
+   - A `report_` prefix would be helpful
+
 2. **Where should `truth` live long term?** Storing the evaluated truth (and
    the truth function) on the `Simulations` object at `simulate()` time would
    remove the need to pass scenarios twice (once to `simulate`, once to the
    reporting). That is a bigger change to a central class — worth it?
+
+   - Yes good idea we can store it in simulations object, and then use that
+   stored attribute/property in the downstream functions. I don't see the point
+   of passing another different function as the `truth`.
+
 3. **`tidyr` promotion** from Suggests to Imports for the assembly layer, or
    avoid pivoting with base/`dplyr` only?
+
+   - If we really need `tidyr` we can promote to Imports, otherwise work with base/`dplyr` only.
+
 4. **Prior draws plot signature**: new `type = "draws"` on
    `plot(samples, model, data)` vs. a separate `plot_prior_draws()` function.
+
+   - A separate `plot_prior_draws()` function sounds better.
+
 5. **gt in Suggests vs. Imports**: Suggests keeps installation light but means
    the "nice" output needs an extra install; is that acceptable for the
    primary rendering path?
+
+   - Yes that is acceptable, please keep it in Suggests.
+
 6. **Should `stop_categories` mappings get standard defaults** (e.g. by
    convention on `report_label`s), so PMDA tables work out of the box for the
    bundled designs?
+
+   - Yes, PMDA style defaults would be helpful.
