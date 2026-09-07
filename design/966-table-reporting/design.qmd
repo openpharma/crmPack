@@ -1,0 +1,462 @@
+---
+title: "Design: Table reporting and export for simulation studies"
+subtitle: "Scenario characterization, prior characterization, and operating characteristics"
+format:
+  html:
+    embed-resources: true
+    toc: true
+---
+
+# Background
+
+This design addresses [issue #966](https://github.com/openpharma/crmPack/issues/966):
+we need standard, protocol-ready tables (and accompanying plots) that describe
+simulation studies for dose escalation designs, suitable for inclusion in
+clinical trial protocols and their appendices.
+
+The requirements were collected in a team brainstorming (Bayer, Boehringer
+Ingelheim, Merck examples; see the "Table discussion" notes) and fall into
+three topics:
+
+1. **Scenario characterization**: assumed true DLT probability for each dose
+   (or dose combination), as a table and as a plot.
+2. **Prior characterization**: summary of the prior distribution of the DLT
+   probability at each dose — as a table (mean, SD, quantiles, interval
+   probabilities), as a plot (central estimate with credible band, optional
+   target interval overlay), and as a "spaghetti" plot of random prior draws.
+3. **Operating characteristics**: an *overview* table with scenarios as
+   columns and summary statistics as rows (PMDA-style, cf.
+   [PMDA guidance, section 3.1](https://www.pmda.go.jp/files/000272426.pdf)),
+   a *detail* table with per-dose-level results and scenarios as row groups,
+   and simple per-dose barplots (selection probability, patients treated),
+   optionally faceted by scenario.
+
+Cross-cutting requirements:
+
+- **User-level flexibility**: users must be able to add/remove statistics
+  (rows) in the operating characteristics tables, choose display variants
+  (e.g. "mean" vs. "mean (sd)", min–max, quantiles), and control row labels
+  and column headers programmatically (to produce many table variants with
+  different assumptions).
+- **Export**: tables must render to markdown (the "easy" path) and be easy to
+  copy/paste or export into Word documents.
+- **Pagination**: a mechanism for automatic table breaks when there are too
+  many columns (many scenarios or many dose levels).
+- Sponsor-specific needs on top of the PMDA core statistics: stop reason
+  percentages, per-dose selection percentages, correct-dose-selected
+  percentage, SD/quantiles/min–max of patient numbers, patients above target,
+  trial duration, per-dose average patients and DLTs with optional SD, interval
+  probabilities, and arm-specific results (sub-columns) for hierarchical
+  designs.
+
+# Current state
+
+What already exists in `crmPack` and is relevant here:
+
+- **Simulation results**: `Simulations` (and relatives) store per-simulation
+  `data`, final `doses`, `fit`, `stop_report` (logical matrix with
+  `report_label` column names), `stop_reasons`, and `additional_stats` (from
+  the `derive` argument of `simulate()`).
+- **Summaries**: `summary()` produces `GeneralSimulationsSummary` /
+  `SimulationsSummary` objects storing e.g. `n_obs`, `n_above_target`,
+  `dose_selected`, `prop_at_target`, `dose_most_selected`, `stop_report`,
+  `mean_fit` (which includes the `truth` evaluated on the dose grid).
+- **Printing**: `show()` methods on the summary classes `cat()` a fixed set of
+  lines via an internal `Report` ref class ([Simulations-methods.R](../../R/Simulations-methods.R)),
+  and return a one-row `data.frame` invisibly. This is neither
+  machine-readable in a useful layout nor customizable.
+- **Transient computations**: several statistics we need for the tables are
+  currently computed *only* inside `show`/`plot` helpers and thrown away:
+  per-dose selection percentages (inside `h_barplot_percentages()`), mean
+  patients per dose (inside `h_plot_doses_tried()`), stop rule percentages
+  (`h_calc_report_label_percentage()` in [helpers_simulations.R](../../R/helpers_simulations.R)).
+- **Prior characterization**: the established idiom is
+  `mcmc(empty_data, model, options)` followed by `fit()` (returning a
+  `data.frame` with `dose`, `middle`, `lower`, `upper`) and
+  `plot(samples, model, data)`. There is no tabular prior summary (mean, SD,
+  arbitrary quantiles, interval probabilities) and no prior random-draws plot.
+- **Scenario characterization**: `truth` functions are passed to `simulate()`
+  and `summary()`; `probFunction()` builds them from models. The true DLT
+  curve is evaluated inside `summary()` but only retained in
+  `SimulationsSummary@mean_fit$truth`. There is no scenario table/plot across
+  multiple scenarios.
+- **Reporting layers**: two established conventions we should build on:
+  - `tidy()` methods (broom-style, [helpers_broom.R](../../R/helpers_broom.R),
+    `design/concise-tidy-design.Rmd`) returning tibbles classed
+    `tbl_<ClassName>`.
+  - `knit_print()` S3 methods ([helpers_knitr_*.R](../../R/helpers_knitr.R),
+    `design/767-reporting-crmpack-objects/`) rendering objects in Quarto/R
+    Markdown documents via `knitr::kable` + `kableExtra`.
+  - Notably, there is **no** `knit_print` or `tidy`-based table for any
+    `*SimulationsSummary` class yet — that is the gap this design fills.
+- **Dependencies**: `knitr`, `kableExtra`, `dplyr`, `tibble` are in Imports;
+  `broom`, `tidyr` in Suggests. No `gt`, `flextable`, or `rtables` anywhere.
+
+# Design overview
+
+We propose a strict **three-layer architecture**. Each layer is usable on its
+own, and only the last layer knows anything about table rendering engines:
+
+```
+(1) Statistics layer      tidy tibbles from crmPack objects
+        |                 (exported accessor functions + tidy() methods)
+        v
+(2) Assembly layer        report specification -> long "table skeleton" tibble
+        |                 (which statistics, which scenarios, labels, formats)
+        v
+(3) Rendering layer       gt (rich HTML/Word) or knitr::kable (markdown)
+                          + knit_print() defaults, pagination, export helpers
+```
+
+The guiding principles:
+
+- **Tibbles first.** Every table has a plain, documented tibble representation
+  that users can post-process with dplyr and feed into *any* engine
+  themselves. This is the ultimate flexibility escape hatch, and it makes the
+  statistics unit-testable independently of formatting.
+- **Statistics are pluggable.** The operating characteristics tables are
+  driven by a registry of named statistics; users select built-ins by name,
+  configure display variants, or supply their own functions with the same
+  signature.
+- **Rendering is thin and swappable.** We recommend `gt` as the rich rendering
+  engine (see below), with `knitr::kable` markdown as the zero-extra-dependency
+  fallback. Since layer 3 only consumes tibbles plus a small amount of layout
+  metadata (spanners, row groups, footnotes), adding `flextable` later would
+  be cheap if a strong Word-native need emerges.
+
+## Rendering engine choice
+
+Requirements: programmatic headers/spanners, row groups, footnotes, digit
+formatting, markdown output, Word transferability, low maintenance burden.
+
+| Option | Pros | Cons |
+|---|---|---|
+| `knitr::kable` (+ `kableExtra`) | Already in Imports; native markdown output; simple | Weak Word story (HTML copy/paste only); `kableExtra` features are HTML/LaTeX-specific; limited programmatic layout |
+| **`gt`** | Modern, actively developed; spanners, row groups, footnotes, `fmt_*` formatting; exports HTML, LaTeX, RTF and **`.docx`** (`gt::gtsave("table.docx")`); `as_raw_html()` pastes cleanly into Word; widely known API | New dependency; markdown output not native (but we get markdown from the kable fallback) |
+| `flextable` | Best-in-class Word/officer integration | Heavier API; overlaps with gt; would add `officer` stack |
+| `rtables` | Regulatory pedigree, pagination built in | Steep API; layout model is overkill here; smaller user base outside Roche |
+
+**Recommendation**: `gt` in **Suggests** as the primary rich renderer, with
+`knitr::kable`-based markdown as the always-available fallback (uses only
+existing Imports). All `format = "gt"` code paths check
+`requireNamespace("gt")` and fail with an informative message. This keeps the
+hard dependency footprint unchanged while covering both the "easy markdown"
+and the "Word document" requirements.
+
+# Topic 1: Scenario characterization
+
+## New class: `ToxicityScenarios`
+
+A lightweight container so that the set of assumed truths becomes a first-class
+object that can be tabulated, plotted, and passed to the operating
+characteristics reporting (which needs the truths again for "correct MTD"
+classification):
+
+```{r}
+#| eval: false
+ToxicityScenarios(
+    scenarios = list( # named list of truth functions,
+        "T1 (First)" = function(dose, ...) ..., # e.g. from probFunction()
+        "T5 (Safe)"  = probFunction(model, alpha0 = -3, alpha1 = 1)
+    ),
+    dose_grid = emptydata@doseGrid,
+    target = c(0.2, 0.35) # optional target toxicity interval
+)
+```
+
+Slots: `scenarios` (named list of functions), `dose_grid` (numeric),
+`target` (numeric, optional). Contains `CrmPackClass`, with the usual
+validity checks (functions accept a dose vector and return probabilities).
+
+Methods:
+
+- `tidy()` → tibble with columns `scenario`, `dose`, `prob`
+  (long format; class `tbl_ToxicityScenarios`).
+- `plot()` → the scenario definition plot: dose grid on x, DLT probability on
+  y, one line/color per scenario (matches "Figure 10-1" in the notes);
+  optional shaded target band via the `target` slot.
+- `knit_print()` / `render_table()` → the scenario definition table: doses as
+  columns, scenarios as rows (matches "Table 10-3"), with digit control.
+
+For dose *combinations* (`ComboSimulations` world), the same class can later be
+extended (`dose_grid` as a matrix / `DataCombo` grid, doses labelled
+"d1 + d2"); the tidy format simply gains the second dose column. This is out of
+scope for the first iteration but the tidy column naming should anticipate it.
+
+# Topic 2: Prior characterization
+
+All three deliverables operate on the established
+`samples <- mcmc(empty_data, model, options)` idiom, so they automatically
+work for **posterior** characterization too (non-empty data) — a nice bonus
+for free.
+
+## Prior definition table: `summary` of probability samples
+
+New exported function (working title):
+
+```{r}
+#| eval: false
+prob_summary(
+    samples, model, data,
+    quantiles = c(0.025, 0.5, 0.975), # arbitrary quantiles
+    mean = TRUE,
+    sd = TRUE,
+    intervals = c(0, 0.16, 0.33, 1) # optional: P(prob in [a, b)) columns
+)
+```
+
+Returns a tibble (class `tbl_ProbSummary`) with one row per dose in
+`data@doseGrid` and columns `dose`, `mean`, `sd`, `q2.5`, `q50`, `q97.5`,
+`p_[0,0.16)`, `p_[0.16,0.33)`, `p_[0.33,1]`. This covers the Boehringer
+"Summary of Prior" table exactly (interval probabilities + mean/SD/quantiles),
+and degenerates to the Bayer variant by switching options off.
+
+Implementation: reuse the `prob()` machinery already underlying `fit()`
+(`fit()` itself is not sufficient since it fixes one central statistic and one
+interval). A `knit_print`/`render_table` method renders it with a "Quantiles"
+spanner and a "Probability of true DLT rate in ..." spanner, as in the
+Boehringer example.
+
+## Prior definition plot
+
+Extend the existing `plot(samples, model, data)` method (or add a thin wrapper
+if signature churn is a concern) with:
+
+- `statistic = c("mean", "median")` for the central line,
+- `level = 0.95` for the credible band,
+- `target = NULL` — a scalar (horizontal target rate line) or length-2 vector
+  (shaded target interval), drawn on top.
+
+This matches the Bayer "Prior definition plot" (mean with 95% CI band and
+target line).
+
+## Prior random draws plot
+
+New function:
+
+```{r}
+#| eval: false
+plot_prior_draws(samples, model, data, n = 100, seed = NULL)
+```
+
+Draws `n` parameter vectors from the samples, evaluates the dose–toxicity
+curve for each on (a fine grid over) the dose grid, and plots the spaghetti
+curves (Bayer "Prior random draws plot" / "Figure 10-3"). Returns a `ggplot`.
+Alternatively this could be `plot(samples, model, data, type = "draws")`; the
+decision should follow whichever signature the prior definition plot lands on
+(open question below).
+
+# Topic 3: Operating characteristics
+
+This is the largest part and the one needing the most flexibility.
+
+## Data layer: promote transient statistics to accessors
+
+First, factor the statistics that today live inside `show()`/`plot()` into
+small exported functions returning tibbles (one job each, all unit-testable):
+
+| Accessor (working names) | Content | Today |
+|---|---|---|
+| `dose_selection_table(sims)` | per-dose selection % incl. "none" | transient in `h_barplot_percentages()` |
+| `patients_per_dose_table(sims)` | mean/SD/min/max patients per dose | transient in `h_plot_doses_tried()` |
+| `dlts_per_dose_table(sims)` | mean/SD DLTs per dose | new |
+| `stop_report_table(sims)` | % per `report_label`, with user-defined grouping of labels into categories (e.g. "toxicity", "max patients") | partially `h_calc_report_label_percentage()` |
+| `sample_size_table(sims)` | total n: mean, SD, min–max, quantiles | partially in summary |
+| `mtd_classification_table(sims, truth, target)` | % correct / overestimated / underestimated MTD, % stopped without MTD | partially (`prop_at_target`) |
+
+Notes:
+
+- "Correctly chosen MTD" = `truth(dose_selected)` inside `target`;
+  "overestimated" = above the upper target bound. This needs `truth` and
+  `target` per scenario — which is why `ToxicityScenarios` carries both.
+- "% terminated due to toxicity" vs. "% max patients reached without MTD"
+  cannot be derived from `stop_reasons` free text reliably; the design relies
+  on `report_label`s plus a user-supplied mapping, e.g.
+  `stop_categories = list("Toxicity" = c("Lowest dose unsafe", "All doses toxic"), "Max patients" = "Futility")`.
+  We should document prominently that giving stopping rules `report_label`s is
+  a prerequisite for stop-reason reporting.
+- `additional_stats` (from `simulate(..., derive = ...)`) are surfaced
+  automatically as candidate rows, keeping the existing `derive` mechanism as
+  the extension point for per-simulation quantities we do not compute.
+
+## The statistics registry
+
+The core flexibility mechanism. A statistic is a small S4 (or plain list-based
+S3) object:
+
+```{r}
+#| eval: false
+OCStat(
+    label = "Mean number of patients", # row label (programmatic)
+    fun = function(sims, summary, scenario) { # returns numeric vector
+        mean(summary@n_obs)
+    },
+    format = "%.1f" # sprintf or function
+)
+```
+
+`crmPack` ships a documented registry of built-ins covering the union of the
+PMDA, BI, Bayer, and Merck requirements, selectable by name. Display variants
+are expressed as distinct registry entries or via options, e.g.:
+
+- `"n_pat_mean"`, `"n_pat_mean_sd"` ("13.8 (5.2)"), `"n_pat_minmax"`
+  ("[3–30]"), `"n_pat_quantiles"` (10%/90%),
+- `"n_dlt_mean"`, `"n_dlt_mean_sd"`, ...
+- `"prop_stop_tox"`, `"prop_stop_max_patients"`, `"prop_stop_by_label"`
+  (one row per `report_label` / category),
+- `"prop_mtd_correct"`, `"prop_mtd_over"`, `"prop_mtd_none"`,
+- `"dose_selection"` (one row per dose level + "none" + "highest dose safe"),
+- `"n_above_target_mean_sd"`, `"duration_mean_sd"` (DA designs / scaled by
+  number of cohorts),
+- `"n_pat_per_dose"`, `"n_dlt_per_dose"` (one row per dose; `sd = TRUE` gives
+  "mean (sd)" — the explicit Bayer request).
+
+Users mix built-in names and custom `OCStat` objects in one `stats = list(...)`
+argument, and can relabel any row (`label` override), which fulfils the
+"add/remove statistics" and "programmatic headers/labels" requirements.
+
+## Overview table (PMDA-style, scenarios as columns)
+
+```{r}
+#| eval: false
+oc_summary <- summary(
+    list(
+        "Sc. 1 (DL1 toxic)" = sims1, # named list of Simulations
+        "Sc. 2 (MTD = DL1)" = sims2
+    ),
+    scenarios = my_scenarios, # ToxicityScenarios: truths + target
+    stop_categories = list(...)
+) # -> "SimulationsSummaryList"
+
+oc_table(
+    oc_summary,
+    stats = c(
+        "n_pat_mean", "n_dlt_mean",
+        "prop_stop_tox", "prop_mtd_correct",
+        "prop_stop_max_patients", "prop_mtd_over"
+    ),
+    format = c("tibble", "gt", "kable") # default "tibble"
+)
+```
+
+- The intermediate `SimulationsSummaryList` container (named list of
+  per-scenario summaries + shared metadata) avoids recomputing summaries for
+  each table variant and gives `plot()` a natural hook for scenario-faceted
+  plots.
+- `format = "tibble"` returns the long skeleton: `scenario`, `stat`, `label`,
+  `value`, `formatted` — trivially reshaped by users.
+- `format = "gt"` produces the rendered table: statistics as rows, scenarios
+  as columns, an overall spanner like "Simulation Results (Assumptions: x, y,
+  z)" supplied via a `title`/`spanner` argument (programmatic header
+  requirement).
+- Arm-specific sub-columns (BI requirement, `HierarchicalSimulations`): the
+  skeleton gains an `arm` column and the gt renderer nests
+  scenario → arm spanners. Designed for now, implemented as a follow-up.
+
+## Detail table (per-dose, scenarios as row groups)
+
+```{r}
+#| eval: false
+oc_detail_table(
+    oc_summary,
+    stats = c("n_dlt_per_dose", "n_pat_per_dose", "prop_selected", "true_prob"),
+    sd = FALSE, # TRUE -> "mean (sd)" cells
+    sum_column = TRUE, # SUM only for patient-count rows
+    stop_columns = TRUE, # STOP / MAX columns only for the probability row
+    format = c("tibble", "gt", "kable")
+)
+```
+
+Matches the Merck detail table: columns are the dose levels (+ SUM/STOP/MAX
+where applicable), row groups are the scenarios, rows within each group are
+the selected per-dose statistics including the true P(DLT) row (taken from the
+`ToxicityScenarios`).
+
+## Plots
+
+Mostly re-uses existing machinery, generalized to multiple scenarios:
+
+- `plot(oc_summary, type = "doseSelected")` and `type = "nPatients"` — per-dose
+  barplots as today, but faceted by scenario (`facet_wrap(~ scenario)`).
+- Existing single-`Simulations` plots stay untouched.
+
+# Rendering and export layer
+
+One generic entry point shared by all tables above:
+
+```{r}
+#| eval: false
+render_table(x, format = c("gt", "kable"), ...)
+# x: any of the tbl_* tibbles produced by layer 1/2 (they carry their class
+#    and layout metadata as attributes: spanners, row groups, footnotes, digits)
+```
+
+- `knit_print()` methods for the new classes call `render_table()` with
+  defaults, so bare objects in a Quarto chunk "just work" — consistent with
+  the existing `helpers_knitr_*` convention.
+- **Word export**: `render_table(x, format = "gt") |> gt::gtsave("table.docx")`
+  or copy/paste of the rendered HTML; documented in the vignette.
+- **Markdown**: `format = "kable"` emits pipe-table markdown using only
+  existing Imports.
+- **Pagination**: a helper `paginate_columns(x, max_cols = 6, keep = "label")`
+  splits a wide table into a list of tables repeating the row-label column(s);
+  `render_table()` accepts the list and emits the parts in sequence. This
+  covers "automatic page/table breaks if there are too many columns" for both
+  many-scenario overview tables and many-dose detail tables.
+
+# Dependencies
+
+- Add `gt` to **Suggests** (guarded by `requireNamespace()`).
+- No new Imports: the tibble/kable paths use `dplyr`, `tibble`, `tidyr`
+  (Suggests → consider promoting to Imports since the assembly layer will
+  need pivoting), `knitr`, `kableExtra`.
+
+# Implementation plan
+
+Sliced so that each step is an independently reviewable PR with tests
+(testthat + vdiffr for plots, snapshot tests for kable/gt output):
+
+1. **Data-layer accessors**: factor per-dose selection %, patients/DLTs per
+   dose, stop-report percentages, sample-size summaries, and MTD
+   classification out of `show`/`plot` into exported, documented, tested
+   functions returning tibbles. Refactor `show`/`plot` to use them (no
+   behavior change).
+2. **`ToxicityScenarios`** class + `tidy`/`plot`/table methods.
+3. **`prob_summary()`** + prior plot extensions (`target` overlay,
+   `statistic`/`level` options) + `plot_prior_draws()`.
+4. **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
+   registry, multi-scenario `summary()`).
+5. **`oc_table()`** overview table (tibble + kable + gt formats, programmatic
+   spanner/title).
+6. **`oc_detail_table()`** + scenario-faceted summary plots.
+7. **Rendering/export polish**: `render_table()` generic, `knit_print`
+   methods, `paginate_columns()`, Word-export documentation.
+8. **Vignette** "Reporting simulation results" reproducing the Bayer, BI,
+   Merck, and PMDA example tables end-to-end.
+
+Extensions explicitly deferred (but anticipated in the tidy column layout):
+combo dose grids in `ToxicityScenarios`/tables, arm sub-columns for
+`HierarchicalSimulations`, pseudo/dual simulation specifics (efficacy
+columns), `DASimulations` duration statistics beyond mean/SD.
+
+# Open questions
+
+1. **Naming**: `oc_table()` / `oc_detail_table()` / `prob_summary()` /
+   `render_table()` are working titles — do we want a common prefix (e.g.
+   `report_*` or `tabulate_*`), or S4 generics (`summary` on a list is
+   somewhat unusual; a dedicated constructor like
+   `SimulationsSummaryList(...)` may be cleaner than overloading `summary`)?
+2. **Where should `truth` live long term?** Storing the evaluated truth (and
+   the truth function) on the `Simulations` object at `simulate()` time would
+   remove the need to pass scenarios twice (once to `simulate`, once to the
+   reporting). That is a bigger change to a central class — worth it?
+3. **`tidyr` promotion** from Suggests to Imports for the assembly layer, or
+   avoid pivoting with base/`dplyr` only?
+4. **Prior draws plot signature**: new `type = "draws"` on
+   `plot(samples, model, data)` vs. a separate `plot_prior_draws()` function.
+5. **gt in Suggests vs. Imports**: Suggests keeps installation light but means
+   the "nice" output needs an extra install; is that acceptable for the
+   primary rendering path?
+6. **Should `stop_categories` mappings get standard defaults** (e.g. by
+   convention on `report_label`s), so PMDA tables work out of the box for the
+   bundled designs?
