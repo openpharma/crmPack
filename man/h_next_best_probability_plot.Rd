@@ -12,7 +12,8 @@ h_next_best_probability_plot(
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
-  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  base_plot = ggplot()
 )
 }
 \arguments{
@@ -42,6 +43,10 @@ default) or at regular positions selected by \code{ggplot2} (\code{"regular"}).}
 \item{axis_text_angle}{(\code{number})
 rotation angle for x-axis tick labels. Defaults to 45 degrees for
 \code{axis_ticks = "dosegrid"} and 0 degrees for \code{axis_ticks = "regular"}.}
+
+\item{base_plot}{(\code{ggplot})
+plot containing any background layers to draw below the probability
+geometry.}
 }
 \value{
 A \code{ggplot2} object.
