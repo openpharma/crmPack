@@ -46,19 +46,19 @@ DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
 
   `mean`
 
-  :   (`numeric`)\
-      the prior mean vector.
+  : (`numeric`)\
+    the prior mean vector.
 
   `cov`
 
-  :   (`matrix`)\
-      the prior covariance matrix. The precision matrix `prec` is
-      internally calculated as an inverse of `cov`.
+  : (`matrix`)\
+    the prior covariance matrix. The precision matrix `prec` is
+    internally calculated as an inverse of `cov`.
 
   `ref_dose`
 
-  :   (`number`)\
-      the reference dose \\x\*\\ (strictly positive number).
+  : (`number`)\
+    the reference dose \\x\*\\ (strictly positive number).
 
 ## Slots
 

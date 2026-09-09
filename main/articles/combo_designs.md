@@ -67,27 +67,7 @@ et al. (2014) (note that a presentation slide deck is available
 This model can be used in `crmPack` as follows with the `TwoDrugsCombo`
 model class:
 
-``` r
-
-library(crmPack)
-
-combo_model <- TwoDrugsCombo(
-  single_models = list(
-    drug1 = LogisticLogNormal(
-      mean = c(-0.85, 1),
-      cov = matrix(c(2, -0.5, -0.5, 2), nrow = 2),
-      ref_dose = 10
-    ),
-    drug2 = LogisticLogNormal(
-      mean = c(-0.7, 0.8),
-      cov = matrix(c(2, -0.3, -0.3, 2), nrow = 2),
-      ref_dose = 20
-    )
-  ),
-  gamma = 0,
-  tau = 1
-)
-```
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`` `` ``combo_model`` ``<-`` `[`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)`(`` `` single_models ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug1 ``=`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``0.85``, ``1``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``-``0.5``, ``-``0.5``, ``2``)``, nrow ``=`` ``2``)``,`` `` ref_dose ``=`` ``10`` `` ``)``,`` `` drug2 ``=`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``0.7``, ``0.8``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``-``0.3``, ``-``0.3``, ``2``)``, nrow ``=`` ``2``)``,`` `` ref_dose ``=`` ``20`` `` ``)`` `` ``)``,`` `` gamma ``=`` ``0``,`` `` tau ``=`` ``1`` ``)`
 
 We omit the printing of `combo_model` here for brevity, but it will show
 in `Rmd` or `qmd` output as a nice textual description with formulas.
@@ -96,102 +76,22 @@ in `Rmd` or `qmd` output as a nice textual description with formulas.
 
 The corresponding design class is `DesignCombo`. Here is an example:
 
-``` r
-
-my_next_best <- NextBestNCRM(
-  target = c(0.2, 0.35),
-  overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
-)
-
-my_increments <- IncrementsMin(
-  increments_list = list(
-    IncrementsComboOneDrugOnly(),
-    IncrementsComboCartesian(
-      drug1 = IncrementsRelative(intervals = c(0), increments = c(2)),
-      drug2 = IncrementsRelative(intervals = c(0), increments = c(2))
-    )
-  )
-)
-
-my_stopping <- StoppingMinPatients(nPatients = 20)
-
-empty_data <- DataCombo(
-  doseGrid = list(
-    drug1 = seq(from = 10, to = 50, by = 5),
-    drug2 = seq(from = 10, to = 50, by = 5)
-  )
-)
-
-design_combo <- DesignCombo(
-  model = combo_model,
-  nextBest = my_next_best,
-  stopping = my_stopping,
-  increments = my_increments,
-  cohort_size = CohortSizeConst(3L),
-  data = empty_data,
-  startingDose = c(drug1 = 10, drug2 = 20)
-)
-```
+`my_next_best`` ``<-`` `[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` overdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.35``, ``1``)``,`` `` max_overdose_prob ``=`` ``0.25`` ``)`` `` ``my_increments`` ``<-`` `[`IncrementsMin`](https://docs.crmpack.org/reference/IncrementsMin-class.md)`(`` `` increments_list ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` `[`IncrementsComboOneDrugOnly`](https://docs.crmpack.org/reference/IncrementsComboOneDrugOnly-class.md)`(``)``,`` `` `[`IncrementsComboCartesian`](https://docs.crmpack.org/reference/IncrementsComboCartesian-class.md)`(`` `` drug1 ``=`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(``intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``)``, increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2``)``)``,`` `` drug2 ``=`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(``intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``)``, increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2``)``)`` `` ``)`` `` ``)`` ``)`` `` ``my_stopping`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``20``)`` `` ``empty_data`` ``<-`` `[`DataCombo`](https://docs.crmpack.org/reference/DataCombo-class.md)`(`` `` doseGrid ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug1 ``=`` `[`seq`](https://rdrr.io/r/base/seq.html)`(``from ``=`` ``10``, to ``=`` ``50``, by ``=`` ``5``)``,`` `` drug2 ``=`` `[`seq`](https://rdrr.io/r/base/seq.html)`(``from ``=`` ``10``, to ``=`` ``50``, by ``=`` ``5``)`` `` ``)`` ``)`` `` ``design_combo`` ``<-`` `[`DesignCombo`](https://docs.crmpack.org/reference/DesignCombo-class.md)`(`` `` model ``=`` ``combo_model``,`` `` nextBest ``=`` ``my_next_best``,`` `` stopping ``=`` ``my_stopping``,`` `` increments ``=`` ``my_increments``,`` `` cohort_size ``=`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3L``)``,`` `` data ``=`` ``empty_data``,`` `` startingDose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``drug1 ``=`` ``10``, drug2 ``=`` ``20``)`` ``)`
 
 We can then simulate from this design as follows:
 
-``` r
-
-true_tox_combo <- function(dose) {
-  plogis(-4 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
-}
-
-mcmc_options <- McmcOptions(
-  burnin = 100,
-  step = 2,
-  samples = 100,
-  rng_kind = "Mersenne-Twister",
-  rng_seed = 1
-)
-
-sims_combo <- simulate(
-  design_combo,
-  truth = true_tox_combo,
-  nsim = 20,
-  seed = 819,
-  mcmcOptions = mcmc_options,
-  parallel = FALSE
-)
-
-plot(sims_combo)
-```
+`true_tox_combo`` ``<-`` ``function``(``dose``)`` ``{`` `` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(``-``4`` ``+`` ``0.08`` ``*`` ``dose``[``1``]`` ``+`` ``0.06`` ``*`` ``dose``[``2``]`` ``+`` ``0.001`` ``*`` ``dose``[``1``]`` ``*`` ``dose``[``2``]``)`` ``}`` `` ``mcmc_options`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(`` `` burnin ``=`` ``100``,`` `` step ``=`` ``2``,`` `` samples ``=`` ``100``,`` `` rng_kind ``=`` ``"Mersenne-Twister"``,`` `` rng_seed ``=`` ``1`` ``)`` `` ``sims_combo`` ``<-`` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(`` `` ``design_combo``,`` `` truth ``=`` ``true_tox_combo``,`` `` nsim ``=`` ``20``,`` `` seed ``=`` ``819``,`` `` mcmcOptions ``=`` ``mcmc_options``,`` `` parallel ``=`` ``FALSE`` ``)`` `` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``sims_combo``)`
 
 ![plot of chunk
 unnamed-chunk-4](combo_designs-figures/unnamed-chunk-4-1.png)
 
 plot of chunk unnamed-chunk-4
 
-``` r
-
-summary(sims_combo, truth = true_tox_combo)
-#> Summary of 20 combination simulations
-#> 
-#> Number of patients overall : mean 16 (3, 21) 
-#> Proportions of DLTs in the trials : mean 21 % (9 %, 33 %) 
-#> Mean toxicity risks from fitted surfaces : mean 59 % (42 %, 74 %) 
-#> Selected dose for drug 1: mean 7.2 (0, 10) 
-#> Selected dose for drug 2: mean 13.2 (0, 25.5) 
-#> Target toxicity interval was 20, 35 %
-#> True toxicity at selected combinations : mean 11 % (2 %, 24 %) 
-#> Proportion of trials selecting target combination: 15 %
-#> Most frequently selected combination: 0, 0 
-#> Observed toxicity rate at most selected combination: NA %
-#> Stop reason triggered:
-#>  ≥ 20 patients dosed :  65 %
-```
+[`summary`](https://rdrr.io/r/base/summary.html)`(``sims_combo``, truth ``=`` ``true_tox_combo``)`` ``#> Summary of 20 combination simulations`` ``#> `` ``#> Number of patients overall : mean 16 (3, 21) `` ``#> Proportions of DLTs in the trials : mean 21 % (9 %, 33 %) `` ``#> Mean toxicity risks from fitted surfaces : mean 59 % (42 %, 74 %) `` ``#> Selected dose for drug 1: mean 7.2 (0, 10) `` ``#> Selected dose for drug 2: mean 13.2 (0, 25.5) `` ``#> Target toxicity interval was 20, 35 %`` ``#> True toxicity at selected combinations : mean 11 % (2 %, 24 %) `` ``#> Proportion of trials selecting target combination: 15 %`` ``#> Most frequently selected combination: 0, 0 `` ``#> Observed toxicity rate at most selected combination: NA %`` ``#> Stop reason triggered:`` ``#> ≥ 20 patients dosed : 65 %`
 
 We can also look at the trajectory more closely:
 
-``` r
-
-plot(sims_combo, type = "trajectory2D")
-```
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``sims_combo``, type ``=`` ``"trajectory2D"``)`
 
 ![plot of chunk
 unnamed-chunk-5](combo_designs-figures/unnamed-chunk-5-1.png)
@@ -206,35 +106,7 @@ we can use a `LogisticNormalFixedMixture` model for drug 1 and a
 `LogisticKadane` model for drug 2, and the combination arm will still be
 modeled with the same interaction term $`\eta`$:
 
-``` r
-
-combo_model2 <- TwoDrugsCombo(
-  single_models = list(
-    drug1 = LogisticNormalFixedMixture(
-      list(
-        comp1 = ModelParamsNormal(
-          mean = c(-0.85, 1),
-          cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
-        ),
-        comp2 = ModelParamsNormal(
-          mean = c(1, 1.5),
-          cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
-        )
-      ),
-      weights = c(0.3, 0.7),
-      ref_dose = 50
-    ),
-    drug2 = LogisticKadane(
-      theta = 0.35,
-      xmin = 1,
-      xmax = 200
-    )
-  ),
-  gamma = 0,
-  tau = 1,
-  log_normal_eta = TRUE
-)
-```
+`combo_model2`` ``<-`` `[`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)`(`` `` single_models ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug1 ``=`` `[`LogisticNormalFixedMixture`](https://docs.crmpack.org/reference/LogisticNormalFixedMixture-class.md)`(`` `` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` comp1 ``=`` `[`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``0.85``, ``1``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``-``0.5``, ``-``0.5``, ``1``)``, nrow ``=`` ``2``)`` `` ``)``,`` `` comp2 ``=`` `[`ModelParamsNormal`](https://docs.crmpack.org/reference/ModelParamsNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``1.5``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1.2``, ``-``0.45``, ``-``0.45``, ``0.6``)``, nrow ``=`` ``2``)`` `` ``)`` `` ``)``,`` `` weights ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.3``, ``0.7``)``,`` `` ref_dose ``=`` ``50`` `` ``)``,`` `` drug2 ``=`` `[`LogisticKadane`](https://docs.crmpack.org/reference/LogisticKadane-class.md)`(`` `` theta ``=`` ``0.35``,`` `` xmin ``=`` ``1``,`` `` xmax ``=`` ``200`` `` ``)`` `` ``)``,`` `` gamma ``=`` ``0``,`` `` tau ``=`` ``1``,`` `` log_normal_eta ``=`` ``TRUE`` ``)`
 
 Note that here we also use a log-normal prior for the interaction
 parameter $`\eta`$ by setting `log_normal_eta = TRUE`. This is useful if
@@ -245,63 +117,11 @@ expected. Fortunately, JAGS code is well readable.
 
 The likelihood is as follows:
 
-``` r
-
-combo_model2@datamodel
-#> function () 
-#> {
-#>     for (i in 1:nObs) {
-#>         x_drug1[i] <- x[i, 1L]
-#>     }
-#>     for (i in 1:nObs) {
-#>         logit(p_drug1[i]) <- alpha0_drug1 + alpha1_drug1 * log(x_drug1[i]/ref_dose_drug1)
-#>         p_single[i, 1L] <- p_drug1[i]
-#>     }
-#>     for (i in 1:nObs) {
-#>         x_drug2[i] <- x[i, 2L]
-#>     }
-#>     for (i in 1:nObs) {
-#>         logit(p_drug2[i]) <- (1/(gamma_drug2 - xmin_drug2)) * 
-#>             (gamma_drug2 * logit(rho0_drug2) - xmin_drug2 * logit(theta_drug2) + 
-#>                 x_drug2[i] * (logit(theta_drug2) - logit(rho0_drug2)))
-#>         p_single[i, 2L] <- p_drug2[i]
-#>     }
-#>     for (i in 1:nObs) {
-#>         combo_interaction[i] <- x_drug1[i]/ref_dose_drug1 * x_drug2[i]
-#>     }
-#>     for (i in 1:nObs) {
-#>         p0[i] <- p_single[i, 1] + p_single[i, 2] - p_single[i, 
-#>             1] * p_single[i, 2]
-#>         logit(p[i]) <- log(p0[i]/(1 - p0[i])) + eta * combo_interaction[i]
-#>         y[i] ~ dbern(p[i])
-#>     }
-#> }
-#> <environment: 0xc1296f620>
-```
+`combo_model2``@``datamodel`` ``#> function () `` ``#> {`` ``#> for (i in 1:nObs) {`` ``#> x_drug1[i] <- x[i, 1L]`` ``#> }`` ``#> for (i in 1:nObs) {`` ``#> logit(p_drug1[i]) <- alpha0_drug1 + alpha1_drug1 * log(x_drug1[i]/ref_dose_drug1)`` ``#> p_single[i, 1L] <- p_drug1[i]`` ``#> }`` ``#> for (i in 1:nObs) {`` ``#> x_drug2[i] <- x[i, 2L]`` ``#> }`` ``#> for (i in 1:nObs) {`` ``#> logit(p_drug2[i]) <- (1/(gamma_drug2 - xmin_drug2)) * `` ``#> (gamma_drug2 * logit(rho0_drug2) - xmin_drug2 * logit(theta_drug2) + `` ``#> x_drug2[i] * (logit(theta_drug2) - logit(rho0_drug2)))`` ``#> p_single[i, 2L] <- p_drug2[i]`` ``#> }`` ``#> for (i in 1:nObs) {`` ``#> combo_interaction[i] <- x_drug1[i]/ref_dose_drug1 * x_drug2[i]`` ``#> }`` ``#> for (i in 1:nObs) {`` ``#> p0[i] <- p_single[i, 1] + p_single[i, 2] - p_single[i, `` ``#> 1] * p_single[i, 2]`` ``#> logit(p[i]) <- log(p0[i]/(1 - p0[i])) + eta * combo_interaction[i]`` ``#> y[i] ~ dbern(p[i])`` ``#> }`` ``#> }`` ``#> <environment: 0xc1296f620>`
 
 The prior is as follows:
 
-``` r
-
-combo_model2@priormodel
-#> function () 
-#> {
-#>     comp_drug1 ~ dcat(weights_drug1)
-#>     theta_drug1 ~ dmnorm(mean_drug1[1:2, comp_drug1], prec_drug1[1:2, 
-#>         1:2, comp_drug1])
-#>     alpha0_drug1 <- theta_drug1[1]
-#>     alpha1_drug1 <- theta_drug1[2]
-#>     rho0_drug2 ~ dunif(0, theta_drug2)
-#>     gamma_drug2 ~ dunif(xmin_drug2, xmax_drug2)
-#>     alpha0[1L] <- alpha0_drug1
-#>     alpha1[1L] <- alpha1_drug1
-#>     rho0[1L] <- rho0_drug2
-#>     gamma[1L] <- gamma_drug2
-#>     log_eta ~ dnorm(eta_gamma, eta_tau)
-#>     eta <- exp(log_eta)
-#> }
-#> <environment: 0xc0f85c858>
-```
+`combo_model2``@``priormodel`` ``#> function () `` ``#> {`` ``#> comp_drug1 ~ dcat(weights_drug1)`` ``#> theta_drug1 ~ dmnorm(mean_drug1[1:2, comp_drug1], prec_drug1[1:2, `` ``#> 1:2, comp_drug1])`` ``#> alpha0_drug1 <- theta_drug1[1]`` ``#> alpha1_drug1 <- theta_drug1[2]`` ``#> rho0_drug2 ~ dunif(0, theta_drug2)`` ``#> gamma_drug2 ~ dunif(xmin_drug2, xmax_drug2)`` ``#> alpha0[1L] <- alpha0_drug1`` ``#> alpha1[1L] <- alpha1_drug1`` ``#> rho0[1L] <- rho0_drug2`` ``#> gamma[1L] <- gamma_drug2`` ``#> log_eta ~ dnorm(eta_gamma, eta_tau)`` ``#> eta <- exp(log_eta)`` ``#> }`` ``#> <environment: 0xc0f85c858>`
 
 So everything looks as expected. Note that for the interaction term
 `crmPack` uses the normalized dose $`x_1/x_1^{*}`$ for drug 1, while it
@@ -378,69 +198,7 @@ below.
 This model can be implemented in `crmPack` with the `HierarchicalModel`
 class as follows:
 
-``` r
-
-parameter_pools <- list(
-  drug1_intercept = list(
-    mono_drug1 = "alpha0",
-    combo = "alpha0[1]"
-  ),
-  drug1_slope = list(
-    mono_drug1 = "alpha1",
-    combo = "alpha1[1]"
-  ),
-  drug2_intercept = list(
-    mono_drug2 = "alpha0",
-    combo = "alpha0[2]"
-  ),
-  drug2_slope = list(
-    mono_drug2 = "alpha1",
-    combo = "alpha1[2]"
-  ),
-  interaction = list(
-    combo = "eta"
-  )
-)
-
-pool_correlations <- list(
-  drug1 = c("drug1_intercept", "drug1_slope"),
-  drug2 = c("drug2_intercept", "drug2_slope")
-)
-
-pool_priors <- list(
-  drug1_intercept = list(
-    mu = c(mean = qlogis(0.25), sd = 2.5),
-    tau = c(meanlog = log(0.5), sdlog = log(2) / 1.96)
-  ),
-  drug1_slope = list(
-    mu = c(mean = 0, sd = 0.7),
-    tau = c(meanlog = log(0.25), sdlog = log(2) / 1.96)
-  ),
-  drug2_intercept = list(
-    mu = c(mean = qlogis(0.25), sd = 2.5),
-    tau = c(meanlog = log(0.75), sdlog = log(2) / 1.96)
-  ),
-  drug2_slope = list(
-    mu = c(mean = 0, sd = 1),
-    tau = c(meanlog = log(0.25), sdlog = log(2) / 1.96)
-  ),
-  interaction = list(
-    mu = c(mean = 0, sd = 1.121),
-    tau = c(meanlog = log(0.125), sdlog = log(2) / 1.96)
-  )
-)
-
-hierarchical_model <- HierarchicalModel(
-  mono_drug1 = combo_model@single_models$drug1,
-  mono_drug2 = combo_model@single_models$drug2,
-  combo = combo_model,
-  exchangeable_parameters = parameter_pools,
-  pool_correlations = pool_correlations,
-  pool_priors = pool_priors
-)
-
-hierarchical_model
-```
+`parameter_pools`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug1_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug1 ``=`` ``"alpha0"``,`` `` combo ``=`` ``"alpha0[1]"`` `` ``)``,`` `` drug1_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug1 ``=`` ``"alpha1"``,`` `` combo ``=`` ``"alpha1[1]"`` `` ``)``,`` `` drug2_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug2 ``=`` ``"alpha0"``,`` `` combo ``=`` ``"alpha0[2]"`` `` ``)``,`` `` drug2_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug2 ``=`` ``"alpha1"``,`` `` combo ``=`` ``"alpha1[2]"`` `` ``)``,`` `` interaction ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` combo ``=`` ``"eta"`` `` ``)`` ``)`` `` ``pool_correlations`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"drug1_intercept"``, ``"drug1_slope"``)``,`` `` drug2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"drug2_intercept"``, ``"drug2_slope"``)`` ``)`` `` ``pool_priors`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug1_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mu ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``mean ``=`` `[`qlogis`](https://rdrr.io/r/stats/Logistic.html)`(``0.25``)``, sd ``=`` ``2.5``)``,`` `` tau ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``meanlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``0.5``)``, sdlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)`` `` ``)``,`` `` drug1_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mu ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``mean ``=`` ``0``, sd ``=`` ``0.7``)``,`` `` tau ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``meanlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``0.25``)``, sdlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)`` `` ``)``,`` `` drug2_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mu ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``mean ``=`` `[`qlogis`](https://rdrr.io/r/stats/Logistic.html)`(``0.25``)``, sd ``=`` ``2.5``)``,`` `` tau ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``meanlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``0.75``)``, sdlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)`` `` ``)``,`` `` drug2_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mu ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``mean ``=`` ``0``, sd ``=`` ``1``)``,`` `` tau ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``meanlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``0.25``)``, sdlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)`` `` ``)``,`` `` interaction ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mu ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``mean ``=`` ``0``, sd ``=`` ``1.121``)``,`` `` tau ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``meanlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``0.125``)``, sdlog ``=`` `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)`` `` ``)`` ``)`` `` ``hierarchical_model`` ``<-`` `[`HierarchicalModel`](https://docs.crmpack.org/reference/HierarchicalModel-class.md)`(`` `` mono_drug1 ``=`` ``combo_model``@``single_models``$``drug1``,`` `` mono_drug2 ``=`` ``combo_model``@``single_models``$``drug2``,`` `` combo ``=`` ``combo_model``,`` `` exchangeable_parameters ``=`` ``parameter_pools``,`` `` pool_correlations ``=`` ``pool_correlations``,`` `` pool_priors ``=`` ``pool_priors`` ``)`` `` ``hierarchical_model`
 
 The hierarchical model combines 3 arm-specific models: mono_drug1 =
 LogisticLogNormal, mono_drug2 = LogisticLogNormal, combo =
@@ -463,108 +221,11 @@ this model.
 
 The likelihood is as follows:
 
-``` r
-
-hierarchical_model@datamodel
-#> function () 
-#> {
-#>     for (i in 1:nObs_mono_drug1) {
-#>         logit(p_mono_drug1[i]) <- alpha0_mono_drug1 + alpha1_mono_drug1 * 
-#>             log(x_mono_drug1[i]/ref_dose_mono_drug1)
-#>         y_mono_drug1[i] ~ dbern(p_mono_drug1[i])
-#>     }
-#>     for (i in 1:nObs_mono_drug2) {
-#>         logit(p_mono_drug2[i]) <- alpha0_mono_drug2 + alpha1_mono_drug2 * 
-#>             log(x_mono_drug2[i]/ref_dose_mono_drug2)
-#>         y_mono_drug2[i] ~ dbern(p_mono_drug2[i])
-#>     }
-#>     for (i in 1:nObs_combo) {
-#>         x_drug1_combo[i] <- x_combo[i, 1L]
-#>     }
-#>     for (i in 1:nObs_combo) {
-#>         logit(p_drug1_combo[i]) <- alpha0_drug1_combo + alpha1_drug1_combo * 
-#>             log(x_drug1_combo[i]/ref_dose_drug1_combo)
-#>         p_single_combo[i, 1L] <- p_drug1_combo[i]
-#>     }
-#>     for (i in 1:nObs_combo) {
-#>         x_drug2_combo[i] <- x_combo[i, 2L]
-#>     }
-#>     for (i in 1:nObs_combo) {
-#>         logit(p_drug2_combo[i]) <- alpha0_drug2_combo + alpha1_drug2_combo * 
-#>             log(x_drug2_combo[i]/ref_dose_drug2_combo)
-#>         p_single_combo[i, 2L] <- p_drug2_combo[i]
-#>     }
-#>     for (i in 1:nObs_combo) {
-#>         combo_interaction_combo[i] <- x_drug1_combo[i]/ref_dose_drug1_combo * 
-#>             (x_drug2_combo[i]/ref_dose_drug2_combo)
-#>     }
-#>     for (i in 1:nObs_combo) {
-#>         p0_combo[i] <- p_single_combo[i, 1] + p_single_combo[i, 
-#>             2] - p_single_combo[i, 1] * p_single_combo[i, 2]
-#>         logit(p_combo[i]) <- log(p0_combo[i]/(1 - p0_combo[i])) + 
-#>             eta_combo * combo_interaction_combo[i]
-#>         y_combo[i] ~ dbern(p_combo[i])
-#>     }
-#> }
-#> <environment: 0xc035d95e8>
-```
+`hierarchical_model``@``datamodel`` ``#> function () `` ``#> {`` ``#> for (i in 1:nObs_mono_drug1) {`` ``#> logit(p_mono_drug1[i]) <- alpha0_mono_drug1 + alpha1_mono_drug1 * `` ``#> log(x_mono_drug1[i]/ref_dose_mono_drug1)`` ``#> y_mono_drug1[i] ~ dbern(p_mono_drug1[i])`` ``#> }`` ``#> for (i in 1:nObs_mono_drug2) {`` ``#> logit(p_mono_drug2[i]) <- alpha0_mono_drug2 + alpha1_mono_drug2 * `` ``#> log(x_mono_drug2[i]/ref_dose_mono_drug2)`` ``#> y_mono_drug2[i] ~ dbern(p_mono_drug2[i])`` ``#> }`` ``#> for (i in 1:nObs_combo) {`` ``#> x_drug1_combo[i] <- x_combo[i, 1L]`` ``#> }`` ``#> for (i in 1:nObs_combo) {`` ``#> logit(p_drug1_combo[i]) <- alpha0_drug1_combo + alpha1_drug1_combo * `` ``#> log(x_drug1_combo[i]/ref_dose_drug1_combo)`` ``#> p_single_combo[i, 1L] <- p_drug1_combo[i]`` ``#> }`` ``#> for (i in 1:nObs_combo) {`` ``#> x_drug2_combo[i] <- x_combo[i, 2L]`` ``#> }`` ``#> for (i in 1:nObs_combo) {`` ``#> logit(p_drug2_combo[i]) <- alpha0_drug2_combo + alpha1_drug2_combo * `` ``#> log(x_drug2_combo[i]/ref_dose_drug2_combo)`` ``#> p_single_combo[i, 2L] <- p_drug2_combo[i]`` ``#> }`` ``#> for (i in 1:nObs_combo) {`` ``#> combo_interaction_combo[i] <- x_drug1_combo[i]/ref_dose_drug1_combo * `` ``#> (x_drug2_combo[i]/ref_dose_drug2_combo)`` ``#> }`` ``#> for (i in 1:nObs_combo) {`` ``#> p0_combo[i] <- p_single_combo[i, 1] + p_single_combo[i, `` ``#> 2] - p_single_combo[i, 1] * p_single_combo[i, 2]`` ``#> logit(p_combo[i]) <- log(p0_combo[i]/(1 - p0_combo[i])) + `` ``#> eta_combo * combo_interaction_combo[i]`` ``#> y_combo[i] ~ dbern(p_combo[i])`` ``#> }`` ``#> }`` ``#> <environment: 0xc035d95e8>`
 
 The prior is as follows:
 
-``` r
-
-hierarchical_model@priormodel
-#> function() {
-#>     alpha0_mono_drug1 <- theta_mono_drug1[1]
-#>     alpha1_mono_drug1 <- exp(theta_mono_drug1[2])
-#>     alpha0_mono_drug2 <- theta_mono_drug2[1]
-#>     alpha1_mono_drug2 <- exp(theta_mono_drug2[2])
-#>     alpha0_drug1_combo <- theta_drug1_combo[1]
-#>     alpha1_drug1_combo <- exp(theta_drug1_combo[2])
-#>     alpha0_drug2_combo <- theta_drug2_combo[1]
-#>     alpha1_drug2_combo <- exp(theta_drug2_combo[2])
-#>     alpha0_combo[1L] <- alpha0_drug1_combo
-#>     alpha0_combo[2L] <- alpha0_drug2_combo
-#>     alpha1_combo[1L] <- alpha1_drug1_combo
-#>     alpha1_combo[2L] <- alpha1_drug2_combo
-#> theta_mono_drug1_z[1] ~ dnorm(0, 1)
-#> theta_mono_drug1_z[2] ~ dnorm(0, 1)
-#> theta_mono_drug1[1] <- mu_drug1_intercept + tau_drug1_intercept * theta_mono_drug1_z[1]
-#> theta_mono_drug1[2] <- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_mono_drug1_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_mono_drug1_z[2])
-#> theta_drug1_combo_z[1] ~ dnorm(0, 1)
-#> theta_drug1_combo_z[2] ~ dnorm(0, 1)
-#> theta_drug1_combo[1] <- mu_drug1_intercept + tau_drug1_intercept * theta_drug1_combo_z[1]
-#> theta_drug1_combo[2] <- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_drug1_combo_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_drug1_combo_z[2])
-#> rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)
-#> z_mu_drug1_intercept ~ dnorm(0, 1)
-#> mu_drug1_intercept <- mu_drug1_intercept_mean + mu_drug1_intercept_sd * z_mu_drug1_intercept
-#> tau_drug1_intercept ~ dlnorm(tau_drug1_intercept_meanlog, pow(tau_drug1_intercept_sdlog, -2))
-#> z_mu_drug1_slope ~ dnorm(0, 1)
-#> mu_drug1_slope <- mu_drug1_slope_mean + mu_drug1_slope_sd * z_mu_drug1_slope
-#> tau_drug1_slope ~ dlnorm(tau_drug1_slope_meanlog, pow(tau_drug1_slope_sdlog, -2))
-#> theta_mono_drug2_z[1] ~ dnorm(0, 1)
-#> theta_mono_drug2_z[2] ~ dnorm(0, 1)
-#> theta_mono_drug2[1] <- mu_drug2_intercept + tau_drug2_intercept * theta_mono_drug2_z[1]
-#> theta_mono_drug2[2] <- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_mono_drug2_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_mono_drug2_z[2])
-#> theta_drug2_combo_z[1] ~ dnorm(0, 1)
-#> theta_drug2_combo_z[2] ~ dnorm(0, 1)
-#> theta_drug2_combo[1] <- mu_drug2_intercept + tau_drug2_intercept * theta_drug2_combo_z[1]
-#> theta_drug2_combo[2] <- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_drug2_combo_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_drug2_combo_z[2])
-#> rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)
-#> z_mu_drug2_intercept ~ dnorm(0, 1)
-#> mu_drug2_intercept <- mu_drug2_intercept_mean + mu_drug2_intercept_sd * z_mu_drug2_intercept
-#> tau_drug2_intercept ~ dlnorm(tau_drug2_intercept_meanlog, pow(tau_drug2_intercept_sdlog, -2))
-#> z_mu_drug2_slope ~ dnorm(0, 1)
-#> mu_drug2_slope <- mu_drug2_slope_mean + mu_drug2_slope_sd * z_mu_drug2_slope
-#> tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, -2))
-#> eta_combo_z ~ dnorm(0, 1)
-#> eta_combo <- mu_interaction + tau_interaction * eta_combo_z
-#> z_mu_interaction ~ dnorm(0, 1)
-#> mu_interaction <- mu_interaction_mean + mu_interaction_sd * z_mu_interaction
-#> tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, -2))
-#> }
-#> <environment: 0xc105169a8>
-```
+`hierarchical_model``@``priormodel`` ``#> function() {`` ``#> alpha0_mono_drug1 <- theta_mono_drug1[1]`` ``#> alpha1_mono_drug1 <- exp(theta_mono_drug1[2])`` ``#> alpha0_mono_drug2 <- theta_mono_drug2[1]`` ``#> alpha1_mono_drug2 <- exp(theta_mono_drug2[2])`` ``#> alpha0_drug1_combo <- theta_drug1_combo[1]`` ``#> alpha1_drug1_combo <- exp(theta_drug1_combo[2])`` ``#> alpha0_drug2_combo <- theta_drug2_combo[1]`` ``#> alpha1_drug2_combo <- exp(theta_drug2_combo[2])`` ``#> alpha0_combo[1L] <- alpha0_drug1_combo`` ``#> alpha0_combo[2L] <- alpha0_drug2_combo`` ``#> alpha1_combo[1L] <- alpha1_drug1_combo`` ``#> alpha1_combo[2L] <- alpha1_drug2_combo`` ``#> theta_mono_drug1_z[1] ~ dnorm(0, 1)`` ``#> theta_mono_drug1_z[2] ~ dnorm(0, 1)`` ``#> theta_mono_drug1[1] <- mu_drug1_intercept + tau_drug1_intercept * theta_mono_drug1_z[1]`` ``#> theta_mono_drug1[2] <- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_mono_drug1_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_mono_drug1_z[2])`` ``#> theta_drug1_combo_z[1] ~ dnorm(0, 1)`` ``#> theta_drug1_combo_z[2] ~ dnorm(0, 1)`` ``#> theta_drug1_combo[1] <- mu_drug1_intercept + tau_drug1_intercept * theta_drug1_combo_z[1]`` ``#> theta_drug1_combo[2] <- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_drug1_combo_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_drug1_combo_z[2])`` ``#> rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)`` ``#> z_mu_drug1_intercept ~ dnorm(0, 1)`` ``#> mu_drug1_intercept <- mu_drug1_intercept_mean + mu_drug1_intercept_sd * z_mu_drug1_intercept`` ``#> tau_drug1_intercept ~ dlnorm(tau_drug1_intercept_meanlog, pow(tau_drug1_intercept_sdlog, -2))`` ``#> z_mu_drug1_slope ~ dnorm(0, 1)`` ``#> mu_drug1_slope <- mu_drug1_slope_mean + mu_drug1_slope_sd * z_mu_drug1_slope`` ``#> tau_drug1_slope ~ dlnorm(tau_drug1_slope_meanlog, pow(tau_drug1_slope_sdlog, -2))`` ``#> theta_mono_drug2_z[1] ~ dnorm(0, 1)`` ``#> theta_mono_drug2_z[2] ~ dnorm(0, 1)`` ``#> theta_mono_drug2[1] <- mu_drug2_intercept + tau_drug2_intercept * theta_mono_drug2_z[1]`` ``#> theta_mono_drug2[2] <- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_mono_drug2_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_mono_drug2_z[2])`` ``#> theta_drug2_combo_z[1] ~ dnorm(0, 1)`` ``#> theta_drug2_combo_z[2] ~ dnorm(0, 1)`` ``#> theta_drug2_combo[1] <- mu_drug2_intercept + tau_drug2_intercept * theta_drug2_combo_z[1]`` ``#> theta_drug2_combo[2] <- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_drug2_combo_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_drug2_combo_z[2])`` ``#> rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)`` ``#> z_mu_drug2_intercept ~ dnorm(0, 1)`` ``#> mu_drug2_intercept <- mu_drug2_intercept_mean + mu_drug2_intercept_sd * z_mu_drug2_intercept`` ``#> tau_drug2_intercept ~ dlnorm(tau_drug2_intercept_meanlog, pow(tau_drug2_intercept_sdlog, -2))`` ``#> z_mu_drug2_slope ~ dnorm(0, 1)`` ``#> mu_drug2_slope <- mu_drug2_slope_mean + mu_drug2_slope_sd * z_mu_drug2_slope`` ``#> tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, -2))`` ``#> eta_combo_z ~ dnorm(0, 1)`` ``#> eta_combo <- mu_interaction + tau_interaction * eta_combo_z`` ``#> z_mu_interaction ~ dnorm(0, 1)`` ``#> mu_interaction <- mu_interaction_mean + mu_interaction_sd * z_mu_interaction`` ``#> tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, -2))`` ``#> }`` ``#> <environment: 0xc105169a8>`
 
 ### Design implementation
 
@@ -574,69 +235,14 @@ designs, and wrap them with `DesignArm` to specify their names and
 whether they are active or not (which would be useful for historical
 data from previous trials).
 
-``` r
-
-design_mono_drug1 <- Design(
-  model = combo_model@single_models$drug1,
-  nextBest = my_next_best,
-  stopping = StoppingMinPatients(nPatients = 20) | StoppingMissingDose(),
-  increments = IncrementsRelative(intervals = c(0), increments = c(2)),
-  cohort_size = CohortSizeConst(3L),
-  data = Data(
-    doseGrid = seq(from = 10, to = 50, by = 5)
-  ),
-  startingDose = 10
-)
-
-design_mono_drug2 <- Design(
-  model = combo_model@single_models$drug2,
-  nextBest = my_next_best,
-  stopping = StoppingMinPatients(nPatients = 20) | StoppingMissingDose(),
-  increments = IncrementsRelative(intervals = c(0), increments = c(2)),
-  cohort_size = CohortSizeConst(3L),
-  data = Data(
-    doseGrid = seq(from = 10, to = 50, by = 5)
-  ),
-  startingDose = 20
-)
-
-design_arm_mono_drug1 <- DesignArm(
-  name = "mono_drug1",
-  design = design_mono_drug1
-)
-design_arm_mono_drug2 <- DesignArm(
-  name = "mono_drug2",
-  design = design_mono_drug2
-)
-design_arm_combo <- DesignArm(
-  name = "combo",
-  design = design_combo
-)
-```
+`design_mono_drug1`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``combo_model``@``single_models``$``drug1``,`` `` nextBest ``=`` ``my_next_best``,`` `` stopping ``=`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``20``)`` ``|`` `[`StoppingMissingDose`](https://docs.crmpack.org/reference/StoppingMissingDose-class.md)`(``)``,`` `` increments ``=`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(``intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``)``, increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2``)``)``,`` `` cohort_size ``=`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3L``)``,`` `` data ``=`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` `[`seq`](https://rdrr.io/r/base/seq.html)`(``from ``=`` ``10``, to ``=`` ``50``, by ``=`` ``5``)`` `` ``)``,`` `` startingDose ``=`` ``10`` ``)`` `` ``design_mono_drug2`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``combo_model``@``single_models``$``drug2``,`` `` nextBest ``=`` ``my_next_best``,`` `` stopping ``=`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``20``)`` ``|`` `[`StoppingMissingDose`](https://docs.crmpack.org/reference/StoppingMissingDose-class.md)`(``)``,`` `` increments ``=`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(``intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``)``, increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2``)``)``,`` `` cohort_size ``=`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3L``)``,`` `` data ``=`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` `[`seq`](https://rdrr.io/r/base/seq.html)`(``from ``=`` ``10``, to ``=`` ``50``, by ``=`` ``5``)`` `` ``)``,`` `` startingDose ``=`` ``20`` ``)`` `` ``design_arm_mono_drug1`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"mono_drug1"``,`` `` design ``=`` ``design_mono_drug1`` ``)`` ``design_arm_mono_drug2`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"mono_drug2"``,`` `` design ``=`` ``design_mono_drug2`` ``)`` ``design_arm_combo`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"combo"``,`` `` design ``=`` ``design_combo`` ``)`
 
 Then we provide these to the constructor, together with the exchangeable
 parameter pools. Since this design contains monotherapy arms for both
 drugs plus the combination arm, we use the full set of pools and
 corresponding pool arguments:
 
-``` r
-
-hierarchical_design <- HierarchicalDesign(
-  design_arm_mono_drug1,
-  design_arm_mono_drug2,
-  design_arm_combo,
-  exchangeable_parameters = parameter_pools,
-  pool_correlations = pool_correlations,
-  pool_priors = pool_priors
-)
-
-hierarchical_design
-#> An object of class 'HierarchicalDesign'
-#> Arms (3): mono_drug1, mono_drug2, combo
-#> Active arms: mono_drug1, mono_drug2, combo
-#> Inactive arms: <none>
-#> Exchangeable parameter pools (5): drug1_intercept, drug1_slope, drug2_intercept, drug2_slope, interaction
-```
+`hierarchical_design`` ``<-`` `[`HierarchicalDesign`](https://docs.crmpack.org/reference/HierarchicalDesign-class.md)`(`` `` ``design_arm_mono_drug1``,`` `` ``design_arm_mono_drug2``,`` `` ``design_arm_combo``,`` `` exchangeable_parameters ``=`` ``parameter_pools``,`` `` pool_correlations ``=`` ``pool_correlations``,`` `` pool_priors ``=`` ``pool_priors`` ``)`` `` ``hierarchical_design`` ``#> An object of class 'HierarchicalDesign'`` ``#> Arms (3): mono_drug1, mono_drug2, combo`` ``#> Active arms: mono_drug1, mono_drug2, combo`` ``#> Inactive arms: <none>`` ``#> Exchangeable parameter pools (5): drug1_intercept, drug1_slope, drug2_intercept, drug2_slope, interaction`
 
 Here the arm names match the model implementation above, which makes it
 clear that `mono_drug1` shares information with the first single-agent
@@ -645,109 +251,12 @@ information with the second pair.
 
 Then we can simulate from this design as follows:
 
-``` r
-
-truth_mono_drug1 <- function(dose) plogis(-4 + 0.08 * dose)
-truth_mono_drug2 <- function(dose) plogis(-4 + 0.06 * dose)
-truth_combo <- function(dose) plogis(-4 + 0.08 * dose[1] + 0.06 * dose[2] + 0.001 * dose[1] * dose[2])
-
-hierarchical_sims <- simulate(
-  hierarchical_design,
-  truth = list(
-    mono_drug1 = truth_mono_drug1,
-    mono_drug2 = truth_mono_drug2,
-    combo = truth_combo
-  ),
-  truthResponse = list(
-    # Just for demo purposes we choose the same functions for efficacy.
-    mono_drug1 = truth_mono_drug1,
-    mono_drug2 = truth_mono_drug2,
-    combo = truth_combo
-  ),
-  nsim = 20,
-  seed = 819,
-  mcmcOptions = mcmc_options,
-  parallel = FALSE
-)
-
-hierarchical_sims
-#> An object of class 'HierarchicalSimulations' containing 20 hierarchical simulated trials.
-#> Arms (3): mono_drug1, mono_drug2, combo
-#> Please use 'summary()' to obtain more information.
-summary(hierarchical_sims, truth = list(
-  mono_drug1 = truth_mono_drug1,
-  mono_drug2 = truth_mono_drug2,
-  combo = truth_combo
-))
-#> Summary of 20 hierarchical simulations
-#> 
-#> Arm: mono_drug1 
-#> Summary of 20 simulations
-#> 
-#> Target toxicity interval was 20, 35 %
-#> Target dose interval corresponding to this was 32.7, 42.3 
-#> Intervals are corresponding to 10 and 90 % quantiles
-#> 
-#> Number of patients overall : mean 21 (21, 21) 
-#> Number of patients treated above target tox interval : mean 3 (0, 9) 
-#> Proportions of DLTs in the trials : mean 20 % (14 %, 29 %) 
-#> Mean toxicity risks for the patients on active : mean 18 % (8 %, 28 %) 
-#> Doses selected as MTD : mean 31.8 (20, 40.5) 
-#> True toxicity at doses selected : mean 21 % (8 %, 32 %) 
-#> Proportion of trials selecting target MTD: 35 %
-#> Dose most often selected as MTD: 30 
-#> Observed toxicity rate at dose most often selected: 19 %
-#> Fitted toxicity rate at dose most often selected : mean 25 % (15 %, 34 %) 
-#> Stop reason triggered:
-#>  ≥ 20 patients dosed :  100 %
-#>  Stopped because of missing dose :  0 %
-#> 
-#> Arm: mono_drug2 
-#> Summary of 20 simulations
-#> 
-#> Target toxicity interval was 20, 35 %
-#> Target dose interval corresponding to this was 43.6, NA 
-#> Intervals are corresponding to 10 and 90 % quantiles
-#> 
-#> Number of patients overall : mean 21 (21, 21) 
-#> Number of patients treated above target tox interval : mean 0 (0, 0) 
-#> Proportions of DLTs in the trials : mean 13 % (5 %, 20 %) 
-#> Mean toxicity risks for the patients on active : mean 15 % (7 %, 24 %) 
-#> Doses selected as MTD : mean 44.5 (34.5, 50) 
-#> True toxicity at doses selected : mean 22 % (13 %, 27 %) 
-#> Proportion of trials selecting target MTD: 75 %
-#> Dose most often selected as MTD: 50 
-#> Observed toxicity rate at dose most often selected: 15 %
-#> Fitted toxicity rate at dose most often selected : mean 23 % (8 %, 44 %) 
-#> Stop reason triggered:
-#>  ≥ 20 patients dosed :  100 %
-#>  Stopped because of missing dose :  0 %
-#> 
-#> Arm: combo 
-#> Summary of 20 combination simulations
-#> 
-#> Number of patients overall : mean 19 (19, 21) 
-#> Proportions of DLTs in the trials : mean 25 % (14 %, 33 %) 
-#> Mean toxicity risks from fitted surfaces : mean 50 % (28 %, 72 %) 
-#> Selected dose for drug 1: mean 18.2 (9, 30) 
-#> Selected dose for drug 2: mean 13 (9, 20.5) 
-#> Target toxicity interval was 20, 35 %
-#> True toxicity at selected combinations : mean 21 % (10 %, 33 %) 
-#> Proportion of trials selecting target combination: 40 %
-#> Most frequently selected combination: 20, 10 
-#> Observed toxicity rate at most selected combination: 23.3 %
-#> Stop reason triggered:
-#>  ≥ 20 patients dosed :  90 %
-```
+`truth_mono_drug1`` ``<-`` ``function``(``dose``)`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(``-``4`` ``+`` ``0.08`` ``*`` ``dose``)`` ``truth_mono_drug2`` ``<-`` ``function``(``dose``)`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(``-``4`` ``+`` ``0.06`` ``*`` ``dose``)`` ``truth_combo`` ``<-`` ``function``(``dose``)`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(``-``4`` ``+`` ``0.08`` ``*`` ``dose``[``1``]`` ``+`` ``0.06`` ``*`` ``dose``[``2``]`` ``+`` ``0.001`` ``*`` ``dose``[``1``]`` ``*`` ``dose``[``2``]``)`` `` ``hierarchical_sims`` ``<-`` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(`` `` ``hierarchical_design``,`` `` truth ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug1 ``=`` ``truth_mono_drug1``,`` `` mono_drug2 ``=`` ``truth_mono_drug2``,`` `` combo ``=`` ``truth_combo`` `` ``)``,`` `` truthResponse ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` ``# Just for demo purposes we choose the same functions for efficacy.`` `` mono_drug1 ``=`` ``truth_mono_drug1``,`` `` mono_drug2 ``=`` ``truth_mono_drug2``,`` `` combo ``=`` ``truth_combo`` `` ``)``,`` `` nsim ``=`` ``20``,`` `` seed ``=`` ``819``,`` `` mcmcOptions ``=`` ``mcmc_options``,`` `` parallel ``=`` ``FALSE`` ``)`` `` ``hierarchical_sims`` ``#> An object of class 'HierarchicalSimulations' containing 20 hierarchical simulated trials.`` ``#> Arms (3): mono_drug1, mono_drug2, combo`` ``#> Please use 'summary()' to obtain more information.`` `[`summary`](https://rdrr.io/r/base/summary.html)`(``hierarchical_sims``, truth ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug1 ``=`` ``truth_mono_drug1``,`` `` mono_drug2 ``=`` ``truth_mono_drug2``,`` `` combo ``=`` ``truth_combo`` ``)``)`` ``#> Summary of 20 hierarchical simulations`` ``#> `` ``#> Arm: mono_drug1 `` ``#> Summary of 20 simulations`` ``#> `` ``#> Target toxicity interval was 20, 35 %`` ``#> Target dose interval corresponding to this was 32.7, 42.3 `` ``#> Intervals are corresponding to 10 and 90 % quantiles`` ``#> `` ``#> Number of patients overall : mean 21 (21, 21) `` ``#> Number of patients treated above target tox interval : mean 3 (0, 9) `` ``#> Proportions of DLTs in the trials : mean 20 % (14 %, 29 %) `` ``#> Mean toxicity risks for the patients on active : mean 18 % (8 %, 28 %) `` ``#> Doses selected as MTD : mean 31.8 (20, 40.5) `` ``#> True toxicity at doses selected : mean 21 % (8 %, 32 %) `` ``#> Proportion of trials selecting target MTD: 35 %`` ``#> Dose most often selected as MTD: 30 `` ``#> Observed toxicity rate at dose most often selected: 19 %`` ``#> Fitted toxicity rate at dose most often selected : mean 25 % (15 %, 34 %) `` ``#> Stop reason triggered:`` ``#> ≥ 20 patients dosed : 100 %`` ``#> Stopped because of missing dose : 0 %`` ``#> `` ``#> Arm: mono_drug2 `` ``#> Summary of 20 simulations`` ``#> `` ``#> Target toxicity interval was 20, 35 %`` ``#> Target dose interval corresponding to this was 43.6, NA `` ``#> Intervals are corresponding to 10 and 90 % quantiles`` ``#> `` ``#> Number of patients overall : mean 21 (21, 21) `` ``#> Number of patients treated above target tox interval : mean 0 (0, 0) `` ``#> Proportions of DLTs in the trials : mean 13 % (5 %, 20 %) `` ``#> Mean toxicity risks for the patients on active : mean 15 % (7 %, 24 %) `` ``#> Doses selected as MTD : mean 44.5 (34.5, 50) `` ``#> True toxicity at doses selected : mean 22 % (13 %, 27 %) `` ``#> Proportion of trials selecting target MTD: 75 %`` ``#> Dose most often selected as MTD: 50 `` ``#> Observed toxicity rate at dose most often selected: 15 %`` ``#> Fitted toxicity rate at dose most often selected : mean 23 % (8 %, 44 %) `` ``#> Stop reason triggered:`` ``#> ≥ 20 patients dosed : 100 %`` ``#> Stopped because of missing dose : 0 %`` ``#> `` ``#> Arm: combo `` ``#> Summary of 20 combination simulations`` ``#> `` ``#> Number of patients overall : mean 19 (19, 21) `` ``#> Proportions of DLTs in the trials : mean 25 % (14 %, 33 %) `` ``#> Mean toxicity risks from fitted surfaces : mean 50 % (28 %, 72 %) `` ``#> Selected dose for drug 1: mean 18.2 (9, 30) `` ``#> Selected dose for drug 2: mean 13 (9, 20.5) `` ``#> Target toxicity interval was 20, 35 %`` ``#> True toxicity at selected combinations : mean 21 % (10 %, 33 %) `` ``#> Proportion of trials selecting target combination: 40 %`` ``#> Most frequently selected combination: 20, 10 `` ``#> Observed toxicity rate at most selected combination: 23.3 %`` ``#> Stop reason triggered:`` ``#> ≥ 20 patients dosed : 90 %`
 
 It is also possible to extract the arm specific simulations to produce
 separate plots etc.:
 
-``` r
-
-arm_mono_drug1_sims <- get_arm_simulations(hierarchical_sims, "mono_drug1")
-plot(arm_mono_drug1_sims)
-```
+`arm_mono_drug1_sims`` ``<-`` `[`get_arm_simulations`](https://docs.crmpack.org/reference/get_arm_simulations.md)`(``hierarchical_sims``, ``"mono_drug1"``)`` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``arm_mono_drug1_sims``)`
 
 ![plot of chunk
 unnamed-chunk-15](combo_designs-figures/unnamed-chunk-15-1.png)
@@ -770,39 +279,12 @@ and is not considered for enrollment or next-dose decisions. It can
 still be included in the exchangeable parameter pools, so its
 information contributes to the hierarchical model.
 
-``` r
-
-historical_data_mono_drug2 <- Data(
-  x = c(10, 10, 10, 20, 20, 20),
-  y = c(0, 0, 0, 0, 1, 0),
-  doseGrid = design_mono_drug2@data@doseGrid
-)
-
-design_arm_historical_mono_drug2 <- HistoricalArm(
-  name = "historical_mono_drug2",
-  data = historical_data_mono_drug2,
-  model = combo_model@single_models$drug2
-)
-```
+`historical_data_mono_drug2`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``10``, ``10``, ``10``, ``20``, ``20``, ``20``)``,`` `` y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``1``, ``0``)``,`` `` doseGrid ``=`` ``design_mono_drug2``@``data``@``doseGrid`` ``)`` `` ``design_arm_historical_mono_drug2`` ``<-`` `[`HistoricalArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"historical_mono_drug2"``,`` `` data ``=`` ``historical_data_mono_drug2``,`` `` model ``=`` ``combo_model``@``single_models``$``drug2`` ``)`
 
 The historical arm name is then used in `exchangeable_parameters` just
 like any other arm name:
 
-``` r
-
-historical_parameter_pools <- list(
-  drug2_intercept = list(
-    mono_drug2 = "alpha0",
-    combo = "alpha0[2]",
-    historical_mono_drug2 = "alpha0"
-  ),
-  drug2_slope = list(
-    mono_drug2 = "alpha1",
-    combo = "alpha1[2]",
-    historical_mono_drug2 = "alpha1"
-  )
-)
-```
+`historical_parameter_pools`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` drug2_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug2 ``=`` ``"alpha0"``,`` `` combo ``=`` ``"alpha0[2]"``,`` `` historical_mono_drug2 ``=`` ``"alpha0"`` `` ``)``,`` `` drug2_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mono_drug2 ``=`` ``"alpha1"``,`` `` combo ``=`` ``"alpha1[2]"``,`` `` historical_mono_drug2 ``=`` ``"alpha1"`` `` ``)`` ``)`
 
 Historical arms can also be combination arms by supplying a `DataCombo`
 object and a `TwoDrugsCombo` model.
@@ -815,17 +297,7 @@ can delay enrollment until an `ArmCondition` is satisfied. For example,
 the combination arm can be opened only after monotherapy with drug 1 has
 reached at least dose 20:
 
-``` r
-
-design_arm_combo_delayed <- DesignArm(
-  name = "combo",
-  design = design_combo,
-  open_when = ArmMinDoseCondition(
-    arm_name = "mono_drug1",
-    min_dose = 20
-  )
-)
-```
+`design_arm_combo_delayed`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"combo"``,`` `` design ``=`` ``design_combo``,`` `` open_when ``=`` `[`ArmMinDoseCondition`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)`(`` `` arm_name ``=`` ``"mono_drug1"``,`` `` min_dose ``=`` ``20`` `` ``)`` ``)`
 
 Other built-in conditions include
 [`ArmFinishedCondition()`](https://docs.crmpack.org/reference/ArmFinishedCondition-class.md),
@@ -834,22 +306,7 @@ which waits until another arm has stopped dose escalation, and
 the default immediate-opening condition. Conditions can be combined with
 `&` and `|` logic:
 
-``` r
-
-design_arm_combo_delayed <- DesignArm(
-  name = "combo",
-  design = design_combo,
-  open_when = ArmMinDoseCondition("mono_drug1", min_dose = 20) &
-    ArmMinDoseCondition("mono_drug2", min_dose = 20)
-)
-
-design_arm_combo_delayed <- DesignArm(
-  name = "combo",
-  design = design_combo,
-  open_when = ArmFinishedCondition("mono_drug1") |
-    ArmMinDoseCondition("mono_drug2", min_dose = 30)
-)
-```
+`design_arm_combo_delayed`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"combo"``,`` `` design ``=`` ``design_combo``,`` `` open_when ``=`` `[`ArmMinDoseCondition`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)`(``"mono_drug1"``, min_dose ``=`` ``20``)`` ``&`` `` `[`ArmMinDoseCondition`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)`(``"mono_drug2"``, min_dose ``=`` ``20``)`` ``)`` `` ``design_arm_combo_delayed`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"combo"``,`` `` design ``=`` ``design_combo``,`` `` open_when ``=`` `[`ArmFinishedCondition`](https://docs.crmpack.org/reference/ArmFinishedCondition-class.md)`(``"mono_drug1"``)`` ``|`` `` `[`ArmMinDoseCondition`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)`(``"mono_drug2"``, min_dose ``=`` ``30``)`` ``)`
 
 When an arm is not yet open,
 [`scenario()`](https://docs.crmpack.org/reference/scenario.md) and
@@ -866,14 +323,7 @@ is useful when an arm should contribute to the overall hierarchical
 model but its own dose recommendations should not borrow from the other
 arms.
 
-``` r
-
-design_arm_mono_drug1_no_borrow <- DesignArm(
-  name = "mono_drug1",
-  design = design_mono_drug1,
-  borrow = FALSE
-)
-```
+`design_arm_mono_drug1_no_borrow`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`` `` name ``=`` ``"mono_drug1"``,`` `` design ``=`` ``design_mono_drug1``,`` `` borrow ``=`` ``FALSE`` ``)`
 
 The `borrow` flag affects the samples used for the arm’s next-dose and
 stopping decisions. It does not remove the arm from the hierarchical
@@ -889,54 +339,7 @@ object with one data object per arm. This runs the model fit, summarizes
 the posterior, calculates each open active arm’s next dose, and
 evaluates stopping rules for the supplied data.
 
-``` r
-
-fixed_scenario <- HierarchicalData(
-  mono_drug1 = Data(
-    x = c(10, 10, 10, 20, 20, 20),
-    y = c(0, 0, 0, 0, 0, 1),
-    doseGrid = design_mono_drug1@data@doseGrid
-  ),
-  mono_drug2 = Data(
-    x = c(20, 20, 20),
-    y = c(0, 0, 1),
-    doseGrid = design_mono_drug2@data@doseGrid
-  ),
-  combo = DataCombo(
-    x = matrix(
-      c(
-        10, 10,
-        10, 10,
-        10, 10,
-        10, 20,
-        10, 20,
-        10, 20
-      ),
-      ncol = 2,
-      byrow = TRUE
-    ),
-    y = c(0, 0, 0, 0, 0, 1),
-    doseGrid = design_combo@data@doseGrid
-  )
-)
-
-scenario_result <- scenario(
-  object = hierarchical_design,
-  data = fixed_scenario,
-  mcmcOptions = McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 123)
-)
-
-scenario_result$next_dose
-#> $mono_drug1
-#> [1] 20
-#> 
-#> $mono_drug2
-#> [1] 15
-#> 
-#> $combo
-#> drug1 drug2 
-#>    10    15
-```
+`fixed_scenario`` ``<-`` `[`HierarchicalData`](https://docs.crmpack.org/reference/HierarchicalData-class.md)`(`` `` mono_drug1 ``=`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``10``, ``10``, ``10``, ``20``, ``20``, ``20``)``,`` `` y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``0``, ``1``)``,`` `` doseGrid ``=`` ``design_mono_drug1``@``data``@``doseGrid`` `` ``)``,`` `` mono_drug2 ``=`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``20``, ``20``, ``20``)``,`` `` y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``1``)``,`` `` doseGrid ``=`` ``design_mono_drug2``@``data``@``doseGrid`` `` ``)``,`` `` combo ``=`` `[`DataCombo`](https://docs.crmpack.org/reference/DataCombo-class.md)`(`` `` x ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`` `` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` ``10``, ``10``,`` `` ``10``, ``10``,`` `` ``10``, ``10``,`` `` ``10``, ``20``,`` `` ``10``, ``20``,`` `` ``10``, ``20`` `` ``)``,`` `` ncol ``=`` ``2``,`` `` byrow ``=`` ``TRUE`` `` ``)``,`` `` y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``0``, ``1``)``,`` `` doseGrid ``=`` ``design_combo``@``data``@``doseGrid`` `` ``)`` ``)`` `` ``scenario_result`` ``<-`` `[`scenario`](https://docs.crmpack.org/reference/scenario.md)`(`` `` object ``=`` ``hierarchical_design``,`` `` data ``=`` ``fixed_scenario``,`` `` mcmcOptions ``=`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(``rng_kind ``=`` ``"Mersenne-Twister"``, rng_seed ``=`` ``123``)`` ``)`` `` ``scenario_result``$``next_dose`` ``#> $mono_drug1`` ``#> [1] 20`` ``#> `` ``#> $mono_drug2`` ``#> [1] 15`` ``#> `` ``#> $combo`` ``#> drug1 drug2 `` ``#> 10 15`
 
 So here the next cohorts would open with dose 20 for the monotherapy arm
 of drug 1, dose 15 for the monotherapy arm of drug 2, and doses 10, 15
@@ -946,22 +349,7 @@ Additional information is available, e.g. we can see the fitted values
 etc. Always one list element contains the arm specific information in a
 list:
 
-``` r
-
-str(scenario_result, 1)
-#> List of 11
-#>  $ data               :Formal class 'HierarchicalData' [package "crmPack"] with 1 slot
-#>  $ samples            :Formal class 'HierarchicalSamples' [package "crmPack"] with 3 slots
-#>  $ fit                :List of 3
-#>  $ dose_limit         :List of 3
-#>  $ next_best          :List of 3
-#>  $ next_dose          :List of 3
-#>  $ cohort_size        :List of 3
-#>  $ placebo_cohort_size:List of 3
-#>  $ stop               :List of 3
-#>  $ stop_report        :List of 3
-#>  $ stop_reason        :List of 3
-```
+[`str`](https://rdrr.io/r/utils/str.html)`(``scenario_result``, ``1``)`` ``#> List of 11`` ``#> $ data :Formal class 'HierarchicalData' [package "crmPack"] with 1 slot`` ``#> $ samples :Formal class 'HierarchicalSamples' [package "crmPack"] with 3 slots`` ``#> $ fit :List of 3`` ``#> $ dose_limit :List of 3`` ``#> $ next_best :List of 3`` ``#> $ next_dose :List of 3`` ``#> $ cohort_size :List of 3`` ``#> $ placebo_cohort_size:List of 3`` ``#> $ stop :List of 3`` ``#> $ stop_report :List of 3`` ``#> $ stop_reason :List of 3`
 
 ## References
 

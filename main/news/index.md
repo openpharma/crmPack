@@ -8,6 +8,10 @@
   current next best dose has been administered to a prespecified number
   of consecutive cohorts.
 
+- Additional plotting options for `nextBest` methods for NCRM are
+  available, including log dose scale, lollipop layer instead of bars,
+  and using the dose grid instead of regularly spaced axis ticks.
+
 #### Enhancements
 
 - `HierarchicalModel` now compiles exchangeable normal priors in
@@ -24,6 +28,16 @@
   its own interaction parameter while sharing hyperparameters, and
   singleton interaction pools are supported so that the same
   hierarchical marginal prior can be used with one combination arm.
+
+#### Miscellaneous
+
+- Simulation trajectory plots now use blue shaded ribbons to show
+  min/max as well as lower/upper quartile ranges, in addition to the
+  median line. This makes the plots better readable.
+
+- The dependency `ggplot2` package now needs to have minimum version
+  3.2.0 instead of previously 3.0.0. This should not be a practical
+  restriction because version 3.2.0 was already released in 2019.
 
 ## Version 2.2.1
 
@@ -457,9 +471,9 @@ CRAN release: 2015-11-12
 - Bugfix: The MinimalInformative function previously produced too
   uninformative prior quantiles, which were not fulfilling the
   requirements in the function’s documentation. With this bugfix, the
-  correct (as per the Neuenschwander et al
-  2008. publication) prior quantiles are specified and then approximated
-        with logistic (log) normal priors.
+  correct (as per the Neuenschwander et al (2008) publication) prior
+  quantiles are specified and then approximated with logistic (log)
+  normal priors.
 
 ## Version 0.1.1
 

@@ -57,28 +57,28 @@ Design(
 
   `nextBest`
 
-  :   (`NextBest`)\
-      see slot definition.
+  : (`NextBest`)\
+    see slot definition.
 
   `cohort_size`
 
-  :   (`CohortSize`)\
-      see slot definition.
+  : (`CohortSize`)\
+    see slot definition.
 
   `data`
 
-  :   (`Data`)\
-      see slot definition.
+  : (`Data`)\
+    see slot definition.
 
   `startingDose`
 
-  :   (`number`)\
-      see slot definition.
+  : (`number`)\
+    see slot definition.
 
   `doseGrid`
 
-  :   (`numeric`)\
-      the dose grid to be used (sorted).
+  : (`numeric`)\
+    the dose grid to be used (sorted).
 
 ## Slots
 

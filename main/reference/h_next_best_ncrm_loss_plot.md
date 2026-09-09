@@ -17,7 +17,11 @@ h_next_best_ncrm_loss_plot(
   max_eligible_dose_level,
   doselimit,
   next_dose,
-  is_unacceptable_specified
+  is_unacceptable_specified,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
 )
 ```
 
@@ -67,3 +71,27 @@ h_next_best_ncrm_loss_plot(
 
   (`flag`)\
   is unacceptable interval specified?
+
+- prob_plot_type:
+
+  (`string`)\
+  probability geometry, either `"lollipop"` or `"bar"`.
+
+- dose_scale:
+
+  (`string`)\
+  dose-axis scale, either `"linear"` or `"log"`. The log scale requires
+  all doses to be strictly positive.
+
+- axis_ticks:
+
+  (`string`)\
+  x-axis tick positions, either at each dose-grid value (`"dosegrid"`,
+  the default) or at regular positions selected by `ggplot2`
+  (`"regular"`).
+
+- axis_text_angle:
+
+  (`number`)\
+  rotation angle for x-axis tick labels. Defaults to 45 degrees for
+  `axis_ticks = "dosegrid"` and 0 degrees for `axis_ticks = "regular"`.

@@ -258,10 +258,7 @@ extending the `crmPack` functionality.
 Before we start, we have to install and subsequently load our package in
 `R`:
 
-``` r
-
-library("crmPack")
-```
+[`library`](https://rdrr.io/r/base/library.html)`(`[`"crmPack"`](https://docs.crmpack.org/)`)`
 
 > As indicated in the startup message, try
 > [`crmPackHelp()`](https://docs.crmpack.org/reference/crmPackHelp.md)
@@ -289,16 +286,7 @@ setting of a seed is required for reproducibility. Furthermore, it is
 recommended to specify a coarse dose grid across the original dose range
 (excluding the placebo dose) to avoid long computation time:
 
-``` r
-
-coarseGrid <- c(25, 50, 100, 200, 300)
-model <- MinimalInformative(
-  dosegrid = coarseGrid, refDose = 100,
-  logNormal = TRUE, threshmin = 0.1,
-  threshmax = 0.2, seed = 432,
-  control = list(max.time = 30)
-)$model
-```
+`coarseGrid`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``25``, ``50``, ``100``, ``200``, ``300``)`` ``model`` ``<-`` `[`MinimalInformative`](https://docs.crmpack.org/reference/MinimalInformative.md)`(`` `` dosegrid ``=`` ``coarseGrid``, refDose ``=`` ``100``,`` `` logNormal ``=`` ``TRUE``, threshmin ``=`` ``0.1``,`` `` threshmax ``=`` ``0.2``, seed ``=`` ``432``,`` `` control ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``max.time ``=`` ``30``)`` ``)``$``model`
 
 The resulting `model` (which is an object of class `LogisticLogNormal`)
 has prior parameters
@@ -326,18 +314,7 @@ univariate dose $`x`$ resulting in binary DLT observations $`y`$, the
 calling the accompanying initialization function of the same name (which
 is a general convention in `crmPack`):
 
-``` r
-
-PL <- 0.001
-data <- Data(
-  x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
-  y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
-  cohort = c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
-  doseGrid = c(PL, seq(25, 300, 25)),
-  ID = 1:12,
-  placebo = TRUE
-)
-```
+`PL`` ``<-`` ``0.001`` ``data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``PL``, ``25``, ``25``, ``25``, ``PL``, ``50``, ``50``, ``50``, ``PL``, ``100``, ``100``, ``100``)``,`` `` y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``0``, ``0``, ``0``, ``0``, ``0``, ``0``, ``1``, ``0``)``,`` `` cohort ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``1``, ``1``, ``1``, ``2``, ``2``, ``2``, ``2``, ``3``, ``3``, ``3``, ``3``)``,`` `` doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``PL``, `[`seq`](https://rdrr.io/r/base/seq.html)`(``25``, ``300``, ``25``)``)``,`` `` ID ``=`` ``1``:``12``,`` `` placebo ``=`` ``TRUE`` ``)`
 
 The argument `x` takes the doses
 $`x_{1}=0.001, x_{2}=25, x_{3} = 50, x_{4} = 100`$ (note the repetition
@@ -354,10 +331,7 @@ the `plot` function to the object, which also allows to produce a
 blinded plot (hiding patient IDs and placebo/treatment assignment) with
 the option `blind`, see Figure @ref(fig:plot-data):
 
-``` r
-
-plot(data)
-```
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``data``)`
 
 ![An unblinded graph with patient id on the x axis and dose administered
 on the y axis. Red triangles indicate patients who reported DLTs, black
@@ -367,10 +341,7 @@ cohorts.](jss-figures/plot-data-1.png)
 
 Open and blinded data plots
 
-``` r
-
-plot(data, blind = TRUE)
-```
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``data``, blind ``=`` ``TRUE``)`
 
 ![A blinded graph with patient id on the x axis and dose administered on
 the y axis. Red triangles indicate reports of DLTs, black circles
@@ -389,12 +360,7 @@ be controlled with an object of class `McmcOptions`, which is then
 provided to the `mcmc` function, together with the `data` and the
 `model` objects:
 
-``` r
-
-options <- McmcOptions(burnin = 1000, step = 2, samples = 10000, rng_kind = "Mersenne-Twister", rng_seed = 3819)
-set.seed(94)
-samples <- mcmc(data, model, options)
-```
+`options`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(``burnin ``=`` ``1000``, step ``=`` ``2``, samples ``=`` ``10000``, rng_kind ``=`` ``"Mersenne-Twister"``, rng_seed ``=`` ``3819``)`` `[`set.seed`](https://rdrr.io/r/base/Random.html)`(``94``)`` ``samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``data``, ``model``, ``options``)`
 
 The posterior mean curve and 95% equi-tailed credible interval curves
 for the DLT rates can be obtained by supplying the samples, model and
@@ -402,14 +368,7 @@ data to the generic `plot` function. Similarly we can also produce a
 similar plot without any data, which is then giving the prior, see
 Figure @ref(fig:plot-model-fit):
 
-``` r
-
-plot(samples, model, data) + ggtitle("Posterior")
-
-emptydata <- Data(doseGrid = data@doseGrid, placebo = TRUE)
-priorsamples <- mcmc(emptydata, model, options)
-plot(priorsamples, model, emptydata) + ggtitle("Prior")
-```
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``samples``, ``model``, ``data``)`` ``+`` ``ggtitle``(``"Posterior"``)`` `` ``emptydata`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` ``data``@``doseGrid``, placebo ``=`` ``TRUE``)`` ``priorsamples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``emptydata``, ``model``, ``options``)`` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``priorsamples``, ``model``, ``emptydata``)`` ``+`` ``ggtitle``(``"Prior"``)`
 
 ![Prior and posterior dose-toxicity
 curves.](jss-figures/plot-model-fit-1.png)![Prior and posterior
@@ -431,23 +390,13 @@ increase of 100% for doses below 100 mg, 50% for doses in the range from
 100 mg to 200 mg, and 33% for doses equal or above 200 mg is specified
 using the class `IncrementsRelative`:
 
-``` r
-
-myIncrements <- IncrementsRelative(
-  intervals = c(0, 100, 200),
-  increments = c(1, 0.5, 0.33)
-)
-```
+`myIncrements`` ``<-`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``100``, ``200``)``,`` `` increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``0.5``, ``0.33``)`` ``)`
 
 This specific rule $`\tau`$ can then be evaluated on the current dataset
 \${\cal D}\_{N}\$ by the `maxDose` function to obtain the maximum next
 dose \$t\_{N+1} = \tau({\cal D}\_{N})\$:
 
-``` r
-
-(nextMaxDose <- maxDose(myIncrements, data))
-#> [1] 150
-```
+`(``nextMaxDose`` ``<-`` `[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``myIncrements``, ``data``)``)`` ``#> [1] 150`
 
 We then define the function $`\nu`$ for selecting a dose for the next
 cohort. In this case we would like to select the dose which maximizes
@@ -455,23 +404,12 @@ the probability of the DLT rate being in the target toxicity range from
 20% to 35%, but with the probability of overdosing not exceeding 25%
 (Neuenschwander et al. 2008), using the `NextBestNCRM` class:
 
-``` r
-
-myNextBest <- NextBestNCRM(
-  target = c(0.2, 0.35), overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
-)
-```
+`myNextBest`` ``<-`` `[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``, overdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.35``, ``1``)``,`` `` max_overdose_prob ``=`` ``0.25`` ``)`
 
 This rule can then be evaluated with the function `NextBest` to obtain
 the next dose \$x\_{N+1}=\nu({\cal D}\_{N}, t\_{N+1})\$:
 
-``` r
-
-nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
-(nextDoseVal <- nextDoseRes$value)
-#> [1] 100
-```
+`nextDoseRes`` ``<-`` `[`nextBest`](https://docs.crmpack.org/reference/nextBest.md)`(``myNextBest``, ``nextMaxDose``, ``samples``, ``model``, ``data``)`` ``(``nextDoseVal`` ``<-`` ``nextDoseRes``$``value``)`` ``#> [1] 100`
 
 The returned list also contains an accompanying plot
 (`nextDoseRes$plot`), see Figure @ref(fig:nextBest-ncrm).
@@ -491,71 +429,12 @@ range is above 50%, and at least 9 patients were already dosed within
 is constructed by combining the atomic rules with logical operators as
 follows:
 
-``` r
-
-myStopping1 <- StoppingMinPatients(nPatients = 30)
-myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
-myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 20)
-myStopping <- myStopping1 | (myStopping2 & myStopping3)
-```
+`myStopping1`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``30``)`` ``myStopping2`` ``<-`` `[`StoppingTargetProb`](https://docs.crmpack.org/reference/StoppingTargetProb-class.md)`(``target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``, prob ``=`` ``0.5``)`` ``myStopping3`` ``<-`` `[`StoppingPatientsNearDose`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md)`(``nPatients ``=`` ``9``, percentage ``=`` ``20``)`` ``myStopping`` ``<-`` ``myStopping1`` ``|`` ``(``myStopping2`` ``&`` ``myStopping3``)`
 
 Again, this specific rule can be evaluated by a function, here called
 `stopTrial`, for a specific situation:
 
-``` r
-
-stopTrial(myStopping, nextDoseVal, samples, model, data)
-#> [1] FALSE
-#> attr(,"message")
-#> attr(,"message")[[1]]
-#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
-#> 
-#> attr(,"message")[[2]]
-#> attr(,"message")[[2]][[1]]
-#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
-#> 
-#> attr(,"message")[[2]][[2]]
-#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-#> 
-#> 
-#> attr(,"individual")
-#> attr(,"individual")[[1]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"
-#> attr(,"report_label")
-#> [1] "≥ 30 patients dosed"
-#> 
-#> attr(,"individual")[[2]]
-#> [1] FALSE
-#> attr(,"message")
-#> attr(,"message")[[1]]
-#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
-#> 
-#> attr(,"message")[[2]]
-#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-#> 
-#> attr(,"individual")
-#> attr(,"individual")[[1]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"
-#> attr(,"report_label")
-#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
-#> 
-#> attr(,"individual")[[2]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"
-#> attr(,"report_label")
-#> [1] "≥ 9 patients dosed in 20 % dose range around NBD"
-#> 
-#> attr(,"report_label")
-#> [1] NA
-#> 
-#> attr(,"report_label")
-#> [1] NA
-```
+[`stopTrial`](https://docs.crmpack.org/reference/stopTrial.md)`(``myStopping``, ``nextDoseVal``, ``samples``, ``model``, ``data``)`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> attr(,"message")[[1]]`` ``#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"`` ``#> `` ``#> attr(,"message")[[2]]`` ``#> attr(,"message")[[2]][[1]]`` ``#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"`` ``#> `` ``#> attr(,"message")[[2]][[2]]`` ``#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"`` ``#> `` ``#> `` ``#> attr(,"individual")`` ``#> attr(,"individual")[[1]]`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> [1] "Number of patients is 12 and thus below the prespecified minimum number 30"`` ``#> attr(,"report_label")`` ``#> [1] "≥ 30 patients dosed"`` ``#> `` ``#> attr(,"individual")[[2]]`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> attr(,"message")[[1]]`` ``#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"`` ``#> `` ``#> attr(,"message")[[2]]`` ``#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"`` ``#> `` ``#> attr(,"individual")`` ``#> attr(,"individual")[[1]]`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"`` ``#> attr(,"report_label")`` ``#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"`` ``#> `` ``#> attr(,"individual")[[2]]`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"`` ``#> attr(,"report_label")`` ``#> [1] "≥ 9 patients dosed in 20 % dose range around NBD"`` ``#> `` ``#> attr(,"report_label")`` ``#> [1] NA`` ``#> `` ``#> attr(,"report_label")`` ``#> [1] NA`
 
 The result `FALSE` means that we cannot yet stop the trial, with the
 attribute `message` giving the results from the atomic stopping rules.
@@ -570,18 +449,7 @@ dose (see also Figure @ref(fig:schematic). In this case we will use a
 fixed cohort size of 3 patients on active and 1 patient on placebo
 (\`\`3+1’’) throughout the study:
 
-``` r
-
-mySize <- CohortSizeConst(3)
-mySizePL <- CohortSizeConst(1)
-
-design <- Design(
-  model = model, nextBest = myNextBest,
-  stopping = myStopping, increments = myIncrements,
-  cohort_size = mySize, pl_cohort_size = mySizePL,
-  data = emptydata, startingDose = 25
-)
-```
+`mySize`` ``<-`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3``)`` ``mySizePL`` ``<-`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``1``)`` `` ``design`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``model``, nextBest ``=`` ``myNextBest``,`` `` stopping ``=`` ``myStopping``, increments ``=`` ``myIncrements``,`` `` cohort_size ``=`` ``mySize``, pl_cohort_size ``=`` ``mySizePL``,`` `` data ``=`` ``emptydata``, startingDose ``=`` ``25`` ``)`
 
 We can then start by looking at the single trial operating
 characteristics of the dose escalation design with the function
@@ -597,36 +465,7 @@ dose can be reached in the next cohort if also no DLTs are observed at
 250 mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as
 275, 200 and 150 mg, respectively.
 
-``` r
-
-set.seed(23)
-examine(design, mcmcOptions = options)
-#>    dose DLTs nextDose  stop increment
-#> 1    25    0       50 FALSE       100
-#> 2    25    1       50 FALSE       100
-#> 3    25    2       25 FALSE         0
-#> 4    25    3       25 FALSE         0
-#> 5    50    0      100 FALSE       100
-#> 6    50    1       50 FALSE         0
-#> 7    50    2       50 FALSE         0
-#> 8    50    3       25 FALSE       -50
-#> 9   100    0      150 FALSE        50
-#> 10  100    1      100 FALSE         0
-#> 11  100    2       75 FALSE       -25
-#> 12  100    3       50 FALSE       -50
-#> 13  150    0      200 FALSE        33
-#> 14  150    1      150 FALSE         0
-#> 15  150    2      100 FALSE       -33
-#> 16  150    3       75 FALSE       -50
-#> 17  200    0      250 FALSE        25
-#> 18  200    1      200 FALSE         0
-#> 19  200    2      150 FALSE       -25
-#> 20  200    3      125 FALSE       -38
-#> 21  250    0      300 FALSE        20
-#> 22  250    1      275 FALSE        10
-#> 23  250    2      200 FALSE       -20
-#> 24  250    3      150 FALSE       -40
-```
+[`set.seed`](https://rdrr.io/r/base/Random.html)`(``23``)`` `[`examine`](https://docs.crmpack.org/reference/examine.md)`(``design``, mcmcOptions ``=`` ``options``)`` ``#> dose DLTs nextDose stop increment`` ``#> 1 25 0 50 FALSE 100`` ``#> 2 25 1 50 FALSE 100`` ``#> 3 25 2 25 FALSE 0`` ``#> 4 25 3 25 FALSE 0`` ``#> 5 50 0 100 FALSE 100`` ``#> 6 50 1 50 FALSE 0`` ``#> 7 50 2 50 FALSE 0`` ``#> 8 50 3 25 FALSE -50`` ``#> 9 100 0 150 FALSE 50`` ``#> 10 100 1 100 FALSE 0`` ``#> 11 100 2 75 FALSE -25`` ``#> 12 100 3 50 FALSE -50`` ``#> 13 150 0 200 FALSE 33`` ``#> 14 150 1 150 FALSE 0`` ``#> 15 150 2 100 FALSE -33`` ``#> 16 150 3 75 FALSE -50`` ``#> 17 200 0 250 FALSE 25`` ``#> 18 200 1 200 FALSE 0`` ``#> 19 200 2 150 FALSE -25`` ``#> 20 200 3 125 FALSE -38`` ``#> 21 250 0 300 FALSE 20`` ``#> 22 250 1 275 FALSE 10`` ``#> 23 250 2 200 FALSE -20`` ``#> 24 250 3 150 FALSE -40`
 
 **Simulating operating characteristics** For the many trials operating
 characteristics, we first have to define true scenarios, from which the
@@ -635,10 +474,7 @@ computes the probability of DLT given a dose. As an example we use here
 the function contained in the slot `prob` of the object `model`: %, for
 which the dose-toxicity curve is shown below.
 
-``` r
-
-myTruth <- probFunction(model, alpha0 = 4.5, alpha1 = 8)
-```
+`myTruth`` ``<-`` `[`probFunction`](https://docs.crmpack.org/reference/probFunction.md)`(``model``, alpha0 ``=`` ``4.5``, alpha1 ``=`` ``8``)`
 
 Note that any possible R-function returning a vector of probabilities
 upon input of the dose vector can be used. In particular, it is
@@ -648,26 +484,11 @@ statistical model. For example, assume 5 doses 1–5 with probabilities of
 DLT of 0.01, 0.02, 0.04, 0.06, 0.09, then the following code could be
 used:
 
-``` r
-
-doseProbMatrix <- cbind(c(1, 2, 3, 4, 5), c(0.01, 0.02, 0.04, 0.06, 0.09))
-myTruthMatrix <-
-  function(dose) {
-    doseProbMatrix[match(dose, doseProbMatrix[, 1]), 2]
-  }
-```
+`doseProbMatrix`` ``<-`` `[`cbind`](https://rdrr.io/r/base/cbind.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``2``, ``3``, ``4``, ``5``)``, `[`c`](https://rdrr.io/r/base/c.html)`(``0.01``, ``0.02``, ``0.04``, ``0.06``, ``0.09``)``)`` ``myTruthMatrix`` ``<-`` `` ``function``(``dose``)`` ``{`` `` ``doseProbMatrix``[`[`match`](https://rdrr.io/r/base/match.html)`(``dose``, ``doseProbMatrix``[``, ``1``]``)``, ``2``]`` `` ``}`
 
 Now we can proceed to the simulations using the function `simulate`:
 
-``` r
-
-mySimsTime <-
-  system.time(mySims <- simulate(design,
-    truth = myTruth, nsim = 100,
-    seed = 819, mcmcOptions = options,
-    parallel = FALSE
-  ))[3]
-```
+`mySimsTime`` ``<-`` `` `[`system.time`](https://rdrr.io/r/base/system.time.html)`(``mySims`` ``<-`` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(``design``,`` `` truth ``=`` ``myTruth``, nsim ``=`` ``100``,`` `` seed ``=`` ``819``, mcmcOptions ``=`` ``options``,`` `` parallel ``=`` ``FALSE`` `` ``)``)``[``3``]`
 
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
@@ -682,13 +503,7 @@ the final MTD and the stopping reason for each trial. We can e.g.,
 investigate the number of patients and the MTD at the end of the third
 simulated trial:
 
-``` r
-
-mySims@data[[3]]@nObs
-#> [1] 24
-mySims@doses[3]
-#> [1] 50
-```
+`mySims``@``data``[[``3``]``]``@``nObs`` ``#> [1] 24`` ``mySims``@``doses``[``3``]`` ``#> [1] 50`
 
 Furthermore, we can plot the `Simulations` object by calling the `plot`
 method on it, see Figure @ref(fig:sim-plot). You can select the plots by
@@ -703,34 +518,7 @@ Simulation plot
 Second, we can summarize the simulation results, and obtain a textual
 description of the results:
 
-``` r
-
-simSum <- summary(mySims, truth = myTruth)
-simSum
-#> Summary of 100 simulations
-#> 
-#> Target toxicity interval was 20, 35 %
-#> Target dose interval corresponding to this was 47.9, 52.7 
-#> Intervals are corresponding to 10 and 90 % quantiles
-#> 
-#> Number of patients on placebo : mean 7 (6, 8) 
-#> Number of patients on active : mean 21 (18, 24) 
-#> Number of patients overall : mean 29 (24, 32) 
-#> Number of patients treated above target tox interval : mean 2 (0, 3) 
-#> Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) 
-#> Proportions of DLTs in the trials for patients on active : mean 27 % (17 %, 33 %) 
-#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 34 %) 
-#> Doses selected as MTD : mean 49.5 (50, 50) 
-#> True toxicity at doses selected : mean 27 % (26 %, 26 %) 
-#> Proportion of trials selecting target MTD: 92 %
-#> Dose most often selected as MTD: 50 
-#> Observed toxicity rate at dose most often selected: 25 %
-#> Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 28 %) 
-#> Stop reason triggered:
-#>  ≥ 30 patients dosed :  54 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  62 %
-#>  ≥ 9 patients dosed in 20 % dose range around NBD :  93 %
-```
+`simSum`` ``<-`` `[`summary`](https://rdrr.io/r/base/summary.html)`(``mySims``, truth ``=`` ``myTruth``)`` ``simSum`` ``#> Summary of 100 simulations`` ``#> `` ``#> Target toxicity interval was 20, 35 %`` ``#> Target dose interval corresponding to this was 47.9, 52.7 `` ``#> Intervals are corresponding to 10 and 90 % quantiles`` ``#> `` ``#> Number of patients on placebo : mean 7 (6, 8) `` ``#> Number of patients on active : mean 21 (18, 24) `` ``#> Number of patients overall : mean 29 (24, 32) `` ``#> Number of patients treated above target tox interval : mean 2 (0, 3) `` ``#> Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) `` ``#> Proportions of DLTs in the trials for patients on active : mean 27 % (17 %, 33 %) `` ``#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 34 %) `` ``#> Doses selected as MTD : mean 49.5 (50, 50) `` ``#> True toxicity at doses selected : mean 27 % (26 %, 26 %) `` ``#> Proportion of trials selecting target MTD: 92 %`` ``#> Dose most often selected as MTD: 50 `` ``#> Observed toxicity rate at dose most often selected: 25 %`` ``#> Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 28 %) `` ``#> Stop reason triggered:`` ``#> ≥ 30 patients dosed : 54 %`` ``#> P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 : 62 %`` ``#> ≥ 9 patients dosed in 20 % dose range around NBD : 93 %`
 
 A plot of the summary results can also be produced, see Figure
 @ref(fig:sim-summary-plot).
@@ -748,17 +536,7 @@ introduced. Dual endpoint datasets are implemented with the `DualData`
 class, where here we illustrate the addition of the efficacy data `w` to
 the previous dataset:
 
-``` r
-
-data2 <- DataDual(
-  x = data@x, y = data@y, placebo = TRUE,
-  w = c(
-    0.02, 0.42, 0.59, 0.45, 0.03, 0.7, 0.6, 0.52,
-    0.01, 0.71, 0.54, 0.45
-  ), cohort = data@cohort,
-  doseGrid = data@doseGrid, ID = data@ID
-)
-```
+`data2`` ``<-`` `[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)`(`` `` x ``=`` ``data``@``x``, y ``=`` ``data``@``y``, placebo ``=`` ``TRUE``,`` `` w ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` ``0.02``, ``0.42``, ``0.59``, ``0.45``, ``0.03``, ``0.7``, ``0.6``, ``0.52``,`` `` ``0.01``, ``0.71``, ``0.54``, ``0.45`` `` ``)``, cohort ``=`` ``data``@``cohort``,`` `` doseGrid ``=`` ``data``@``doseGrid``, ID ``=`` ``data``@``ID`` ``)`
 
 The endpoints can be modelled jointly or separately. For joint modelling
 derived from (Bekele and Shen 2005), please see the package vignette and
@@ -801,24 +579,11 @@ these two dose levels, respectively. This corresponds to prior means of
 0.35 and 0.6 for the DLT probabilities. We implement model @ with this
 pseudo data prior as follows:
 
-``` r
-
-DLTmodel <- LogisticIndepBeta(
-  binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
-  DLEdose = c(25, 300), data = emptydata
-)
-```
+`DLTmodel`` ``<-`` `[`LogisticIndepBeta`](https://docs.crmpack.org/reference/LogisticIndepBeta-class.md)`(`` `` binDLE ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1.05``, ``1.8``)``, DLEweights ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``3``, ``3``)``,`` `` DLEdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``25``, ``300``)``, data ``=`` ``emptydata`` ``)`
 
 The efficacy model can similarly be specified as
 
-``` r
-
-emptydata2 <- DataDual(doseGrid = emptydata@doseGrid, placebo = TRUE)
-Effmodel <- Effloglog(
-  eff = c(1.223, 2.513), eff_dose = c(25, 300),
-  nu = c(a = 1, b = 0.025), data = emptydata2, c = 2
-)
-```
+`emptydata2`` ``<-`` `[`DataDual`](https://docs.crmpack.org/reference/DataDual-class.md)`(``doseGrid ``=`` ``emptydata``@``doseGrid``, placebo ``=`` ``TRUE``)`` ``Effmodel`` ``<-`` `[`Effloglog`](https://docs.crmpack.org/reference/Effloglog-class.md)`(`` `` eff ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1.223``, ``2.513``)``, eff_dose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``25``, ``300``)``,`` `` nu ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``a ``=`` ``1``, b ``=`` ``0.025``)``, data ``=`` ``emptydata2``, c ``=`` ``2`` ``)`
 
 Here the argument `Eff` takes the vector of pseudo efficacy responses at
 the two fixed dose levels, assuming one subject is treated at each of
@@ -843,22 +608,12 @@ $`\theta`$ and the efficacy parameters $`\gamma`$ and $`\delta`$, which
 will be estimated by their posterior modal estimates using the `update`
 method:
 
-``` r
-
-newDLTmodel <- update(object = DLTmodel, data = data2)
-newEffmodel <- update(object = Effmodel, data = data2)
-```
+`newDLTmodel`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``object ``=`` ``DLTmodel``, data ``=`` ``data2``)`` ``newEffmodel`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``object ``=`` ``Effmodel``, data ``=`` ``data2``)`
 
 With `crmPack` we can implement the next best dose recommendation based
 on maximizing the gain function as follows:
 
-``` r
-
-GainNextBest <- NextBestMaxGain(
-  prob_target_drt = 0.35,
-  prob_target_eot = 0.3
-)
-```
+`GainNextBest`` ``<-`` `[`NextBestMaxGain`](https://docs.crmpack.org/reference/NextBestMaxGain-class.md)`(`` `` prob_target_drt ``=`` ``0.35``,`` `` prob_target_eot ``=`` ``0.3`` ``)`
 
 where `prob_target_drt` specifies the maximum estimated DLT rate
 tolerated during the study and `prob_target_eot` the maximum estimated
@@ -867,18 +622,7 @@ trial](#implementing-a-crm-trial) this rule $`\nu`$ can be evaluated
 using `NextBest` to obtain $`x_{N+1}`$, after evaluating the maximum
 increments rule $`\tau`$ using `maxDose` to obtain $`t_{N+1}`$:
 
-``` r
-
-(nextMaxDose <- maxDose(myIncrements, data2))
-#> [1] 150
-doseRecGain <- nextBest(GainNextBest,
-  doselimit = nextMaxDose,
-  model = newDLTmodel, model_eff = newEffmodel,
-  data = data2
-)
-(nextDoseVal <- doseRecGain$next_dose)
-#> [1] 25
-```
+`(``nextMaxDose`` ``<-`` `[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``myIncrements``, ``data2``)``)`` ``#> [1] 150`` ``doseRecGain`` ``<-`` `[`nextBest`](https://docs.crmpack.org/reference/nextBest.md)`(``GainNextBest``,`` `` doselimit ``=`` ``nextMaxDose``,`` `` model ``=`` ``newDLTmodel``, model_eff ``=`` ``newEffmodel``,`` `` data ``=`` ``data2`` ``)`` ``(``nextDoseVal`` ``<-`` ``doseRecGain``$``next_dose``)`` ``#> [1] 25`
 
 The plot for the next dose allocation is contained in `doseRecGain$plot`
 and shown in Figure @ref(fig:doseRecommendation). \begin{figure}
@@ -903,14 +647,7 @@ list.
 maximum number of patients in our trial, we can use another one relating
 to the precision of the dose with optimum gain:
 
-``` r
-
-myStopping4 <- StoppingMaxGainCIRatio(
-  target_ratio = 5,
-  prob_target = GainNextBest@prob_target_eot
-)
-myStoppingDual <- myStopping1 | myStopping4
-```
+`myStopping4`` ``<-`` `[`StoppingMaxGainCIRatio`](https://docs.crmpack.org/reference/StoppingMaxGainCIRatio-class.md)`(`` `` target_ratio ``=`` ``5``,`` `` prob_target ``=`` ``GainNextBest``@``prob_target_eot`` ``)`` ``myStoppingDual`` ``<-`` ``myStopping1`` ``|`` ``myStopping4`
 
 This stops the trial when 30 patients are reached, or when the ratio of
 the upper and lower confidence interval bounds around the dose
@@ -919,42 +656,19 @@ recommendation is less than 5.
 **Simulations** To simulate the operating characteristics, first a
 design has to be built:
 
-``` r
-
-design2 <- DualResponsesDesign(
-  nextBest = GainNextBest, model = DLTmodel,
-  eff_model = Effmodel, data = emptydata2,
-  stopping = myStoppingDual,
-  increments = myIncrements,
-  cohort_size = mySize, startingDose = 25
-)
-```
+`design2`` ``<-`` `[`DualResponsesDesign`](https://docs.crmpack.org/reference/DualResponsesDesign-class.md)`(`` `` nextBest ``=`` ``GainNextBest``, model ``=`` ``DLTmodel``,`` `` eff_model ``=`` ``Effmodel``, data ``=`` ``emptydata2``,`` `` stopping ``=`` ``myStoppingDual``,`` `` increments ``=`` ``myIncrements``,`` `` cohort_size ``=`` ``mySize``, startingDose ``=`` ``25`` ``)`
 
 Note that an additional slot for the efficacy model is included in this
 design class. We can then specify the scenario for the simulation, by
 defining the true DLT and efficacy curves that we will be using:
 
-``` r
-
-myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
-myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
-myTruthGain <- function(dose) {
-  myTruthEff(dose) * (1 - myTruthDLT(dose))
-}
-```
+`myTruthDLT`` ``<-`` `[`probFunction`](https://docs.crmpack.org/reference/probFunction.md)`(``DLTmodel``, phi1 ``=`` ``-``53``, phi2 ``=`` ``10``)`` ``myTruthEff`` ``<-`` `[`efficacyFunction`](https://docs.crmpack.org/reference/efficacyFunction.md)`(``Effmodel``, theta1 ``=`` ``-``4.8``, theta2 ``=`` ``3.7``)`` ``myTruthGain`` ``<-`` ``function``(``dose``)`` ``{`` `` ``myTruthEff``(``dose``)`` ``*`` ``(``1`` ``-`` ``myTruthDLT``(``dose``)``)`` ``}`
 
 Please note that the parameter names `phi1`, `phi2`, `theta1` and
 `theta2` correspond to $`\alpha_0, \alpha_1, \gamma`$ and $`\delta`$,
 respectively. Simulations are again produced by the `simulate` function:
 
-``` r
-
-Sim1 <- simulate(
-  object = design2, args = NULL, trueDLE = myTruthDLT,
-  trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20,
-  seed = 819, parallel = FALSE
-)
-```
+`Sim1`` ``<-`` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(`` `` object ``=`` ``design2``, args ``=`` ``NULL``, trueDLE ``=`` ``myTruthDLT``,`` `` trueEff ``=`` ``myTruthEff``, trueNu ``=`` ``1`` ``/`` ``0.025``, nsim ``=`` ``20``,`` `` seed ``=`` ``819``, parallel ``=`` ``FALSE`` ``)`
 
 Note that the fixed precision `nu` $`1/\sigma^{2}`$ is specified instead
 of the variance $`\sigma^{2}`$. % The results of the simulation can then
@@ -992,18 +706,7 @@ target toxicity level is minimized.
 `crmPack` we first need to define an appropriate `S4` class inheriting
 from the general model class `GeneralModel`:
 
-``` r
-
-.OneParExp <- setClass(
-  Class = "OneParExp",
-  contains = "GeneralModel",
-  slots = c(
-    skeleton_probs = "numeric",
-    dose_grid = "numeric",
-    lambda = "numeric"
-  )
-)
-```
+`.OneParExp`` ``<-`` ``setClass``(`` `` Class ``=`` ``"OneParExp"``,`` `` contains ``=`` ``"GeneralModel"``,`` `` slots ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` skeleton_probs ``=`` ``"numeric"``,`` `` dose_grid ``=`` ``"numeric"``,`` `` lambda ``=`` ``"numeric"`` `` ``)`` ``)`
 
 Here we specify that the new class is called `OneParExp` and contains
 three additional slots containing the resulting skeleton prior
@@ -1023,32 +726,7 @@ The `init` slot contains a function giving the starting values for the
 MCMC sampler, and `sample` defines which parameter samples will be
 returned:
 
-``` r
-
-OneParExp <- function(skeleton_probs, dose_grid, lambda) {
-  .OneParExp(
-    skeleton_probs = skeleton_probs,
-    dose_grid = dose_grid,
-    lambda = lambda,
-    datamodel = function() {
-      for (i in 1:nObs) {
-        y[i] ~ dbern(p[i])
-        p[i] <- skeleton_probs[xLevel[i]]^theta
-      }
-    },
-    priormodel = function() {
-      theta ~ dexp(lambda)
-    },
-    modelspecs = function() {
-      list(skeleton_probs = skeleton_probs, lambda = lambda)
-    },
-    init = function() {
-      list(theta = 1)
-    }, sample = "theta",
-    datanames = c("nObs", "y", "xLevel")
-  )
-}
-```
+`OneParExp`` ``<-`` ``function``(``skeleton_probs``, ``dose_grid``, ``lambda``)`` ``{`` `` ``.OneParExp``(`` `` skeleton_probs ``=`` ``skeleton_probs``,`` `` dose_grid ``=`` ``dose_grid``,`` `` lambda ``=`` ``lambda``,`` `` datamodel ``=`` ``function``(``)`` ``{`` `` ``for`` ``(``i`` ``in`` ``1``:``nObs``)`` ``{`` `` ``y``[``i``]`` ``~`` ``dbern``(``p``[``i``]``)`` `` ``p``[``i``]`` ``<-`` ``skeleton_probs``[``xLevel``[``i``]``]``^``theta`` `` ``}`` `` ``}``,`` `` priormodel ``=`` ``function``(``)`` ``{`` `` ``theta`` ``~`` `[`dexp`](https://rdrr.io/r/stats/Exponential.html)`(``lambda``)`` `` ``}``,`` `` modelspecs ``=`` ``function``(``)`` ``{`` `` `[`list`](https://rdrr.io/r/base/list.html)`(``skeleton_probs ``=`` ``skeleton_probs``, lambda ``=`` ``lambda``)`` `` ``}``,`` `` init ``=`` ``function``(``)`` ``{`` `` `[`list`](https://rdrr.io/r/base/list.html)`(``theta ``=`` ``1``)`` `` ``}``, sample ``=`` ``"theta"``,`` `` datanames ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"nObs"``, ``"y"``, ``"xLevel"``)`` `` ``)`` ``}`
 
 Finally, we will create the `dose` and `prob` methods. The `prob` method
 is based on the (a skeleton) function which does the interpolation
@@ -1063,54 +741,14 @@ function
 ```
 which maps the probability $`p`$ to a dose $`x`$.
 
-``` r
-
-setMethod(
-  f = "dose",
-  signature = signature(
-    x = "numeric",
-    model = "OneParExp",
-    samples = "Samples"
-  ),
-  definition = function(x, model, samples) {
-    theta <- samples@data$theta
-    invSkeletonFun <- approxfun(x = model@skeleton_probs, y = model@dose_grid, rule = 1)
-    invSkeletonFun(x^(1 / theta))
-  }
-)
-
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "OneParExp",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    theta <- samples@data$theta
-    skeletonFun <- approxfun(x = model@dose_grid, y = model@skeleton_probs, rule = 2)
-    skeletonFun(dose)^theta
-  }
-)
-```
+`setMethod``(`` `` f ``=`` ``"dose"``,`` `` signature ``=`` ``signature``(`` `` x ``=`` ``"numeric"``,`` `` model ``=`` ``"OneParExp"``,`` `` samples ``=`` ``"Samples"`` `` ``)``,`` `` definition ``=`` ``function``(``x``, ``model``, ``samples``)`` ``{`` `` ``theta`` ``<-`` ``samples``@``data``$``theta`` `` ``invSkeletonFun`` ``<-`` `[`approxfun`](https://rdrr.io/r/stats/approxfun.html)`(``x ``=`` ``model``@``skeleton_probs``, y ``=`` ``model``@``dose_grid``, rule ``=`` ``1``)`` `` ``invSkeletonFun``(``x``^``(``1`` ``/`` ``theta``)``)`` `` ``}`` ``)`` `` ``setMethod``(`` `` f ``=`` ``"prob"``,`` `` signature ``=`` ``signature``(`` `` dose ``=`` ``"numeric"``,`` `` model ``=`` ``"OneParExp"``,`` `` samples ``=`` ``"Samples"`` `` ``)``,`` `` definition ``=`` ``function``(``dose``, ``model``, ``samples``)`` ``{`` `` ``theta`` ``<-`` ``samples``@``data``$``theta`` `` ``skeletonFun`` ``<-`` `[`approxfun`](https://rdrr.io/r/stats/approxfun.html)`(``x ``=`` ``model``@``dose_grid``, y ``=`` ``model``@``skeleton_probs``, rule ``=`` ``2``)`` `` ``skeletonFun``(``dose``)``^``theta`` `` ``}`` ``)`
 
 Now we can already use the model, for example in the following we
 specify the skeleton probabilities via the dose grid and use a standard
 exponential prior for $`\theta`$. The resulting posterior fit can be
 plotted as usual, see Figure @ref(fig:OneParExp-model-example).
 
-``` r
-
-(skeleton_probs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
-#>  [1] 0.00 0.04 0.08 0.12 0.17 0.21 0.25 0.29 0.33 0.38 0.42 0.46 0.50
-newModel <- OneParExp(
-  skeleton_probs = skeleton_probs,
-  dose_grid = data@doseGrid,
-  lambda = 1
-)
-newSamples <- mcmc(data, newModel, options)
-plot(newSamples, newModel, data)
-```
+`(``skeleton_probs`` ``<-`` `[`round`](https://rdrr.io/r/base/Round.html)`(``data``@``doseGrid`` ``/`` `[`max`](https://rdrr.io/r/base/Extremes.html)`(``data``@``doseGrid``)`` ``/`` ``2``, ``2``)``)`` ``#> [1] 0.00 0.04 0.08 0.12 0.17 0.21 0.25 0.29 0.33 0.38 0.42 0.46 0.50`` ``newModel`` ``<-`` ``OneParExp``(`` `` skeleton_probs ``=`` ``skeleton_probs``,`` `` dose_grid ``=`` ``data``@``doseGrid``,`` `` lambda ``=`` ``1`` ``)`` ``newSamples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``data``, ``newModel``, ``options``)`` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``newSamples``, ``newModel``, ``data``)`
 
 ![The posterior dose-toxicity curve from the one parameter power
 model.](jss-figures/OneParExp-model-example-1.png)
@@ -1122,17 +760,7 @@ like to create a new dose recommendation rule, which proposes the dose
 with estimated DLT probability closest to the target. Again we start
 with the class, now inheriting from `NextBest`:
 
-``` r
-
-.NextBestMinDist <- setClass(
-  Class = "NextBestMinDist",
-  contains = "NextBest",
-  representation(target = "numeric")
-)
-NextBestMinDist <- function(target) {
-  .NextBestMinDist(target = target)
-}
-```
+`.NextBestMinDist`` ``<-`` ``setClass``(`` `` Class ``=`` ``"NextBestMinDist"``,`` `` contains ``=`` ``"NextBest"``,`` `` ``representation``(``target ``=`` ``"numeric"``)`` ``)`` ``NextBestMinDist`` ``<-`` ``function``(``target``)`` ``{`` `` `[`.NextBestMinDist`](https://docs.crmpack.org/reference/NextBestMinDist-class.md)`(``target ``=`` ``target``)`` ``}`
 
 Note that here we keep to the convention of separate class definition
 and initialization function, although there is no technical need in this
@@ -1141,33 +769,7 @@ for this new rule. Note that we do only specialize the method for the
 first argument, such that this rule could also be used with other
 models.
 
-``` r
-
-setMethod(
-  "nextBest",
-  signature = signature(
-    nextBest = "NextBestMinDist",
-    doselimit = "numeric",
-    samples = "Samples",
-    model = "OneParExp",
-    data = "Data"
-  ),
-  def = function(nextBest, doselimit, samples, model, data, ...) {
-    dosesOK <-
-      if (length(doselimit)) {
-        which(data@doseGrid <= doselimit)
-      } else {
-        seq_along(data@doseGrid)
-      }
-    modelfit <- fit(samples, model, data)
-    probDLT <- modelfit$middle[dosesOK]
-    doses <- modelfit$dose[dosesOK]
-    bestIndex <- which.min(abs(probDLT - nextBest@target))
-    bestDose <- doses[bestIndex]
-    list(value = bestDose)
-  }
-)
-```
+`setMethod``(`` `` ``"nextBest"``,`` `` signature ``=`` ``signature``(`` `` nextBest ``=`` ``"NextBestMinDist"``,`` `` doselimit ``=`` ``"numeric"``,`` `` samples ``=`` ``"Samples"``,`` `` model ``=`` ``"OneParExp"``,`` `` data ``=`` ``"Data"`` `` ``)``,`` `` def ``=`` ``function``(``nextBest``, ``doselimit``, ``samples``, ``model``, ``data``, ``...``)`` ``{`` `` ``dosesOK`` ``<-`` `` ``if`` ``(`[`length`](https://rdrr.io/r/base/length.html)`(``doselimit``)``)`` ``{`` `` `[`which`](https://rdrr.io/r/base/which.html)`(``data``@``doseGrid`` ``<=`` ``doselimit``)`` `` ``}`` ``else`` ``{`` `` `[`seq_along`](https://rdrr.io/r/base/seq.html)`(``data``@``doseGrid``)`` `` ``}`` `` ``modelfit`` ``<-`` `[`fit`](https://docs.crmpack.org/reference/fit.md)`(``samples``, ``model``, ``data``)`` `` ``probDLT`` ``<-`` ``modelfit``$``middle``[``dosesOK``]`` `` ``doses`` ``<-`` ``modelfit``$``dose``[``dosesOK``]`` `` ``bestIndex`` ``<-`` `[`which.min`](https://rdrr.io/r/base/which.min.html)`(`[`abs`](https://rdrr.io/r/base/MathFun.html)`(``probDLT`` ``-`` ``nextBest``@``target``)``)`` `` ``bestDose`` ``<-`` ``doses``[``bestIndex``]`` `` `[`list`](https://rdrr.io/r/base/list.html)`(``value ``=`` ``bestDose``)`` `` ``}`` ``)`
 
 In the method definition, we can use the `fit` function in order to
 obtain the estimated DLT rates. We need to return a `list` from this
@@ -1177,13 +779,7 @@ information in the return value. Immediately we can now use this rule in
 order to obtain the next dose recommendation, e.g., after specifying a
 target dose of 30%:
 
-``` r
-
-newMyNextBest <- NextBestMinDist(target = 0.3)
-newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, newSamples, newModel, data)$value
-newNextDoseVal
-#> [1] 150
-```
+`newMyNextBest`` ``<-`` `[`NextBestMinDist`](https://docs.crmpack.org/reference/NextBestMinDist-class.md)`(``target ``=`` ``0.3``)`` ``newNextDoseVal`` ``<-`` `[`nextBest`](https://docs.crmpack.org/reference/nextBest.md)`(``newMyNextBest``, ``nextMaxDose``, ``newSamples``, ``newModel``, ``data``)``$``value`` ``newNextDoseVal`` ``#> [1] 150`
 
 So using this CRM, we could escalate to 150 mg, instead of just 100 mg
 above.

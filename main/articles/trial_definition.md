@@ -19,10 +19,7 @@ introduction, we make simple choices for the value of each element.
 
 We start by loading the `crmPack` package …
 
-``` r
-
-library(crmPack)
-```
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`
 
 … and defining each element in turn.
 
@@ -30,11 +27,7 @@ library(crmPack)
 
 First, we list the doses that *might* be used during the trial.
 
-``` r
-
-# Define the dose grid.
-empty_data <- Data(doseGrid = c(1, 3, 9, 20, 30, 45, 60, 80, 100))
-```
+`# Define the dose grid.`` ``empty_data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``9``, ``20``, ``30``, ``45``, ``60``, ``80``, ``100``)``)`
 
 There is no commitment to use every dose in the grid. Here we define a
 grid of 9 doses ranging between 1 and 100. `crmPack` is agnostic with
@@ -49,15 +42,7 @@ but will probably affect the trial’s operating characteristics.
 
 Next, define the dose toxicity model.
 
-``` r
-
-# Initialize the CRM model.
-model <- LogisticLogNormal(
-  mean = c(-0.85, 1),
-  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 56
-)
-```
+`# Initialize the CRM model.`` ``model`` ``<-`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``0.85``, ``1``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``-``0.5``, ``-``0.5``, ``1``)``, nrow ``=`` ``2``)``,`` `` ref_dose ``=`` ``56`` ``)`
 
 In `crmPack`, the `LogisticLogNormal` class fits a model of the
 following form:
@@ -105,16 +90,7 @@ N\begin{pmatrix}
 
 It is easy to obtain a visual representation of the prior:
 
-``` r
-
-vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
-prior_samples <- mcmc(
-  data = empty_data,
-  model = model,
-  options = vignetteMcmcOptions
-)
-plot(prior_samples, model, empty_data)
-```
+`vignetteMcmcOptions`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(``burnin ``=`` ``100``, step ``=`` ``2``, samples ``=`` ``1000``)`` ``prior_samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(`` `` data ``=`` ``empty_data``,`` `` model ``=`` ``model``,`` `` options ``=`` ``vignetteMcmcOptions`` ``)`` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``prior_samples``, ``model``, ``empty_data``)`
 
 ![A visual representation of the prior. The prior mean estimate of
 toxicity rises form almost zero for a dose of 0 to just under 0.75 for a
@@ -131,14 +107,7 @@ Now, we define the maximum possible increment between the dose used in
 current cohort and the dose used in the next, regardless of likely
 toxicity.
 
-``` r
-
-# Choose the rule for dose increments.
-my_increments <- IncrementsRelative(
-  intervals = c(0, 30),
-  increments = c(2, 0.5)
-)
-```
+`# Choose the rule for dose increments.`` ``my_increments`` ``<-`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``30``)``,`` `` increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``0.5``)`` ``)`
 
 The rule we have chosen here defines the maximum possible increment in
 terms of multiples of the highest dose so far administered: for doses
@@ -165,15 +134,7 @@ cohort
 
 #### The NextBest rule for recommending the best dose for the next cohort
 
-``` r
-
-# Choose the rule for selecting the next dose.
-my_next_best <- NextBestNCRM(
-  target = c(0.2, 0.35),
-  overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
-)
-```
+`# Choose the rule for selecting the next dose.`` ``my_next_best`` ``<-`` `[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` overdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.35``, ``1``)``,`` `` max_overdose_prob ``=`` ``0.25`` ``)`
 
 Here, we choose to use Neuenschwander’s rule (Neuenschwander et al.
 2008), in which the dose for the next cohort to be the dose (amongst
@@ -205,19 +166,7 @@ As soon as the first DLT is reported, the minimum cohort size is `3`. To
 determine the *actual* size of the next cohort, the larger number
 required by the two parts of the compound rule is used.
 
-``` r
-
-# Choose the rule for the cohort size.
-my_size_1 <- CohortSizeRange(
-  intervals = c(0, 30),
-  cohort_size = c(1, 3)
-)
-my_size_2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
-)
-my_size <- maxSize(my_size_1, my_size_2)
-```
+`# Choose the rule for the cohort size.`` ``my_size_1`` ``<-`` `[`CohortSizeRange`](https://docs.crmpack.org/reference/CohortSizeRange-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``30``)``,`` `` cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``)`` ``)`` ``my_size_2`` ``<-`` `[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``,`` `` cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``)`` ``)`` ``my_size`` ``<-`` `[`maxSize`](https://docs.crmpack.org/reference/maxSize.md)`(``my_size_1``, ``my_size_2``)`
 
 In other words, provided the dose is `20` or below and no DLTs have been
 observed, a single patient cohort is permitted. In all other cases, the
@@ -238,36 +187,14 @@ rule requires both of the following conditions to have been met:
 The trial will stop of either the futility rule or *both* components of
 the success rule are satisfied.
 
-``` r
-
-# Choose the rule for stopping.
-my_stopping_1 <- StoppingMinCohorts(nCohorts = 3)
-my_stopping_2 <- StoppingTargetProb(
-  target = c(0.2, 0.35),
-  prob = 0.5
-)
-my_stopping_3 <- StoppingMinPatients(nPatients = 20)
-my_stopping <- (my_stopping_1 & my_stopping_2) | my_stopping_3
-```
+`# Choose the rule for stopping.`` ``my_stopping_1`` ``<-`` `[`StoppingMinCohorts`](https://docs.crmpack.org/reference/StoppingMinCohorts-class.md)`(``nCohorts ``=`` ``3``)`` ``my_stopping_2`` ``<-`` `[`StoppingTargetProb`](https://docs.crmpack.org/reference/StoppingTargetProb-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` prob ``=`` ``0.5`` ``)`` ``my_stopping_3`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``20``)`` ``my_stopping`` ``<-`` ``(``my_stopping_1`` ``&`` ``my_stopping_2``)`` ``|`` ``my_stopping_3`
 
 ### The overall trial design
 
 Finally, we combine all six elements of the design, together with the
 starting dose, to define the trial.
 
-``` r
-
-# Initialize the design.
-design <- Design(
-  model = model,
-  nextBest = my_next_best,
-  stopping = my_stopping,
-  increments = my_increments,
-  cohort_size = my_size,
-  data = empty_data,
-  startingDose = 3
-)
-```
+`# Initialize the design.`` ``design`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``model``,`` `` nextBest ``=`` ``my_next_best``,`` `` stopping ``=`` ``my_stopping``,`` `` increments ``=`` ``my_increments``,`` `` cohort_size ``=`` ``my_size``,`` `` data ``=`` ``empty_data``,`` `` startingDose ``=`` ``3`` ``)`
 
 We are now ready to use our trial definition, either to analyse a real
 trial or to simulate the long term operating characteristics of the

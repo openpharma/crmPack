@@ -230,6 +230,7 @@
 <url><loc>https://docs.crmpack.org/reference/h_covr_helpers.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_default_if_empty.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_determine_dlts.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_dose_axis_labels.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_dose_combo_below_limit.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_enroll_backfill_patients.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_eval_combo_truth.html</loc></url>
@@ -265,6 +266,7 @@
 <url><loc>https://docs.crmpack.org/reference/h_hierarchical_safe_name.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_hierarchical_stochastic_subexpressions.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_hierarchical_supported_refs.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_histogram_percentages.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_historical_arm_design.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_in_range.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_info_theory_dist.html</loc></url>
@@ -289,6 +291,7 @@
 <url><loc>https://docs.crmpack.org/reference/h_next_best_mg_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_mgsamples_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_ncrm_loss_plot.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_next_best_probability_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_td_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_tdsamples_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_null_if_na.html</loc></url>

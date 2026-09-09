@@ -21,7 +21,15 @@ standard plot types, there is:
 
 ``` r
 # S4 method for class 'DualSimulations,missing'
-plot(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
+plot(
+  x,
+  y,
+  type = c("trajectory", "dosesTried", "sigma2W", "rho"),
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("auto", "linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  ...
+)
 ```
 
 ## Arguments
@@ -41,9 +49,29 @@ plot(x, y, type = c("trajectory", "dosesTried", "sigma2W", "rho"), ...)
   (`character`)\
   the type of plots you want to obtain.
 
+- prob_plot_type:
+
+  (`string`)\
+  for the doses tried plot, use a `"lollipop"` (default) or `"bar"`
+  geometry.
+
+- dose_scale:
+
+  (`string`)\
+  for dose axes, use `"auto"` (default), `"linear"`, or `"log"`. See the
+  [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
+  plot method for automatic scaling details.
+
+- axis_ticks:
+
+  (`string`)\
+  place dose-axis ticks at each dose-grid value (`"dosegrid"`, the
+  default) or at regular positions selected by `ggplot2` (`"regular"`).
+  This controls the trajectory y-axis and doses tried x-axis.
+
 - ...:
 
-  not used.
+  additional arguments without method dispatch.
 
 ## Value
 

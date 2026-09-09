@@ -126,66 +126,14 @@ changed by the backfilling framework - except that for the
 `StoppingPatientsNearDose` rule we can now choose whether to include
 backfill patients or not.
 
-``` r
-
-library(crmPack)
-
-# Define the dose-grid.
-emptydata <- Data(
-    doseGrid = c(0.1, 0.2, 0.5, 1, 3, 5, 10, 15, 20, 25, 40, 50, 60, 70, 80, 100)
-)
-
-# Define the dose-toxicity model.
-model <- LogisticLogNormal(
-    mean = c(-0.85, 1),
-    cov = matrix(c(5, -0.5, -0.5, 5), nrow = 2),
-    ref_dose = 56
-)
-
-# Choose the rule for selecting the next dose.
-myNextBest <- NextBestNCRM(
-    target = c(0.2, 0.35),
-    overdose = c(0.35, 1),
-    max_overdose_prob = 0.25
-)
-
-# Choose the rule for stopping.
-myStopping1 <- StoppingMinCohorts(nCohorts = 3)
-myStopping2 <- StoppingTargetProb(
-    target = c(0.2, 0.35),
-    prob = 0.5
-)
-myStopping3 <- StoppingMinPatients(nPatients = 40)
-myStopping4 <- StoppingPatientsNearDose(nPatients = 10L, percentage = 30, include_backfill = FALSE)
-myStopping <- (myStopping1 & myStopping2 & myStopping4) |
-    myStopping3 |
-    StoppingMissingDose()
-
-# Choose the rule for dose increments.
-myIncrements <- IncrementsRelative(
-    intervals = c(0, 20, 50),
-    increments = c(1, 0.67, 0.33)
-)
-```
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`` `` ``# Define the dose-grid.`` ``emptydata`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.2``, ``0.5``, ``1``, ``3``, ``5``, ``10``, ``15``, ``20``, ``25``, ``40``, ``50``, ``60``, ``70``, ``80``, ``100``)`` ``)`` `` ``# Define the dose-toxicity model.`` ``model`` ``<-`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``0.85``, ``1``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``5``, ``-``0.5``, ``-``0.5``, ``5``)``, nrow ``=`` ``2``)``,`` `` ref_dose ``=`` ``56`` ``)`` `` ``# Choose the rule for selecting the next dose.`` ``myNextBest`` ``<-`` `[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` overdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.35``, ``1``)``,`` `` max_overdose_prob ``=`` ``0.25`` ``)`` `` ``# Choose the rule for stopping.`` ``myStopping1`` ``<-`` `[`StoppingMinCohorts`](https://docs.crmpack.org/reference/StoppingMinCohorts-class.md)`(``nCohorts ``=`` ``3``)`` ``myStopping2`` ``<-`` `[`StoppingTargetProb`](https://docs.crmpack.org/reference/StoppingTargetProb-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` prob ``=`` ``0.5`` ``)`` ``myStopping3`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``40``)`` ``myStopping4`` ``<-`` `[`StoppingPatientsNearDose`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md)`(``nPatients ``=`` ``10L``, percentage ``=`` ``30``, include_backfill ``=`` ``FALSE``)`` ``myStopping`` ``<-`` ``(``myStopping1`` ``&`` ``myStopping2`` ``&`` ``myStopping4``)`` ``|`` `` ``myStopping3`` ``|`` `` `[`StoppingMissingDose`](https://docs.crmpack.org/reference/StoppingMissingDose-class.md)`(``)`` `` ``# Choose the rule for dose increments.`` ``myIncrements`` ``<-`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``20``, ``50``)``,`` `` increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``0.67``, ``0.33``)`` ``)`
 
 ### No backfill cohorts
 
 First we can define a design without backfill cohorts, which is the
 default behaviour when no backfill details are specified:
 
-``` r
-
-design_no_backfill <- Design(
-    model = model,
-    nextBest = myNextBest,
-    stopping = myStopping,
-    increments = myIncrements,
-    cohort_size = CohortSizeConst(3),
-    data = emptydata,
-    startingDose = 3
-)
-design_no_backfill@backfill
-```
+`design_no_backfill`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``model``,`` `` nextBest ``=`` ``myNextBest``,`` `` stopping ``=`` ``myStopping``,`` `` increments ``=`` ``myIncrements``,`` `` cohort_size ``=`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3``)``,`` `` data ``=`` ``emptydata``,`` `` startingDose ``=`` ``3`` ``)`` ``design_no_backfill``@``backfill`
 
 No backfill cohorts at all will be opened.
 
@@ -202,17 +150,7 @@ backfill patients in total. Backfill cohorts can be opened at any time
 (i.e. as fast as dose escalation cohorts). When multiple backfill
 cohorts are open, then the lowest dose level is recruited into first.
 
-``` r
-
-backfill_simple <- Backfill(
-    cohort_size = CohortSizeConst(3),
-    max_size = 12,
-    opening = OpeningMinCohorts(min_cohorts = 1),
-    recruitment = RecruitmentUnlimited(),
-    priority = "lowest"
-)
-backfill_simple
-```
+`backfill_simple`` ``<-`` `[`Backfill`](https://docs.crmpack.org/reference/Backfill-class.md)`(`` `` cohort_size ``=`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3``)``,`` `` max_size ``=`` ``12``,`` `` opening ``=`` `[`OpeningMinCohorts`](https://docs.crmpack.org/reference/OpeningMinCohorts-class.md)`(``min_cohorts ``=`` ``1``)``,`` `` recruitment ``=`` `[`RecruitmentUnlimited`](https://docs.crmpack.org/reference/RecruitmentUnlimited-class.md)`(``)``,`` `` priority ``=`` ``"lowest"`` ``)`` ``backfill_simple`
 
 **Cohort size**: A constant size of 3 participants.
 
@@ -226,11 +164,7 @@ backfill_simple
 
 We can now add this backfill specification to the design:
 
-``` r
-
-design_simple_backfill <- design_no_backfill
-design_simple_backfill@backfill <- backfill_simple
-```
+`design_simple_backfill`` ``<-`` ``design_no_backfill`` ``design_simple_backfill``@``backfill`` ``<-`` ``backfill_simple`
 
 ### More complex backfill cohorts
 
@@ -251,21 +185,7 @@ multiple backfill cohorts are open, then the highest dose level is
 recruited into first. The total maximum number of backfill patients is
 set to 20.
 
-``` r
-
-backfill_complex <- Backfill(
-    cohort_size = CohortSizeRandom(min_size = 1, max_size = 6),
-    opening = OpeningMinCohorts(min_cohorts = 3) &
-      OpeningMinResponses(
-        min_responses = 1, 
-        include_lower_doses = TRUE
-    ),
-    recruitment = RecruitmentRatio(ratio = 1 / 2),
-    priority = "highest",
-    max_size = 20
-)
-backfill_complex
-```
+`backfill_complex`` ``<-`` `[`Backfill`](https://docs.crmpack.org/reference/Backfill-class.md)`(`` `` cohort_size ``=`` `[`CohortSizeRandom`](https://docs.crmpack.org/reference/CohortSizeRandom-class.md)`(``min_size ``=`` ``1``, max_size ``=`` ``6``)``,`` `` opening ``=`` `[`OpeningMinCohorts`](https://docs.crmpack.org/reference/OpeningMinCohorts-class.md)`(``min_cohorts ``=`` ``3``)`` ``&`` `` `[`OpeningMinResponses`](https://docs.crmpack.org/reference/OpeningMinResponses-class.md)`(`` `` min_responses ``=`` ``1``, `` `` include_lower_doses ``=`` ``TRUE`` `` ``)``,`` `` recruitment ``=`` `[`RecruitmentRatio`](https://docs.crmpack.org/reference/RecruitmentRatio-class.md)`(``ratio ``=`` ``1`` ``/`` ``2``)``,`` `` priority ``=`` ``"highest"``,`` `` max_size ``=`` ``20`` ``)`` ``backfill_complex`
 
 **Cohort size**: A random cohort size drawn uniformly between 1 and 6
 participants.
@@ -290,11 +210,7 @@ also possible to use the `|` operator to combine opening rules with an
 
 Again we add this backfill specification to the design:
 
-``` r
-
-design_complex_backfill <- design_no_backfill
-design_complex_backfill@backfill <- backfill_complex
-```
+`design_complex_backfill`` ``<-`` ``design_no_backfill`` ``design_complex_backfill``@``backfill`` ``<-`` ``backfill_complex`
 
 ### Simulations with backfill cohorts
 
@@ -305,20 +221,7 @@ specify the assumed dose-response probability function. Similarly as for
 the dose-toxicity function, it might be worth to consider a few
 different scenarios in practice.
 
-``` r
-
-# Assumed dose-response probability function.
-mytruthResponse <- function(dose) {
-    plogis(- 4 + 0.2 * dose) / 4
-}
-curve(mytruthResponse(x), from = 0, to = max(emptydata@doseGrid), 
-      xlab = "Dose", ylab = "Probability of Response / Toxicity", 
-      main = "Assumed Functions", ylim = c(0, 1))
-
-myTruth <- probFunction(design_simple_backfill@model, alpha0 = 3, alpha1 = 3)
-curve(myTruth(x), from = 0, to = max(emptydata@doseGrid), 
-      add = TRUE, col = "red")
-```
+`# Assumed dose-response probability function.`` ``mytruthResponse`` ``<-`` ``function``(``dose``)`` ``{`` `` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(``-`` ``4`` ``+`` ``0.2`` ``*`` ``dose``)`` ``/`` ``4`` ``}`` `[`curve`](https://rdrr.io/r/graphics/curve.html)`(``mytruthResponse``(``x``)``, from ``=`` ``0``, to ``=`` `[`max`](https://rdrr.io/r/base/Extremes.html)`(``emptydata``@``doseGrid``)``, `` `` xlab ``=`` ``"Dose"``, ylab ``=`` ``"Probability of Response / Toxicity"``, `` `` main ``=`` ``"Assumed Functions"``, ylim ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``)`` `` ``myTruth`` ``<-`` `[`probFunction`](https://docs.crmpack.org/reference/probFunction.md)`(``design_simple_backfill``@``model``, alpha0 ``=`` ``3``, alpha1 ``=`` ``3``)`` `[`curve`](https://rdrr.io/r/graphics/curve.html)`(``myTruth``(``x``)``, from ``=`` ``0``, to ``=`` `[`max`](https://rdrr.io/r/base/Extremes.html)`(``emptydata``@``doseGrid``)``, `` `` add ``=`` ``TRUE``, col ``=`` ``"red"``)`
 
 ![plot of chunk
 unnamed-chunk-8](trial_backfill-figures/unnamed-chunk-8-1.png)
@@ -327,40 +230,7 @@ plot of chunk unnamed-chunk-8
 
 Now we can run the simulations for this particular scenario:
 
-``` r
-
-# For real applications, use e.g. McmcOptions() with defaults.
-mcmcOptions <- McmcOptions(
-    burnin = 10, 
-    step = 1, 
-    samples = 100, 
-    rng_kind = "Mersenne-Twister", 
-    rng_seed = 12345
-)
-
-# Simple backfill design simulation:
-sims_simple <- simulate(
-    design_simple_backfill,
-    truth = myTruth,
-    nsim = 10, # For real applications, increase to 1000 e.g.
-    seed = 819,
-    mcmcOptions = mcmcOptions,
-    parallel = FALSE,
-    firstSeparate = FALSE
-)
-
-# Complex backfill design simulation:
-sims_complex <- simulate(
-    design_complex_backfill,
-    truth = myTruth,
-    truthResponse = mytruthResponse,
-    nsim = 10, # For real applications, increase to 1000 e.g
-    seed = 819,
-    mcmcOptions = mcmcOptions,
-    parallel = FALSE,
-    firstSeparate = FALSE
-)
-```
+`# For real applications, use e.g. McmcOptions() with defaults.`` ``mcmcOptions`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(`` `` burnin ``=`` ``10``, `` `` step ``=`` ``1``, `` `` samples ``=`` ``100``, `` `` rng_kind ``=`` ``"Mersenne-Twister"``, `` `` rng_seed ``=`` ``12345`` ``)`` `` ``# Simple backfill design simulation:`` ``sims_simple`` ``<-`` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(`` `` ``design_simple_backfill``,`` `` truth ``=`` ``myTruth``,`` `` nsim ``=`` ``10``, ``# For real applications, increase to 1000 e.g.`` `` seed ``=`` ``819``,`` `` mcmcOptions ``=`` ``mcmcOptions``,`` `` parallel ``=`` ``FALSE``,`` `` firstSeparate ``=`` ``FALSE`` ``)`` `` ``# Complex backfill design simulation:`` ``sims_complex`` ``<-`` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(`` `` ``design_complex_backfill``,`` `` truth ``=`` ``myTruth``,`` `` truthResponse ``=`` ``mytruthResponse``,`` `` nsim ``=`` ``10``, ``# For real applications, increase to 1000 e.g`` `` seed ``=`` ``819``,`` `` mcmcOptions ``=`` ``mcmcOptions``,`` `` parallel ``=`` ``FALSE``,`` `` firstSeparate ``=`` ``FALSE`` ``)`
 
 We can see that it is still very simple and straightforward to run
 simulations including backfill cohorts.
@@ -373,10 +243,7 @@ slot of the returned `Simulations` object, and we can also plot it.
 For example, the 3rd simulated trial with the simple backfill design
 looks like this:
 
-``` r
-
-plot(sims_simple@data[[3]], mark_backfill = TRUE)
-```
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``sims_simple``@``data``[[``3``]``]``, mark_backfill ``=`` ``TRUE``)`
 
 ![plot of chunk
 unnamed-chunk-10](trial_backfill-figures/unnamed-chunk-10-1.png)
@@ -394,10 +261,7 @@ because the backfill cohort rule is also based on responses, we also
 mark the response data (using blue squares around the points with a
 response):
 
-``` r
-
-plot(sims_complex@data[[5]], mark_backfill = TRUE, mark_response = TRUE)
-```
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``sims_complex``@``data``[[``5``]``]``, mark_backfill ``=`` ``TRUE``, mark_response ``=`` ``TRUE``)`
 
 ![plot of chunk
 unnamed-chunk-11](trial_backfill-figures/unnamed-chunk-11-1.png)
@@ -418,22 +282,7 @@ rule).
 We can do some manual investigations of the simulation results to see
 how many backfill patients were recruited in each simulation:
 
-``` r
-
-get_backfill_counts <- function(sims) {
-    sapply(sims@data, \(d) sum(d@backfilled))
-}
-backfill_counts_simple <- get_backfill_counts(sims_simple)
-backfill_counts_complex <- get_backfill_counts(sims_complex)
-table(backfill_counts_simple)
-#> backfill_counts_simple
-#>  9 12 
-#>  1  9
-table(backfill_counts_complex)
-#> backfill_counts_complex
-#>  0  2  3  6 10 
-#>  6  1  1  1  1
-```
+`get_backfill_counts`` ``<-`` ``function``(``sims``)`` ``{`` `` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(``sims``@``data``, \``(``d``)`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``d``@``backfilled``)``)`` ``}`` ``backfill_counts_simple`` ``<-`` ``get_backfill_counts``(``sims_simple``)`` ``backfill_counts_complex`` ``<-`` ``get_backfill_counts``(``sims_complex``)`` `[`table`](https://rdrr.io/r/base/table.html)`(``backfill_counts_simple``)`` ``#> backfill_counts_simple`` ``#> 9 12 `` ``#> 1 9`` `[`table`](https://rdrr.io/r/base/table.html)`(``backfill_counts_complex``)`` ``#> backfill_counts_complex`` ``#> 0 2 3 6 10 `` ``#> 6 1 1 1 1`
 
 So we see that for all except one simulation in the simple design, the
 maximum number of 12 backfill patients was recruited. For the 10
@@ -445,48 +294,17 @@ backfill patients.
 Let’s also look at the dose distribution of the backfill patients. We
 can extract the backfill doses from each simulated trial like this:
 
-``` r
-
-get_backfill_doses <- function(sims) {
-    lapply(sims@data, \(d) d@x[d@backfilled])
-}
-backfill_doses_simple <- get_backfill_doses(sims_simple)
-backfill_doses_complex <- get_backfill_doses(sims_complex)
-```
+`get_backfill_doses`` ``<-`` ``function``(``sims``)`` ``{`` `` `[`lapply`](https://rdrr.io/r/base/lapply.html)`(``sims``@``data``, \``(``d``)`` ``d``@``x``[``d``@``backfilled``]``)`` ``}`` ``backfill_doses_simple`` ``<-`` ``get_backfill_doses``(``sims_simple``)`` ``backfill_doses_complex`` ``<-`` ``get_backfill_doses``(``sims_complex``)`
 
 For example, the first 3 trials simulated with the simple backfill
 design had the following backfill doses:
 
-``` r
-
-head(backfill_doses_simple, 3)
-#> [[1]]
-#>  [1]  3  3  3  5  5  5 10 10 10 10 10 10
-#> 
-#> [[2]]
-#>  [1]  3  3  3  5  5  5 10 10 10 15 15 15
-#> 
-#> [[3]]
-#>  [1]  3  3  3  5  5  5 10 10 10 15 15 15
-```
+[`head`](https://rdrr.io/r/utils/head.html)`(``backfill_doses_simple``, ``3``)`` ``#> [[1]]`` ``#> [1] 3 3 3 5 5 5 10 10 10 10 10 10`` ``#> `` ``#> [[2]]`` ``#> [1] 3 3 3 5 5 5 10 10 10 15 15 15`` ``#> `` ``#> [[3]]`` ``#> [1] 3 3 3 5 5 5 10 10 10 15 15 15`
 
 We can e.g. create a table showing the distribution of the backfill
 doses across all simulations:
 
-``` r
-
-all_backfill_doses_simple <- unlist(backfill_doses_simple)
-table(all_backfill_doses_simple)
-#> all_backfill_doses_simple
-#>  3  5 10 15 
-#> 30 30 42 15
-
-all_backfill_doses_complex <- unlist(backfill_doses_complex)
-table(all_backfill_doses_complex)
-#> all_backfill_doses_complex
-#> 10 15 20 
-#> 14  3  4
-```
+`all_backfill_doses_simple`` ``<-`` `[`unlist`](https://rdrr.io/r/base/unlist.html)`(``backfill_doses_simple``)`` `[`table`](https://rdrr.io/r/base/table.html)`(``all_backfill_doses_simple``)`` ``#> all_backfill_doses_simple`` ``#> 3 5 10 15 `` ``#> 30 30 42 15`` `` ``all_backfill_doses_complex`` ``<-`` `[`unlist`](https://rdrr.io/r/base/unlist.html)`(``backfill_doses_complex``)`` `[`table`](https://rdrr.io/r/base/table.html)`(``all_backfill_doses_complex``)`` ``#> all_backfill_doses_complex`` ``#> 10 15 20 `` ``#> 14 3 4`
 
 So we see e.g. that all backfill patients in the complex design were
 recruited at doses 10, 15, 20.
@@ -494,34 +312,7 @@ recruited at doses 10, 15, 20.
 We can also get basic summary statistics with the `summary` method for
 `Simulations` objects:
 
-``` r
-
-summary(sims_simple, truth = myTruth)
-#> Summary of 10 simulations
-#> 
-#> Target toxicity interval was 20, 35 %
-#> Target dose interval corresponding to this was 13, 16.8 
-#> Intervals are corresponding to 10 and 90 % quantiles
-#> 
-#> Number of patients overall : mean 37 (33, 42) 
-#> Number of patients treated above target tox interval : mean 7 (3, 9) 
-#> Proportions of DLTs in the trials : mean 16 % (12 %, 20 %) 
-#> Mean toxicity risks for the patients on active : mean 19 % (16 %, 22 %) 
-#> Doses selected as MTD : mean 18 (15, 20) 
-#> True toxicity at doses selected : mean 40 % (28 %, 48 %) 
-#> Proportion of trials selecting target MTD: 40 %
-#> Dose most often selected as MTD: 20 
-#> Observed toxicity rate at dose most often selected: 50 %
-#> Number of backfill patients : mean 12 (12, 12) 
-#> Doses for backfill patients: 3: 25.6%, 5: 25.6%, 10: 35.9%, 15: 12.8% 
-#> Fitted toxicity rate at dose most often selected : mean 31 % (25 %, 39 %) 
-#> Stop reason triggered:
-#>  ≥ 3 cohorts dosed :  100 %
-#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
-#>  ≥ 10 patients dosed in 30 % dose range around NBD :  90 %
-#>  ≥ 40 patients dosed :  30 %
-#>  Stopped because of missing dose :  0 %
-```
+[`summary`](https://rdrr.io/r/base/summary.html)`(``sims_simple``, truth ``=`` ``myTruth``)`` ``#> Summary of 10 simulations`` ``#> `` ``#> Target toxicity interval was 20, 35 %`` ``#> Target dose interval corresponding to this was 13, 16.8 `` ``#> Intervals are corresponding to 10 and 90 % quantiles`` ``#> `` ``#> Number of patients overall : mean 37 (33, 42) `` ``#> Number of patients treated above target tox interval : mean 7 (3, 9) `` ``#> Proportions of DLTs in the trials : mean 16 % (12 %, 20 %) `` ``#> Mean toxicity risks for the patients on active : mean 19 % (16 %, 22 %) `` ``#> Doses selected as MTD : mean 18 (15, 20) `` ``#> True toxicity at doses selected : mean 40 % (28 %, 48 %) `` ``#> Proportion of trials selecting target MTD: 40 %`` ``#> Dose most often selected as MTD: 20 `` ``#> Observed toxicity rate at dose most often selected: 50 %`` ``#> Number of backfill patients : mean 12 (12, 12) `` ``#> Doses for backfill patients: 3: 25.6%, 5: 25.6%, 10: 35.9%, 15: 12.8% `` ``#> Fitted toxicity rate at dose most often selected : mean 31 % (25 %, 39 %) `` ``#> Stop reason triggered:`` ``#> ≥ 3 cohorts dosed : 100 %`` ``#> P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 : 100 %`` ``#> ≥ 10 patients dosed in 30 % dose range around NBD : 90 %`` ``#> ≥ 40 patients dosed : 30 %`` ``#> Stopped because of missing dose : 0 %`
 
 If backfill cohorts are used in the design, and there are actually
 backfill patients in any of the simulated trials then we see:

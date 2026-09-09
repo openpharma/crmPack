@@ -47,14 +47,7 @@ along with the `crmPack` package.
 
 The following code show at a high level, how the option is utilized.
 
-``` r
-
-options(
-  crmpack_extensions = function() {
-    # ..... user code .....
-  }
-)
-```
+[`options`](https://rdrr.io/r/base/options.html)`(`` `` crmpack_extensions ``=`` ``function``(``)`` ``{`` `` ``# ..... user code .....`` `` ``}`` ``)`
 
 ## Important information for usage
 
@@ -123,145 +116,7 @@ embedding it into a function which is set equal to the option
 `crmpack_extensions`, to assure that no errors occur during the whole
 execution and the results are as expected.
 
-``` r
-
-library(crmPack)
-
-my_own_extension <- function() {
-  # Attach the package checkmate with library(checkmate) here, to avoid usage of
-  # the :: operator in the code below.
-
-  # LogisticNormalTruncPrior ----
-
-  ## class ----
-
-  #' `LogisticNormalTruncPrior`
-  #'
-  #' @description \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-  #'
-  #' [`LogisticNormalTruncPrior`] is the class for the usual logistic regression
-  #'  model with bivariate normal prior on the intercept and slope.
-  #'
-  #' @aliases LogisticNormalTruncPrior
-  #' @export
-  #'
-  #' @slot mean1 the mean of the intercept
-  #' @slot mean2 the mean of the slope
-  #' @slot var1 the variance of the intercept
-  #' @slot var2 the variance of the slope
-  #'
-  .LogisticNormalTruncPrior <- setClass(
-    Class = "LogisticNormalTruncPrior",
-    contains = "GeneralModel",
-    slots = c(
-      mean1 = "numeric",
-      mean2 = "numeric",
-      var1 = "numeric",
-      var2 = "numeric"
-    )
-  )
-
-  ## constructor ----
-
-  #' @rdname LogisticNormalTruncPrior-class
-
-  #' Initialization function for the `LogisticNormalTruncPrior` class
-  #'
-  #' @param mean1 the mean of the intercept
-  #' @param mean2 the mean of the slope
-  #' @param var1 the variance of the intercept
-  #' @param var2 the variance of the slope
-  #' @return the \code{\linkS4class{LogisticNormalTruncPrior}} object
-  #'
-  #' @export
-  #' @keywords methods
-  LogisticNormalTruncPrior <<- function(mean1, mean2, var1, var2) {
-    .LogisticNormalTruncPrior(
-      mean1 = mean1,
-      mean2 = mean2,
-      var1 = var1,
-      var2 = var2,
-      datamodel = function() {
-        for (i in 1:nObs) {
-          y[i] ~ dbern(mean[i])
-          logit(mean[i]) <- alpha0 + alpha1 * x[i]
-        }
-      },
-      priormodel = function() {
-        alpha0 ~ dnorm(mean1, 1 / var1)
-        alpha1 ~ dnorm(mean2, 1 / var2) %_% I(0, )
-      },
-      datanames = c("nObs", "y", "x"),
-      modelspecs = function() {
-        list(
-          mean1 = mean1,
-          mean2 = mean2,
-          var1 = var1,
-          var2 = var2
-        )
-      },
-      init = function() {
-        list(alpha0 = mean1, alpha1 = mean2)
-      },
-      sample = c("alpha0", "alpha1")
-    )
-  }
-
-  ## dose ----
-
-  #' @describeIn dose compute the dose level reaching a specific toxicity
-  #'   probability.
-  #'
-  #' @aliases dose-LogisticNormalTruncPrior
-  #' @export
-  #'
-  setMethod(
-    f = "dose",
-    signature = signature(
-      x = "numeric",
-      model = "LogisticNormalTruncPrior",
-      samples = "Samples"
-    ),
-    definition = function(x, model, samples) {
-      checkmate::assert_probabilities(x)
-      checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
-      assert_length(x, len = size(samples))
-
-      alpha0 <- samples@data$alpha0
-      alpha1 <- samples@data$alpha1
-      (logit(x) - alpha0) / alpha1
-    }
-  )
-
-  ## prob ----
-
-  #' @describeIn prob compute the toxicity probability of a specific dose.
-  #'
-  #' @aliases prob-LogisticNormalTruncPrior
-  #' @export
-  #'
-  setMethod(
-    f = "prob",
-    signature = signature(
-      dose = "numeric",
-      model = "LogisticNormalTruncPrior",
-      samples = "Samples"
-    ),
-    definition = function(dose, model, samples) {
-      checkmate::assert_numeric(
-        dose,
-        lower = 0L, any.missing = FALSE, min.len = 1
-      )
-      checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
-      assert_length(dose, len = size(samples))
-
-      alpha0 <- samples@data$alpha0
-      alpha1 <- samples@data$alpha1
-      1 / (1 + exp(-alpha0 - alpha1 * dose))
-    }
-  )
-}
-```
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`` `` ``my_own_extension`` ``<-`` ``function``(``)`` ``{`` `` ``# Attach the package checkmate with library(checkmate) here, to avoid usage of`` `` ``# the :: operator in the code below.`` `` `` ``# LogisticNormalTruncPrior ----`` `` `` ``## class ----`` `` `` ``` #' `LogisticNormalTruncPrior` ``` `` ``#'`` `` ``#' @description \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}`` `` ``#'`` `` ``` #' [`LogisticNormalTruncPrior`] is the class for the usual logistic regression ``` `` ``#' model with bivariate normal prior on the intercept and slope.`` `` ``#'`` `` ``#' @aliases LogisticNormalTruncPrior`` `` ``#' @export`` `` ``#'`` `` ``#' @slot mean1 the mean of the intercept`` `` ``#' @slot mean2 the mean of the slope`` `` ``#' @slot var1 the variance of the intercept`` `` ``#' @slot var2 the variance of the slope`` `` ``#'`` `` ``.LogisticNormalTruncPrior`` ``<-`` ``setClass``(`` `` Class ``=`` ``"LogisticNormalTruncPrior"``,`` `` contains ``=`` ``"GeneralModel"``,`` `` slots ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` mean1 ``=`` ``"numeric"``,`` `` mean2 ``=`` ``"numeric"``,`` `` var1 ``=`` ``"numeric"``,`` `` var2 ``=`` ``"numeric"`` `` ``)`` `` ``)`` `` `` ``## constructor ----`` `` `` ``#' @rdname LogisticNormalTruncPrior-class`` `` `` ``` #' Initialization function for the `LogisticNormalTruncPrior` class ``` `` ``#'`` `` ``#' @param mean1 the mean of the intercept`` `` ``#' @param mean2 the mean of the slope`` `` ``#' @param var1 the variance of the intercept`` `` ``#' @param var2 the variance of the slope`` `` ``#' @return the \code{\linkS4class{LogisticNormalTruncPrior}} object`` `` ``#'`` `` ``#' @export`` `` ``#' @keywords methods`` `` ``LogisticNormalTruncPrior`` ``<<-`` ``function``(``mean1``, ``mean2``, ``var1``, ``var2``)`` ``{`` `` ``.LogisticNormalTruncPrior``(`` `` mean1 ``=`` ``mean1``,`` `` mean2 ``=`` ``mean2``,`` `` var1 ``=`` ``var1``,`` `` var2 ``=`` ``var2``,`` `` datamodel ``=`` ``function``(``)`` ``{`` `` ``for`` ``(``i`` ``in`` ``1``:``nObs``)`` ``{`` `` ``y``[``i``]`` ``~`` ``dbern``(``mean``[``i``]``)`` `` `[`logit`](https://docs.crmpack.org/reference/logit.md)`(``mean``[``i``]``)`` ``<-`` ``alpha0`` ``+`` ``alpha1`` ``*`` ``x``[``i``]`` `` ``}`` `` ``}``,`` `` priormodel ``=`` ``function``(``)`` ``{`` `` ``alpha0`` ``~`` `[`dnorm`](https://rdrr.io/r/stats/Normal.html)`(``mean1``, ``1`` ``/`` ``var1``)`` `` ``alpha1`` ``~`` `[`dnorm`](https://rdrr.io/r/stats/Normal.html)`(``mean2``, ``1`` ``/`` ``var2``)`` ``%_%`` `[`I`](https://rdrr.io/r/base/AsIs.html)`(``0``, ``)`` `` ``}``,`` `` datanames ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"nObs"``, ``"y"``, ``"x"``)``,`` `` modelspecs ``=`` ``function``(``)`` ``{`` `` `[`list`](https://rdrr.io/r/base/list.html)`(`` `` mean1 ``=`` ``mean1``,`` `` mean2 ``=`` ``mean2``,`` `` var1 ``=`` ``var1``,`` `` var2 ``=`` ``var2`` `` ``)`` `` ``}``,`` `` init ``=`` ``function``(``)`` ``{`` `` `[`list`](https://rdrr.io/r/base/list.html)`(``alpha0 ``=`` ``mean1``, alpha1 ``=`` ``mean2``)`` `` ``}``,`` `` sample ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"alpha0"``, ``"alpha1"``)`` `` ``)`` `` ``}`` `` `` ``## dose ----`` `` `` ``#' @describeIn dose compute the dose level reaching a specific toxicity`` `` ``#' probability.`` `` ``#'`` `` ``#' @aliases dose-LogisticNormalTruncPrior`` `` ``#' @export`` `` ``#'`` `` ``setMethod``(`` `` f ``=`` ``"dose"``,`` `` signature ``=`` ``signature``(`` `` x ``=`` ``"numeric"``,`` `` model ``=`` ``"LogisticNormalTruncPrior"``,`` `` samples ``=`` ``"Samples"`` `` ``)``,`` `` definition ``=`` ``function``(``x``, ``model``, ``samples``)`` ``{`` `` ``checkmate``::``assert_probabilities``(``x``)`` `` ``checkmate``::`[`assert_subset`](https://mllg.github.io/checkmate/reference/checkSubset.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"alpha0"``, ``"alpha1"``)``, `[`names`](https://rdrr.io/r/base/names.html)`(``samples``)``)`` `` `[`assert_length`](https://docs.crmpack.org/reference/check_length.md)`(``x``, len ``=`` `[`size`](https://docs.crmpack.org/reference/size.md)`(``samples``)``)`` `` `` ``alpha0`` ``<-`` ``samples``@``data``$``alpha0`` `` ``alpha1`` ``<-`` ``samples``@``data``$``alpha1`` `` ``(`[`logit`](https://docs.crmpack.org/reference/logit.md)`(``x``)`` ``-`` ``alpha0``)`` ``/`` ``alpha1`` `` ``}`` `` ``)`` `` `` ``## prob ----`` `` `` ``#' @describeIn prob compute the toxicity probability of a specific dose.`` `` ``#'`` `` ``#' @aliases prob-LogisticNormalTruncPrior`` `` ``#' @export`` `` ``#'`` `` ``setMethod``(`` `` f ``=`` ``"prob"``,`` `` signature ``=`` ``signature``(`` `` dose ``=`` ``"numeric"``,`` `` model ``=`` ``"LogisticNormalTruncPrior"``,`` `` samples ``=`` ``"Samples"`` `` ``)``,`` `` definition ``=`` ``function``(``dose``, ``model``, ``samples``)`` ``{`` `` ``checkmate``::`[`assert_numeric`](https://mllg.github.io/checkmate/reference/checkNumeric.html)`(`` `` ``dose``,`` `` lower ``=`` ``0L``, any.missing ``=`` ``FALSE``, min.len ``=`` ``1`` `` ``)`` `` ``checkmate``::`[`assert_subset`](https://mllg.github.io/checkmate/reference/checkSubset.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"alpha0"``, ``"alpha1"``)``, `[`names`](https://rdrr.io/r/base/names.html)`(``samples``)``)`` `` `[`assert_length`](https://docs.crmpack.org/reference/check_length.md)`(``dose``, len ``=`` `[`size`](https://docs.crmpack.org/reference/size.md)`(``samples``)``)`` `` `` ``alpha0`` ``<-`` ``samples``@``data``$``alpha0`` `` ``alpha1`` ``<-`` ``samples``@``data``$``alpha1`` `` ``1`` ``/`` ``(``1`` ``+`` `[`exp`](https://rdrr.io/r/base/Log.html)`(``-``alpha0`` ``-`` ``alpha1`` ``*`` ``dose``)``)`` `` ``}`` `` ``)`` ``}`
 
 After the new code is defined and embedded into a function, we can store
 the function as value of a global option, which we will name
@@ -278,11 +133,7 @@ way works with parallel computing as this makes sure that the functions
 can be used in the current environment and at the workers when parallel
 study simulations are performed.
 
-``` r
-
-# Store the function into the global option crmpack_extensions.
-options(crmpack_extensions = my_own_extension)
-```
+`# Store the function into the global option crmpack_extensions.`` `[`options`](https://rdrr.io/r/base/options.html)`(``crmpack_extensions ``=`` ``my_own_extension``)`
 
 Now we are able to use the newly created model
 `LogisticNormalTruncPrior` to set up a study. First, we get the value
@@ -291,107 +142,19 @@ we have defined above. Then we execute the function within the global
 environment, so that the constructor function and the corresponding
 classes and methods for `prob` and `dose` become available.
 
-``` r
-
-# Execute the user written extensions.
-getOption("crmpack_extensions")()
-```
+`# Execute the user written extensions.`` `[`getOption`](https://rdrr.io/r/base/options.html)`(``"crmpack_extensions"``)``(``)`
 
 Next we can set up the study with the new model and desired design
 features.
 
-``` r
-
-# Create the dose grid.
-emptydata <- Data(
-  doseGrid = c(
-    10, 15, 20, 30, 40, 60, 80, 120, 160, 240, 320,
-    480, 640, 960, 1280, 1920, 2400, 3000, 4000
-  ),
-  placebo = FALSE
-)
-
-# Create data for basic testing of the setup.
-my_data <- Data(
-  x = c(10, 20, 40, 80, 80, 160, 160),
-  y = c(0, 0, 0, 0, 0, 1, 1),
-  cohort = c(1, 2, 3, 4, 4, 5, 5),
-  ID = 1:7,
-  doseGrid = emptydata@doseGrid
-)
-
-# Setup the model.
-my_model <- LogisticNormalTruncPrior(
-  mean1 = -3,
-  mean2 = 0.00075,
-  var1 = 1,
-  var2 = 0.000009
-)
-
-# Options used for simulations.
-my_options <- McmcOptions(
-  burnin = 100,
-  step = 2,
-  samples = 100,
-  rng_kind = "Mersenne-Twister",
-  rng_seed = 94
-)
-
-# Create mcmc samples.
-my_samples <- mcmc(my_data, my_model, my_options)
-
-# Plot the dose toxicity curve.
-plot(my_samples, my_model, my_data)
-
-# Specify increments.
-my_increments <- IncrementsRelativeDLT(
-  intervals = c(0, 1),
-  increments = c(1, 0.5)
-)
-
-# Maximum dose.
-this_max_dose <- maxDose(my_increments, my_data)
-
-# Next best dose.
-my_next_best <- NextBestMinDist(target = 0.3)
-this_next_dose <- nextBest(
-  my_next_best, this_max_dose, my_samples, my_model, my_data
-)$value
-
-# Stopping rule.
-my_stopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0)
-
-# Stop trial based on criteria and observed data.
-stopTrial(my_stopping, this_next_dose, my_samples, my_model, my_data)
-
-# Cohorts size.
-my_size <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
-)
-
-# Design.
-my_design <- Design(
-  model = my_model,
-  nextBest = my_next_best,
-  stopping = my_stopping,
-  increments = my_increments,
-  cohort_size = my_size,
-  data = emptydata,
-  startingDose = 10
-)
-```
+`# Create the dose grid.`` ``emptydata`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` ``10``, ``15``, ``20``, ``30``, ``40``, ``60``, ``80``, ``120``, ``160``, ``240``, ``320``,`` `` ``480``, ``640``, ``960``, ``1280``, ``1920``, ``2400``, ``3000``, ``4000`` `` ``)``,`` `` placebo ``=`` ``FALSE`` ``)`` `` ``# Create data for basic testing of the setup.`` ``my_data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``10``, ``20``, ``40``, ``80``, ``80``, ``160``, ``160``)``,`` `` y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``0``, ``1``, ``1``)``,`` `` cohort ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``2``, ``3``, ``4``, ``4``, ``5``, ``5``)``,`` `` ID ``=`` ``1``:``7``,`` `` doseGrid ``=`` ``emptydata``@``doseGrid`` ``)`` `` ``# Setup the model.`` ``my_model`` ``<-`` ``LogisticNormalTruncPrior``(`` `` mean1 ``=`` ``-``3``,`` `` mean2 ``=`` ``0.00075``,`` `` var1 ``=`` ``1``,`` `` var2 ``=`` ``0.000009`` ``)`` `` ``# Options used for simulations.`` ``my_options`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(`` `` burnin ``=`` ``100``,`` `` step ``=`` ``2``,`` `` samples ``=`` ``100``,`` `` rng_kind ``=`` ``"Mersenne-Twister"``,`` `` rng_seed ``=`` ``94`` ``)`` `` ``# Create mcmc samples.`` ``my_samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``my_data``, ``my_model``, ``my_options``)`` `` ``# Plot the dose toxicity curve.`` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``my_samples``, ``my_model``, ``my_data``)`` `` ``# Specify increments.`` ``my_increments`` ``<-`` `[`IncrementsRelativeDLT`](https://docs.crmpack.org/reference/IncrementsRelativeDLT-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``,`` `` increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``0.5``)`` ``)`` `` ``# Maximum dose.`` ``this_max_dose`` ``<-`` `[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``my_increments``, ``my_data``)`` `` ``# Next best dose.`` ``my_next_best`` ``<-`` `[`NextBestMinDist`](https://docs.crmpack.org/reference/NextBestMinDist-class.md)`(``target ``=`` ``0.3``)`` ``this_next_dose`` ``<-`` `[`nextBest`](https://docs.crmpack.org/reference/nextBest.md)`(`` `` ``my_next_best``, ``this_max_dose``, ``my_samples``, ``my_model``, ``my_data`` ``)``$``value`` `` ``# Stopping rule.`` ``my_stopping`` ``<-`` `[`StoppingPatientsNearDose`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md)`(``nPatients ``=`` ``9``, percentage ``=`` ``0``)`` `` ``# Stop trial based on criteria and observed data.`` `[`stopTrial`](https://docs.crmpack.org/reference/stopTrial.md)`(``my_stopping``, ``this_next_dose``, ``my_samples``, ``my_model``, ``my_data``)`` `` ``# Cohorts size.`` ``my_size`` ``<-`` `[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``,`` `` cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``)`` ``)`` `` ``# Design.`` ``my_design`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``my_model``,`` `` nextBest ``=`` ``my_next_best``,`` `` stopping ``=`` ``my_stopping``,`` `` increments ``=`` ``my_increments``,`` `` cohort_size ``=`` ``my_size``,`` `` data ``=`` ``emptydata``,`` `` startingDose ``=`` ``10`` ``)`
 
 After setting up the model and the design features, it is very useful to
 check the model decisions in case that no DLT is observed until a
 certain dose level before any study simulations are performed. This
 check can also serve as additional test for the new written code.
 
-``` r
-
-# Examine the design.
-examine(my_design, my_options)
-```
+`# Examine the design.`` `[`examine`](https://docs.crmpack.org/reference/examine.md)`(``my_design``, ``my_options``)`
 
 When examine runs as expected, study simulations can be performed. To
 demonstrate the difference between single core processing and multiple
@@ -401,105 +164,13 @@ processing, followed by 5 scenarios utilizing parallel computing.
 With regard to run times in this example, please see the [note](#note)
 at the end of the vignette.
 
-``` r
-
-# Set up scenarios
-scenario_setup <- function(intercept, mtd_prob, mtd_dose) {
-  probFunction(
-    my_model,
-    alpha0 = logit(intercept),
-    alpha1 = (logit(mtd_prob) - logit(intercept)) / mtd_dose
-  )
-}
-
-safe_scenario <- scenario_setup(0.05, 0.3, 20000)
-late_scenario <- scenario_setup(0.05, 0.3, 2000)
-early_scenario <- scenario_setup(0.05, 0.3, 700)
-toxic_scenario <- scenario_setup(0.6, 0.3, -300)
-peak_scenario <- function(
-    dose,
-    scenario = cbind(emptydata@doseGrid, c(rep(0.05, 11), rep(0.80, 8)))) {
-  scenario[match(dose, scenario[, 1]), 2]
-}
-
-# Helper function that outputs the elapsed time.
-report_time <- function(report_text) {
-  cat(
-    format(Sys.time(), usetz = TRUE),
-    report_text,
-    "done - elapsed time from start:",
-    round(difftime(Sys.time(), start_time, units = "mins"), digits = 1),
-    "\n"
-  )
-}
-
-# Helper function that simulates a specific truth.
-get_oc <- function(truth) {
-  simulate(
-    my_design,
-    args = NULL,
-    truth = truth,
-    nsim = my_nsim,
-    mcmcOptions = my_options,
-    parallel = do_parallel,
-    nCores = parallelly::availableCores()
-  )
-}
-
-# get operation characteristics without utilizing parallel computing for
-# selected truth (to reduce the run time).
-time_no_parallel <- system.time({
-  start_time <- Sys.time()
-  cat(format(Sys.time(), usetz = TRUE), "start", "\n")
-
-  my_nsim <- 10
-  do_parallel <- FALSE
-
-  safe <- get_oc(safe_scenario)
-
-  report_time("safe (single core processing)")
-
-  late <- get_oc(late_scenario)
-
-  report_time("late (single core processing)")
-})
-```
+`# Set up scenarios`` ``scenario_setup`` ``<-`` ``function``(``intercept``, ``mtd_prob``, ``mtd_dose``)`` ``{`` `` `[`probFunction`](https://docs.crmpack.org/reference/probFunction.md)`(`` `` ``my_model``,`` `` alpha0 ``=`` `[`logit`](https://docs.crmpack.org/reference/logit.md)`(``intercept``)``,`` `` alpha1 ``=`` ``(`[`logit`](https://docs.crmpack.org/reference/logit.md)`(``mtd_prob``)`` ``-`` `[`logit`](https://docs.crmpack.org/reference/logit.md)`(``intercept``)``)`` ``/`` ``mtd_dose`` `` ``)`` ``}`` `` ``safe_scenario`` ``<-`` ``scenario_setup``(``0.05``, ``0.3``, ``20000``)`` ``late_scenario`` ``<-`` ``scenario_setup``(``0.05``, ``0.3``, ``2000``)`` ``early_scenario`` ``<-`` ``scenario_setup``(``0.05``, ``0.3``, ``700``)`` ``toxic_scenario`` ``<-`` ``scenario_setup``(``0.6``, ``0.3``, ``-``300``)`` ``peak_scenario`` ``<-`` ``function``(`` `` ``dose``,`` `` ``scenario`` ``=`` `[`cbind`](https://rdrr.io/r/base/cbind.html)`(``emptydata``@``doseGrid``, `[`c`](https://rdrr.io/r/base/c.html)`(`[`rep`](https://rdrr.io/r/base/rep.html)`(``0.05``, ``11``)``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``0.80``, ``8``)``)``)``)`` ``{`` `` ``scenario``[`[`match`](https://rdrr.io/r/base/match.html)`(``dose``, ``scenario``[``, ``1``]``)``, ``2``]`` ``}`` `` ``# Helper function that outputs the elapsed time.`` ``report_time`` ``<-`` ``function``(``report_text``)`` ``{`` `` `[`cat`](https://rdrr.io/r/base/cat.html)`(`` `` `[`format`](https://rdrr.io/r/base/format.html)`(`[`Sys.time`](https://rdrr.io/r/base/Sys.time.html)`(``)``, usetz ``=`` ``TRUE``)``,`` `` ``report_text``,`` `` ``"done - elapsed time from start:"``,`` `` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`difftime`](https://rdrr.io/r/base/difftime.html)`(`[`Sys.time`](https://rdrr.io/r/base/Sys.time.html)`(``)``, ``start_time``, units ``=`` ``"mins"``)``, digits ``=`` ``1``)``,`` `` ``"\n"`` `` ``)`` ``}`` `` ``# Helper function that simulates a specific truth.`` ``get_oc`` ``<-`` ``function``(``truth``)`` ``{`` `` `[`simulate`](https://rdrr.io/r/stats/simulate.html)`(`` `` ``my_design``,`` `` args ``=`` ``NULL``,`` `` truth ``=`` ``truth``,`` `` nsim ``=`` ``my_nsim``,`` `` mcmcOptions ``=`` ``my_options``,`` `` parallel ``=`` ``do_parallel``,`` `` nCores ``=`` ``parallelly``::`[`availableCores`](https://parallelly.futureverse.org/reference/availableCores.html)`(``)`` `` ``)`` ``}`` `` ``# get operation characteristics without utilizing parallel computing for`` ``# selected truth (to reduce the run time).`` ``time_no_parallel`` ``<-`` `[`system.time`](https://rdrr.io/r/base/system.time.html)`(``{`` `` ``start_time`` ``<-`` `[`Sys.time`](https://rdrr.io/r/base/Sys.time.html)`(``)`` `` `[`cat`](https://rdrr.io/r/base/cat.html)`(`[`format`](https://rdrr.io/r/base/format.html)`(`[`Sys.time`](https://rdrr.io/r/base/Sys.time.html)`(``)``, usetz ``=`` ``TRUE``)``, ``"start"``, ``"\n"``)`` `` `` ``my_nsim`` ``<-`` ``10`` `` ``do_parallel`` ``<-`` ``FALSE`` `` `` ``safe`` ``<-`` ``get_oc``(``safe_scenario``)`` `` `` ``report_time``(``"safe (single core processing)"``)`` `` `` ``late`` ``<-`` ``get_oc``(``late_scenario``)`` `` `` ``report_time``(``"late (single core processing)"``)`` ``}``)`
 
 When simulations with single core processing are running successful, the
 full operation characteristics utilizing parallel computing can be
 derived.
 
-``` r
-
-# Get full operation characteristics utilizing parallel computing.
-time <- system.time({
-  start_time <- Sys.time()
-  cat(format(Sys.time(), usetz = TRUE), "start", "\n")
-
-  my_nsim <- 10
-  do_parallel <- TRUE
-
-  safe <- get_oc(safe_scenario)
-
-  report_time("safe")
-
-  late <- get_oc(late_scenario)
-
-  report_time("late")
-
-  early <- get_oc(early_scenario)
-
-  report_time("early")
-
-  toxic <- get_oc(toxic_scenario)
-
-  report_time("toxic")
-
-  peak <- get_oc(peak_scenario)
-
-  report_time("peak")
-})
-```
+`# Get full operation characteristics utilizing parallel computing.`` ``time`` ``<-`` `[`system.time`](https://rdrr.io/r/base/system.time.html)`(``{`` `` ``start_time`` ``<-`` `[`Sys.time`](https://rdrr.io/r/base/Sys.time.html)`(``)`` `` `[`cat`](https://rdrr.io/r/base/cat.html)`(`[`format`](https://rdrr.io/r/base/format.html)`(`[`Sys.time`](https://rdrr.io/r/base/Sys.time.html)`(``)``, usetz ``=`` ``TRUE``)``, ``"start"``, ``"\n"``)`` `` `` ``my_nsim`` ``<-`` ``10`` `` ``do_parallel`` ``<-`` ``TRUE`` `` `` ``safe`` ``<-`` ``get_oc``(``safe_scenario``)`` `` `` ``report_time``(``"safe"``)`` `` `` ``late`` ``<-`` ``get_oc``(``late_scenario``)`` `` `` ``report_time``(``"late"``)`` `` `` ``early`` ``<-`` ``get_oc``(``early_scenario``)`` `` `` ``report_time``(``"early"``)`` `` `` ``toxic`` ``<-`` ``get_oc``(``toxic_scenario``)`` `` `` ``report_time``(``"toxic"``)`` `` `` ``peak`` ``<-`` ``get_oc``(``peak_scenario``)`` `` `` ``report_time``(``"peak"``)`` ``}``)`
 
 ## Alternative: read user code from external file
 
@@ -508,28 +179,7 @@ in an external file and source the file in the wrapper function. This
 has the advantage, that the `<<-` operator is not necessary for user
 constructor functions and can be replaced by the usual assignment `<-`.
 
-``` r
-
-if (FALSE) {
-  # Store code example form above in external file and
-  # remove the wrapper function structure.
-  dump("my_own_extension", file = "user_extension.R")
-  file_con <- file("user_extension.R")
-  tmp <- readLines(file_con)[-c(1:3, 135)]
-  tmp <- gsub("<<-", "<-", tmp)
-  writeLines(tmp, file_con)
-
-  # Source the stored file in the wrapper function.
-  my_own_extension2 <- function() {
-    source("user_extension.R")
-  }
-
-  options(crmpack_extensions = my_own_extension2)
-  getOption("crmpack_extensions")()
-
-  # Run the rest of the code from above example
-}
-```
+`if`` ``(``FALSE``)`` ``{`` `` ``# Store code example form above in external file and`` `` ``# remove the wrapper function structure.`` `` `[`dump`](https://rdrr.io/r/base/dump.html)`(``"my_own_extension"``, file ``=`` ``"user_extension.R"``)`` `` ``file_con`` ``<-`` `[`file`](https://rdrr.io/r/base/connections.html)`(``"user_extension.R"``)`` `` ``tmp`` ``<-`` `[`readLines`](https://rdrr.io/r/base/readLines.html)`(``file_con``)``[``-`[`c`](https://rdrr.io/r/base/c.html)`(``1``:``3``, ``135``)``]`` `` ``tmp`` ``<-`` `[`gsub`](https://rdrr.io/r/base/grep.html)`(``"<<-"``, ``"<-"``, ``tmp``)`` `` `[`writeLines`](https://rdrr.io/r/base/writeLines.html)`(``tmp``, ``file_con``)`` `` `` ``# Source the stored file in the wrapper function.`` `` ``my_own_extension2`` ``<-`` ``function``(``)`` ``{`` `` `[`source`](https://rdrr.io/r/base/source.html)`(``"user_extension.R"``)`` `` ``}`` `` `` `[`options`](https://rdrr.io/r/base/options.html)`(``crmpack_extensions ``=`` ``my_own_extension2``)`` `` `[`getOption`](https://rdrr.io/r/base/options.html)`(``"crmpack_extensions"``)``(``)`` `` `` ``# Run the rest of the code from above example`` ``}`
 
 ## Note
 

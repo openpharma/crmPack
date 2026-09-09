@@ -55,13 +55,8 @@ Escalation Designs in R with crmPack.” *Journal of Statistical
 Software*, **89**(10), 1–22.
 [doi:10.18637/jss.v089.i10](https://doi.org/10.18637/jss.v089.i10).
 
-    @Article{,
-      title = {Model-Based Dose Escalation Designs in {R} with {crmPack}},
-      author = {Daniel {Saban\'es Bov\'e} and Wai Yin Yeung and Giuseppe Palermo and Thomas Jaki},
-      journal = {Journal of Statistical Software},
-      year = {2019},
-      volume = {89},
-      number = {10},
-      pages = {1--22},
-      doi = {10.18637/jss.v089.i10},
-    }
+@Article{, title = {Model-Based Dose Escalation Designs in {R} with
+{crmPack}}, author = {Daniel {Saban\\es Bov\\e} and Wai Yin Yeung and
+Giuseppe Palermo and Thomas Jaki}, journal = {Journal of Statistical
+Software}, year = {2019}, volume = {89}, number = {10}, pages = {1--22},
+doi = {10.18637/jss.v089.i10}, }

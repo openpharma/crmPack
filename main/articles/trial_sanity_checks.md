@@ -20,66 +20,7 @@ The first step is to define the trial design in `crmPack`…
 
 ## Study definition
 
-``` r
-
-library(crmPack)
-
-
-# Define the dose grid and an empty data object
-dose_grid <- c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100)
-empty_data <- Data(doseGrid = dose_grid)
-
-# Initialize the CRM model.
-initial_model <- LogisticLogNormal(
-  mean = c(-0.85, 1),
-  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  ref_dose = 56
-)
-
-# Choose the rule for selecting the next dose.
-next_best <- NextBestNCRM(
-  target = c(0.2, 0.35),
-  overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
-)
-
-# Choose the rule for the cohort size.
-cohort_size1 <- CohortSizeRange(
-  intervals = c(0, 30),
-  cohort_size = c(1, 3)
-)
-cohort_size2 <- CohortSizeDLT(
-  intervals = c(0, 1),
-  cohort_size = c(1, 3)
-)
-cohort_size <- maxSize(cohort_size1, cohort_size2)
-
-# Choose the rule for stopping.
-stopping_success1 <- StoppingMinCohorts(nCohorts = 3)
-stopping_success2 <- StoppingTargetProb(
-  target = c(0.2, 0.35),
-  prob = 0.5
-)
-stopping_futility <- StoppingMinPatients(nPatients = 20)
-stopping_trial <- (stopping_success1 & stopping_success2) | stopping_futility
-
-# Choose the rule for dose increments.
-increment_rule <- IncrementsRelative(
-  intervals = c(0, 20),
-  increments = c(1, 0.33)
-)
-
-# Initialize the design.
-design <- Design(
-  model = initial_model,
-  nextBest = next_best,
-  stopping = stopping_trial,
-  increments = increment_rule,
-  cohort_size = cohort_size,
-  data = empty_data,
-  startingDose = 3
-)
-```
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`` `` `` ``# Define the dose grid and an empty data object`` ``dose_grid`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``, ``10``, ``15``, ``20``, ``25``, ``40``, ``50``, ``80``, ``100``)`` ``empty_data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` ``dose_grid``)`` `` ``# Initialize the CRM model.`` ``initial_model`` ``<-`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`` `` mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``0.85``, ``1``)``,`` `` cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``-``0.5``, ``-``0.5``, ``1``)``, nrow ``=`` ``2``)``,`` `` ref_dose ``=`` ``56`` ``)`` `` ``# Choose the rule for selecting the next dose.`` ``next_best`` ``<-`` `[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` overdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.35``, ``1``)``,`` `` max_overdose_prob ``=`` ``0.25`` ``)`` `` ``# Choose the rule for the cohort size.`` ``cohort_size1`` ``<-`` `[`CohortSizeRange`](https://docs.crmpack.org/reference/CohortSizeRange-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``30``)``,`` `` cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``)`` ``)`` ``cohort_size2`` ``<-`` `[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``,`` `` cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``)`` ``)`` ``cohort_size`` ``<-`` `[`maxSize`](https://docs.crmpack.org/reference/maxSize.md)`(``cohort_size1``, ``cohort_size2``)`` `` ``# Choose the rule for stopping.`` ``stopping_success1`` ``<-`` `[`StoppingMinCohorts`](https://docs.crmpack.org/reference/StoppingMinCohorts-class.md)`(``nCohorts ``=`` ``3``)`` ``stopping_success2`` ``<-`` `[`StoppingTargetProb`](https://docs.crmpack.org/reference/StoppingTargetProb-class.md)`(`` `` target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.2``, ``0.35``)``,`` `` prob ``=`` ``0.5`` ``)`` ``stopping_futility`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``20``)`` ``stopping_trial`` ``<-`` ``(``stopping_success1`` ``&`` ``stopping_success2``)`` ``|`` ``stopping_futility`` `` ``# Choose the rule for dose increments.`` ``increment_rule`` ``<-`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``20``)``,`` `` increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``0.33``)`` ``)`` `` ``# Initialize the design.`` ``design`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``initial_model``,`` `` nextBest ``=`` ``next_best``,`` `` stopping ``=`` ``stopping_trial``,`` `` increments ``=`` ``increment_rule``,`` `` cohort_size ``=`` ``cohort_size``,`` `` data ``=`` ``empty_data``,`` `` startingDose ``=`` ``3`` ``)`
 
 ## Incoherence and rigidity
 
@@ -89,10 +30,7 @@ number of DLTs reported, the dose recommendation (`nextBest` dose) made
 by the model on the assumption that no earlier DLTs were reported at
 lower doses.
 
-``` r
-
-examine(design) %>% kable()
-```
+[`examine`](https://docs.crmpack.org/reference/examine.md)`(``design``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `[`kable`](https://rdrr.io/pkg/knitr/man/kable.html)`(``)`
 
 | dose | DLTs | nextDose | stop  | increment |
 |-----:|-----:|---------:|:------|----------:|
@@ -164,20 +102,7 @@ next for doses above 20 mg. The dose grid being used is 1, 3, 5, 10, 15,
 between 25 and 40 is 1.6. We can confirm this by checking the behaviour
 of `maxDose` with artificial data:
 
-``` r
-
-no_tox_below_25_data <- Data(
-  doseGrid = dose_grid,
-  x = c(1, 3, 5, 10, 15, 20, 25),
-  y = rep(0, 7),
-  ID = 1L:7L,
-  cohort = 1L:7L
-)
-
-next_dose <- maxDose(increment_rule, no_tox_below_25_data)
-next_dose
-#> [1] 33.25
-```
+`no_tox_below_25_data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` ``dose_grid``,`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``, ``10``, ``15``, ``20``, ``25``)``,`` `` y ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``0``, ``7``)``,`` `` ID ``=`` ``1L``:``7L``,`` `` cohort ``=`` ``1L``:``7L`` ``)`` `` ``next_dose`` ``<-`` `[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``increment_rule``, ``no_tox_below_25_data``)`` ``next_dose`` ``#> [1] 33.25`
 
 Thus, the initial dose rule permanently prevents escalation above 25 mg
 because the highest permitted dose above 25 mg is 33.25 but the lowest
@@ -187,35 +112,7 @@ one or more intermediate doses. (We could, of course, do both.) We
 choose to relax the increments rule and check that, ceteris paribus,
 this permits escalation from every dose:
 
-``` r
-
-revised_increment_rule <- IncrementsRelative(
-  intervals = c(0, 20, 80),
-  increments = c(1, 0.67, 0.33)
-)
-tibble(
-  HighestDoseUsed = dose_grid,
-  MaxPermittedDose = c(
-    NA,
-    sapply(
-      seq_along(dose_grid[-1]),
-      function(n) {
-        tmp <- dose_grid[-1]
-        d <- Data(
-          doseGrid = dose_grid,
-          x = tmp[1:n],
-          y = rep(0, n),
-          ID = as.integer(1:n),
-          cohort = as.integer(1:n)
-        )
-        maxDose(revised_increment_rule, d)
-      }
-    )
-  )
-) %>%
-  mutate(EscalationPermitted = lead(HighestDoseUsed < MaxPermittedDose)) %>%
-  kable()
-```
+`revised_increment_rule`` ``<-`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(`` `` intervals ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``20``, ``80``)``,`` `` increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``0.67``, ``0.33``)`` ``)`` `[`tibble`](https://tibble.tidyverse.org/reference/tibble.html)`(`` `` HighestDoseUsed ``=`` ``dose_grid``,`` `` MaxPermittedDose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` ``NA``,`` `` `[`sapply`](https://rdrr.io/r/base/lapply.html)`(`` `` `[`seq_along`](https://rdrr.io/r/base/seq.html)`(``dose_grid``[``-``1``]``)``,`` `` ``function``(``n``)`` ``{`` `` ``tmp`` ``<-`` ``dose_grid``[``-``1``]`` `` ``d`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` ``dose_grid``,`` `` x ``=`` ``tmp``[``1``:``n``]``,`` `` y ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``0``, ``n``)``,`` `` ID ``=`` `[`as.integer`](https://rdrr.io/r/base/integer.html)`(``1``:``n``)``,`` `` cohort ``=`` `[`as.integer`](https://rdrr.io/r/base/integer.html)`(``1``:``n``)`` `` ``)`` `` `[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``revised_increment_rule``, ``d``)`` `` ``}`` `` ``)`` `` ``)`` ``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` `[`mutate`](https://dplyr.tidyverse.org/reference/mutate.html)`(``EscalationPermitted ``=`` `[`lead`](https://dplyr.tidyverse.org/reference/lead-lag.html)`(``HighestDoseUsed`` ``<`` ``MaxPermittedDose``)``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` `[`kable`](https://rdrr.io/pkg/knitr/man/kable.html)`(``)`
 
 | HighestDoseUsed | MaxPermittedDose | EscalationPermitted |
 |----------------:|-----------------:|:--------------------|
@@ -233,25 +130,11 @@ tibble(
 
 Yes, it does. So we update the design:
 
-``` r
-
-revised_design <- Design(
-  model = initial_model,
-  nextBest = next_best,
-  stopping = stopping_trial,
-  increments = revised_increment_rule,
-  cohort_size = cohort_size,
-  data = empty_data,
-  startingDose = 3
-)
-```
+`revised_design`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``initial_model``,`` `` nextBest ``=`` ``next_best``,`` `` stopping ``=`` ``stopping_trial``,`` `` increments ``=`` ``revised_increment_rule``,`` `` cohort_size ``=`` ``cohort_size``,`` `` data ``=`` ``empty_data``,`` `` startingDose ``=`` ``3`` ``)`
 
 ## Does the prior make sense?
 
-``` r
-
-examine(revised_design) %>% kable()
-```
+[`examine`](https://docs.crmpack.org/reference/examine.md)`(``revised_design``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `[`kable`](https://rdrr.io/pkg/knitr/man/kable.html)`(``)`
 
 | dose | DLTs | nextDose | stop  | increment |
 |-----:|-----:|---------:|:------|----------:|
@@ -289,50 +172,7 @@ examine(revised_design) %>% kable()
 Hmmm. We now appear to be stuck at 50 mg. Why is this? Let’s examine the
 state of the model after escalation to 50 mg without toxicity…
 
-``` r
-
-no_tox_below_50_data <- Data(
-  doseGrid = dose_grid,
-  x = c(1, 3, 5, 10, 15, 20, 25, 40, 40, 40, 50, 50, 50),
-  y = rep(0, 13),
-  ID = 1L:13L,
-  cohort = c(1L:7L, rep(8L:9L, each = 3))
-)
-
-default_mcmc_options <- McmcOptions(
-  burnin = 1000,
-  step = 2,
-  samples = 1000,
-  rng_kind = "Mersenne-Twister",
-  rng_seed = 3819
-)
-no_tox_50_samples <- mcmc(no_tox_below_50_data, initial_model, default_mcmc_options)
-recommended_dose <- nextBest(
-  next_best,
-  doselimit = Inf,
-  samples = no_tox_50_samples,
-  model = initial_model,
-  data = no_tox_below_50_data
-)
-recommended_dose$value
-#> [1] 50
-recommended_dose$probs
-#>       dose target overdose
-#>  [1,]    1  0.000    0.000
-#>  [2,]    3  0.000    0.000
-#>  [3,]    5  0.000    0.000
-#>  [4,]   10  0.000    0.000
-#>  [5,]   15  0.000    0.000
-#>  [6,]   20  0.001    0.000
-#>  [7,]   25  0.003    0.000
-#>  [8,]   40  0.054    0.002
-#>  [9,]   50  0.145    0.016
-#> [10,]   80  0.158    0.803
-#> [11,]  100  0.043    0.939
-
-maxDose(revised_increment_rule, no_tox_below_50_data)
-#> [1] 83.5
-```
+`no_tox_below_50_data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` ``dose_grid``,`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``, ``10``, ``15``, ``20``, ``25``, ``40``, ``40``, ``40``, ``50``, ``50``, ``50``)``,`` `` y ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``0``, ``13``)``,`` `` ID ``=`` ``1L``:``13L``,`` `` cohort ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1L``:``7L``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``8L``:``9L``, each ``=`` ``3``)``)`` ``)`` `` ``default_mcmc_options`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(`` `` burnin ``=`` ``1000``,`` `` step ``=`` ``2``,`` `` samples ``=`` ``1000``,`` `` rng_kind ``=`` ``"Mersenne-Twister"``,`` `` rng_seed ``=`` ``3819`` ``)`` ``no_tox_50_samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``no_tox_below_50_data``, ``initial_model``, ``default_mcmc_options``)`` ``recommended_dose`` ``<-`` `[`nextBest`](https://docs.crmpack.org/reference/nextBest.md)`(`` `` ``next_best``,`` `` doselimit ``=`` ``Inf``,`` `` samples ``=`` ``no_tox_50_samples``,`` `` model ``=`` ``initial_model``,`` `` data ``=`` ``no_tox_below_50_data`` ``)`` ``recommended_dose``$``value`` ``#> [1] 50`` ``recommended_dose``$``probs`` ``#> dose target overdose`` ``#> [1,] 1 0.000 0.000`` ``#> [2,] 3 0.000 0.000`` ``#> [3,] 5 0.000 0.000`` ``#> [4,] 10 0.000 0.000`` ``#> [5,] 15 0.000 0.000`` ``#> [6,] 20 0.001 0.000`` ``#> [7,] 25 0.003 0.000`` ``#> [8,] 40 0.054 0.002`` ``#> [9,] 50 0.145 0.016`` ``#> [10,] 80 0.158 0.803`` ``#> [11,] 100 0.043 0.939`` `` `[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``revised_increment_rule``, ``no_tox_below_50_data``)`` ``#> [1] 83.5`
 
 Whilst the increments rule allows escalation to 83.5 mg, the toxicity
 estimates provided by the model do not: the current estimate of toxicity
@@ -346,39 +186,7 @@ that it allows faster, but still reasonable, escalation. Let’s try
 creating a minimally informative prior that is consistent with our first
 attempt.
 
-``` r
-
-# Fitting the min_inf_model is slow.
-if (file.exists("minInfModel.Rds")) {
-  min_inf_model <- readRDS("minInfModel.Rds")
-} else {
-  min_inf_model <- MinimalInformative(
-    dose_grid,
-    56,
-    threshmin = 0.1,
-    threshmax = 0.4,
-    probmin = 0.05,
-    probmax = 0.05
-  )
-
-  as_tibble(min_inf_model$required) %>%
-    add_column(Dose = dose_grid) %>%
-    add_column(Type = "Required") %>%
-    bind_rows(
-      as_tibble(min_inf_model$quantiles) %>%
-        add_column(Dose = dose_grid) %>%
-        add_column(Type = "Fitted")
-    ) %>%
-    ggplot() +
-    geom_line(aes(x = Dose, y = median, colour = Type), linetype = "solid") +
-    geom_line(aes(x = Dose, y = lower, colour = Type), linetype = "dotted") +
-    geom_line(aes(x = Dose, y = upper, colour = Type), linetype = "dotted")
-
-  saveRDS(min_inf_model, "minInfModel.Rds")
-}
-
-min_inf_model$model@params
-```
+`# Fitting the min_inf_model is slow.`` ``if`` ``(`[`file.exists`](https://rdrr.io/r/base/files.html)`(``"minInfModel.Rds"``)``)`` ``{`` `` ``min_inf_model`` ``<-`` `[`readRDS`](https://rdrr.io/r/base/readRDS.html)`(``"minInfModel.Rds"``)`` ``}`` ``else`` ``{`` `` ``min_inf_model`` ``<-`` `[`MinimalInformative`](https://docs.crmpack.org/reference/MinimalInformative.md)`(`` `` ``dose_grid``,`` `` ``56``,`` `` threshmin ``=`` ``0.1``,`` `` threshmax ``=`` ``0.4``,`` `` probmin ``=`` ``0.05``,`` `` probmax ``=`` ``0.05`` `` ``)`` `` `` `[`as_tibble`](https://tibble.tidyverse.org/reference/as_tibble.html)`(``min_inf_model``$``required``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` ``add_column``(``Dose ``=`` ``dose_grid``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` ``add_column``(``Type ``=`` ``"Required"``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` `[`bind_rows`](https://dplyr.tidyverse.org/reference/bind_rows.html)`(`` `` `[`as_tibble`](https://tibble.tidyverse.org/reference/as_tibble.html)`(``min_inf_model``$``quantiles``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` ``add_column``(``Dose ``=`` ``dose_grid``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` ``add_column``(``Type ``=`` ``"Fitted"``)`` `` ``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `` `[`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)`(``)`` ``+`` `` `[`geom_line`](https://ggplot2.tidyverse.org/reference/geom_path.html)`(`[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(``x ``=`` ``Dose``, y ``=`` ``median``, colour ``=`` ``Type``)``, linetype ``=`` ``"solid"``)`` ``+`` `` `[`geom_line`](https://ggplot2.tidyverse.org/reference/geom_path.html)`(`[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(``x ``=`` ``Dose``, y ``=`` ``lower``, colour ``=`` ``Type``)``, linetype ``=`` ``"dotted"``)`` ``+`` `` `[`geom_line`](https://ggplot2.tidyverse.org/reference/geom_path.html)`(`[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(``x ``=`` ``Dose``, y ``=`` ``upper``, colour ``=`` ``Type``)``, linetype ``=`` ``"dotted"``)`` `` `` `[`saveRDS`](https://rdrr.io/r/base/readRDS.html)`(``min_inf_model``, ``"minInfModel.Rds"``)`` ``}`` `` ``min_inf_model``$``model``@``params`
 
 The prior for θ is given by
 ``` math
@@ -393,22 +201,7 @@ The minimally informative model has a prior distribution of
 
 Does this fix the rigidity problem?
 
-``` r
-
-revised_model <- min_inf_model$model
-
-revised_design1 <- Design(
-  model = revised_model,
-  nextBest = next_best,
-  stopping = stopping_trial,
-  increments = revised_increment_rule,
-  cohort_size = cohort_size,
-  data = empty_data,
-  startingDose = 3
-)
-
-examine(revised_design1) %>% kable()
-```
+`revised_model`` ``<-`` ``min_inf_model``$``model`` `` ``revised_design1`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``revised_model``,`` `` nextBest ``=`` ``next_best``,`` `` stopping ``=`` ``stopping_trial``,`` `` increments ``=`` ``revised_increment_rule``,`` `` cohort_size ``=`` ``cohort_size``,`` `` data ``=`` ``empty_data``,`` `` startingDose ``=`` ``3`` ``)`` `` `[`examine`](https://docs.crmpack.org/reference/examine.md)`(``revised_design1``)`` `[`%>%`](https://docs.crmpack.org/reference/pipe.md)` `[`kable`](https://rdrr.io/pkg/knitr/man/kable.html)`(``)`
 
 | dose | DLTs | nextDose | stop  | increment |
 |-----:|-----:|---------:|:------|----------:|
@@ -458,91 +251,7 @@ this possibility.
 Now create some data that represent a trial that escalates without any
 reports of toxicity, and fit the revised model …
 
-``` r
-
-no_tox_data <- Data(
-  doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
-  x = c(c(1, 3, 5, 10, 15, 20), rep(c(25, 40, 50, 80, 100), each = 3)),
-  y = rep(0, 21),
-  cohort = as.integer(c(1:6, rep(7:11, each = 3))),
-  ID = as.integer(1:21)
-)
-
-no_tox_samples <- mcmc(no_tox_data, revised_model, default_mcmc_options)
-
-recommended_dose <- nextBest(
-  next_best,
-  doselimit = Inf,
-  samples = no_tox_samples,
-  model = initial_model,
-  data = no_tox_data
-)
-recommended_dose$probs
-#>       dose target overdose
-#>  [1,]    1  0.000    0.000
-#>  [2,]    3  0.000    0.000
-#>  [3,]    5  0.000    0.000
-#>  [4,]   10  0.000    0.000
-#>  [5,]   15  0.000    0.000
-#>  [6,]   20  0.000    0.000
-#>  [7,]   25  0.000    0.000
-#>  [8,]   40  0.000    0.000
-#>  [9,]   50  0.004    0.000
-#> [10,]   80  0.191    0.000
-#> [11,]  100  0.347    0.012
-
-stopTrial(stopping_trial, recommended_dose$value, no_tox_samples, initial_model, no_tox_data)
-#> [1] TRUE
-#> attr(,"message")
-#> attr(,"message")[[1]]
-#> attr(,"message")[[1]][[1]]
-#> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
-#> 
-#> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
-#> 
-#> 
-#> attr(,"message")[[2]]
-#> [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"
-#> 
-#> attr(,"individual")
-#> attr(,"individual")[[1]]
-#> [1] FALSE
-#> attr(,"message")
-#> attr(,"message")[[1]]
-#> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
-#> 
-#> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
-#> 
-#> attr(,"individual")
-#> attr(,"individual")[[1]]
-#> [1] TRUE
-#> attr(,"message")
-#> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"
-#> attr(,"report_label")
-#> [1] "≥ 3 cohorts dosed"
-#> 
-#> attr(,"individual")[[2]]
-#> [1] FALSE
-#> attr(,"message")
-#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"
-#> attr(,"report_label")
-#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
-#> 
-#> attr(,"report_label")
-#> [1] NA
-#> 
-#> attr(,"individual")[[2]]
-#> [1] TRUE
-#> attr(,"message")
-#> [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"
-#> attr(,"report_label")
-#> [1] "≥ 20 patients dosed"
-#> 
-#> attr(,"report_label")
-#> [1] NA
-```
+`no_tox_data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`` `` doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``, ``10``, ``15``, ``20``, ``25``, ``40``, ``50``, ``80``, ``100``)``,`` `` x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``, ``10``, ``15``, ``20``)``, `[`rep`](https://rdrr.io/r/base/rep.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``25``, ``40``, ``50``, ``80``, ``100``)``, each ``=`` ``3``)``)``,`` `` y ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``0``, ``21``)``,`` `` cohort ``=`` `[`as.integer`](https://rdrr.io/r/base/integer.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``1``:``6``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``7``:``11``, each ``=`` ``3``)``)``)``,`` `` ID ``=`` `[`as.integer`](https://rdrr.io/r/base/integer.html)`(``1``:``21``)`` ``)`` `` ``no_tox_samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``no_tox_data``, ``revised_model``, ``default_mcmc_options``)`` `` ``recommended_dose`` ``<-`` `[`nextBest`](https://docs.crmpack.org/reference/nextBest.md)`(`` `` ``next_best``,`` `` doselimit ``=`` ``Inf``,`` `` samples ``=`` ``no_tox_samples``,`` `` model ``=`` ``initial_model``,`` `` data ``=`` ``no_tox_data`` ``)`` ``recommended_dose``$``probs`` ``#> dose target overdose`` ``#> [1,] 1 0.000 0.000`` ``#> [2,] 3 0.000 0.000`` ``#> [3,] 5 0.000 0.000`` ``#> [4,] 10 0.000 0.000`` ``#> [5,] 15 0.000 0.000`` ``#> [6,] 20 0.000 0.000`` ``#> [7,] 25 0.000 0.000`` ``#> [8,] 40 0.000 0.000`` ``#> [9,] 50 0.004 0.000`` ``#> [10,] 80 0.191 0.000`` ``#> [11,] 100 0.347 0.012`` `` `[`stopTrial`](https://docs.crmpack.org/reference/stopTrial.md)`(``stopping_trial``, ``recommended_dose``$``value``, ``no_tox_samples``, ``initial_model``, ``no_tox_data``)`` ``#> [1] TRUE`` ``#> attr(,"message")`` ``#> attr(,"message")[[1]]`` ``#> attr(,"message")[[1]][[1]]`` ``#> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"`` ``#> `` ``#> attr(,"message")[[1]][[2]]`` ``#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"`` ``#> `` ``#> `` ``#> attr(,"message")[[2]]`` ``#> [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"`` ``#> `` ``#> attr(,"individual")`` ``#> attr(,"individual")[[1]]`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> attr(,"message")[[1]]`` ``#> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"`` ``#> `` ``#> attr(,"message")[[2]]`` ``#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"`` ``#> `` ``#> attr(,"individual")`` ``#> attr(,"individual")[[1]]`` ``#> [1] TRUE`` ``#> attr(,"message")`` ``#> [1] "Number of cohorts is 11 and thus reached the prespecified minimum number 3"`` ``#> attr(,"report_label")`` ``#> [1] "≥ 3 cohorts dosed"`` ``#> `` ``#> attr(,"individual")[[2]]`` ``#> [1] FALSE`` ``#> attr(,"message")`` ``#> [1] "Probability for target toxicity is 35 % for dose 100 and thus below the required 50 %"`` ``#> attr(,"report_label")`` ``#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"`` ``#> `` ``#> attr(,"report_label")`` ``#> [1] NA`` ``#> `` ``#> attr(,"individual")[[2]]`` ``#> [1] TRUE`` ``#> attr(,"message")`` ``#> [1] "Number of patients is 21 and thus reached the prespecified minimum number 20"`` ``#> attr(,"report_label")`` ``#> [1] "≥ 20 patients dosed"`` ``#> `` ``#> attr(,"report_label")`` ``#> [1] NA`
 
 More importantly, these results illustrate something that should have
 been obvious from the outset: expecting the trial to identify the MTD
@@ -560,21 +269,7 @@ simply not realistic.
 So our final alteration is to increase the futility rule from 20
 participants to 40.
 
-``` r
-
-revised_stopping_futility <- StoppingMinPatients(nPatients = 40)
-revised_stopping_trial <- (stopping_success1 & stopping_success2) | revised_stopping_futility
-
-revised_design2 <- Design(
-  model = revised_model,
-  nextBest = next_best,
-  stopping = revised_stopping_trial,
-  increments = revised_increment_rule,
-  cohort_size = cohort_size,
-  data = empty_data,
-  startingDose = 3
-)
-```
+`revised_stopping_futility`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``40``)`` ``revised_stopping_trial`` ``<-`` ``(``stopping_success1`` ``&`` ``stopping_success2``)`` ``|`` ``revised_stopping_futility`` `` ``revised_design2`` ``<-`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`` `` model ``=`` ``revised_model``,`` `` nextBest ``=`` ``next_best``,`` `` stopping ``=`` ``revised_stopping_trial``,`` `` increments ``=`` ``revised_increment_rule``,`` `` cohort_size ``=`` ``cohort_size``,`` `` data ``=`` ``empty_data``,`` `` startingDose ``=`` ``3`` ``)`
 
 This new design allows us to escalate over the full extent of the dose
 grid before the futility stopping rule kicks in. Further refinement of

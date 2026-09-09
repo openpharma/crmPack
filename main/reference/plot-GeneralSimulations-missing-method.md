@@ -23,7 +23,15 @@ You can specify one or both of these in the `type` argument.
 
 ``` r
 # S4 method for class 'GeneralSimulations,missing'
-plot(x, y, type = c("trajectory", "dosesTried"), ...)
+plot(
+  x,
+  y,
+  type = c("trajectory", "dosesTried"),
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("auto", "linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  ...
+)
 ```
 
 ## Arguments
@@ -43,9 +51,31 @@ plot(x, y, type = c("trajectory", "dosesTried"), ...)
   (`character`)\
   the type of plots you want to obtain.
 
+- prob_plot_type:
+
+  (`string`)\
+  for the doses tried plot, use a `"lollipop"` (default) or `"bar"`
+  geometry.
+
+- dose_scale:
+
+  (`string`)\
+  for dose axes, use `"auto"` (default), `"linear"`, or `"log"`.
+  Automatic scaling is linear except when equal-width bars would
+  overlap, in which case the doses tried x-axis uses log10. The
+  trajectory y-axis uses log10 only when explicitly requested. Log
+  scaling requires all doses to be strictly positive.
+
+- axis_ticks:
+
+  (`string`)\
+  place dose-axis ticks at each dose-grid value (`"dosegrid"`, the
+  default) or at regular positions selected by `ggplot2` (`"regular"`).
+  This controls the trajectory y-axis and doses tried x-axis.
+
 - ...:
 
-  not used.
+  additional arguments without method dispatch.
 
 ## Value
 

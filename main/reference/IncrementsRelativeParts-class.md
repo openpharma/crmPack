@@ -33,13 +33,13 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
 
   `intervals`
 
-  :   (`numeric`)\
-      see slot definition.
+  : (`numeric`)\
+    see slot definition.
 
   `increments`
 
-  :   (`numeric`)\
-      see slot definition.
+  : (`numeric`)\
+    see slot definition.
 
 ## Details
 
