@@ -83,26 +83,26 @@ h_plot_simulation_trajectory <- function(
   plot <- ggplot() +
     geom_ribbon(
       aes(
-        x = patient,
-        ymin = minimum,
-        ymax = maximum
+        x = .data$patient,
+        ymin = .data$minimum,
+        ymax = .data$maximum
       ),
       fill = "#C6DBEF",
       data = traj_df
     ) +
     geom_ribbon(
       aes(
-        x = patient,
-        ymin = lower_quartile,
-        ymax = upper_quartile
+        x = .data$patient,
+        ymin = .data$lower_quartile,
+        ymax = .data$upper_quartile
       ),
       fill = "#6BAED6",
       data = traj_df
     ) +
     geom_step(
       aes(
-        x = patient,
-        y = median
+        x = .data$patient,
+        y = .data$median
       ),
       linewidth = 1.2,
       colour = "#08519C",
@@ -113,18 +113,20 @@ h_plot_simulation_trajectory <- function(
 
   if (identical(dose_scale, "log")) {
     if (identical(axis_ticks, "dosegrid")) {
-      plot + scale_y_log10(
-        breaks = dose_grid,
-        labels = h_dose_axis_labels
-      )
+      plot +
+        scale_y_log10(
+          breaks = dose_grid,
+          labels = h_dose_axis_labels
+        )
     } else {
       plot + scale_y_log10()
     }
   } else if (identical(axis_ticks, "dosegrid")) {
-    plot + scale_y_continuous(
-      breaks = dose_grid,
-      labels = h_dose_axis_labels
-    )
+    plot +
+      scale_y_continuous(
+        breaks = dose_grid,
+        labels = h_dose_axis_labels
+      )
   } else {
     plot
   }
