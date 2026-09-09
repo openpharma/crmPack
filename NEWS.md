@@ -7,7 +7,7 @@
   cohorts.
 
 * Additional plotting options for `nextBest` methods for NCRM are available, including
-  log dose escale, lollipop layer instead of bars, and using the dose grid instead
+  log dose scale, lollipop layer instead of bars, and using the dose grid instead
   of regularly spaced axis ticks.
 
 ### Enhancements
