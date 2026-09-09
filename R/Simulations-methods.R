@@ -60,20 +60,16 @@ h_plot_simulation_trajectory <- function(
   }
 
   # Extract statistics.
-  stats <- c(
-    "Minimum",
-    "Lower Quartile",
-    "Median",
-    "Upper Quartile",
-    "Maximum"
+  trajectory_quantiles <- t(
+    apply(sim_doses_mat, 2L, quantile, na.rm = TRUE)
   )
   traj_df <- data.frame(
-    patient = rep(seq_len(max_patients), each = 5L),
-    Statistic = factor(
-      rep(stats, max_patients),
-      levels = stats
-    ),
-    traj = c(apply(sim_doses_mat, 2L, quantile, na.rm = TRUE))
+    patient = seq_len(max_patients),
+    minimum = trajectory_quantiles[, 1L],
+    lower_quartile = trajectory_quantiles[, 2L],
+    median = trajectory_quantiles[, 3L],
+    upper_quartile = trajectory_quantiles[, 4L],
+    maximum = trajectory_quantiles[, 5L]
   )
 
   # Create plot title.
@@ -85,15 +81,31 @@ h_plot_simulation_trajectory <- function(
 
   # Create and return plot.
   plot <- ggplot() +
+    geom_ribbon(
+      aes(
+        x = patient,
+        ymin = minimum,
+        ymax = maximum
+      ),
+      fill = "#C6DBEF",
+      data = traj_df
+    ) +
+    geom_ribbon(
+      aes(
+        x = patient,
+        ymin = lower_quartile,
+        ymax = upper_quartile
+      ),
+      fill = "#6BAED6",
+      data = traj_df
+    ) +
     geom_step(
       aes(
         x = patient,
-        y = traj,
-        group = Statistic,
-        linetype = Statistic
+        y = median
       ),
       linewidth = 1.2,
-      colour = "blue",
+      colour = "#08519C",
       data = traj_df
     ) +
     xlab(my_title) +

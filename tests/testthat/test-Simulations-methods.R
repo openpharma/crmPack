@@ -152,6 +152,29 @@ test_that("doses tried optionally uses regular axis ticks", {
   expect_null(trajectory$scales$get_scales("y"))
 })
 
+test_that("simulation trajectory uses nested blue ranges and a median line", {
+  trajectory <- h_plot_simulation_trajectory(
+    sim_doses = list(c(1, 2, 3), c(2, 3, 4), c(3, 4, 5)),
+    dose_grid = 1:5,
+    max_patients = 3L,
+    has_placebo = FALSE
+  )
+
+  expect_s3_class(trajectory$layers[[1L]]$geom, "GeomRibbon")
+  expect_s3_class(trajectory$layers[[2L]]$geom, "GeomRibbon")
+  expect_s3_class(trajectory$layers[[3L]]$geom, "GeomStep")
+  expect_equal(trajectory$layers[[1L]]$aes_params$fill, "#C6DBEF")
+  expect_equal(trajectory$layers[[2L]]$aes_params$fill, "#6BAED6")
+  expect_equal(trajectory$layers[[3L]]$aes_params$colour, "#08519C")
+
+  plot_data <- ggplot_build(trajectory)$data
+  expect_equal(plot_data[[1L]]$ymin, c(1, 2, 3))
+  expect_equal(plot_data[[1L]]$ymax, c(3, 4, 5))
+  expect_equal(plot_data[[2L]]$ymin, c(1.5, 2.5, 3.5))
+  expect_equal(plot_data[[2L]]$ymax, c(2.5, 3.5, 4.5))
+  expect_equal(plot_data[[3L]]$y, c(2, 3, 4))
+})
+
 test_that("doses tried uses equal-width bars and automatically logs clashes", {
   dose_grid <- 2^(-2:4)
   sim_doses <- list(
