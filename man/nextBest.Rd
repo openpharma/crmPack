@@ -40,21 +40,76 @@
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestEWOC,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestEWOC,numeric,Samples,GeneralModel,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  ...
+)
 
 \S4method{nextBest}{NextBestMTD,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  ...
+)
 
 \S4method{nextBest}{NextBestNCRM,matrix,Samples,TwoDrugsCombo,DataCombo}(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  ...
+)
 
-\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,GeneralModel,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  ...
+)
 
 \S4method{nextBest}{NextBestThreePlusThree,missing,missing,missing,Data}(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(
+  nextBest,
+  doselimit = Inf,
+  samples,
+  model,
+  data,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  ...
+)
 
 \S4method{nextBest}{NextBestMinDist,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
@@ -110,6 +165,23 @@ used for two drug combinations.}
 \item{data}{(\code{Data} or \code{DataCombo})\cr data that was used to generate the samples.}
 
 \item{...}{additional arguments without method dispatch.}
+
+\item{prob_plot_type}{(\code{string})\cr for one-dimensional target or overdose
+probability plots, use \code{"lollipop"} (default) or the legacy \code{"bar"}
+geometry.}
+
+\item{dose_scale}{(\code{string})\cr for one-dimensional target or overdose
+probability plots, use a \code{"linear"} (default) or \code{"log"} dose axis. The
+log scale requires all doses to be strictly positive.}
+
+\item{axis_ticks}{(\code{string})\cr for one-dimensional target or overdose
+probability plots, place x-axis ticks at each dose-grid value
+(\code{"dosegrid"}, the default) or at regular positions selected by \code{ggplot2}
+(\code{"regular"}).}
+
+\item{axis_text_angle}{(\code{number})\cr rotation angle for x-axis tick labels.
+Defaults to 45 degrees for \code{axis_ticks = "dosegrid"} and 0 degrees for
+\code{axis_ticks = "regular"}.}
 
 \item{in_sim}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)

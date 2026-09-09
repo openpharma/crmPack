@@ -5,7 +5,13 @@
 \alias{plot-GeneralSimulationsSummary-missing}
 \title{Plot \code{GeneralSimulationsSummary}}
 \usage{
-\S4method{plot}{GeneralSimulationsSummary,missing}(x, y, type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"), ...)
+\S4method{plot}{GeneralSimulationsSummary,missing}(
+  x,
+  y,
+  type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"),
+  axis_text_angle = 45,
+  ...
+)
 }
 \arguments{
 \item{x}{(\code{GeneralSimulationsSummary})\cr the object we want to plot from.}
@@ -13,6 +19,9 @@
 \item{y}{(\code{missing})\cr not used.}
 
 \item{type}{(\code{character})\cr the types of plots you want to obtain.}
+
+\item{axis_text_angle}{(\code{number})\cr rotation angle for the MTD estimate
+x-axis tick labels. Defaults to 45 degrees.}
 
 \item{...}{not used.}
 }

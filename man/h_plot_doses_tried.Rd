@@ -4,12 +4,30 @@
 \alias{h_plot_doses_tried}
 \title{Helper Function to Create Doses Tried Plot}
 \usage{
-h_plot_doses_tried(sim_doses, dose_grid)
+h_plot_doses_tried(
+  sim_doses,
+  dose_grid,
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("auto", "linear", "log"),
+  axis_ticks = c("dosegrid", "regular")
+)
 }
 \arguments{
 \item{sim_doses}{(\code{list})\cr list of simulated doses per trial.}
 
 \item{dose_grid}{(\code{numeric})\cr dose grid.}
+
+\item{prob_plot_type}{(\code{string})\cr plot geometry, either \code{"lollipop"} or
+\code{"bar"}.}
+
+\item{dose_scale}{(\code{string})\cr dose-axis scale, one of \code{"auto"}, \code{"linear"},
+or \code{"log"}. With bars, \code{"auto"} switches to a log scale when equal-width
+bars would overlap. The log scale requires all doses to be strictly
+positive.}
+
+\item{axis_ticks}{(\code{string})\cr x-axis tick positions, either at each
+dose-grid value (\code{"dosegrid"}, the default) or at regular positions selected
+by \code{ggplot2} (\code{"regular"}).}
 }
 \value{
 A \code{ggplot} object.
@@ -17,6 +35,6 @@ A \code{ggplot} object.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Creates a bar plot showing average proportions of doses tested.
+Creates a lollipop or bar plot showing average proportions of doses tested.
 }
 \keyword{internal}
