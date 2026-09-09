@@ -406,6 +406,23 @@ test_that("h_next_best_ncrm_loss_plot works as expected", {
     FALSE,
     prob_plot_type = "bar"
   )
+
+  target_layers <- result$plots_single$plot1$layers
+  expect_identical(
+    unname(vapply(target_layers, function(x) class(x$geom)[1L], character(1L))),
+    c("GeomVline", "GeomVline", "GeomBar")
+  )
+
+  overdose_layers <- result$plots_single$plot2$layers
+  expect_s3_class(overdose_layers[[1L]]$geom, "GeomHline")
+  expect_s3_class(overdose_layers[[2L]]$geom, "GeomBar")
+
+  loss_layers <- result$plots_single$plot_loss$layers
+  expect_identical(loss_layers[[2L]]$aes_params$colour, "blue")
+  expect_identical(loss_layers[[2L]]$aes_params$fill, "blue")
+  loss_plot_data <- ggplot_build(result$plots_single$plot_loss)$data
+  expect_equal(loss_plot_data[[2L]]$y - max(loss_plot_data[[1L]]$y), 0.3)
+
   expect_doppel("h_next_best_ncrm_loss_plot", result$plot_joint)
   expect_doppel("h_next_best_ncrm_loss_plot_p1", result$plots_single$plot1)
   expect_doppel("h_next_best_ncrm_loss_plot_p2", result$plots_single$plot2)

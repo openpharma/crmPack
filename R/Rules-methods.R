@@ -333,18 +333,9 @@ setMethod(
       NA_real_
     }
 
-    # Build plots, first for the target probability.
-    p1 <- h_next_best_probability_plot(
-      dose_grid = data@doseGrid,
-      probability = prob_target,
-      description = "Target probability [%]",
-      colour = "darkgreen",
-      prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale,
-      axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
-    ) +
-      coord_cartesian(ylim = c(0, 100))
+  # Build plots, first for the target probability. Reference lines are added
+    # before the probability geometry so it remains visible where layers overlap.
+    p1 <- ggplot()
 
     if (is.finite(doselimit)) {
       p1 <- p1 +
@@ -358,21 +349,46 @@ setMethod(
           lwd = 1.1,
           lty = 2,
           colour = "red"
-        ) +
+        )
+    }
+
+    p1 <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_target,
+      description = "Target probability [%]",
+      colour = "darkgreen",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = p1
+    ) +
+      scale_y_continuous(breaks = seq(0, 100, 25)) +
+      coord_cartesian(ylim = c(0, 115))
+
+    if (any(is_dose_eligible)) {
+      p1 <- p1 +
         geom_point(
           data = data.frame(
             x = next_dose,
-            y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03
+            y = prob_target[is_dose_eligible][next_best_level] * 100 + 10
           ),
           aes(x = x, y = y),
           size = 3,
           pch = 25,
-          col = "red",
-          bg = "red"
+          col = "blue",
+          bg = "blue"
         )
     }
 
     # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_hline(
+        yintercept = nextBest@max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
+        colour = "black"
+      )
     p2 <- h_next_best_probability_plot(
       dose_grid = data@doseGrid,
       probability = prob_overdose,
@@ -381,14 +397,9 @@ setMethod(
       prob_plot_type = prob_plot_type,
       dose_scale = dose_scale,
       axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
+      axis_text_angle = axis_text_angle,
+      base_plot = p2
     ) +
-      geom_hline(
-        yintercept = nextBest@max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      ) +
       ylim(c(0, 100))
 
     # Place them below each other.
@@ -935,18 +946,9 @@ setMethod(
       NA_real_
     }
 
-    # Build plots, first for the target probability.
-    p1 <- h_next_best_probability_plot(
-      dose_grid = data@doseGrid,
-      probability = prob_target,
-      description = "Target probability [%]",
-      colour = "darkgreen",
-      prob_plot_type = prob_plot_type,
-      dose_scale = dose_scale,
-      axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
-    ) +
-      ylim(c(0, 100))
+    # Build plots, first for the target probability. Reference lines are added
+    # before the probability geometry so it remains visible where layers overlap.
+    p1 <- ggplot()
 
     if (is.finite(doselimit)) {
       p1 <- p1 +
@@ -960,21 +962,46 @@ setMethod(
           lwd = 1.1,
           lty = 2,
           colour = "red"
-        ) +
+        )
+    }
+
+    p1 <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_target,
+      description = "Target probability [%]",
+      colour = "darkgreen",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = p1
+    ) +
+      scale_y_continuous(breaks = seq(0, 100, 25)) +
+      coord_cartesian(ylim = c(0, 115))
+
+    if (any(is_dose_eligible)) {
+      p1 <- p1 +
         geom_point(
           data = data.frame(
             x = next_dose,
-            y = prob_target[is_dose_eligible][next_dose_level] * 100 + 0.03
+            y = prob_target[is_dose_eligible][next_dose_level] * 100 + 10
           ),
           aes(x = x, y = y),
           size = 3,
           pch = 25,
-          col = "red",
-          bg = "red"
+          col = "blue",
+          bg = "blue"
         )
     }
 
     # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_hline(
+        yintercept = nextBest@max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
+        colour = "black"
+      )
     p2 <- h_next_best_probability_plot(
       dose_grid = data@doseGrid,
       probability = prob_overdose,
@@ -983,14 +1010,9 @@ setMethod(
       prob_plot_type = prob_plot_type,
       dose_scale = dose_scale,
       axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
+      axis_text_angle = axis_text_angle,
+      base_plot = p2
     ) +
-      geom_hline(
-        yintercept = nextBest@max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      ) +
       ylim(c(0, 100))
 
     # Place them below each other.

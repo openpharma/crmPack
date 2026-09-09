@@ -279,6 +279,9 @@ h_dose_axis_labels <- function(x) {
 #' @param axis_text_angle (`number`)
 #'   rotation angle for x-axis tick labels. Defaults to 45 degrees for
 #'   `axis_ticks = "dosegrid"` and 0 degrees for `axis_ticks = "regular"`.
+#' @param base_plot (`ggplot`)
+#'   plot containing any background layers to draw below the probability
+#'   geometry.
 #'
 #' @return A `ggplot2` object.
 #'
@@ -291,7 +294,8 @@ h_next_best_probability_plot <- function(
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
-  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  base_plot = ggplot()
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   assert_probabilities(probability)
@@ -302,6 +306,7 @@ h_next_best_probability_plot <- function(
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
   assert_number(axis_text_angle, finite = TRUE)
+  assert_class(base_plot, "ggplot")
   if (identical(dose_scale, "log") && any(dose_grid <= 0)) {
     stop(
       "`dose_scale = \"log\"` requires all doses to be strictly positive.",
@@ -310,7 +315,7 @@ h_next_best_probability_plot <- function(
   }
 
   plot_data <- data.frame(Dose = dose_grid, y = probability * 100)
-  plot <- ggplot()
+  plot <- base_plot
 
   plot <- if (identical(prob_plot_type, "lollipop")) {
     plot +
@@ -475,18 +480,9 @@ h_next_best_ncrm_loss_plot <- function(
   axis_ticks <- match.arg(axis_ticks)
   assert_number(axis_text_angle, finite = TRUE)
 
-  # Build plots, first for the target probability.
-  p1 <- h_next_best_probability_plot(
-    dose_grid = dose_grid,
-    probability = prob_mat[, "target"],
-    description = "Target probability [%]",
-    colour = "darkgreen",
-    prob_plot_type = prob_plot_type,
-    dose_scale = dose_scale,
-    axis_ticks = axis_ticks,
-    axis_text_angle = axis_text_angle
-  ) +
-    ylim(c(0, 100))
+  # Build plots, first for the target probability. Reference lines are added
+  # before the probability geometry so it remains visible where layers overlap.
+  p1 <- ggplot()
 
   if (is.finite(doselimit)) {
     p1 <- p1 +
@@ -503,6 +499,20 @@ h_next_best_ncrm_loss_plot <- function(
       )
   }
 
+  p1 <- h_next_best_probability_plot(
+    dose_grid = dose_grid,
+    probability = prob_mat[, "target"],
+    description = "Target probability [%]",
+    colour = "darkgreen",
+    prob_plot_type = prob_plot_type,
+    dose_scale = dose_scale,
+    axis_ticks = axis_ticks,
+    axis_text_angle = axis_text_angle,
+    base_plot = p1
+  ) +
+    ylim(c(0, 100)) +
+    ylab("Target probability [%]")
+
   p_loss <- ggplot() +
     # For the loss function.
     geom_bar(
@@ -515,16 +525,23 @@ h_next_best_ncrm_loss_plot <- function(
       fill = "darkgreen"
     ) +
     geom_point(
-      aes(x = next_dose, y = max(posterior_loss) + 0.2),
+      aes(x = next_dose, y = max(posterior_loss) + 0.3),
       size = 3,
       pch = 25,
-      col = "red",
-      bg = "red"
+      col = "blue",
+      bg = "blue"
     ) +
     ylab(paste("Loss function"))
 
   if (!is_unacceptable_specified) {
     # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_hline(
+        yintercept = max_overdose_prob * 100,
+        lwd = 1.1,
+        lty = 2,
+        colour = "black"
+      )
     p2 <- h_next_best_probability_plot(
       dose_grid = dose_grid,
       probability = prob_mat[, "overdose"],
@@ -533,14 +550,9 @@ h_next_best_ncrm_loss_plot <- function(
       prob_plot_type = prob_plot_type,
       dose_scale = dose_scale,
       axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
+      axis_text_angle = axis_text_angle,
+      base_plot = p2
     ) +
-      geom_hline(
-        yintercept = max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      ) +
       ylim(c(0, 100))
 
     # Combine it all together.

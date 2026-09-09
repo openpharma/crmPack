@@ -164,6 +164,23 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
   )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
+
+  target_layers <- result$singlePlots$plot1$layers
+  expect_identical(
+    unname(vapply(target_layers, function(x) class(x$geom)[1L], character(1L))),
+    c("GeomVline", "GeomVline", "GeomBar", "GeomPoint")
+  )
+  expect_identical(target_layers[[4L]]$aes_params$colour, "blue")
+  expect_identical(target_layers[[4L]]$aes_params$fill, "blue")
+  selected_bar <- target_layers[[3L]]$data$y[
+    target_layers[[3L]]$data$Dose == result$value
+  ]
+  expect_equal(target_layers[[4L]]$data$y - selected_bar, 10)
+
+  overdose_layers <- result$singlePlots$plot2$layers
+  expect_s3_class(overdose_layers[[1L]]$geom, "GeomHline")
+  expect_s3_class(overdose_layers[[2L]]$geom, "GeomBar")
+
   expect_doppel("Plot of nextBest-NextBestNCRM", result$plot)
   expect_doppel("Plot of nextBest-NextBestNCRM_p1", result$singlePlots$plot1)
   expect_doppel("Plot of nextBest-NextBestNCRM_p2", result$singlePlots$plot2)
@@ -218,21 +235,38 @@ test_that("nextBest-NextBestNCRM supports lollipop and legacy bar plots", {
     prob_plot_type = "bar"
   )
 
-  expect_true(all(vapply(
-    result_lollipop$singlePlots,
-    function(probability_plot) {
-      inherits(probability_plot$layers[[1L]]$geom, "GeomSegment") &&
-        inherits(probability_plot$layers[[2L]]$geom, "GeomPoint")
-    },
-    logical(1L)
-  )))
-  expect_true(all(vapply(
-    result_bar$singlePlots,
-    function(probability_plot) {
-      inherits(probability_plot$layers[[1L]]$geom, "GeomBar")
-    },
-    logical(1L)
-  )))
+  expect_identical(
+    unname(vapply(
+      result_lollipop$singlePlots$plot1$layers,
+      function(layer) class(layer$geom)[1L],
+      character(1L)
+    )),
+    c("GeomVline", "GeomVline", "GeomSegment", "GeomPoint", "GeomPoint")
+  )
+  expect_identical(
+    unname(vapply(
+      result_lollipop$singlePlots$plot2$layers,
+      function(layer) class(layer$geom)[1L],
+      character(1L)
+    )),
+    c("GeomHline", "GeomSegment", "GeomPoint")
+  )
+  expect_identical(
+    unname(vapply(
+      result_bar$singlePlots$plot1$layers,
+      function(layer) class(layer$geom)[1L],
+      character(1L)
+    )),
+    c("GeomVline", "GeomVline", "GeomBar", "GeomPoint")
+  )
+  expect_identical(
+    unname(vapply(
+      result_bar$singlePlots$plot2$layers,
+      function(layer) class(layer$geom)[1L],
+      character(1L)
+    )),
+    c("GeomHline", "GeomBar")
+  )
   expect_identical(result_bar$value, result_lollipop$value)
   expect_equal(result_bar$probs, result_lollipop$probs)
   expect_doppel(
@@ -736,6 +770,23 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements", {
   )
   expect_identical(result$value, 25)
   expect_snap(result$probs)
+
+  target_layers <- result$singlePlots$plot1$layers
+  expect_identical(
+    unname(vapply(target_layers, function(x) class(x$geom)[1L], character(1L))),
+    c("GeomVline", "GeomVline", "GeomBar", "GeomPoint")
+  )
+  expect_identical(target_layers[[4L]]$aes_params$colour, "blue")
+  expect_identical(target_layers[[4L]]$aes_params$fill, "blue")
+  selected_bar <- target_layers[[3L]]$data$y[
+    target_layers[[3L]]$data$Dose == result$value
+  ]
+  expect_equal(target_layers[[4L]]$data$y - selected_bar, 10)
+
+  overdose_layers <- result$singlePlots$plot2$layers
+  expect_s3_class(overdose_layers[[1L]]$geom, "GeomHline")
+  expect_s3_class(overdose_layers[[2L]]$geom, "GeomBar")
+
   expect_doppel("Plot of nextBest-NextBestDualEndpoint", result$plot)
   expect_doppel(
     "Plot of nextBest-NextBestDualEndpoint_p1",
