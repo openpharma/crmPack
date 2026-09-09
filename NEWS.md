@@ -6,6 +6,10 @@
   next best dose has been administered to a prespecified number of consecutive
   cohorts.
 
+* Additional plotting options for `nextBest` methods for NCRM are available, including
+  log dose escale, lollipop layer instead of bars, and using the dose grid instead
+  of regularly spaced axis ticks.
+
 ### Enhancements
 
 * `HierarchicalModel` now compiles exchangeable normal priors in non-centered
@@ -21,6 +25,15 @@
   interaction parameter while sharing hyperparameters, and singleton
   interaction pools are supported so that the same hierarchical marginal prior
   can be used with one combination arm.
+
+### Miscellaneous
+
+* Simulation trajectory plots now use blue shaded ribbons to show min/max as well as
+  lower/upper quartile ranges, in addition to the median line. This makes the plots
+  better readable.
+
+* The dependency `ggplot2` package now needs to have minimum version 3.2.0 instead of previously
+  3.0.0. This should not be a practical restriction because version 3.2.0 was already released in 2019.
 
 # Version 2.2.1
 
