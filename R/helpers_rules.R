@@ -555,6 +555,9 @@ h_next_best_probability_plot <- function(
         hjust = ifelse(axis_text_angle == 0, 0.5, 1)
       )
     )
+  if (identical(dose_scale, "factor") || identical(axis_ticks, "dosegrid")) {
+    plot <- plot + theme(panel.grid.minor = element_blank())
+  }
   if (identical(dose_scale, "log")) {
     if (identical(axis_ticks, "dosegrid")) {
       plot + scale_x_log10(breaks = dose_grid, labels = h_dose_axis_labels)
