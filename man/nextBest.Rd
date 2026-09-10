@@ -47,7 +47,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
@@ -62,7 +62,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
@@ -77,7 +77,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
@@ -90,7 +90,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
@@ -105,7 +105,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   model,
   data,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   ...
@@ -171,8 +171,9 @@ probability plots, use \code{"lollipop"} (default) or the legacy \code{"bar"}
 geometry.}
 
 \item{dose_scale}{(\code{string})\cr for one-dimensional target or overdose
-probability plots, use a \code{"linear"} (default) or \code{"log"} dose axis. The
-log scale requires all doses to be strictly positive.}
+probability plots, use a \code{"linear"} (default), \code{"log"}, or \code{"factor"}
+dose axis. The factor scale spaces dose levels equally. The log scale requires
+all doses to be strictly positive.}
 
 \item{axis_ticks}{(\code{string})\cr for one-dimensional target or overdose
 probability plots, place x-axis ticks at each dose-grid value

@@ -255,6 +255,177 @@ h_dose_axis_labels <- function(x) {
   )
 }
 
+#' Convert Dose Values to Plot Positions
+#'
+#' @param dose (`numeric`) dose values to position.
+#' @param dose_grid (`numeric`) ordered dose grid.
+#' @param dose_scale (`string`) dose-axis scale.
+#'
+#' @return Numeric plot positions. For a factor scale these are equally spaced
+#'   dose-level indices; otherwise the original dose values are returned.
+#'
+#' @keywords internal
+h_dose_plot_position <- function(dose, dose_grid, dose_scale) {
+  if (!identical(dose_scale, "factor")) {
+    return(dose)
+  }
+  if (length(dose_grid) == 1L) {
+    return(rep(1, length(dose)))
+  }
+  stats::approx(
+    x = dose_grid,
+    y = seq_along(dose_grid),
+    xout = dose,
+    rule = 2
+  )$y
+}
+
+#' Add Next-Best Dose References to a Probability Plot
+#'
+#' @param plot (`ggplot`) plot to decorate.
+#' @param dose_grid (`numeric`) ordered dose grid.
+#' @param dose_scale (`string`) dose-axis scale.
+#' @param doselimit (`number`) maximum allowed next dose.
+#' @param safe_dose (`number`) maximum dose passing the overdose criterion.
+#' @param overdose_threshold (`number`) overdose probability threshold in
+#'   percentage points.
+#'
+#' @return The decorated `ggplot2` object.
+#'
+#' @keywords internal
+h_next_best_reference_lines <- function(
+  plot,
+  dose_grid,
+  dose_scale,
+  doselimit = NA_real_,
+  safe_dose = NA_real_,
+  overdose_threshold = NA_real_
+) {
+  has_reference <-
+    is.finite(doselimit) ||
+    is.finite(safe_dose) ||
+    is.finite(overdose_threshold)
+  if (is.finite(overdose_threshold)) {
+    plot <- plot +
+      geom_hline(
+        data = data.frame(y = overdose_threshold),
+        aes(
+          yintercept = .data$y,
+          colour = "Overdose Threshold",
+          linetype = "Overdose Threshold"
+        ),
+        linewidth = 1.1
+      )
+  }
+  if (is.finite(doselimit)) {
+    plot <- plot +
+      geom_vline(
+        data = data.frame(
+          x = h_dose_plot_position(doselimit, dose_grid, dose_scale)
+        ),
+        aes(
+          xintercept = .data$x,
+          colour = "Increment Rule",
+          linetype = "Increment Rule"
+        ),
+        linewidth = 1.1
+      )
+  }
+  if (is.finite(safe_dose)) {
+    plot <- plot +
+      geom_vline(
+        data = data.frame(
+          x = h_dose_plot_position(safe_dose, dose_grid, dose_scale)
+        ),
+        aes(
+          xintercept = .data$x,
+          colour = "Safety Rule",
+          linetype = "Safety Rule"
+        ),
+        linewidth = 1.1
+      )
+  }
+  if (!has_reference) {
+    return(plot)
+  }
+  plot +
+    scale_colour_manual(
+      name = NULL,
+      values = c(
+        "Increment Rule" = "black",
+        "Safety Rule" = "red",
+        "Overdose Threshold" = "black"
+      )
+    ) +
+    scale_linetype_manual(
+      name = NULL,
+      values = c(
+        "Increment Rule" = "dashed",
+        "Safety Rule" = "dotted",
+        "Overdose Threshold" = "dotted"
+      )
+    )
+}
+
+#' Add the Next-Best Dose Marker
+#'
+#' @param plot (`ggplot`) plot to decorate.
+#' @param dose (`number`) next best dose.
+#' @param y (`number`) vertical marker position.
+#' @param dose_grid (`numeric`) ordered dose grid.
+#' @param dose_scale (`string`) dose-axis scale.
+#'
+#' @return The decorated `ggplot2` object.
+#'
+#' @keywords internal
+h_next_best_marker <- function(plot, dose, y, dose_grid, dose_scale) {
+  plot +
+    geom_point(
+      data = data.frame(
+        x = h_dose_plot_position(dose, dose_grid, dose_scale),
+        y = y
+      ),
+      aes(
+        x = .data$x,
+        y = .data$y,
+        shape = "Dose Recommendation"
+      ),
+      size = 3,
+      colour = "blue",
+      fill = "blue"
+    ) +
+    scale_shape_manual(
+      name = NULL,
+      values = c("Dose Recommendation" = 25),
+      guide = guide_legend(override.aes = list(colour = "blue", fill = "blue"))
+    )
+}
+
+#' Arrange Plots with Aligned Panels
+#'
+#' @description Aligns the widths of all plot-table columns before arranging
+#'   plots vertically. This keeps corresponding x-axes aligned when plots have
+#'   legends of different widths.
+#'
+#' @param ... (`ggplot`) plots to arrange.
+#' @param nrow (`count`) number of rows in the arrangement.
+#'
+#' @return A `gtable` object containing the aligned plots.
+#'
+#' @keywords internal
+h_arrange_plots_aligned <- function(..., nrow = length(list(...))) {
+  grobs <- lapply(list(...), ggplotGrob)
+  aligned_widths <- do.call(
+    grid::unit.pmax,
+    lapply(grobs, function(x) x$widths)
+  )
+  grobs <- lapply(grobs, function(x) {
+    x$widths <- aligned_widths
+    x
+  })
+  gridExtra::arrangeGrob(grobs = grobs, nrow = nrow)
+}
+
 #' Plot a Probability Across a Dose Grid
 #'
 #' Creates a one-dimensional probability plot using either lollipops or the
@@ -271,8 +442,8 @@ h_dose_axis_labels <- function(x) {
 #' @param prob_plot_type (`string`)
 #'   probability geometry, either `"lollipop"` or `"bar"`.
 #' @param dose_scale (`string`)
-#'   dose-axis scale, either `"linear"` or `"log"`. The log scale requires all
-#'   doses to be strictly positive.
+#'   dose-axis scale: `"linear"`, `"log"`, or `"factor"` for equally spaced
+#'   dose levels. The log scale requires all doses to be strictly positive.
 #' @param axis_ticks (`string`)
 #'   x-axis tick positions, either at each dose-grid value (`"dosegrid"`, the
 #'   default) or at regular positions selected by `ggplot2` (`"regular"`).
@@ -292,7 +463,7 @@ h_next_best_probability_plot <- function(
   description,
   colour,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
   base_plot = ggplot()
@@ -314,7 +485,10 @@ h_next_best_probability_plot <- function(
     )
   }
 
-  plot_data <- data.frame(Dose = dose_grid, y = probability * 100)
+  plot_data <- data.frame(
+    Dose = h_dose_plot_position(dose_grid, dose_grid, dose_scale),
+    y = probability * 100
+  )
   plot <- base_plot
 
   plot <- if (identical(prob_plot_type, "lollipop")) {
@@ -332,21 +506,22 @@ h_next_best_probability_plot <- function(
         size = 2.2,
         colour = colour
       )
-  } else if (identical(dose_scale, "linear")) {
+  } else if (!identical(dose_scale, "log")) {
     bar_width <- if (length(dose_grid) > 1L) {
-      min(diff(dose_grid)) / 2
+      min(diff(plot_data$Dose)) / 2
     } else {
       1
     }
-    plot + geom_bar(
-      data = plot_data,
-      aes(x = .data$Dose, y = .data$y),
-      stat = "identity",
-      position = "identity",
-      width = bar_width,
-      colour = colour,
-      fill = colour
-    )
+    plot +
+      geom_bar(
+        data = plot_data,
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = bar_width,
+        colour = colour,
+        fill = colour
+      )
   } else {
     # On a log scale, define bar boundaries in transformed space so bars remain
     # visible and evenly sized across an uneven dose grid.
@@ -358,17 +533,18 @@ h_next_best_probability_plot <- function(
     }
     plot_data$xmin <- 10^(log_dose - half_width)
     plot_data$xmax <- 10^(log_dose + half_width)
-    plot + geom_rect(
-      data = plot_data,
-      aes(
-        xmin = .data$xmin,
-        xmax = .data$xmax,
-        ymin = 0,
-        ymax = .data$y
-      ),
-      colour = colour,
-      fill = colour
-    )
+    plot +
+      geom_rect(
+        data = plot_data,
+        aes(
+          xmin = .data$xmin,
+          xmax = .data$xmax,
+          ymin = 0,
+          ymax = .data$y
+        ),
+        colour = colour,
+        fill = colour
+      )
   }
 
   plot <- plot +
@@ -385,11 +561,18 @@ h_next_best_probability_plot <- function(
     } else {
       plot + scale_x_log10()
     }
+  } else if (identical(dose_scale, "factor")) {
+    plot +
+      scale_x_continuous(
+        breaks = seq_along(dose_grid),
+        labels = h_dose_axis_labels(dose_grid)
+      )
   } else if (identical(axis_ticks, "dosegrid")) {
-    plot + scale_x_continuous(
-      breaks = dose_grid,
-      labels = h_dose_axis_labels
-    )
+    plot +
+      scale_x_continuous(
+        breaks = dose_grid,
+        labels = h_dose_axis_labels
+      )
   } else {
     plot
   }
@@ -419,8 +602,9 @@ h_next_best_probability_plot <- function(
 #' @param is_unacceptable_specified (`flag`)\cr is unacceptable interval specified?
 #' @param prob_plot_type (`string`)\cr probability geometry, either
 #'   `"lollipop"` or `"bar"`.
-#' @param dose_scale (`string`)\cr dose-axis scale, either `"linear"` or
-#'   `"log"`. The log scale requires all doses to be strictly positive.
+#' @param dose_scale (`string`)\cr dose-axis scale: `"linear"`, `"log"`, or
+#'   `"factor"` for equally spaced dose levels. The log scale requires all
+#'   doses to be strictly positive.
 #' @param axis_ticks (`string`)\cr x-axis tick positions, either at each
 #'   dose-grid value (`"dosegrid"`, the default) or at regular positions
 #'   selected by `ggplot2` (`"regular"`).
@@ -439,7 +623,7 @@ h_next_best_ncrm_loss_plot <- function(
   next_dose,
   is_unacceptable_specified,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
 ) {
@@ -480,24 +664,21 @@ h_next_best_ncrm_loss_plot <- function(
   axis_ticks <- match.arg(axis_ticks)
   assert_number(axis_text_angle, finite = TRUE)
 
+  safe_dose <- if (max_eligible_dose_level > 0) {
+    dose_grid[max_eligible_dose_level]
+  } else {
+    NA_real_
+  }
+
   # Build plots, first for the target probability. Reference lines are added
   # before the probability geometry so it remains visible where layers overlap.
-  p1 <- ggplot()
-
-  if (is.finite(doselimit)) {
-    p1 <- p1 +
-      geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
-  }
-
-  if (max_eligible_dose_level > 0) {
-    p1 <- p1 +
-      geom_vline(
-        xintercept = dose_grid[max_eligible_dose_level],
-        lwd = 1.1,
-        lty = 2,
-        colour = "red"
-      )
-  }
+  p1 <- h_next_best_reference_lines(
+    ggplot(),
+    dose_grid,
+    dose_scale,
+    doselimit,
+    safe_dose
+  )
 
   p1 <- h_next_best_probability_plot(
     dose_grid = dose_grid,
@@ -513,35 +694,64 @@ h_next_best_ncrm_loss_plot <- function(
     ylim(c(0, 100)) +
     ylab("Target probability [%]")
 
+  loss_plot_data <- data.frame(
+    Dose = h_dose_plot_position(dose_grid, dose_grid, dose_scale),
+    y = posterior_loss
+  )
   p_loss <- ggplot() +
     # For the loss function.
     geom_bar(
-      data = data.frame(Dose = dose_grid, y = posterior_loss),
+      data = loss_plot_data,
       aes(x = .data$Dose, y = .data$y),
       stat = "identity",
       position = "identity",
-      width = min(diff(dose_grid)) / 2,
+      width = if (length(dose_grid) > 1L) {
+        min(diff(loss_plot_data$Dose)) / 2
+      } else {
+        1
+      },
       colour = "darkgreen",
       fill = "darkgreen"
     ) +
     geom_point(
-      aes(x = next_dose, y = max(posterior_loss) + 0.3),
+      aes(
+        x = h_dose_plot_position(next_dose, dose_grid, dose_scale),
+        y = max(posterior_loss) + 0.3
+      ),
       size = 3,
       pch = 25,
       col = "blue",
       bg = "blue"
     ) +
-    ylab(paste("Loss function"))
+    ylab("Loss function")
+
+  if (identical(dose_scale, "factor")) {
+    p_loss <- p_loss +
+      scale_x_continuous(
+        breaks = seq_along(dose_grid),
+        labels = h_dose_axis_labels(dose_grid)
+      )
+  } else if (identical(dose_scale, "log")) {
+    p_loss <- p_loss +
+      scale_x_log10(
+        breaks = if (identical(axis_ticks, "dosegrid")) dose_grid else waiver(),
+        labels = if (identical(axis_ticks, "dosegrid")) {
+          h_dose_axis_labels
+        } else {
+          waiver()
+        }
+      )
+  }
 
   if (!is_unacceptable_specified) {
     # Second, for the overdosing probability.
-    p2 <- ggplot() +
-      geom_hline(
-        yintercept = max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      )
+    p2 <- h_next_best_reference_lines(
+      ggplot(),
+      dose_grid,
+      dose_scale,
+      safe_dose = safe_dose,
+      overdose_threshold = max_overdose_prob * 100
+    )
     p2 <- h_next_best_probability_plot(
       dose_grid = dose_grid,
       probability = prob_mat[, "overdose"],
@@ -556,8 +766,8 @@ h_next_best_ncrm_loss_plot <- function(
       ylim(c(0, 100))
 
     # Combine it all together.
-    plots_single <- list(plot1 = p1, plot2 = p2, plot_loss = p_loss)
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3)
+    plots_single <- list(plot1 = p2, plot2 = p1, plot_loss = p_loss)
+    plot_joint <- h_arrange_plots_aligned(p2, p1, p_loss, nrow = 3)
   } else {
     # Plot in case of 4 toxicity intervals. Second, for the overdosing probability.
     p2 <- h_next_best_probability_plot(
@@ -568,7 +778,13 @@ h_next_best_ncrm_loss_plot <- function(
       prob_plot_type = prob_plot_type,
       dose_scale = dose_scale,
       axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
+      axis_text_angle = axis_text_angle,
+      base_plot = h_next_best_reference_lines(
+        ggplot(),
+        dose_grid,
+        dose_scale,
+        safe_dose = safe_dose
+      )
     ) +
       ylim(c(0, 100))
 
@@ -580,13 +796,19 @@ h_next_best_ncrm_loss_plot <- function(
       prob_plot_type = prob_plot_type,
       dose_scale = dose_scale,
       axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
+      axis_text_angle = axis_text_angle,
+      base_plot = h_next_best_reference_lines(
+        ggplot(),
+        dose_grid,
+        dose_scale,
+        safe_dose = safe_dose
+      )
     ) +
       ylim(c(0, 100))
 
     # Combine it all together.
-    plots_single <- list(plot1 = p1, plot2 = p2, plot3 = p3, plot_loss = p_loss)
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, p3, p_loss, nrow = 4)
+    plots_single <- list(plot1 = p2, plot2 = p3, plot3 = p1, plot_loss = p_loss)
+    plot_joint <- h_arrange_plots_aligned(p2, p3, p1, p_loss, nrow = 4)
   }
 
   list(plots_single = plots_single, plot_joint = plot_joint)
