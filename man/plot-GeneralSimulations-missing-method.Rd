@@ -12,6 +12,7 @@
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  patient_scale = NULL,
   ...
 )
 }
@@ -34,6 +35,11 @@ requires all doses to be strictly positive.}
 \item{axis_ticks}{(\code{string})\cr place dose-axis ticks at each dose-grid value
 (\code{"dosegrid"}, the default) or at regular positions selected by \code{ggplot2}
 (\code{"regular"}). This controls the trajectory y-axis and doses tried x-axis.}
+
+\item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for the
+trajectory x-axis ticks. By default, the unique cumulative active-treatment
+cohort sizes are inferred from the simulation data. A single supplied value
+is used as an equally spaced interval; a vector supplies the exact breaks.}
 
 \item{...}{additional arguments without method dispatch.}
 }

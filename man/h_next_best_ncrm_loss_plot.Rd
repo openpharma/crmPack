@@ -14,7 +14,7 @@ h_next_best_ncrm_loss_plot(
   next_dose,
   is_unacceptable_specified,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
 )
@@ -46,8 +46,9 @@ the \code{dose_grid}.}
 \item{prob_plot_type}{(\code{string})\cr probability geometry, either
 \code{"lollipop"} or \code{"bar"}.}
 
-\item{dose_scale}{(\code{string})\cr dose-axis scale, either \code{"linear"} or
-\code{"log"}. The log scale requires all doses to be strictly positive.}
+\item{dose_scale}{(\code{string})\cr dose-axis scale: \code{"linear"}, \code{"log"}, or
+\code{"factor"} for equally spaced dose levels. The log scale requires all
+doses to be strictly positive.}
 
 \item{axis_ticks}{(\code{string})\cr x-axis tick positions, either at each
 dose-grid value (\code{"dosegrid"}, the default) or at regular positions
