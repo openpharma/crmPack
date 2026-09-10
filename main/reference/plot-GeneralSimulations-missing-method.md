@@ -30,6 +30,7 @@ plot(
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
+  patient_scale = NULL,
   ...
 )
 ```
@@ -72,6 +73,14 @@ plot(
   place dose-axis ticks at each dose-grid value (`"dosegrid"`, the
   default) or at regular positions selected by `ggplot2` (`"regular"`).
   This controls the trajectory y-axis and doses tried x-axis.
+
+- patient_scale:
+
+  (`numeric` or `NULL`)\
+  patient positions for the trajectory x-axis ticks. By default, the
+  unique cumulative active-treatment cohort sizes are inferred from the
+  simulation data. A single supplied value is used as an equally spaced
+  interval; a vector supplies the exact breaks.
 
 - ...:
 

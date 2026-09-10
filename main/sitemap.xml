@@ -220,6 +220,7 @@
 <url><loc>https://docs.crmpack.org/reference/get_arm_simulations.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/get_result_list.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_all_equivalent.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_arrange_plots_aligned.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_barplot_percentages.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_blind_plot_data.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_calc_report_label_percentage.html</loc></url>
@@ -232,6 +233,7 @@
 <url><loc>https://docs.crmpack.org/reference/h_determine_dlts.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_dose_axis_labels.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_dose_combo_below_limit.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_dose_plot_position.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_enroll_backfill_patients.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_eval_combo_truth.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_find_interval.html</loc></url>
@@ -286,12 +288,14 @@
 <url><loc>https://docs.crmpack.org/reference/h_model_dual_endpoint_sigma2betaw.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_model_dual_endpoint_sigma2w.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_eligible_doses.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_next_best_marker.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_mg_ci.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_mg_doses_at_grid.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_mg_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_mgsamples_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_ncrm_loss_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_probability_plot.html</loc></url>
+<url><loc>https://docs.crmpack.org/reference/h_next_best_reference_lines.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_td_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_next_best_tdsamples_plot.html</loc></url>
 <url><loc>https://docs.crmpack.org/reference/h_null_if_na.html</loc></url>

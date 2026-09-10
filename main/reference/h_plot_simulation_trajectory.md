@@ -13,7 +13,8 @@ h_plot_simulation_trajectory(
   max_patients,
   has_placebo,
   dose_scale = c("auto", "linear", "log"),
-  axis_ticks = c("dosegrid", "regular")
+  axis_ticks = c("dosegrid", "regular"),
+  patient_scale = NULL
 )
 ```
 
@@ -52,6 +53,14 @@ h_plot_simulation_trajectory(
   y-axis tick positions, either at each dose-grid value (`"dosegrid"`,
   the default) or at regular positions selected by `ggplot2`
   (`"regular"`).
+
+- patient_scale:
+
+  (`numeric` or `NULL`)\
+  patient positions for x-axis ticks. A single value is treated as an
+  equally spaced interval; for example, `3` gives ticks at 3, 6, 9, and
+  so on. If `NULL` (the default), tick positions are selected by
+  `ggplot2`.
 
 ## Value
 

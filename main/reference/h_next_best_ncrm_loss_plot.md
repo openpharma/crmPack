@@ -19,7 +19,7 @@ h_next_best_ncrm_loss_plot(
   next_dose,
   is_unacceptable_specified,
   prob_plot_type = c("lollipop", "bar"),
-  dose_scale = c("linear", "log"),
+  dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
 )
@@ -80,8 +80,8 @@ h_next_best_ncrm_loss_plot(
 - dose_scale:
 
   (`string`)\
-  dose-axis scale, either `"linear"` or `"log"`. The log scale requires
-  all doses to be strictly positive.
+  dose-axis scale: `"linear"`, `"log"`, or `"factor"` for equally spaced
+  dose levels. The log scale requires all doses to be strictly positive.
 
 - axis_ticks:
 
