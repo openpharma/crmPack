@@ -163,16 +163,48 @@ test_that("simulation trajectory uses nested blue ranges and a median line", {
   expect_s3_class(trajectory$layers[[1L]]$geom, "GeomRibbon")
   expect_s3_class(trajectory$layers[[2L]]$geom, "GeomRibbon")
   expect_s3_class(trajectory$layers[[3L]]$geom, "GeomStep")
-  expect_equal(trajectory$layers[[1L]]$aes_params$fill, "#C6DBEF")
-  expect_equal(trajectory$layers[[2L]]$aes_params$fill, "#6BAED6")
-  expect_equal(trajectory$layers[[3L]]$aes_params$colour, "#08519C")
+  expect_equal(
+    unname(trajectory$scales$get_scales("fill")$palette(2L)),
+    c("#C6DBEF", "#6BAED6")
+  )
+  expect_equal(
+    unname(trajectory$scales$get_scales("colour")$palette(1L)),
+    "#08519C"
+  )
 
   plot_data <- ggplot_build(trajectory)$data
-  expect_equal(plot_data[[1L]]$ymin, c(1, 2, 3))
-  expect_equal(plot_data[[1L]]$ymax, c(3, 4, 5))
-  expect_equal(plot_data[[2L]]$ymin, c(1.5, 2.5, 3.5))
-  expect_equal(plot_data[[2L]]$ymax, c(2.5, 3.5, 4.5))
+  expect_equal(plot_data[[1L]]$x, c(1, 2, 2, 3, 3))
+  expect_equal(plot_data[[1L]]$ymin, c(1, 1, 2, 2, 3))
+  expect_equal(plot_data[[1L]]$ymax, c(3, 3, 4, 4, 5))
+  expect_equal(plot_data[[2L]]$ymin, c(1.5, 1.5, 2.5, 2.5, 3.5))
+  expect_equal(plot_data[[2L]]$ymax, c(2.5, 2.5, 3.5, 3.5, 4.5))
   expect_equal(plot_data[[3L]]$y, c(2, 3, 4))
+})
+
+test_that("simulation trajectory supports patient tick intervals and positions", {
+  args <- list(
+    sim_doses = list(1:6, 2:7),
+    dose_grid = 1:7,
+    max_patients = 6L,
+    has_placebo = FALSE
+  )
+
+  interval_plot <- do.call(
+    h_plot_simulation_trajectory,
+    c(args, list(patient_scale = 2L))
+  )
+  position_plot <- do.call(
+    h_plot_simulation_trajectory,
+    c(args, list(patient_scale = c(1L, 3L, 8L)))
+  )
+
+  expect_equal(interval_plot$scales$get_scales("x")$breaks, c(2L, 4L, 6L))
+  expect_equal(position_plot$scales$get_scales("x")$breaks, c(1L, 3L))
+  expect_error(
+    do.call(h_plot_simulation_trajectory, c(args, list(patient_scale = 0))),
+    "not >= 1",
+    fixed = TRUE
+  )
 })
 
 test_that("doses tried uses equal-width bars and automatically logs clashes", {

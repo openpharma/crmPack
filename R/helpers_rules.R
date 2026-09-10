@@ -355,7 +355,8 @@ h_next_best_reference_lines <- function(
         "Increment Rule" = "black",
         "Safety Rule" = "red",
         "Overdose Threshold" = "black"
-      )
+      ),
+      guide = guide_legend(order = 1L)
     ) +
     scale_linetype_manual(
       name = NULL,
@@ -363,7 +364,8 @@ h_next_best_reference_lines <- function(
         "Increment Rule" = "dashed",
         "Safety Rule" = "dotted",
         "Overdose Threshold" = "dotted"
-      )
+      ),
+      guide = guide_legend(order = 1L)
     )
 }
 
@@ -397,7 +399,10 @@ h_next_best_marker <- function(plot, dose, y, dose_grid, dose_scale) {
     scale_shape_manual(
       name = NULL,
       values = c("Dose Recommendation" = 25),
-      guide = guide_legend(override.aes = list(colour = "blue", fill = "blue"))
+      guide = guide_legend(
+        order = 2L,
+        override.aes = list(colour = "blue", fill = "blue")
+      )
     )
 }
 

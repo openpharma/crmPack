@@ -294,6 +294,13 @@ test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
     axis_ticks = "regular",
     axis_text_angle = 30
   )
+  factor_lollipop <- h_next_best_probability_plot(
+    dose_grid,
+    probability,
+    "Probability [%]",
+    "red",
+    dose_scale = "factor"
+  )
 
   expect_s3_class(lollipop$layers[[1L]]$geom, "GeomSegment")
   expect_s3_class(lollipop$layers[[2L]]$geom, "GeomPoint")
@@ -313,6 +320,14 @@ test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
   expect_null(regular_ticks$scales$get_scales("x"))
   expect_equal(regular_ticks$theme$axis.text.x$angle, 0)
   expect_equal(angled_ticks$theme$axis.text.x$angle, 30)
+  expect_equal(
+    factor_lollipop$scales$get_scales("x")$breaks,
+    seq_along(dose_grid)
+  )
+  expect_equal(
+    ggplot_build(factor_lollipop)$data[[2L]]$x,
+    seq_along(dose_grid)
+  )
   expect_error(
     h_next_best_probability_plot(
       dose_grid,
@@ -407,15 +422,17 @@ test_that("h_next_best_ncrm_loss_plot works as expected", {
     prob_plot_type = "bar"
   )
 
-  target_layers <- result$plots_single$plot1$layers
+  overdose_layers <- result$plots_single$plot1$layers
+  expect_identical(
+    unname(vapply(overdose_layers, function(x) class(x$geom)[1L], character(1L))),
+    c("GeomHline", "GeomVline", "GeomBar")
+  )
+
+  target_layers <- result$plots_single$plot2$layers
   expect_identical(
     unname(vapply(target_layers, function(x) class(x$geom)[1L], character(1L))),
     c("GeomVline", "GeomVline", "GeomBar")
   )
-
-  overdose_layers <- result$plots_single$plot2$layers
-  expect_s3_class(overdose_layers[[1L]]$geom, "GeomHline")
-  expect_s3_class(overdose_layers[[2L]]$geom, "GeomBar")
 
   loss_layers <- result$plots_single$plot_loss$layers
   expect_identical(loss_layers[[2L]]$aes_params$colour, "blue")

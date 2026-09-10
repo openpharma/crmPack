@@ -111,7 +111,7 @@ h_plot_simulation_trajectory <- function(
         x = .data$patient,
         ymin = .data$minimum,
         ymax = .data$maximum,
-        fill = "Minimum–maximum range"
+        fill = "Minimum-maximum range"
       ),
       data = ribbon_df
     ) +
@@ -136,13 +136,15 @@ h_plot_simulation_trajectory <- function(
     scale_fill_manual(
       name = NULL,
       values = c(
-        "Minimum–maximum range" = "#C6DBEF",
+        "Minimum-maximum range" = "#C6DBEF",
         "Interquartile range" = "#6BAED6"
-      )
+      ),
+      guide = guide_legend(order = 1L)
     ) +
     scale_colour_manual(
       name = NULL,
-      values = c("Median" = "#08519C")
+      values = c("Median" = "#08519C"),
+      guide = guide_legend(order = 2L)
     ) +
     xlab(my_title) +
     ylab("Dose Level") +
@@ -161,9 +163,10 @@ h_plot_simulation_trajectory <- function(
     if (length(patient_breaks) == 0L) {
       patient_breaks <- max_patients
     }
-    plot <- plot + scale_x_continuous(
-      breaks = patient_breaks
-    )
+    plot <- plot +
+      scale_x_continuous(
+        breaks = patient_breaks
+      )
   }
 
   if (identical(dose_scale, "log")) {

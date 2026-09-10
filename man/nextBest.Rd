@@ -172,8 +172,8 @@ geometry.}
 
 \item{dose_scale}{(\code{string})\cr for one-dimensional target or overdose
 probability plots, use a \code{"linear"} (default), \code{"log"}, or \code{"factor"}
-dose axis. The factor scale spaces dose levels equally. The log scale requires
-all doses to be strictly positive.}
+dose axis. The factor scale spaces dose levels equally. The log scale
+requires all doses to be strictly positive.}
 
 \item{axis_ticks}{(\code{string})\cr for one-dimensional target or overdose
 probability plots, place x-axis ticks at each dose-grid value
