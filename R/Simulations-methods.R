@@ -21,6 +21,10 @@ NULL
 #' @param axis_ticks (`string`)\cr y-axis tick positions, either at each
 #'   dose-grid value (`"dosegrid"`, the default) or at regular positions selected
 #'   by `ggplot2` (`"regular"`).
+#' @param patient_scale (`numeric` or `NULL`)\cr patient positions for x-axis
+#'   ticks. A single value is treated as an equally spaced interval; for example,
+#'   `3` gives ticks at 3, 6, 9, and so on. If `NULL` (the default), tick
+#'   positions are selected by `ggplot2`.
 #'
 #' @return A `ggplot` object.
 #'
@@ -31,10 +35,20 @@ h_plot_simulation_trajectory <- function(
   max_patients,
   has_placebo,
   dose_scale = c("auto", "linear", "log"),
-  axis_ticks = c("dosegrid", "regular")
+  axis_ticks = c("dosegrid", "regular"),
+  patient_scale = NULL
 ) {
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
+  if (!is.null(patient_scale)) {
+    assert_integerish(
+      patient_scale,
+      min.len = 1L,
+      lower = 1,
+      unique = TRUE,
+      any.missing = FALSE
+    )
+  }
   if (identical(dose_scale, "auto")) {
     dose_scale <- "linear"
   }
@@ -72,6 +86,17 @@ h_plot_simulation_trajectory <- function(
     maximum = trajectory_quantiles[, 5L]
   )
 
+  # Repeat trajectory values at each new patient so that ribbons change in
+  # steps, consistently with the median line.
+  ribbon_x_rows <- if (max_patients > 1L) {
+    c(1L, rep(seq.int(2L, max_patients), each = 2L))
+  } else {
+    1L
+  }
+  ribbon_value_rows <- head(rep(seq_len(max_patients), each = 2L), -1L)
+  ribbon_df <- traj_df[ribbon_value_rows, , drop = FALSE]
+  ribbon_df$patient <- traj_df$patient[ribbon_x_rows]
+
   # Create plot title.
   my_title <- if (has_placebo) {
     "Patient (placebo were excluded)"
@@ -85,31 +110,61 @@ h_plot_simulation_trajectory <- function(
       aes(
         x = .data$patient,
         ymin = .data$minimum,
-        ymax = .data$maximum
+        ymax = .data$maximum,
+        fill = "Minimum–maximum range"
       ),
-      fill = "#C6DBEF",
-      data = traj_df
+      data = ribbon_df
     ) +
     geom_ribbon(
       aes(
         x = .data$patient,
         ymin = .data$lower_quartile,
-        ymax = .data$upper_quartile
+        ymax = .data$upper_quartile,
+        fill = "Interquartile range"
       ),
-      fill = "#6BAED6",
-      data = traj_df
+      data = ribbon_df
     ) +
     geom_step(
       aes(
         x = .data$patient,
-        y = .data$median
+        y = .data$median,
+        colour = "Median"
       ),
       linewidth = 1.2,
-      colour = "#08519C",
       data = traj_df
     ) +
+    scale_fill_manual(
+      name = NULL,
+      values = c(
+        "Minimum–maximum range" = "#C6DBEF",
+        "Interquartile range" = "#6BAED6"
+      )
+    ) +
+    scale_colour_manual(
+      name = NULL,
+      values = c("Median" = "#08519C")
+    ) +
     xlab(my_title) +
-    ylab("Dose Level")
+    ylab("Dose Level") +
+    theme(panel.grid.minor = element_blank())
+
+  if (!is.null(patient_scale)) {
+    patient_breaks <- if (length(patient_scale) == 1L) {
+      if (patient_scale <= max_patients) {
+        seq.int(patient_scale, max_patients, by = patient_scale)
+      } else {
+        max_patients
+      }
+    } else {
+      sort(patient_scale[patient_scale <= max_patients])
+    }
+    if (length(patient_breaks) == 0L) {
+      patient_breaks <- max_patients
+    }
+    plot <- plot + scale_x_continuous(
+      breaks = patient_breaks
+    )
+  }
 
   if (identical(dose_scale, "log")) {
     if (identical(axis_ticks, "dosegrid")) {
@@ -202,7 +257,7 @@ h_plot_doses_tried <- function(
     }
   }
 
-  h_next_best_probability_plot(
+  plot <- h_next_best_probability_plot(
     dose_grid = dose_grid,
     probability = average_dose_dist,
     description = "Average proportion [%]",
@@ -213,6 +268,12 @@ h_plot_doses_tried <- function(
     axis_text_angle = ifelse(axis_ticks == "dosegrid", 45, 0)
   ) +
     xlab("Dose level")
+
+  if (identical(axis_ticks, "dosegrid")) {
+    plot + theme(panel.grid.minor = element_blank())
+  } else {
+    plot
+  }
 }
 
 # h_plot_combo_evolution ----
@@ -438,6 +499,10 @@ h_plot_combo_evolution <- function(sim_data) {
 #' @param axis_ticks (`string`)\cr place dose-axis ticks at each dose-grid value
 #'   (`"dosegrid"`, the default) or at regular positions selected by `ggplot2`
 #'   (`"regular"`). This controls the trajectory y-axis and doses tried x-axis.
+#' @param patient_scale (`numeric` or `NULL`)\cr patient positions for the
+#'   trajectory x-axis ticks. By default, the unique cumulative active-treatment
+#'   cohort sizes are inferred from the simulation data. A single supplied value
+#'   is used as an equally spaced interval; a vector supplies the exact breaks.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -460,6 +525,7 @@ setMethod(
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("auto", "linear", "log"),
     axis_ticks = c("dosegrid", "regular"),
+    patient_scale = NULL,
     ...
   ) {
     # Validate arguments.
@@ -484,12 +550,30 @@ setMethod(
             y@x[y@x != pl]
           }
         )
+        sim_cohorts <- lapply(
+          x@data,
+          function(y) {
+            y@cohort[y@x != pl]
+          }
+        )
       } else {
         sim_doses <- lapply(
           x@data,
           slot,
           "x"
         )
+        sim_cohorts <- lapply(
+          x@data,
+          slot,
+          "cohort"
+        )
+      }
+
+      if (is.null(patient_scale)) {
+        patient_scale <- sort(unique(unlist(lapply(
+          sim_cohorts,
+          function(z) cumsum(rle(z)$lengths)
+        ))))
       }
 
       max_patients <- max(sapply(sim_doses, length))
@@ -507,7 +591,8 @@ setMethod(
           max_patients = max_patients,
           has_placebo = x@data[[1]]@placebo,
           dose_scale = dose_scale,
-          axis_ticks = axis_ticks
+          axis_ticks = axis_ticks,
+          patient_scale = patient_scale
         )
     }
 

@@ -10,7 +10,8 @@ h_plot_simulation_trajectory(
   max_patients,
   has_placebo,
   dose_scale = c("auto", "linear", "log"),
-  axis_ticks = c("dosegrid", "regular")
+  axis_ticks = c("dosegrid", "regular"),
+  patient_scale = NULL
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ requires all doses to be strictly positive.}
 \item{axis_ticks}{(\code{string})\cr y-axis tick positions, either at each
 dose-grid value (\code{"dosegrid"}, the default) or at regular positions selected
 by \code{ggplot2} (\code{"regular"}).}
+
+\item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for x-axis
+ticks. A single value is treated as an equally spaced interval; for example,
+\code{3} gives ticks at 3, 6, 9, and so on. If \code{NULL} (the default), tick
+positions are selected by \code{ggplot2}.}
 }
 \value{
 A \code{ggplot} object.
