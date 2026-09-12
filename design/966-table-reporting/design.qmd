@@ -164,12 +164,13 @@ object that can be tabulated, plotted, and used to drive the per-scenario
 ```{r}
 #| eval: false
 ToxicityScenarios(
-    scenarios = list( # named list of truth functions,
-        "T1 (First)" = function(dose, ...) ..., # e.g. from probFunction()
-        "T5 (Safe)"  = probFunction(model, alpha0 = -3, alpha1 = 1)
-    ),
-    dose_grid = emptydata@doseGrid,
-    target = c(0.2, 0.35) # optional target toxicity interval
+  scenarios = list(
+    # named list of truth functions,
+    "T1 (First)" = function(dose, ...) ..., # e.g. from probFunction()
+    "T5 (Safe)" = probFunction(model, alpha0 = -3, alpha1 = 1)
+  ),
+  dose_grid = emptydata@doseGrid,
+  target = c(0.2, 0.35) # optional target toxicity interval
 )
 ```
 
@@ -222,11 +223,13 @@ New exported function:
 ```{r}
 #| eval: false
 report_prob_summary(
-    samples, model, data,
-    quantiles = c(0.025, 0.5, 0.975), # arbitrary quantiles
-    mean = TRUE,
-    sd = TRUE,
-    intervals = c(0, 0.16, 0.33, 1) # optional: P(prob in [a, b)) columns
+  samples,
+  model,
+  data,
+  quantiles = c(0.025, 0.5, 0.975), # arbitrary quantiles
+  mean = TRUE,
+  sd = TRUE,
+  intervals = c(0, 0.16, 0.33, 1) # optional: P(prob in [a, b)) columns
 )
 ```
 
@@ -318,11 +321,12 @@ S3) object:
 ```{r}
 #| eval: false
 OCStat(
-    label = "Mean number of patients", # row label (programmatic)
-    fun = function(sims, summary, scenario) { # returns numeric vector
-        mean(summary@n_obs)
-    },
-    format = "%.1f" # sprintf or function
+  label = "Mean number of patients", # row label (programmatic)
+  fun = function(sims, summary, scenario) {
+    # returns numeric vector
+    mean(summary@n_obs)
+  },
+  format = "%.1f" # sprintf or function
 )
 ```
 
@@ -351,20 +355,23 @@ argument, and can relabel any row (`label` override), which fulfils the
 ```{r}
 #| eval: false
 oc_summary <- SimulationsSummaryList(
-    "Sc. 1 (DL1 toxic)" = sims1, # named Simulations arguments; each carries
-    "Sc. 2 (MTD = DL1)" = sims2, # its truth in the stored slot
-    target = c(0.2, 0.35),
-    stop_categories = NULL # NULL -> PMDA-style defaults (see above)
+  "Sc. 1 (DL1 toxic)" = sims1, # named Simulations arguments; each carries
+  "Sc. 2 (MTD = DL1)" = sims2, # its truth in the stored slot
+  target = c(0.2, 0.35),
+  stop_categories = NULL # NULL -> PMDA-style defaults (see above)
 )
 
 report_oc_overview(
-    oc_summary,
-    stats = c(
-        "n_pat_mean", "n_dlt_mean",
-        "prop_stop_tox", "prop_mtd_correct",
-        "prop_stop_max_patients", "prop_mtd_over"
-    ),
-    format = c("tibble", "gt", "kable") # default "tibble"
+  oc_summary,
+  stats = c(
+    "n_pat_mean",
+    "n_dlt_mean",
+    "prop_stop_tox",
+    "prop_mtd_correct",
+    "prop_stop_max_patients",
+    "prop_mtd_over"
+  ),
+  format = c("tibble", "gt", "kable") # default "tibble"
 )
 ```
 
@@ -390,12 +397,12 @@ report_oc_overview(
 ```{r}
 #| eval: false
 report_oc_detail(
-    oc_summary,
-    stats = c("n_dlt_per_dose", "n_pat_per_dose", "prop_selected", "true_prob"),
-    sd = FALSE, # TRUE -> "mean (sd)" cells
-    sum_column = TRUE, # SUM only for patient-count rows
-    stop_columns = TRUE, # STOP / MAX columns only for the probability row
-    format = c("tibble", "gt", "kable")
+  oc_summary,
+  stats = c("n_dlt_per_dose", "n_pat_per_dose", "prop_selected", "true_prob"),
+  sd = FALSE, # TRUE -> "mean (sd)" cells
+  sum_column = TRUE, # SUM only for patient-count rows
+  stop_columns = TRUE, # STOP / MAX columns only for the probability row
+  format = c("tibble", "gt", "kable")
 )
 ```
 
