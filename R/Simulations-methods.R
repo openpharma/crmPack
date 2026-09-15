@@ -2589,7 +2589,8 @@ setMethod(
 #'   \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
 #'     the trials, together with 95% credible intervals, and comparison with the
 #'     assumed truth (as specified by the `truth` argument to
-#'     [`summary,Simulations-method`])}
+#'     [`summary,Simulations-method`]). The target toxicity range is shown as a
+#'     shaded area; a scalar target is shown as a horizontal dotted line.}
 #' }
 #'
 #' You can specify any subset of these in the `type` argument.
@@ -2658,11 +2659,14 @@ setMethod(
 
     # Is the meanFit plot requested?
     if ("meanFit" %in% type) {
+      target_is_range <- length(x@target) == 2L
+
       # Which types of lines do we have?
       linetype <- c(
         "True toxicity",
         "Average estimated toxicity",
-        "95% interval for estimated toxicity"
+        "95% interval for estimated toxicity",
+        if (!target_is_range) "Target toxicity"
       )
 
       # Create the data frame, with true tox, average estimated tox, and 95%
@@ -2681,18 +2685,62 @@ setMethod(
       lt <- c(
         "True toxicity" = 1,
         "Average estimated toxicity" = 1,
-        "95% interval for estimated toxicity" = 2
+        "95% interval for estimated toxicity" = 2,
+        "Target toxicity" = 3
       )
 
       # Colour for the plot.
       col <- c(
         "True toxicity" = 1,
         "Average estimated toxicity" = 2,
-        "95% interval for estimated toxicity" = 2
+        "95% interval for estimated toxicity" = 2,
+        "Target toxicity" = 2
       )
 
       # Now create and save the plot.
-      this_plot <- ggplot() +
+      this_plot <- ggplot()
+
+      if (target_is_range) {
+        target_data <- data.frame(
+          ymin = x@target[1L] * 100,
+          ymax = x@target[2L] * 100,
+          target = "Target toxicity range"
+        )
+        this_plot <- this_plot +
+          geom_rect(
+            aes(
+              xmin = -Inf,
+              xmax = Inf,
+              ymin = .data$ymin,
+              ymax = .data$ymax,
+              fill = .data$target
+            ),
+            data = target_data,
+            alpha = 0.15,
+            inherit.aes = FALSE
+          ) +
+          scale_fill_manual(
+            values = c("Target toxicity range" = "red"),
+            name = NULL,
+            guide = guide_legend(order = 1)
+          )
+      } else {
+        target_data <- data.frame(
+          target = "Target toxicity",
+          yintercept = x@target * 100
+        )
+        this_plot <- this_plot +
+          geom_hline(
+            aes(
+              yintercept = .data$yintercept,
+              linetype = .data$target,
+              colour = .data$target
+            ),
+            data = target_data
+          )
+      }
+
+      this_plot <- this_plot +
         geom_line(
           aes(
             x = dose,

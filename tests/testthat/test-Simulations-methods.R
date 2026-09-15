@@ -1214,8 +1214,16 @@ test_that("plot-SimulationsSummary works correctly", {
   expect_s3_class(result_mean_fit, "ggplot")
   expect_null(result_mean_fit$scales$get_scales("linetype")$name)
   expect_null(result_mean_fit$scales$get_scales("colour")$name)
-  expect_identical(result_mean_fit$guides$get_params("linetype")$order, 2)
-  expect_identical(result_mean_fit$guides$get_params("colour")$order, 2)
+  expect_null(result_mean_fit$scales$get_scales("fill")$name)
+  expect_s3_class(result_mean_fit$layers[[1L]]$geom, "GeomRect")
+  expect_equal(result_mean_fit$layers[[1L]]$data$ymin, 20)
+  expect_equal(result_mean_fit$layers[[1L]]$data$ymax, 35)
+  expect_identical(
+    result_mean_fit$scales$get_scales("fill")$guide$params$order,
+    1L
+  )
+  expect_identical(result_mean_fit$guides$guides$linetype$params$order, 2L)
+  expect_identical(result_mean_fit$guides$guides$colour$params$order, 2L)
   expect_doppel("plot_simSimsSummary_meanFit", result_mean_fit)
 
   # Test combination with general plots
@@ -1227,6 +1235,31 @@ test_that("plot-SimulationsSummary works correctly", {
     type = c("meanFit", "doseSelected")
   )
   expect_s3_class(result_with_mtd_legend, "gtable")
+})
+
+test_that("plot-SimulationsSummary shows a scalar toxicity target", {
+  sim_summary <- new(
+    "SimulationsSummary",
+    target = 0.25,
+    dose_grid = c(1, 2),
+    mean_fit = list(
+      truth = c(0.1, 0.3),
+      mean = c(0.12, 0.28),
+      lower = c(0.05, 0.15),
+      upper = c(0.2, 0.4)
+    ),
+    placebo = FALSE
+  )
+
+  mean_fit_plot <- plot(sim_summary, type = "meanFit")
+
+  expect_s3_class(mean_fit_plot$layers[[1L]]$geom, "GeomHline")
+  expect_equal(mean_fit_plot$layers[[1L]]$data$yintercept, 25)
+  expect_equal(mean_fit_plot$layers[[1L]]$data$target, "Target toxicity")
+  expect_identical(
+    unname(mean_fit_plot$scales$get_scales("linetype")$palette(4L)[4L]),
+    3
+  )
 })
 
 ## plot-DualSimulationsSummary ----
