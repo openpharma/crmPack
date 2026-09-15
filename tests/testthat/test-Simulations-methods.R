@@ -70,7 +70,7 @@ test_that("plot-GeneralSimulations works correctly", {
   result_doses <- plot(mySims, type = "dosesTried")
   expect_s3_class(result_doses, "ggplot")
   expect_equal(result_doses$labels$x, "Dose level")
-  expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_equal(result_doses$labels$y, "Proportion of patients [%]")
   expect_doppel("plot_generalSims_dosesTried", result_doses)
 
   # Test both plot types explicitly
@@ -132,6 +132,18 @@ test_that("doses tried uses lollipops by default", {
     mySims@data[[1L]]@doseGrid
   )
   expect_equal(result$theme$axis.text.x$angle, 45)
+})
+
+test_that("doses tried shows pooled patient proportions on a free y-axis", {
+  result <- h_plot_doses_tried(
+    sim_doses = list(c(1, 1), c(1, 2, 2, 2, 2, 2)),
+    dose_grid = 1:2
+  )
+  plot_data <- ggplot_build(result)$data
+
+  expect_equal(plot_data[[2L]]$y, c(3 / 8, 5 / 8) * 100)
+  expect_null(result$coordinates$limits$y)
+  expect_lt(max(ggplot_build(result)$layout$panel_params[[1L]]$y.range), 100)
 })
 
 test_that("doses tried optionally uses regular axis ticks", {
@@ -1033,7 +1045,10 @@ test_that("plot-SimulationsSummary shows representative MTD selections", {
 
   expect_true(mtd_plot$scales$get_scales("x")$is_discrete())
   expect_equal(mtd_plot$theme$axis.text.x$angle, 45)
-  expect_doppel("plot-simulations-summary-dose-selected-representative", mtd_plot)
+  expect_doppel(
+    "plot-simulations-summary-dose-selected-representative",
+    mtd_plot
+  )
 
   unrotated_mtd_plot <- plot(
     sim_summary,
@@ -1072,7 +1087,10 @@ test_that("plot-PseudoSimulationsSummary shows representative DLE proportions", 
   dle_plot <- plot(pseudo_summary, type = "propDLE")
 
   expect_s3_class(dle_plot$layers[[1L]]$stat, "StatBin")
-  expect_doppel("plot-pseudo-simulations-summary-prop-dle-representative", dle_plot)
+  expect_doppel(
+    "plot-pseudo-simulations-summary-prop-dle-representative",
+    dle_plot
+  )
 })
 
 test_that("plot-SimulationsSummary shows the corrected summary dashboard", {
@@ -1087,8 +1105,14 @@ test_that("plot-SimulationsSummary shows the corrected summary dashboard", {
       times = c(2, 5, 9, 18, 24, 19, 12, 7, 3, 1)
     ),
     prop_dlts = c(
-      rep(0, 4), rep(1 / 12, 10), rep(2 / 12, 17), rep(3 / 12, 24),
-      rep(4 / 12, 20), rep(5 / 12, 14), rep(6 / 12, 8), rep(7 / 12, 3)
+      rep(0, 4),
+      rep(1 / 12, 10),
+      rep(2 / 12, 17),
+      rep(3 / 12, 24),
+      rep(4 / 12, 20),
+      rep(5 / 12, 14),
+      rep(6 / 12, 8),
+      rep(7 / 12, 3)
     ),
     n_above_target = as.integer(rep(c(0, 3, 6), times = c(91, 7, 2))),
     placebo = FALSE
@@ -1437,7 +1461,7 @@ test_that("plot-PseudoDualSimulations works correctly", {
   expect_s3_class(result_doses, "ggplot")
   expect_doppel("plot_pseudoDualSims_dosesTried", result_doses)
   expect_equal(result_doses$labels$x, "Dose level")
-  expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_equal(result_doses$labels$y, "Proportion of patients [%]")
 
   result_sigma2 <- plot(pseudo_dual_sims, type = "sigma2")
   expect_s3_class(result_sigma2, "ggplot")
@@ -1497,7 +1521,7 @@ test_that("plot-PseudoDualFlexiSimulations works correctly", {
   expect_s3_class(result_doses, "ggplot")
   expect_doppel("plot_pseudoDualFlexiSims_dosesTried", result_doses)
   expect_equal(result_doses$labels$x, "Dose level")
-  expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_equal(result_doses$labels$y, "Proportion of patients [%]")
 
   result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2")
   expect_s3_class(result_sigma2, "ggplot")

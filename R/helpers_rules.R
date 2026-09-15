@@ -468,6 +468,9 @@ h_arrange_plots_aligned <- function(..., nrow = length(list(...))) {
 #' @param base_plot (`ggplot`)
 #'   plot containing any background layers to draw below the probability
 #'   geometry.
+#' @param fixed_y_axis (`flag`)
+#'   whether to use the standard probability y-axis extending to 115 percent.
+#'   If `FALSE`, the upper y-axis limit and breaks are determined from the data.
 #'
 #' @return A `ggplot2` object.
 #'
@@ -481,7 +484,8 @@ h_next_best_probability_plot <- function(
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
-  base_plot = ggplot()
+  base_plot = ggplot(),
+  fixed_y_axis = TRUE
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   assert_probabilities(probability)
@@ -493,6 +497,7 @@ h_next_best_probability_plot <- function(
   axis_ticks <- match.arg(axis_ticks)
   assert_number(axis_text_angle, finite = TRUE)
   assert_class(base_plot, "ggplot")
+  assert_flag(fixed_y_axis)
   if (identical(dose_scale, "log") && any(dose_grid <= 0)) {
     stop(
       "`dose_scale = \"log\"` requires all doses to be strictly positive.",
@@ -562,10 +567,15 @@ h_next_best_probability_plot <- function(
       )
   }
 
+  plot <- plot + ylab(description)
+  plot <- if (fixed_y_axis) {
+    plot +
+      scale_y_continuous(breaks = seq(0, 100, 25)) +
+      coord_cartesian(ylim = c(0, 115))
+  } else {
+    plot + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+  }
   plot <- plot +
-    ylab(description) +
-    scale_y_continuous(breaks = seq(0, 100, 25)) +
-    coord_cartesian(ylim = c(0, 115)) +
     theme(
       axis.text.x = element_text(
         angle = axis_text_angle,

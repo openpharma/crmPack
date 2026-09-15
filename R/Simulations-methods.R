@@ -196,7 +196,8 @@ h_plot_simulation_trajectory <- function(
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Creates a lollipop or bar plot showing average proportions of doses tested.
+#' Creates a lollipop or bar plot showing the proportion of patients treated at
+#' each dose across all simulated trials.
 #'
 #' @param sim_doses (`list`)\cr list of simulated doses per trial.
 #' @param dose_grid (`numeric`)\cr dose grid.
@@ -224,20 +225,13 @@ h_plot_doses_tried <- function(
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
 
-  # Get the dose distributions by trial.
-  dose_distributions <- sapply(
-    sim_doses,
-    function(s) {
-      if (length(s) > 0) {
-        prop.table(table(factor(s, levels = dose_grid)))
-      } else {
-        rep(0, length(dose_grid))
-      }
-    }
-  )
-
-  # Derive the average dose distribution across trial simulations.
-  average_dose_dist <- rowMeans(dose_distributions)
+  # Derive the proportion of patients at each dose across all simulations.
+  all_doses <- unlist(sim_doses, use.names = FALSE)
+  average_dose_dist <- if (length(all_doses) > 0L) {
+    as.numeric(prop.table(table(factor(all_doses, levels = dose_grid))))
+  } else {
+    rep(0, length(dose_grid))
+  }
 
   if (identical(dose_scale, "auto")) {
     dose_scale <- "linear"
@@ -263,12 +257,13 @@ h_plot_doses_tried <- function(
   plot <- h_next_best_probability_plot(
     dose_grid = dose_grid,
     probability = average_dose_dist,
-    description = "Average proportion [%]",
+    description = "Proportion of patients [%]",
     colour = "grey35",
     prob_plot_type = prob_plot_type,
     dose_scale = dose_scale,
     axis_ticks = axis_ticks,
-    axis_text_angle = ifelse(axis_ticks == "dosegrid", 45, 0)
+    axis_text_angle = ifelse(axis_ticks == "dosegrid", 45, 0),
+    fixed_y_axis = FALSE
   ) +
     xlab("Dose level")
 

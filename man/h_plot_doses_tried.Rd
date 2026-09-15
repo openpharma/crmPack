@@ -35,6 +35,7 @@ A \code{ggplot} object.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Creates a lollipop or bar plot showing average proportions of doses tested.
+Creates a lollipop or bar plot showing the proportion of patients treated at
+each dose across all simulated trials.
 }
 \keyword{internal}
