@@ -42,6 +42,9 @@ NULL
 #' @param axis_text_angle (`number`)\cr rotation angle for x-axis tick labels.
 #'   Defaults to 45 degrees for `axis_ticks = "dosegrid"` and 0 degrees for
 #'   `axis_ticks = "regular"`.
+#' @param safe_dose_marker (`string`)\cr in overdose probability plots, mark
+#'   the maximum dose passing the overdose criterion with a red dashed `"line"`
+#'   (default) or a red `"triangle"` above its probability geometry.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A list with the next best dose recommendation  (element named `value`)
@@ -98,11 +101,13 @@ setMethod(
     dose_scale = c("linear", "log", "factor"),
     axis_ticks = c("dosegrid", "regular"),
     axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
     axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
     assert_number(axis_text_angle, finite = TRUE)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
@@ -147,7 +152,7 @@ setMethod(
       ggplot(),
       data@doseGrid,
       dose_scale,
-      safe_dose = safe_dose,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
       overdose_threshold = nextBest@max_overdose_prob * 100
     )
 
@@ -162,8 +167,12 @@ setMethod(
       axis_ticks = axis_ticks,
       axis_text_angle = axis_text_angle,
       base_plot = overdose_base
-    ) +
-      ylim(c(0, 100))
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p <- h_next_best_safety_marker(
+        p, safe_dose, prob_overdose, data@doseGrid, dose_scale
+      )
+    }
 
     list(
       value = next_dose,
@@ -291,11 +300,13 @@ setMethod(
     dose_scale = c("linear", "log", "factor"),
     axis_ticks = c("dosegrid", "regular"),
     axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
     axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
     assert_number(axis_text_angle, finite = TRUE)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
@@ -363,9 +374,7 @@ setMethod(
       axis_ticks = axis_ticks,
       axis_text_angle = axis_text_angle,
       base_plot = p1
-    ) +
-      scale_y_continuous(breaks = seq(0, 100, 25)) +
-      coord_cartesian(ylim = c(0, 115))
+    )
 
     if (any(is_dose_eligible)) {
       p1 <- h_next_best_marker(
@@ -382,7 +391,7 @@ setMethod(
       ggplot(),
       data@doseGrid,
       dose_scale,
-      safe_dose = safe_dose,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
       overdose_threshold = nextBest@max_overdose_prob * 100
     )
     p2 <- h_next_best_probability_plot(
@@ -395,8 +404,12 @@ setMethod(
       axis_ticks = axis_ticks,
       axis_text_angle = axis_text_angle,
       base_plot = p2
-    ) +
-      ylim(c(0, 100))
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p2 <- h_next_best_safety_marker(
+        p2, safe_dose, prob_overdose, data@doseGrid, dose_scale
+      )
+    }
 
     # Place them below each other.
     plot_joint <- h_arrange_plots_aligned(p2, p1, nrow = 2)
@@ -620,11 +633,13 @@ setMethod(
     dose_scale = c("linear", "log", "factor"),
     axis_ticks = c("dosegrid", "regular"),
     axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
     axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
     assert_number(axis_text_angle, finite = TRUE)
     # Exception when we are in part I or about to start part II!
     if (all(data@part == 1L)) {
@@ -646,6 +661,7 @@ setMethod(
         dose_scale = dose_scale,
         axis_ticks = axis_ticks,
         axis_text_angle = axis_text_angle,
+        safe_dose_marker = safe_dose_marker,
         ...
       )
     }
@@ -681,11 +697,13 @@ setMethod(
     dose_scale = c("linear", "log", "factor"),
     axis_ticks = c("dosegrid", "regular"),
     axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
     axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
     assert_number(axis_text_angle, finite = TRUE)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
@@ -773,7 +791,8 @@ setMethod(
       prob_plot_type = prob_plot_type,
       dose_scale = dose_scale,
       axis_ticks = axis_ticks,
-      axis_text_angle = axis_text_angle
+      axis_text_angle = axis_text_angle,
+      safe_dose_marker = safe_dose_marker
     )
 
     c(list(value = next_dose, probs = probs), p)
@@ -870,11 +889,13 @@ setMethod(
     dose_scale = c("linear", "log", "factor"),
     axis_ticks = c("dosegrid", "regular"),
     axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
     ...
   ) {
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
     axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
     assert_number(axis_text_angle, finite = TRUE)
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
@@ -963,9 +984,7 @@ setMethod(
       axis_ticks = axis_ticks,
       axis_text_angle = axis_text_angle,
       base_plot = p1
-    ) +
-      scale_y_continuous(breaks = seq(0, 100, 25)) +
-      coord_cartesian(ylim = c(0, 115))
+    )
 
     if (any(is_dose_eligible)) {
       p1 <- h_next_best_marker(
@@ -982,7 +1001,7 @@ setMethod(
       ggplot(),
       data@doseGrid,
       dose_scale,
-      safe_dose = safe_dose,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
       overdose_threshold = nextBest@max_overdose_prob * 100
     )
     p2 <- h_next_best_probability_plot(
@@ -995,8 +1014,12 @@ setMethod(
       axis_ticks = axis_ticks,
       axis_text_angle = axis_text_angle,
       base_plot = p2
-    ) +
-      ylim(c(0, 100))
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p2 <- h_next_best_safety_marker(
+        p2, safe_dose, prob_overdose, data@doseGrid, dose_scale
+      )
+    }
 
     # Place them below each other.
     plot_joint <- h_arrange_plots_aligned(p2, p1, nrow = 2)

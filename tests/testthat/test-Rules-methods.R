@@ -182,6 +182,32 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
     target_layers[[3L]]$data$Dose == result$value
   ]
   expect_equal(target_layers[[4L]]$data$y - selected_bar, 10)
+  expect_equal(
+    result$singlePlots$plot1$coordinates$limits$y,
+    result$singlePlots$plot2$coordinates$limits$y
+  )
+
+  triangle_result <- nextBest(
+    nb_ncrm,
+    45,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar",
+    safe_dose_marker = "triangle"
+  )
+  triangle_layers <- triangle_result$singlePlots$plot1$layers
+  expect_identical(
+    unname(vapply(triangle_layers, function(x) class(x$geom)[1L], character(1L))),
+    c("GeomHline", "GeomBar", "GeomPoint")
+  )
+  expect_identical(triangle_layers[[3L]]$aes_params$colour, "red")
+  expect_identical(triangle_layers[[3L]]$aes_params$fill, "red")
+  expect_equal(triangle_layers[[3L]]$data$x, 25)
+  expect_error(
+    nextBest(nb_ncrm, 45, samples, model, data, safe_dose_marker = "invalid"),
+    "should be one of"
+  )
 
   expect_doppel("Plot of nextBest-NextBestNCRM", result$plot)
   expect_doppel("Plot of nextBest-NextBestNCRM_p1", result$singlePlots$plot1)

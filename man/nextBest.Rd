@@ -50,6 +50,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle"),
   ...
 )
 
@@ -65,6 +66,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle"),
   ...
 )
 
@@ -80,6 +82,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle"),
   ...
 )
 
@@ -93,6 +96,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle"),
   ...
 )
 
@@ -108,6 +112,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle"),
   ...
 )
 
@@ -183,6 +188,10 @@ probability plots, place x-axis ticks at each dose-grid value
 \item{axis_text_angle}{(\code{number})\cr rotation angle for x-axis tick labels.
 Defaults to 45 degrees for \code{axis_ticks = "dosegrid"} and 0 degrees for
 \code{axis_ticks = "regular"}.}
+
+\item{safe_dose_marker}{(\code{string})\cr in overdose probability plots, mark
+the maximum dose passing the overdose criterion with a red dashed \code{"line"}
+(default) or a red \code{"triangle"} above its probability geometry.}
 
 \item{in_sim}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)
