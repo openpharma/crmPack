@@ -853,7 +853,7 @@ value of the recommended next best dose, and `plot` contains a plot that
 illustrates how the next best dose was computed. In this case we used the N-CRM
 rule, therefore the plot gives the target-dosing and overdosing probabilities
 together with the safety bar of 25%, the maximum dose and the final
-recommendation (the red triangle):
+recommendation (the blue triangle):
 
 
 ``` r

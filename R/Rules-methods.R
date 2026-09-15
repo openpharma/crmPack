@@ -28,6 +28,23 @@ NULL
 #'   `data`.
 #' @param model (`GeneralModel`)\cr model that was used to generate the samples.
 #' @param data (`Data` or `DataCombo`)\cr data that was used to generate the samples.
+#' @param prob_plot_type (`string`)\cr for one-dimensional target or overdose
+#'   probability plots, use `"lollipop"` (default) or the legacy `"bar"`
+#'   geometry.
+#' @param dose_scale (`string`)\cr for one-dimensional target or overdose
+#'   probability plots, use a `"linear"` (default), `"log"`, or `"factor"`
+#'   dose axis. The factor scale spaces dose levels equally. The log scale
+#'   requires all doses to be strictly positive.
+#' @param axis_ticks (`string`)\cr for one-dimensional target or overdose
+#'   probability plots, place x-axis ticks at each dose-grid value
+#'   (`"dosegrid"`, the default) or at regular positions selected by `ggplot2`
+#'   (`"regular"`).
+#' @param axis_text_angle (`number`)\cr rotation angle for x-axis tick labels.
+#'   Defaults to 45 degrees for `axis_ticks = "dosegrid"` and 0 degrees for
+#'   `axis_ticks = "regular"`.
+#' @param safe_dose_marker (`string`)\cr in overdose probability plots, mark
+#'   the maximum dose passing the overdose criterion with a red dashed `"line"`
+#'   (default) or a red `"triangle"` above its probability geometry.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A list with the next best dose recommendation  (element named `value`)
@@ -74,7 +91,24 @@ setMethod(
     model = "GeneralModel",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log", "factor"),
+    axis_ticks = c("dosegrid", "regular"),
+    axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
+    ...
+  ) {
+    prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
+    assert_number(axis_text_angle, finite = TRUE)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -109,25 +143,36 @@ setMethod(
       NA_real_
     }
 
+    safe_dose <- if (any(is_dose_eligible)) {
+      data@doseGrid[sum(is_dose_eligible)]
+    } else {
+      NA_real_
+    }
+    overdose_base <- h_next_best_reference_lines(
+      ggplot(),
+      data@doseGrid,
+      dose_scale,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
+      overdose_threshold = nextBest@max_overdose_prob * 100
+    )
+
     # Build plot for the overdosing probability.
-    p <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = prob_overdose * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "red",
-        fill = "red"
-      ) +
-      geom_hline(
-        yintercept = nextBest@max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      ) +
-      ylim(c(0, 100)) +
-      ylab("Overdose probability [%]")
+    p <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_overdose,
+      description = "Overdose probability [%]",
+      colour = "red",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = overdose_base
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p <- h_next_best_safety_marker(
+        p, safe_dose, prob_overdose, data@doseGrid, dose_scale
+      )
+    }
 
     list(
       value = next_dose,
@@ -245,7 +290,24 @@ setMethod(
     model = "GeneralModel",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log", "factor"),
+    axis_ticks = c("dosegrid", "regular"),
+    axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
+    ...
+  ) {
+    prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
+    assert_number(axis_text_angle, finite = TRUE)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -291,73 +353,71 @@ setMethod(
       NA_real_
     }
 
-    # Build plots, first for the target probability.
-    p1 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = prob_target * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "darkgreen",
-        fill = "darkgreen"
-      ) +
-      coord_cartesian(ylim = c(0, 100)) +
-      ylab(paste("Target probability [%]"))
-
-    if (is.finite(doselimit)) {
-      p1 <- p1 +
-        geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+    # Build plots, first for the target probability. Reference lines are added
+    # before the probability geometry so it remains visible where layers overlap.
+    safe_dose <- if (any(is_dose_eligible)) {
+      data@doseGrid[sum(is_dose_eligible)]
+    } else {
+      NA_real_
     }
+    p1 <- h_next_best_reference_lines(
+      ggplot(), data@doseGrid, dose_scale, doselimit, safe_dose
+    )
+
+    p1 <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_target,
+      description = "Target probability [%]",
+      colour = "darkgreen",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = p1
+    )
 
     if (any(is_dose_eligible)) {
-      p1 <- p1 +
-        geom_vline(
-          xintercept = data@doseGrid[sum(is_dose_eligible)],
-          lwd = 1.1,
-          lty = 2,
-          colour = "red"
-        ) +
-        geom_point(
-          data = data.frame(
-            x = next_dose,
-            y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03
-          ),
-          aes(x = x, y = y),
-          size = 3,
-          pch = 25,
-          col = "red",
-          bg = "red"
-        )
+      p1 <- h_next_best_marker(
+        p1,
+        next_dose,
+        prob_target[is_dose_eligible][next_best_level] * 100 + 10,
+        data@doseGrid,
+        dose_scale
+      )
     }
 
     # Second, for the overdosing probability.
-    p2 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = prob_overdose * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "red",
-        fill = "red"
-      ) +
-      geom_hline(
-        yintercept = nextBest@max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      ) +
-      ylim(c(0, 100)) +
-      ylab("Overdose probability [%]")
+    p2 <- h_next_best_reference_lines(
+      ggplot(),
+      data@doseGrid,
+      dose_scale,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
+      overdose_threshold = nextBest@max_overdose_prob * 100
+    )
+    p2 <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_overdose,
+      description = "Overdose probability [%]",
+      colour = "red",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = p2
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p2 <- h_next_best_safety_marker(
+        p2, safe_dose, prob_overdose, data@doseGrid, dose_scale
+      )
+    }
 
     # Place them below each other.
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+    plot_joint <- h_arrange_plots_aligned(p2, p1, nrow = 2)
 
     list(
       value = next_dose,
       plot = plot_joint,
-      singlePlots = list(plot1 = p1, plot2 = p2),
+      singlePlots = list(plot1 = p2, plot2 = p1),
       probs = cbind(
         dose = data@doseGrid,
         target = prob_target,
@@ -533,12 +593,12 @@ setMethod(
       )
 
     # Place them below each other.
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+    plot_joint <- h_arrange_plots_aligned(p2, p1, nrow = 2)
 
     list(
       value = next_doses,
       plot = plot_joint,
-      singlePlots = list(plot1 = p1, plot2 = p2),
+      singlePlots = list(plot1 = p2, plot2 = p1),
       probs = plot_data
     )
   }
@@ -563,7 +623,24 @@ setMethod(
     model = "GeneralModel",
     data = "DataParts"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log", "factor"),
+    axis_ticks = c("dosegrid", "regular"),
+    axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
+    ...
+  ) {
+    prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
+    assert_number(axis_text_angle, finite = TRUE)
     # Exception when we are in part I or about to start part II!
     if (all(data@part == 1L)) {
       # Propose the highest possible dose (assuming that the dose limit came
@@ -574,7 +651,19 @@ setMethod(
       list(value = doselimit, plot = NULL)
     } else {
       # Otherwise we will just do the standard thing.
-      callNextMethod(nextBest, doselimit, samples, model, data, ...)
+      callNextMethod(
+        nextBest,
+        doselimit,
+        samples,
+        model,
+        data,
+        prob_plot_type = prob_plot_type,
+        dose_scale = dose_scale,
+        axis_ticks = axis_ticks,
+        axis_text_angle = axis_text_angle,
+        safe_dose_marker = safe_dose_marker,
+        ...
+      )
     }
   }
 )
@@ -598,7 +687,24 @@ setMethod(
     model = "GeneralModel",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log", "factor"),
+    axis_ticks = c("dosegrid", "regular"),
+    axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
+    ...
+  ) {
+    prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
+    assert_number(axis_text_angle, finite = TRUE)
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
@@ -681,7 +787,12 @@ setMethod(
       max_eligible_dose_level = sum(is_dose_eligible),
       doselimit = doselimit,
       next_dose = next_dose,
-      is_unacceptable_specified = is_unacceptable_specified
+      is_unacceptable_specified = is_unacceptable_specified,
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      safe_dose_marker = safe_dose_marker
     )
 
     c(list(value = next_dose, probs = probs), p)
@@ -768,7 +879,24 @@ setMethod(
     model = "DualEndpoint",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = c("lollipop", "bar"),
+    dose_scale = c("linear", "log", "factor"),
+    axis_ticks = c("dosegrid", "regular"),
+    axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+    safe_dose_marker = c("line", "triangle"),
+    ...
+  ) {
+    prob_plot_type <- match.arg(prob_plot_type)
+    dose_scale <- match.arg(dose_scale)
+    axis_ticks <- match.arg(axis_ticks)
+    safe_dose_marker <- match.arg(safe_dose_marker)
+    assert_number(axis_text_angle, finite = TRUE)
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
@@ -835,73 +963,71 @@ setMethod(
       NA_real_
     }
 
-    # Build plots, first for the target probability.
-    p1 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = prob_target * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "darkgreen",
-        fill = "darkgreen"
-      ) +
-      ylim(c(0, 100)) +
-      ylab(paste("Target probability [%]"))
-
-    if (is.finite(doselimit)) {
-      p1 <- p1 +
-        geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+    # Build plots, first for the target probability. Reference lines are added
+    # before the probability geometry so it remains visible where layers overlap.
+    safe_dose <- if (any(is_dose_eligible)) {
+      data@doseGrid[sum(is_dose_eligible)]
+    } else {
+      NA_real_
     }
+    p1 <- h_next_best_reference_lines(
+      ggplot(), data@doseGrid, dose_scale, doselimit, safe_dose
+    )
+
+    p1 <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_target,
+      description = "Target probability [%]",
+      colour = "darkgreen",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = p1
+    )
 
     if (any(is_dose_eligible)) {
-      p1 <- p1 +
-        geom_vline(
-          xintercept = data@doseGrid[sum(is_dose_eligible)],
-          lwd = 1.1,
-          lty = 2,
-          colour = "red"
-        ) +
-        geom_point(
-          data = data.frame(
-            x = next_dose,
-            y = prob_target[is_dose_eligible][next_dose_level] * 100 + 0.03
-          ),
-          aes(x = x, y = y),
-          size = 3,
-          pch = 25,
-          col = "red",
-          bg = "red"
-        )
+      p1 <- h_next_best_marker(
+        p1,
+        next_dose,
+        prob_target[is_dose_eligible][next_dose_level] * 100 + 10,
+        data@doseGrid,
+        dose_scale
+      )
     }
 
     # Second, for the overdosing probability.
-    p2 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = prob_overdose * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "red",
-        fill = "red"
-      ) +
-      geom_hline(
-        yintercept = nextBest@max_overdose_prob * 100,
-        lwd = 1.1,
-        lty = 2,
-        colour = "black"
-      ) +
-      ylim(c(0, 100)) +
-      ylab("Overdose probability [%]")
+    p2 <- h_next_best_reference_lines(
+      ggplot(),
+      data@doseGrid,
+      dose_scale,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
+      overdose_threshold = nextBest@max_overdose_prob * 100
+    )
+    p2 <- h_next_best_probability_plot(
+      dose_grid = data@doseGrid,
+      probability = prob_overdose,
+      description = "Overdose probability [%]",
+      colour = "red",
+      prob_plot_type = prob_plot_type,
+      dose_scale = dose_scale,
+      axis_ticks = axis_ticks,
+      axis_text_angle = axis_text_angle,
+      base_plot = p2
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p2 <- h_next_best_safety_marker(
+        p2, safe_dose, prob_overdose, data@doseGrid, dose_scale
+      )
+    }
 
     # Place them below each other.
-    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+    plot_joint <- h_arrange_plots_aligned(p2, p1, nrow = 2)
 
     list(
       value = next_dose,
       plot = plot_joint,
-      singlePlots = list(plot1 = p1, plot2 = p2),
+      singlePlots = list(plot1 = p2, plot2 = p1),
       probs = cbind(
         dose = data@doseGrid,
         target = prob_target,

@@ -5,7 +5,16 @@
 \alias{plot-GeneralSimulations-missing}
 \title{Plot \code{GeneralSimulations}}
 \usage{
-\S4method{plot}{GeneralSimulations,missing}(x, y, type = c("trajectory", "dosesTried"), ...)
+\S4method{plot}{GeneralSimulations,missing}(
+  x,
+  y,
+  type = c("trajectory", "dosesTried"),
+  prob_plot_type = c("lollipop", "bar"),
+  dose_scale = c("auto", "linear", "log"),
+  axis_ticks = c("dosegrid", "regular"),
+  patient_scale = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{(\code{GeneralSimulations})\cr the object we want to plot from.}
@@ -14,7 +23,25 @@
 
 \item{type}{(\code{character})\cr the type of plots you want to obtain.}
 
-\item{...}{not used.}
+\item{prob_plot_type}{(\code{string})\cr for the doses tried plot, use a
+\code{"lollipop"} (default) or \code{"bar"} geometry.}
+
+\item{dose_scale}{(\code{string})\cr for dose axes, use \code{"auto"} (default),
+\code{"linear"}, or \code{"log"}. Automatic scaling is linear except when equal-width
+bars would overlap, in which case the doses tried x-axis uses log10. The
+trajectory y-axis uses log10 only when explicitly requested. Log scaling
+requires all doses to be strictly positive.}
+
+\item{axis_ticks}{(\code{string})\cr place dose-axis ticks at each dose-grid value
+(\code{"dosegrid"}, the default) or at regular positions selected by \code{ggplot2}
+(\code{"regular"}). This controls the trajectory y-axis and doses tried x-axis.}
+
+\item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for the
+trajectory x-axis ticks. By default, the unique cumulative active-treatment
+cohort sizes are inferred from the simulation data. A single supplied value
+is used as an equally spaced interval; a vector supplies the exact breaks.}
+
+\item{...}{additional arguments without method dispatch.}
 }
 \value{
 A single \code{ggplot} object if a single plot is

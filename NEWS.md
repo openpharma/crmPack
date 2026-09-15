@@ -6,6 +6,10 @@
   next best dose has been administered to a prespecified number of consecutive
   cohorts.
 
+* Additional plotting options for one-dimensional `nextBest` methods are
+  available, including log and equally spaced factor dose scales, lollipop
+  layers instead of bars, and dose-grid or regularly spaced axis ticks.
+
 ### Enhancements
 
 * `HierarchicalModel` now compiles exchangeable normal priors in non-centered
@@ -21,6 +25,27 @@
   interaction parameter while sharing hyperparameters, and singleton
   interaction pools are supported so that the same hierarchical marginal prior
   can be used with one combination arm.
+
+### Miscellaneous
+
+* Next-dose probability plots now identify the increment, safety, and overdose
+  rules and the recommended dose in legends. It is also possible to use a triangle
+  to mark the highest safe dose. Multi-panel plots put overdose information first 
+  and align their plotting areas.
+
+* Extended `GeneralSimulationsSummary` with a `true_mtd` slot and enhanced summary
+  plotting accordingly.
+
+* Simulation trajectory plots now use stepped blue ribbons to show the minimum
+  and maximum and interquartile ranges alongside the median, with a legend and
+  patient-axis ticks inferred from cohort boundaries. Patient tick positions can
+  also be supplied with the new `patient_scale` argument.
+
+* Minor grid lines are suppressed when dose-grid or factor axes are used, making
+  next-dose and simulation plots easier to read.
+
+* The dependency `ggplot2` package now needs to have minimum version 3.2.0 instead of previously
+  3.0.0. This should not be a practical restriction because version 3.2.0 was already released in 2019.
 
 # Version 2.2.1
 
