@@ -905,6 +905,14 @@ setMethod(
     # Evaluate true toxicity at dose grid.
     true_tox <- truth(dose_grid, ...)
 
+    # Identify the true MTD(s) on the dose grid. An interval can contain several
+    # target doses, whereas a scalar target has one closest grid dose.
+    true_mtd <- if (length(target) == 2L) {
+      dose_grid[true_tox >= target[1L] & true_tox <= target[2L]]
+    } else {
+      dose_grid[which.min(abs(true_tox - target))]
+    }
+
     # Find dose interval corresponding to target tox interval.
     target_dose_interval <- sapply(
       target,
@@ -1080,6 +1088,7 @@ setMethod(
     .GeneralSimulationsSummary(
       target = target,
       target_dose_interval = target_dose_interval,
+      true_mtd = true_mtd,
       nsim = length(object@data),
       prop_dlts = prop_dlts,
       mean_tox_risk = mean_tox_risk,
@@ -2318,7 +2327,8 @@ setMethod(
 #'     an active dose are included.}
 #'   \item{`"doseSelected"`}{The distribution of the final selected dose (MTD)
 #'     across trials. A selected dose of zero indicates that the trial stopped
-#'     because all doses in the dose grid appeared too toxic.}
+#'     because all doses in the dose grid appeared too toxic. Red triangles mark
+#'     dose-grid levels whose true toxicity is within the target interval.}
 #'   \item{`"propDLTs"`}{The distribution of the percentage of patients with
 #'     dose-limiting toxicities (DLTs). For trials with a placebo, this is the
 #'     percentage among patients assigned to an active dose.}
@@ -2383,13 +2393,33 @@ setMethod(
 
     # Distribution of final MTD estimate.
     if ("doseSelected" %in% type) {
-      plot_list[[plot_index <- plot_index + 1L]] <-
+      dose_selected_plot <-
         h_barplot_percentages(
           x = x@dose_selected,
           description = "MTD estimate",
           x_is_discrete = TRUE,
+          discrete_levels = sort(unique(c(x@dose_selected, x@true_mtd))),
           axis_text_angle = axis_text_angle
         )
+
+      if (length(x@true_mtd) > 0L && all(is.finite(x@true_mtd))) {
+        marker_height <- 105 * max(table(x@dose_selected)) / length(x@dose_selected)
+        marker_data <- data.frame(
+          dose = as.character(x@true_mtd),
+          height = marker_height
+        )
+        dose_selected_plot <- dose_selected_plot +
+          geom_point(
+            aes(x = .data$dose, y = .data$height),
+            data = marker_data,
+            shape = 17,
+            size = 3,
+            colour = "red"
+          ) +
+          scale_y_continuous(expand = expansion(mult = c(0.05, 0.2)))
+      }
+
+      plot_list[[plot_index <- plot_index + 1L]] <- dose_selected_plot
     }
 
     # Distribution of proportion of DLTs.

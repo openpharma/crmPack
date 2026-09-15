@@ -278,6 +278,7 @@ test_that("DualSimulations generator function works as expected", {
 test_that("GeneralSimulationsSummary generates object correctly", {
   target_value <- 1
   target_dose_interval_value <- 2
+  true_mtd_value <- 2
   nsim_value <- 3L
   mean_tox_risk_value <- 4
   dose_selected_value <- 5
@@ -286,6 +287,7 @@ test_that("GeneralSimulationsSummary generates object correctly", {
     .GeneralSimulationsSummary(
       target = target_value,
       target_dose_interval = target_dose_interval_value,
+      true_mtd = true_mtd_value,
       nsim = nsim_value,
       prop_dlts = list(),
       mean_tox_risk = mean_tox_risk_value,
@@ -308,6 +310,7 @@ test_that("GeneralSimulationsSummary generates object correctly", {
 
   expect_identical(result@target, target_value)
   expect_identical(result@target_dose_interval, target_dose_interval_value)
+  expect_identical(result@true_mtd, true_mtd_value)
   expect_identical(result@nsim, nsim_value)
   expect_identical(result@mean_tox_risk, mean_tox_risk_value)
   expect_identical(result@dose_selected, dose_selected_value)

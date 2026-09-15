@@ -9,7 +9,8 @@ h_barplot_percentages(
   description,
   xaxisround = 0,
   x_is_discrete = FALSE,
-  axis_text_angle = 0
+  axis_text_angle = 0,
+  discrete_levels = NULL
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ be used)}
 discrete categories}
 
 \item{axis_text_angle}{(\code{number}) rotation angle for x-axis tick labels.}
+
+\item{discrete_levels}{(\code{numeric} or \code{NULL}) complete ordered set of discrete
+x-axis values. Only used when \code{x_is_discrete} is \code{TRUE}.}
 }
 \value{
 the ggplot2 object

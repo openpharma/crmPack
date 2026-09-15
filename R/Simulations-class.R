@@ -572,6 +572,8 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #'
 #' @slot target (`numeric`)\cr target toxicity interval
 #' @slot target_dose_interval (`numeric`)\cr corresponding target dose interval
+#' @slot true_mtd (`numeric`)\cr dose-grid level(s) whose true toxicity lies in
+#'   the target interval, or is closest to a scalar target
 #' @slot nsim (`integer`)\cr number of simulations
 #' @slot prop_dlts (`ANY`)\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials
 #' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients
@@ -595,6 +597,7 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
     slots = c(
       target = "numeric",
       target_dose_interval = "numeric",
+      true_mtd = "numeric",
       nsim = "integer",
       prop_dlts = "ANY",
       mean_tox_risk = "numeric",

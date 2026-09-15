@@ -1008,6 +1008,10 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   simSummary <- summary(mySims, truth = myTruth)
 
   # Test different plot types
+  true_tox <- myTruth(emptydata@doseGrid)
+  expected_true_mtd <- emptydata@doseGrid[
+    true_tox >= simSummary@target[1L] & true_tox <= simSummary@target[2L]
+  ]
   result_n_obs <- plot(simSummary, type = "nObs")
   expect_s3_class(result_n_obs, "ggplot")
   expect_doppel("plot_generalSimsSummary_nObs", result_n_obs)
@@ -1015,6 +1019,22 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   result_dose_selected <- plot(simSummary, type = "doseSelected")
   expect_s3_class(result_dose_selected, "ggplot")
   expect_true(result_dose_selected$scales$get_scales("x")$is_discrete())
+  expect_identical(result_dose_selected$layers[[2L]]$aes_params$shape, 17)
+  expect_identical(result_dose_selected$layers[[2L]]$aes_params$colour, "red")
+  expect_equal(
+    result_dose_selected$layers[[2L]]$data$dose,
+    as.character(expected_true_mtd)
+  )
+  expect_length(result_dose_selected$layers, 2L)
+
+  multiple_summary <- summary(
+    mySims,
+    truth = myTruth,
+    target = c(0.02, 0.3)
+  )
+  expect_equal(multiple_summary@true_mtd, c(15, 20))
+  multiple_plot <- plot(multiple_summary, type = "doseSelected")
+  expect_equal(multiple_plot$layers[[2L]]$data$dose, c("15", "20"))
 
   result_prop_dlts <- plot(simSummary, type = "propDLTs")
   expect_s3_class(result_prop_dlts, "ggplot")

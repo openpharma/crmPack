@@ -24,6 +24,9 @@ function is provided for this class.
 
 \item{\code{target_dose_interval}}{(\code{numeric})\cr corresponding target dose interval}
 
+\item{\code{true_mtd}}{(\code{numeric})\cr dose-grid level(s) whose true toxicity lies in
+the target interval, or is closest to a scalar target}
+
 \item{\code{nsim}}{(\code{integer})\cr number of simulations}
 
 \item{\code{prop_dlts}}{(\code{ANY})\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials}
