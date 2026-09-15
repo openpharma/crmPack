@@ -1019,13 +1019,28 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   result_dose_selected <- plot(simSummary, type = "doseSelected")
   expect_s3_class(result_dose_selected, "ggplot")
   expect_true(result_dose_selected$scales$get_scales("x")$is_discrete())
-  expect_identical(result_dose_selected$layers[[2L]]$aes_params$shape, 17)
   expect_identical(result_dose_selected$layers[[2L]]$aes_params$colour, "red")
+  expect_equal(
+    unname(result_dose_selected$scales$get_scales("shape")$palette(1L)),
+    25
+  )
   expect_equal(
     result_dose_selected$layers[[2L]]$data$dose,
     as.character(expected_true_mtd)
   )
   expect_length(result_dose_selected$layers, 2L)
+  expect_true(result_dose_selected$layers[[2L]]$show.legend)
+  true_mtd_percent <- 100 * mean(simSummary@dose_selected == expected_true_mtd)
+  expect_true(
+    result_dose_selected$layers[[2L]]$data$height > true_mtd_percent
+  )
+
+  result_without_legend <- plot(
+    simSummary,
+    type = "doseSelected",
+    true_mtd_legend = FALSE
+  )
+  expect_false(result_without_legend$layers[[2L]]$show.legend)
 
   multiple_summary <- summary(
     mySims,
@@ -1197,11 +1212,21 @@ test_that("plot-SimulationsSummary works correctly", {
   # Test meanFit plot (specific to SimulationsSummary)
   result_mean_fit <- plot(simSummary, type = "meanFit")
   expect_s3_class(result_mean_fit, "ggplot")
+  expect_null(result_mean_fit$scales$get_scales("linetype")$name)
+  expect_null(result_mean_fit$scales$get_scales("colour")$name)
+  expect_identical(result_mean_fit$guides$get_params("linetype")$order, 2)
+  expect_identical(result_mean_fit$guides$get_params("colour")$order, 2)
   expect_doppel("plot_simSimsSummary_meanFit", result_mean_fit)
 
   # Test combination with general plots
   result_multiple <- plot(simSummary, type = c("meanFit", "nObs"))
   expect_s3_class(result_multiple, "gtable")
+
+  result_with_mtd_legend <- plot(
+    simSummary,
+    type = c("meanFit", "doseSelected")
+  )
+  expect_s3_class(result_with_mtd_legend, "gtable")
 })
 
 ## plot-DualSimulationsSummary ----

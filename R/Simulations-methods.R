@@ -2317,6 +2317,8 @@ setMethod(
 #' @param type (`character`)\cr the types of plots you want to obtain, see details.
 #' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
 #'   x-axis tick labels. Defaults to 45 degrees.
+#' @param true_mtd_legend (`flag`)\cr whether to show the legend for true MTD
+#'   triangles. Defaults to `TRUE`.
 #' @param ... not used.
 #'
 #' @details
@@ -2361,12 +2363,14 @@ setMethod(
       "nAboveTarget"
     ),
     axis_text_angle = 45,
+    true_mtd_legend = TRUE,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
     assert_number(axis_text_angle, finite = TRUE)
+    assert_flag(true_mtd_legend)
 
     # Start the plot list.
     plot_list <- list()
@@ -2403,19 +2407,33 @@ setMethod(
         )
 
       if (length(x@true_mtd) > 0L && all(is.finite(x@true_mtd))) {
-        marker_height <- 105 * max(table(x@dose_selected)) / length(x@dose_selected)
+        selected_percent <- 100 *
+          table(x@dose_selected) /
+          length(x@dose_selected)
+        marker_height <- as.numeric(
+          selected_percent[as.character(x@true_mtd)]
+        )
+        marker_height[is.na(marker_height)] <- 0
+        marker_gap <- max(2, 0.05 * max(selected_percent))
         marker_data <- data.frame(
           dose = as.character(x@true_mtd),
-          height = marker_height
+          height = marker_height + marker_gap,
+          marker = "True MTD"
         )
         dose_selected_plot <- dose_selected_plot +
           geom_point(
-            aes(x = .data$dose, y = .data$height),
+            aes(
+              x = .data$dose,
+              y = .data$height,
+              shape = .data$marker
+            ),
             data = marker_data,
-            shape = 17,
-            size = 3,
-            colour = "red"
+            size = 1,
+            colour = "red",
+            fill = "red",
+            show.legend = true_mtd_legend
           ) +
+          scale_shape_manual(values = c("True MTD" = 25), name = NULL) +
           scale_y_continuous(expand = expansion(mult = c(0.05, 0.2)))
       }
 
@@ -2581,6 +2599,8 @@ setMethod(
 #' @param type (`character`)\cr the types of plots you want to obtain.
 #' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
 #'   x-axis tick labels. Defaults to 45 degrees.
+#' @param true_mtd_legend (`flag`)\cr whether to show the legend for true MTD
+#'   triangles. Defaults to `TRUE`.
 #' @param ... not used.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -2607,12 +2627,14 @@ setMethod(
       "meanFit"
     ),
     axis_text_angle = 45,
+    true_mtd_legend = TRUE,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
     assert_number(axis_text_angle, finite = TRUE)
+    assert_flag(true_mtd_legend)
 
     # Subtract the specific plot types for model-based designs.
     type_reduced <- setdiff(
@@ -2629,7 +2651,8 @@ setMethod(
         x = x,
         y = y,
         type = type_reduced,
-        axis_text_angle = axis_text_angle
+        axis_text_angle = axis_text_angle,
+        true_mtd_legend = true_mtd_legend && !"meanFit" %in% type
       )
     }
 
@@ -2682,10 +2705,46 @@ setMethod(
         )
 
       this_plot <- this_plot +
-        scale_linetype_manual(values = lt) +
-        scale_colour_manual(values = col) +
+        scale_linetype_manual(values = lt, name = NULL) +
+        scale_colour_manual(values = col, name = NULL) +
+        guides(
+          linetype = guide_legend(order = 2),
+          colour = guide_legend(order = 2)
+        ) +
         xlab("Dose level") +
         ylab("Probability of DLT [%]")
+
+      if (
+        true_mtd_legend &&
+          "doseSelected" %in% type &&
+          length(x@true_mtd) > 0L
+      ) {
+        marker_legend_data <- data.frame(
+          dose = x@dose_grid[1L],
+          lines = 0,
+          marker = "True MTD"
+        )
+        this_plot <- this_plot +
+          geom_point(
+            aes(
+              x = .data$dose,
+              y = .data$lines,
+              shape = .data$marker
+            ),
+            data = marker_legend_data,
+            colour = "red",
+            fill = "red",
+            alpha = 0,
+            show.legend = TRUE
+          ) +
+          scale_shape_manual(values = c("True MTD" = 25), name = NULL) +
+          guides(
+            shape = guide_legend(
+              order = 1,
+              override.aes = list(alpha = 1, colour = "red", fill = "red")
+            )
+          )
+      }
 
       # Add this plot to the bottom.
       ret <-

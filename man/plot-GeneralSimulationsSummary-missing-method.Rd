@@ -10,6 +10,7 @@
   y,
   type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"),
   axis_text_angle = 45,
+  true_mtd_legend = TRUE,
   ...
 )
 }
@@ -22,6 +23,9 @@
 
 \item{axis_text_angle}{(\code{number})\cr rotation angle for the MTD estimate
 x-axis tick labels. Defaults to 45 degrees.}
+
+\item{true_mtd_legend}{(\code{flag})\cr whether to show the legend for true MTD
+triangles. Defaults to \code{TRUE}.}
 
 \item{...}{not used.}
 }
