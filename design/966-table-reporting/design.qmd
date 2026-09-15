@@ -1,6 +1,6 @@
 ---
 title: "Design: Table reporting and export for simulation studies"
-subtitle: "Scenario characterization, prior characterization, and operating characteristics"
+subtitle: "True toxicity scenarios, hypothetical data scenarios, priors, and operating characteristics"
 format:
   html:
     embed-resources: true
@@ -16,10 +16,16 @@ clinical trial protocols and their appendices.
 
 The requirements were collected in a team brainstorming (Bayer, Boehringer
 Ingelheim, Merck examples; see the "Table discussion" notes) and fall into
-three topics:
+four topics:
 
-1. **Scenario characterization**: assumed true DLT probability for each dose
-   (or dose combination), as a table and as a plot.
+1. **True toxicity-scenario characterization**: assumed true DLT probability
+   for each dose (or dose combination), as a table and as a plot.
+
+1. **Hypothetical data-scenario evaluation**: observed patients and DLTs,
+   current dose and its overdose probability, the next action recommended by
+   the design, and posterior interval probabilities at the proposed next dose.
+   These are evaluations of a design against user-supplied trial data, not the
+   true toxicity scenarios used to generate simulation outcomes.
 
 1. **Prior characterization**: summary of the prior distribution of the DLT
    probability at each dose
@@ -84,11 +90,18 @@ What already exists in `crmPack` and is relevant here:
   `data.frame` with `dose`, `middle`, `lower`, `upper`) and
   `plot(samples, model, data)`. There is no tabular prior summary (mean, SD,
   arbitrary quantiles, interval probabilities) and no prior random-draws plot.
-- **Scenario characterization**: `truth` functions are passed to `simulate()`
-  and `summary()`; `probFunction()` builds them from models. The true DLT
-  curve is evaluated inside `summary()` but only retained in
+- **True toxicity-scenario characterization**: `truth` functions are passed to
+  `simulate()` and `summary()`; `probFunction()` builds them from models. The
+  true DLT curve is evaluated inside `summary()` but only retained in
   `SimulationsSummary@mean_fit$truth`. There is no scenario table/plot across
-  multiple scenarios.
+  multiple true toxicity scenarios.
+- **Hypothetical data-scenario evaluation**: `scenario()` methods for `Design`,
+  `DesignCombo`, `DADesign`, and `HierarchicalDesign` evaluate one
+  user-supplied data set and currently return a plain named list containing the
+  data, posterior samples and fit, next dose information, and stopping decision.
+  The returned `next_best$probs` contains rule-specific posterior probabilities.
+  The list has no class-level validity checks or methods, and there is no
+  function that assembles multiple such results or renders them as a table.
 - **Reporting layers**: two established conventions we should build on:
   - `tidy()` methods (broom-style, [helpers_broom.R](../../R/helpers_broom.R),
     `design/concise-tidy-design.Rmd`) returning tibbles classed
@@ -153,7 +166,11 @@ and the "Word document" requirements.
 
 Advantages: Modern, actively developed; spanners, row groups, footnotes, `fmt_*` formatting; exports HTML, LaTeX, RTF and **`.docx`** (`gt::gtsave("table.docx")`); `as_raw_html()` pastes cleanly into Word; widely known API
 
-# Topic 1: Scenario characterization
+# Topic 1: True toxicity-scenario characterization
+
+Here, "scenario" means an assumed true dose--toxicity curve used to generate
+simulation outcomes. It does not mean the hypothetical observed data evaluated
+by `scenario()` in Topic 2.
 
 ## New class: `ToxicityScenarios`
 
@@ -209,7 +226,172 @@ defaulting to the stored slot; simulation objects saved with older `crmPack`
 versions lack the slot, in which case the reporting functions ask for an
 explicit `truth` via an informative error.
 
-# Topic 2: Prior characterization
+# Topic 2: Hypothetical data-scenario evaluation
+
+This table reports what a design would do for several user-supplied snapshots
+of trial data. It is deliberately based on the result of `scenario()` rather
+than rerunning the model inside the reporting layer: the expensive stochastic
+calculation happens once, and every exported table is traceable to the exact
+fit and decision that were evaluated.
+
+## New class: `DataScenario`
+
+`scenario()` returns a `DataScenario` object representing one evaluated
+hypothetical data scenario. This gives the result a stable contract and enables
+class-specific `show()`, `tidy()`, and `knit_print()` methods. The distinction
+in terminology is:
+
+- a `Data`, `DataCombo`, `DataDA`, or `HierarchicalData` object is the
+  user-supplied hypothetical data,
+- a `DataScenario` is the complete evaluated result returned by `scenario()`,
+  and
+- a `ToxicityScenarios` object contains true dose--toxicity curves used for
+  simulation.
+
+`DataScenario` is a regular S4 class containing `CrmPackClass`, and
+`scenario()` changes its `valueClass` from `"list"` to `"DataScenario"`.
+Callers do not construct these objects directly. Its slots are `data`,
+`samples`, `fit`, `dose_limit`, `next_best`, `next_dose`, `cohort_size`,
+`placebo_cohort_size`, `stop`, `stop_report`, and `stop_reason`.
+
+`data` and `samples` retain their existing crmPack objects. All remaining slots
+are named lists with one element per arm. A non-hierarchical design uses one
+internal arm named `"overall"`; renderers omit that artificial arm label.
+Normalizing the representation here means downstream methods do not need one
+code path for scalar single-design results and another for list-valued
+hierarchical results. The validity function enforces identical arm names and
+ordering across these slots, while allowing rule-dependent contents such as a
+numeric or matrix `dose_limit` and a missing `next_best` for an unopened arm.
+
+There is no compatibility path for the unclassed result lists returned by the
+development version of `scenario()`. That API has not shipped on CRAN, so
+`DataScenario` becomes its initial supported return contract.
+
+The class validity function checks the compatibility of `data` and `samples`
+and the shared per-arm structure of the decision slots. For hierarchical
+results it also checks those names and their order against `HierarchicalData`.
+It deliberately does not require a fixed column schema for the `probs` element
+of each arm's `next_best`, because that schema belongs to the selected
+`NextBest` rule.
+
+Methods:
+
+- `show()` gives a compact decision summary and does not print posterior
+  samples.
+- `tidy()` produces the normalized one-result tibble
+  (`tbl_DataScenario`) described below, including one row for empty arms.
+- `knit_print()` delegates to `report_data_scenarios()` for a one-scenario
+  table.
+
+`report_data_scenarios()` accepts either one `DataScenario` or a named list of
+them. Other inputs are rejected with a clear type error. The reporter calls
+the `tidy()` method for each result and binds those rows; the result-flattening
+logic therefore has one implementation.
+
+## Entry point and return value
+
+For a multi-scenario table, the user supplies a named list of `DataScenario`
+objects produced by `scenario()`:
+
+```{r}
+#| eval: false
+hypothetical_results <- list(
+  "1 (3 patients, 0 DLTs)" = scenario(
+    design,
+    data = data_scenario_1,
+    mcmcOptions = options
+  ),
+  "2 (3 patients, 1 DLT)" = scenario(
+    design,
+    data = data_scenario_2,
+    mcmcOptions = options
+  )
+)
+
+report_data_scenarios(
+  hypothetical_results,
+  # For a NextBest rule that returns all three categories:
+  probabilities = c("underdosing", "target", "overdose"),
+  probability_labels = c(
+    underdosing = "P(UDS)",
+    target = "P(TDS)",
+    overdose = "P(ODS)"
+  ),
+  format = c("tibble", "gt", "kable") # default "tibble"
+)
+```
+
+`format = "tibble"` binds the individual `tbl_DataScenario` objects and returns
+a tibble with class `tbl_DataScenarios`, with one row per scenario, arm, and
+distinct observed dose (or dose combination). Its core columns are:
+
+- `scenario` and `arm` (`arm` is omitted from the rendered table for a
+  non-hierarchical design),
+- `observed_dose`, `n_patients`, and `n_dlts`,
+- `current_dose` and `current_overdose_prob`,
+- `proposed_next_dose`, `cohort_size`, `stop`, and `stop_reason`, and
+- one column for each requested posterior probability at the proposed next
+  dose.
+
+Dose columns retain a named numeric vector in a list-column and have a paired
+character display column. Thus a single-agent dose remains numeric, a
+`DataCombo` dose retains both drug components, and a `HierarchicalDesign` can
+mix single-agent and combination arms without losing information. The default
+display joins combination components with `" + "`; drug names, units, digits,
+column labels, and the separator are configurable.
+
+Observed counts are aggregated from `result@data` at each distinct dose. The
+flattening helper starts from the existing per-arm `tidy()` methods instead of
+duplicating extraction from the S4 slots. The current dose is the non-placebo
+treatment dose in the latest cohort (the combination in the final row for
+`DataCombo`); ambiguous latest-cohort data cause an error rather than an
+arbitrary choice. Empty arms still get a row so that the scenario/arm layout
+remains stable; unavailable values render as an em dash. For hierarchical
+results, historical and not-yet-open arms are retained and their state is taken
+from `result@stop` and `result@stop_reason` rather than inferred from missing
+dose values.
+
+## Decision probabilities and stopping
+
+For each arm, the reporting function extracts probabilities from
+`result@next_best[[arm]]$probs` at the current and proposed next doses. Known
+crmPack spellings are normalized (for example, `target` and `target_prob`;
+`overdose` and `overdose_prob`). It reuses `match_within_tolerance()` for
+numeric dose matching. It does **not** calculate `1 - target - overdose` and label that value as
+underdosing: `NextBest` intervals need not be contiguous, and some rules have
+additional `excessive` or `unacceptable` categories. By default the table shows
+the probability columns present in all evaluated arms; structurally unevaluated
+historical or not-yet-open arms receive missing values and do not reduce that
+set. If the user requests a missing column explicitly for an evaluated arm,
+the function errors and lists the available columns instead of silently
+changing the meaning of the table. A caller can include rule-specific
+probability columns by name and relabel them for the protocol.
+
+`scenario()` calculates `next_best` before evaluating `stopTrial()`. To avoid
+presenting a dose as actionable after a stopping rule has fired, the rendered
+table labels this column **Next action**: it shows the recommended dose and
+cohort size when `stop` is false, and "Stop" with the stopping reason when
+`stop` is true. The raw tibble keeps `proposed_next_dose`, `stop`, and
+`stop_reason` separately. Posterior probabilities at a proposed next dose are
+suppressed in the rendered table after a stop, but remain in the tibble for
+auditability.
+
+The `gt` renderer uses the screenshot's structure: row groups for scenarios,
+arm rows within scenarios, an **Observed data** spanner over dose/patient/DLT
+counts, and an **Interval probabilities of proposed next dose** spanner. When
+an arm contains observations at more than one dose, the decision cells are
+row-spanned in `gt` and displayed only on the first arm row in `kable`. The
+classed tibble has a `knit_print()` method delegating to `report_table()`, so
+the default tibble result can be placed directly in a Quarto chunk. Calling
+`report_data_scenarios(..., format = "gt")` or `"kable"` renders immediately.
+
+Tests cover single-agent, `DataCombo`, and `HierarchicalDesign` results;
+multiple observed doses; empty, historical, and not-yet-open arms; stopped
+designs; tolerant matching of numeric doses to probability grids; and clear
+failure for requested probability categories that a `NextBest` result does
+not provide. The reporter must not call `mcmc()`, `fit()`, or `nextBest()`.
+
+# Topic 3: Prior characterization
 
 All three deliverables operate on the established
 `samples <- mcmc(empty_data, model, options)` idiom, so they automatically
@@ -274,7 +456,7 @@ A separate function (rather than a `type = "draws"` option on
 `plot(samples, model, data)`) keeps the existing plot signature untouched and
 the new functionality easy to discover.
 
-# Topic 3: Operating characteristics
+# Topic 4: Operating characteristics
 
 This is the largest part and the one needing the most flexibility.
 
@@ -469,19 +651,24 @@ Sliced so that each step is an independently reviewable PR with tests
    `report_*` functions returning tibbles. Refactor `show`/`plot` to use them
    (no behavior change).
 3. **`ToxicityScenarios`** class + `tidy`/`plot`/table methods.
-4. **`report_prob_summary()`** + prior plot extensions (`target` overlay,
+4. **`DataScenario`** return class for `scenario()`, plus
+   `report_data_scenarios()` and `tbl_DataScenario`/`tbl_DataScenarios` methods,
+   including single-agent, combination, and hierarchical result flattening.
+5. **`report_prob_summary()`** + prior plot extensions (`target` overlay,
    `statistic`/`level` options) + `plot_prior_draws()`.
-5. **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
+6. **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
    registry, PMDA-style default `stop_categories`).
-6. **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
+7. **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
    spanner/title).
-7. **`report_oc_detail()`** + scenario-faceted summary plots.
-8. **Rendering/export polish**: `report_table()` generic, `knit_print`
+8. **`report_oc_detail()`** + scenario-faceted summary plots.
+9. **Rendering/export polish**: `report_table()` generic, `knit_print`
    methods, `report_paginate()`, Word-export documentation.
-9. **Vignette** "Reporting simulation results" reproducing the Bayer, BI,
-   Merck, and PMDA example tables end-to-end.
+10. **Vignette** "Reporting simulation results" reproducing the hypothetical
+    data-scenario, Bayer, BI, Merck, and PMDA example tables end-to-end.
 
 Extensions explicitly deferred (but anticipated in the tidy column layout):
-combo dose grids in `ToxicityScenarios`/tables, arm sub-columns for
-`HierarchicalSimulations`, pseudo/dual simulation specifics (efficacy
-columns), `DASimulations` duration statistics beyond mean/SD.
+combo dose grids in true `ToxicityScenarios` and operating-characteristics
+tables, arm sub-columns for `HierarchicalSimulations`, pseudo/dual simulation
+specifics (efficacy columns), `DASimulations` duration statistics beyond
+mean/SD. Combination and hierarchical `scenario()` results are already in
+scope for the hypothetical data-scenario table described in Topic 2.
