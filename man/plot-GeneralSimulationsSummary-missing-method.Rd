@@ -18,7 +18,7 @@
 
 \item{y}{(\code{missing})\cr not used.}
 
-\item{type}{(\code{character})\cr the types of plots you want to obtain.}
+\item{type}{(\code{character})\cr the types of plots you want to obtain, see details.}
 
 \item{axis_text_angle}{(\code{number})\cr rotation angle for the MTD estimate
 x-axis tick labels. Defaults to 45 degrees.}
@@ -35,18 +35,24 @@ asked for, otherwise a \code{gtable} object.
 Graphical display of the general simulation summary.
 
 This plot method can be applied to \code{\link{GeneralSimulationsSummary}} objects in
-order to summarize them graphically. Possible \code{type}s of plots at the moment
-are:
-\describe{
-\item{nObs}{Distribution of the number of patients in the simulated trials}
-\item{doseSelected}{Distribution of the final selected doses in the trials.
-Note that this can include zero entries, meaning that the trial was
-stopped because all doses in the dose grid appeared too toxic.}
-\item{propDLTs}{Distribution of the proportion of patients with DLTs in the
-trials}
-\item{nAboveTarget}{Distribution of the number of patients treated at doses
-which are above the target toxicity interval (as specified by the
-\code{truth} and \code{target} arguments to \code{\link{summary,GeneralSimulations-method}})}
+order to summarize them graphically.
 }
-You can specify any subset of these in the \code{type} argument.
+\details{
+The following plot types are available:
+\describe{
+\item{\code{"nObs"}}{The distribution of the total number of patients in the
+simulated trials. For trials with a placebo, only patients assigned to
+an active dose are included.}
+\item{\code{"doseSelected"}}{The distribution of the final selected dose (MTD)
+across trials. A selected dose of zero indicates that the trial stopped
+because all doses in the dose grid appeared too toxic.}
+\item{\code{"propDLTs"}}{The distribution of the percentage of patients with
+dose-limiting toxicities (DLTs). For trials with a placebo, this is the
+percentage among patients assigned to an active dose.}
+\item{\code{"nAboveTarget"}}{The distribution of the number of patients treated
+at doses above the target toxicity interval, as determined by the \code{truth}
+and \code{target} arguments supplied to
+\code{\link{summary,GeneralSimulations-method}}.}
+}
+Any subset of these plot types can be requested with \code{type}.
 }

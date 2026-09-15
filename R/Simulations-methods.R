@@ -2301,27 +2301,33 @@ setMethod(
 #' Graphical display of the general simulation summary.
 #'
 #' This plot method can be applied to [`GeneralSimulationsSummary`] objects in
-#' order to summarize them graphically. Possible `type`s of plots at the moment
-#' are:
-#' \describe{
-#'   \item{nObs}{Distribution of the number of patients in the simulated trials}
-#'   \item{doseSelected}{Distribution of the final selected doses in the trials.
-#'     Note that this can include zero entries, meaning that the trial was
-#'     stopped because all doses in the dose grid appeared too toxic.}
-#'   \item{propDLTs}{Distribution of the proportion of patients with DLTs in the
-#'     trials}
-#'   \item{nAboveTarget}{Distribution of the number of patients treated at doses
-#'     which are above the target toxicity interval (as specified by the
-#'     `truth` and `target` arguments to [`summary,GeneralSimulations-method`])}
-#' }
-#' You can specify any subset of these in the `type` argument.
+#' order to summarize them graphically.
 #'
 #' @param x (`GeneralSimulationsSummary`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr not used.
-#' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param type (`character`)\cr the types of plots you want to obtain, see details.
 #' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
 #'   x-axis tick labels. Defaults to 45 degrees.
 #' @param ... not used.
+#'
+#' @details
+#' The following plot types are available:
+#' \describe{
+#'   \item{`"nObs"`}{The distribution of the total number of patients in the
+#'     simulated trials. For trials with a placebo, only patients assigned to
+#'     an active dose are included.}
+#'   \item{`"doseSelected"`}{The distribution of the final selected dose (MTD)
+#'     across trials. A selected dose of zero indicates that the trial stopped
+#'     because all doses in the dose grid appeared too toxic.}
+#'   \item{`"propDLTs"`}{The distribution of the percentage of patients with
+#'     dose-limiting toxicities (DLTs). For trials with a placebo, this is the
+#'     percentage among patients assigned to an active dose.}
+#'   \item{`"nAboveTarget"`}{The distribution of the number of patients treated
+#'     at doses above the target toxicity interval, as determined by the `truth`
+#'     and `target` arguments supplied to
+#'     [`summary,GeneralSimulations-method`].}
+#' }
+#' Any subset of these plot types can be requested with `type`.
 #'
 #' @return A single `ggplot` object if a single plot is
 #'   asked for, otherwise a `gtable` object.
