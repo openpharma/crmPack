@@ -361,9 +361,9 @@ h_next_best_reference_lines <- function(
     scale_linetype_manual(
       name = NULL,
       values = c(
-        "Increment Rule" = "dashed",
-        "Safety Rule" = "dotted",
-        "Overdose Threshold" = "dotted"
+        "Increment Rule" = "dotted",
+        "Safety Rule" = "dashed",
+        "Overdose Threshold" = "dashed"
       ),
       guide = guide_legend(order = 1L)
     )
@@ -372,15 +372,25 @@ h_next_best_reference_lines <- function(
 #' Add the Next-Best Dose Marker
 #'
 #' @param plot (`ggplot`) plot to decorate.
-#' @param dose (`number`) next best dose.
+#' @param dose (`number`) dose to mark.
 #' @param y (`number`) vertical marker position.
 #' @param dose_grid (`numeric`) ordered dose grid.
 #' @param dose_scale (`string`) dose-axis scale.
+#' @param label (`string`) marker label in the legend.
+#' @param colour (`string`) marker colour.
 #'
 #' @return The decorated `ggplot2` object.
 #'
 #' @keywords internal
-h_next_best_marker <- function(plot, dose, y, dose_grid, dose_scale) {
+h_next_best_marker <- function(
+  plot,
+  dose,
+  y,
+  dose_grid,
+  dose_scale,
+  label = "Dose Recommendation",
+  colour = "blue"
+) {
   plot +
     geom_point(
       data = data.frame(
@@ -390,18 +400,18 @@ h_next_best_marker <- function(plot, dose, y, dose_grid, dose_scale) {
       aes(
         x = .data$x,
         y = .data$y,
-        shape = "Dose Recommendation"
+        shape = label
       ),
       size = 3,
-      colour = "blue",
-      fill = "blue"
+      colour = colour,
+      fill = colour
     ) +
     scale_shape_manual(
       name = NULL,
-      values = c("Dose Recommendation" = 25),
+      values = stats::setNames(25, label),
       guide = guide_legend(
         order = 2L,
-        override.aes = list(colour = "blue", fill = "blue")
+        override.aes = list(colour = colour, fill = colour)
       )
     )
 }
@@ -458,6 +468,9 @@ h_arrange_plots_aligned <- function(..., nrow = length(list(...))) {
 #' @param base_plot (`ggplot`)
 #'   plot containing any background layers to draw below the probability
 #'   geometry.
+#' @param fixed_y_axis (`flag`)
+#'   whether to use the standard probability y-axis extending to 115 percent.
+#'   If `FALSE`, the upper y-axis limit and breaks are determined from the data.
 #'
 #' @return A `ggplot2` object.
 #'
@@ -471,7 +484,8 @@ h_next_best_probability_plot <- function(
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
-  base_plot = ggplot()
+  base_plot = ggplot(),
+  fixed_y_axis = TRUE
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   assert_probabilities(probability)
@@ -483,6 +497,7 @@ h_next_best_probability_plot <- function(
   axis_ticks <- match.arg(axis_ticks)
   assert_number(axis_text_angle, finite = TRUE)
   assert_class(base_plot, "ggplot")
+  assert_flag(fixed_y_axis)
   if (identical(dose_scale, "log") && any(dose_grid <= 0)) {
     stop(
       "`dose_scale = \"log\"` requires all doses to be strictly positive.",
@@ -552,8 +567,15 @@ h_next_best_probability_plot <- function(
       )
   }
 
+  plot <- plot + ylab(description)
+  plot <- if (fixed_y_axis) {
+    plot +
+      scale_y_continuous(breaks = seq(0, 100, 25)) +
+      coord_cartesian(ylim = c(0, 115))
+  } else {
+    plot + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+  }
   plot <- plot +
-    ylab(description) +
     theme(
       axis.text.x = element_text(
         angle = axis_text_angle,
@@ -584,6 +606,40 @@ h_next_best_probability_plot <- function(
   } else {
     plot
   }
+}
+
+#' Add the Safety-Rule Dose Marker
+#'
+#' @param plot (`ggplot`) plot to decorate.
+#' @param safe_dose (`number`) maximum dose passing the overdose criterion.
+#' @param probability (`proportion`) probability at each dose-grid value.
+#' @param dose_grid (`numeric`) ordered dose grid.
+#' @param dose_scale (`string`) dose-axis scale.
+#'
+#' @return The decorated `ggplot2` object, or the original plot when there is
+#'   no finite safe dose.
+#'
+#' @keywords internal
+h_next_best_safety_marker <- function(
+  plot,
+  safe_dose,
+  probability,
+  dose_grid,
+  dose_scale
+) {
+  if (!is.finite(safe_dose)) {
+    return(plot)
+  }
+  safe_dose_level <- match(safe_dose, dose_grid)
+  h_next_best_marker(
+    plot,
+    safe_dose,
+    probability[safe_dose_level] * 100 + 10,
+    dose_grid,
+    dose_scale,
+    label = "Safety Rule",
+    colour = "red"
+  )
 }
 
 #' Building the Plot for `nextBest-NextBestNCRMLoss` Method.
@@ -619,6 +675,9 @@ h_next_best_probability_plot <- function(
 #' @param axis_text_angle (`number`)\cr rotation angle for x-axis tick labels.
 #'   Defaults to 45 degrees for `axis_ticks = "dosegrid"` and 0 degrees for
 #'   `axis_ticks = "regular"`.
+#' @param safe_dose_marker (`string`)\cr mark the maximum dose passing the
+#'   overdose criterion with a red dashed `"line"` (default) or a red
+#'   `"triangle"` above its probability geometry.
 #'
 #' @export
 h_next_best_ncrm_loss_plot <- function(
@@ -633,7 +692,8 @@ h_next_best_ncrm_loss_plot <- function(
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
-  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle")
 ) {
   assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
   n_grid <- length(dose_grid)
@@ -670,6 +730,7 @@ h_next_best_ncrm_loss_plot <- function(
   prob_plot_type <- match.arg(prob_plot_type)
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
+  safe_dose_marker <- match.arg(safe_dose_marker)
   assert_number(axis_text_angle, finite = TRUE)
 
   safe_dose <- if (max_eligible_dose_level > 0) {
@@ -698,9 +759,7 @@ h_next_best_ncrm_loss_plot <- function(
     axis_ticks = axis_ticks,
     axis_text_angle = axis_text_angle,
     base_plot = p1
-  ) +
-    ylim(c(0, 100)) +
-    ylab("Target probability [%]")
+  )
 
   loss_plot_data <- data.frame(
     Dose = h_dose_plot_position(dose_grid, dose_grid, dose_scale),
@@ -757,7 +816,7 @@ h_next_best_ncrm_loss_plot <- function(
       ggplot(),
       dose_grid,
       dose_scale,
-      safe_dose = safe_dose,
+      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
       overdose_threshold = max_overdose_prob * 100
     )
     p2 <- h_next_best_probability_plot(
@@ -770,8 +829,12 @@ h_next_best_ncrm_loss_plot <- function(
       axis_ticks = axis_ticks,
       axis_text_angle = axis_text_angle,
       base_plot = p2
-    ) +
-      ylim(c(0, 100))
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p2 <- h_next_best_safety_marker(
+        p2, safe_dose, prob_mat[, "overdose"], dose_grid, dose_scale
+      )
+    }
 
     # Combine it all together.
     plots_single <- list(plot1 = p2, plot2 = p1, plot_loss = p_loss)
@@ -791,10 +854,14 @@ h_next_best_ncrm_loss_plot <- function(
         ggplot(),
         dose_grid,
         dose_scale,
-        safe_dose = safe_dose
+        safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_
       )
-    ) +
-      ylim(c(0, 100))
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p2 <- h_next_best_safety_marker(
+        p2, safe_dose, prob_mat[, "excessive"], dose_grid, dose_scale
+      )
+    }
 
     p3 <- h_next_best_probability_plot(
       dose_grid = dose_grid,
@@ -809,10 +876,14 @@ h_next_best_ncrm_loss_plot <- function(
         ggplot(),
         dose_grid,
         dose_scale,
-        safe_dose = safe_dose
+        safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_
       )
-    ) +
-      ylim(c(0, 100))
+    )
+    if (identical(safe_dose_marker, "triangle")) {
+      p3 <- h_next_best_safety_marker(
+        p3, safe_dose, prob_mat[, "unacceptable"], dose_grid, dose_scale
+      )
+    }
 
     # Combine it all together.
     plots_single <- list(plot1 = p2, plot2 = p3, plot3 = p1, plot_loss = p_loss)

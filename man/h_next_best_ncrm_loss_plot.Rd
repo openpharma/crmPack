@@ -16,7 +16,8 @@ h_next_best_ncrm_loss_plot(
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
-  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle")
 )
 }
 \arguments{
@@ -57,6 +58,10 @@ selected by \code{ggplot2} (\code{"regular"}).}
 \item{axis_text_angle}{(\code{number})\cr rotation angle for x-axis tick labels.
 Defaults to 45 degrees for \code{axis_ticks = "dosegrid"} and 0 degrees for
 \code{axis_ticks = "regular"}.}
+
+\item{safe_dose_marker}{(\code{string})\cr mark the maximum dose passing the
+overdose criterion with a red dashed \code{"line"} (default) or a red
+\code{"triangle"} above its probability geometry.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -86,16 +86,28 @@ h_plot_simulation_trajectory <- function(
     maximum = trajectory_quantiles[, 5L]
   )
 
-  # Repeat trajectory values at each new patient so that ribbons change in
-  # steps, consistently with the median line.
-  ribbon_x_rows <- if (max_patients > 1L) {
-    c(1L, rep(seq.int(2L, max_patients), each = 2L))
-  } else {
-    1L
+  patient_breaks <- NULL
+  if (!is.null(patient_scale)) {
+    patient_breaks <- if (length(patient_scale) == 1L) {
+      if (patient_scale <= max_patients) {
+        seq.int(patient_scale, max_patients, by = patient_scale)
+      } else {
+        max_patients
+      }
+    } else {
+      sort(patient_scale[patient_scale <= max_patients])
+    }
+    if (length(patient_breaks) == 0L) {
+      patient_breaks <- max_patients
+    }
   }
-  ribbon_value_rows <- head(rep(seq_len(max_patients), each = 2L), -1L)
-  ribbon_df <- traj_df[ribbon_value_rows, , drop = FALSE]
-  ribbon_df$patient <- traj_df$patient[ribbon_x_rows]
+
+  # Draw straight ribbon segments between the cohort sizes actually used.
+  ribbon_df <- if (is.null(patient_breaks)) {
+    traj_df
+  } else {
+    traj_df[patient_breaks, , drop = FALSE]
+  }
 
   # Create plot title.
   my_title <- if (has_placebo) {
@@ -124,14 +136,14 @@ h_plot_simulation_trajectory <- function(
       ),
       data = ribbon_df
     ) +
-    geom_step(
+    geom_line(
       aes(
         x = .data$patient,
         y = .data$median,
         colour = "Median"
       ),
       linewidth = 1.2,
-      data = traj_df
+      data = ribbon_df
     ) +
     scale_fill_manual(
       name = NULL,
@@ -151,18 +163,6 @@ h_plot_simulation_trajectory <- function(
     theme(panel.grid.minor = element_blank())
 
   if (!is.null(patient_scale)) {
-    patient_breaks <- if (length(patient_scale) == 1L) {
-      if (patient_scale <= max_patients) {
-        seq.int(patient_scale, max_patients, by = patient_scale)
-      } else {
-        max_patients
-      }
-    } else {
-      sort(patient_scale[patient_scale <= max_patients])
-    }
-    if (length(patient_breaks) == 0L) {
-      patient_breaks <- max_patients
-    }
     plot <- plot +
       scale_x_continuous(
         breaks = patient_breaks
@@ -196,7 +196,8 @@ h_plot_simulation_trajectory <- function(
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Creates a lollipop or bar plot showing average proportions of doses tested.
+#' Creates a lollipop or bar plot showing the proportion of patients treated at
+#' each dose across all simulated trials.
 #'
 #' @param sim_doses (`list`)\cr list of simulated doses per trial.
 #' @param dose_grid (`numeric`)\cr dose grid.
@@ -224,20 +225,13 @@ h_plot_doses_tried <- function(
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
 
-  # Get the dose distributions by trial.
-  dose_distributions <- sapply(
-    sim_doses,
-    function(s) {
-      if (length(s) > 0) {
-        prop.table(table(factor(s, levels = dose_grid)))
-      } else {
-        rep(0, length(dose_grid))
-      }
-    }
-  )
-
-  # Derive the average dose distribution across trial simulations.
-  average_dose_dist <- rowMeans(dose_distributions)
+  # Derive the proportion of patients at each dose across all simulations.
+  all_doses <- unlist(sim_doses, use.names = FALSE)
+  average_dose_dist <- if (length(all_doses) > 0L) {
+    as.numeric(prop.table(table(factor(all_doses, levels = dose_grid))))
+  } else {
+    rep(0, length(dose_grid))
+  }
 
   if (identical(dose_scale, "auto")) {
     dose_scale <- "linear"
@@ -263,12 +257,13 @@ h_plot_doses_tried <- function(
   plot <- h_next_best_probability_plot(
     dose_grid = dose_grid,
     probability = average_dose_dist,
-    description = "Average proportion [%]",
+    description = "Proportion of patients [%]",
     colour = "grey35",
     prob_plot_type = prob_plot_type,
     dose_scale = dose_scale,
     axis_ticks = axis_ticks,
-    axis_text_angle = ifelse(axis_ticks == "dosegrid", 45, 0)
+    axis_text_angle = ifelse(axis_ticks == "dosegrid", 45, 0),
+    fixed_y_axis = FALSE
   ) +
     xlab("Dose level")
 
@@ -910,6 +905,14 @@ setMethod(
     # Evaluate true toxicity at dose grid.
     true_tox <- truth(dose_grid, ...)
 
+    # Identify the true MTD(s) on the dose grid. An interval can contain several
+    # target doses, whereas a scalar target has one closest grid dose.
+    true_mtd <- if (length(target) == 2L) {
+      dose_grid[true_tox >= target[1L] & true_tox <= target[2L]]
+    } else {
+      dose_grid[which.min(abs(true_tox - target))]
+    }
+
     # Find dose interval corresponding to target tox interval.
     target_dose_interval <- sapply(
       target,
@@ -1085,6 +1088,7 @@ setMethod(
     .GeneralSimulationsSummary(
       target = target,
       target_dose_interval = target_dose_interval,
+      true_mtd = true_mtd,
       nsim = length(object@data),
       prop_dlts = prop_dlts,
       mean_tox_risk = mean_tox_risk,
@@ -2306,27 +2310,36 @@ setMethod(
 #' Graphical display of the general simulation summary.
 #'
 #' This plot method can be applied to [`GeneralSimulationsSummary`] objects in
-#' order to summarize them graphically. Possible `type`s of plots at the moment
-#' are:
-#' \describe{
-#'   \item{nObs}{Distribution of the number of patients in the simulated trials}
-#'   \item{doseSelected}{Distribution of the final selected doses in the trials.
-#'     Note that this can include zero entries, meaning that the trial was
-#'     stopped because all doses in the dose grid appeared too toxic.}
-#'   \item{propDLTs}{Distribution of the proportion of patients with DLTs in the
-#'     trials}
-#'   \item{nAboveTarget}{Distribution of the number of patients treated at doses
-#'     which are above the target toxicity interval (as specified by the
-#'     `truth` and `target` arguments to [`summary,GeneralSimulations-method`])}
-#' }
-#' You can specify any subset of these in the `type` argument.
+#' order to summarize them graphically.
 #'
 #' @param x (`GeneralSimulationsSummary`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr not used.
-#' @param type (`character`)\cr the types of plots you want to obtain.
+#' @param type (`character`)\cr the types of plots you want to obtain, see details.
 #' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
 #'   x-axis tick labels. Defaults to 45 degrees.
+#' @param true_mtd_legend (`flag`)\cr whether to show the legend for true MTD
+#'   triangles. Defaults to `TRUE`.
 #' @param ... not used.
+#'
+#' @details
+#' The following plot types are available:
+#' \describe{
+#'   \item{`"nObs"`}{The distribution of the total number of patients in the
+#'     simulated trials. For trials with a placebo, only patients assigned to
+#'     an active dose are included.}
+#'   \item{`"doseSelected"`}{The distribution of the final selected dose (MTD)
+#'     across trials. A selected dose of zero indicates that the trial stopped
+#'     because all doses in the dose grid appeared too toxic. Red triangles mark
+#'     dose-grid levels whose true toxicity is within the target interval.}
+#'   \item{`"propDLTs"`}{The distribution of the percentage of patients with
+#'     dose-limiting toxicities (DLTs). For trials with a placebo, this is the
+#'     percentage among patients assigned to an active dose.}
+#'   \item{`"nAboveTarget"`}{The distribution of the number of patients treated
+#'     at doses above the target toxicity interval, as determined by the `truth`
+#'     and `target` arguments supplied to
+#'     [`summary,GeneralSimulations-method`].}
+#' }
+#' Any subset of these plot types can be requested with `type`.
 #'
 #' @return A single `ggplot` object if a single plot is
 #'   asked for, otherwise a `gtable` object.
@@ -2350,12 +2363,14 @@ setMethod(
       "nAboveTarget"
     ),
     axis_text_angle = 45,
+    true_mtd_legend = TRUE,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
     assert_number(axis_text_angle, finite = TRUE)
+    assert_flag(true_mtd_legend)
 
     # Start the plot list.
     plot_list <- list()
@@ -2382,13 +2397,47 @@ setMethod(
 
     # Distribution of final MTD estimate.
     if ("doseSelected" %in% type) {
-      plot_list[[plot_index <- plot_index + 1L]] <-
+      dose_selected_plot <-
         h_barplot_percentages(
           x = x@dose_selected,
           description = "MTD estimate",
           x_is_discrete = TRUE,
+          discrete_levels = sort(unique(c(x@dose_selected, x@true_mtd))),
           axis_text_angle = axis_text_angle
         )
+
+      if (length(x@true_mtd) > 0L && all(is.finite(x@true_mtd))) {
+        selected_percent <- 100 *
+          table(x@dose_selected) /
+          length(x@dose_selected)
+        marker_height <- as.numeric(
+          selected_percent[as.character(x@true_mtd)]
+        )
+        marker_height[is.na(marker_height)] <- 0
+        marker_gap <- max(2, 0.05 * max(selected_percent))
+        marker_data <- data.frame(
+          dose = as.character(x@true_mtd),
+          height = marker_height + marker_gap,
+          marker = "True MTD"
+        )
+        dose_selected_plot <- dose_selected_plot +
+          geom_point(
+            aes(
+              x = .data$dose,
+              y = .data$height,
+              shape = .data$marker
+            ),
+            data = marker_data,
+            size = 1,
+            colour = "red",
+            fill = "red",
+            show.legend = true_mtd_legend
+          ) +
+          scale_shape_manual(values = c("True MTD" = 25), name = NULL) +
+          scale_y_continuous(expand = expansion(mult = c(0.05, 0.2)))
+      }
+
+      plot_list[[plot_index <- plot_index + 1L]] <- dose_selected_plot
     }
 
     # Distribution of proportion of DLTs.
@@ -2540,7 +2589,8 @@ setMethod(
 #'   \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
 #'     the trials, together with 95% credible intervals, and comparison with the
 #'     assumed truth (as specified by the `truth` argument to
-#'     [`summary,Simulations-method`])}
+#'     [`summary,Simulations-method`]). The target toxicity range is shown as a
+#'     shaded area; a scalar target is shown as a horizontal dotted line.}
 #' }
 #'
 #' You can specify any subset of these in the `type` argument.
@@ -2550,6 +2600,8 @@ setMethod(
 #' @param type (`character`)\cr the types of plots you want to obtain.
 #' @param axis_text_angle (`number`)\cr rotation angle for the MTD estimate
 #'   x-axis tick labels. Defaults to 45 degrees.
+#' @param true_mtd_legend (`flag`)\cr whether to show the legend for true MTD
+#'   triangles. Defaults to `TRUE`.
 #' @param ... not used.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -2576,12 +2628,14 @@ setMethod(
       "meanFit"
     ),
     axis_text_angle = 45,
+    true_mtd_legend = TRUE,
     ...
   ) {
     # Validate arguments.
     type <- match.arg(type, several.ok = TRUE)
     assert_character(type, min.len = 1)
     assert_number(axis_text_angle, finite = TRUE)
+    assert_flag(true_mtd_legend)
 
     # Subtract the specific plot types for model-based designs.
     type_reduced <- setdiff(
@@ -2598,17 +2652,21 @@ setMethod(
         x = x,
         y = y,
         type = type_reduced,
-        axis_text_angle = axis_text_angle
+        axis_text_angle = axis_text_angle,
+        true_mtd_legend = true_mtd_legend && !"meanFit" %in% type
       )
     }
 
     # Is the meanFit plot requested?
     if ("meanFit" %in% type) {
+      target_is_range <- length(x@target) == 2L
+
       # Which types of lines do we have?
       linetype <- c(
         "True toxicity",
         "Average estimated toxicity",
-        "95% interval for estimated toxicity"
+        "95% interval for estimated toxicity",
+        if (!target_is_range) "Target toxicity"
       )
 
       # Create the data frame, with true tox, average estimated tox, and 95%
@@ -2627,18 +2685,62 @@ setMethod(
       lt <- c(
         "True toxicity" = 1,
         "Average estimated toxicity" = 1,
-        "95% interval for estimated toxicity" = 2
+        "95% interval for estimated toxicity" = 2,
+        "Target toxicity" = 3
       )
 
       # Colour for the plot.
       col <- c(
         "True toxicity" = 1,
         "Average estimated toxicity" = 2,
-        "95% interval for estimated toxicity" = 2
+        "95% interval for estimated toxicity" = 2,
+        "Target toxicity" = 2
       )
 
       # Now create and save the plot.
-      this_plot <- ggplot() +
+      this_plot <- ggplot()
+
+      if (target_is_range) {
+        target_data <- data.frame(
+          ymin = x@target[1L] * 100,
+          ymax = x@target[2L] * 100,
+          target = "Target toxicity range"
+        )
+        this_plot <- this_plot +
+          geom_rect(
+            aes(
+              xmin = -Inf,
+              xmax = Inf,
+              ymin = .data$ymin,
+              ymax = .data$ymax,
+              fill = .data$target
+            ),
+            data = target_data,
+            alpha = 0.15,
+            inherit.aes = FALSE
+          ) +
+          scale_fill_manual(
+            values = c("Target toxicity range" = "red"),
+            name = NULL,
+            guide = guide_legend(order = 1)
+          )
+      } else {
+        target_data <- data.frame(
+          target = "Target toxicity",
+          yintercept = x@target * 100
+        )
+        this_plot <- this_plot +
+          geom_hline(
+            aes(
+              yintercept = .data$yintercept,
+              linetype = .data$target,
+              colour = .data$target
+            ),
+            data = target_data
+          )
+      }
+
+      this_plot <- this_plot +
         geom_line(
           aes(
             x = dose,
@@ -2651,10 +2753,46 @@ setMethod(
         )
 
       this_plot <- this_plot +
-        scale_linetype_manual(values = lt) +
-        scale_colour_manual(values = col) +
+        scale_linetype_manual(values = lt, name = NULL) +
+        scale_colour_manual(values = col, name = NULL) +
+        guides(
+          linetype = guide_legend(order = 2),
+          colour = guide_legend(order = 2)
+        ) +
         xlab("Dose level") +
         ylab("Probability of DLT [%]")
+
+      if (
+        true_mtd_legend &&
+          "doseSelected" %in% type &&
+          length(x@true_mtd) > 0L
+      ) {
+        marker_legend_data <- data.frame(
+          dose = x@dose_grid[1L],
+          lines = 0,
+          marker = "True MTD"
+        )
+        this_plot <- this_plot +
+          geom_point(
+            aes(
+              x = .data$dose,
+              y = .data$lines,
+              shape = .data$marker
+            ),
+            data = marker_legend_data,
+            colour = "red",
+            fill = "red",
+            alpha = 0,
+            show.legend = TRUE
+          ) +
+          scale_shape_manual(values = c("True MTD" = 25), name = NULL) +
+          guides(
+            shape = guide_legend(
+              order = 1,
+              override.aes = list(alpha = 1, colour = "red", fill = "red")
+            )
+          )
+      }
 
       # Add this plot to the bottom.
       ret <-

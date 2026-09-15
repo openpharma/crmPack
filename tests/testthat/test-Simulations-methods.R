@@ -70,7 +70,7 @@ test_that("plot-GeneralSimulations works correctly", {
   result_doses <- plot(mySims, type = "dosesTried")
   expect_s3_class(result_doses, "ggplot")
   expect_equal(result_doses$labels$x, "Dose level")
-  expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_equal(result_doses$labels$y, "Proportion of patients [%]")
   expect_doppel("plot_generalSims_dosesTried", result_doses)
 
   # Test both plot types explicitly
@@ -134,6 +134,18 @@ test_that("doses tried uses lollipops by default", {
   expect_equal(result$theme$axis.text.x$angle, 45)
 })
 
+test_that("doses tried shows pooled patient proportions on a free y-axis", {
+  result <- h_plot_doses_tried(
+    sim_doses = list(c(1, 1), c(1, 2, 2, 2, 2, 2)),
+    dose_grid = 1:2
+  )
+  plot_data <- ggplot_build(result)$data
+
+  expect_equal(plot_data[[2L]]$y, c(3 / 8, 5 / 8) * 100)
+  expect_null(result$coordinates$limits$y)
+  expect_lt(max(ggplot_build(result)$layout$panel_params[[1L]]$y.range), 100)
+})
+
 test_that("doses tried optionally uses regular axis ticks", {
   mySims <- .DefaultSimulations()
   doses_tried <- plot(
@@ -162,7 +174,7 @@ test_that("simulation trajectory uses nested blue ranges and a median line", {
 
   expect_s3_class(trajectory$layers[[1L]]$geom, "GeomRibbon")
   expect_s3_class(trajectory$layers[[2L]]$geom, "GeomRibbon")
-  expect_s3_class(trajectory$layers[[3L]]$geom, "GeomStep")
+  expect_s3_class(trajectory$layers[[3L]]$geom, "GeomLine")
   expect_equal(
     unname(trajectory$scales$get_scales("fill")$palette(2L)),
     c("#C6DBEF", "#6BAED6")
@@ -173,11 +185,11 @@ test_that("simulation trajectory uses nested blue ranges and a median line", {
   )
 
   plot_data <- ggplot_build(trajectory)$data
-  expect_equal(plot_data[[1L]]$x, c(1, 2, 2, 3, 3))
-  expect_equal(plot_data[[1L]]$ymin, c(1, 1, 2, 2, 3))
-  expect_equal(plot_data[[1L]]$ymax, c(3, 3, 4, 4, 5))
-  expect_equal(plot_data[[2L]]$ymin, c(1.5, 1.5, 2.5, 2.5, 3.5))
-  expect_equal(plot_data[[2L]]$ymax, c(2.5, 2.5, 3.5, 3.5, 4.5))
+  expect_equal(plot_data[[1L]]$x, c(1, 2, 3))
+  expect_equal(plot_data[[1L]]$ymin, c(1, 2, 3))
+  expect_equal(plot_data[[1L]]$ymax, c(3, 4, 5))
+  expect_equal(plot_data[[2L]]$ymin, c(1.5, 2.5, 3.5))
+  expect_equal(plot_data[[2L]]$ymax, c(2.5, 3.5, 4.5))
   expect_equal(plot_data[[3L]]$y, c(2, 3, 4))
 })
 
@@ -200,6 +212,10 @@ test_that("simulation trajectory supports patient tick intervals and positions",
 
   expect_equal(interval_plot$scales$get_scales("x")$breaks, c(2L, 4L, 6L))
   expect_equal(position_plot$scales$get_scales("x")$breaks, c(1L, 3L))
+  expect_equal(ggplot_build(interval_plot)$data[[1L]]$x, c(2, 4, 6))
+  expect_equal(ggplot_build(position_plot)$data[[1L]]$x, c(1, 3))
+  expect_equal(ggplot_build(interval_plot)$data[[3L]]$x, c(2, 4, 6))
+  expect_equal(ggplot_build(position_plot)$data[[3L]]$x, c(1, 3))
   expect_error(
     do.call(h_plot_simulation_trajectory, c(args, list(patient_scale = 0))),
     "not >= 1",
@@ -992,6 +1008,10 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   simSummary <- summary(mySims, truth = myTruth)
 
   # Test different plot types
+  true_tox <- myTruth(emptydata@doseGrid)
+  expected_true_mtd <- emptydata@doseGrid[
+    true_tox >= simSummary@target[1L] & true_tox <= simSummary@target[2L]
+  ]
   result_n_obs <- plot(simSummary, type = "nObs")
   expect_s3_class(result_n_obs, "ggplot")
   expect_doppel("plot_generalSimsSummary_nObs", result_n_obs)
@@ -999,6 +1019,38 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   result_dose_selected <- plot(simSummary, type = "doseSelected")
   expect_s3_class(result_dose_selected, "ggplot")
   expect_true(result_dose_selected$scales$get_scales("x")$is_discrete())
+  expect_identical(result_dose_selected$layers[[2L]]$aes_params$colour, "red")
+  expect_equal(
+    unname(result_dose_selected$scales$get_scales("shape")$palette(1L)),
+    25
+  )
+  expect_equal(
+    result_dose_selected$layers[[2L]]$data$dose,
+    as.character(expected_true_mtd)
+  )
+  expect_length(result_dose_selected$layers, 2L)
+  expect_true(result_dose_selected$layers[[2L]]$show.legend)
+  true_mtd_percent <- 100 *
+    mean(simSummary@dose_selected %in% expected_true_mtd)
+  expect_true(
+    result_dose_selected$layers[[2L]]$data$height > true_mtd_percent
+  )
+
+  result_without_legend <- plot(
+    simSummary,
+    type = "doseSelected",
+    true_mtd_legend = FALSE
+  )
+  expect_false(result_without_legend$layers[[2L]]$show.legend)
+
+  multiple_summary <- summary(
+    mySims,
+    truth = myTruth,
+    target = c(0.02, 0.3)
+  )
+  expect_equal(multiple_summary@true_mtd, c(15, 20))
+  multiple_plot <- plot(multiple_summary, type = "doseSelected")
+  expect_equal(multiple_plot$layers[[2L]]$data$dose, c("15", "20"))
 
   result_prop_dlts <- plot(simSummary, type = "propDLTs")
   expect_s3_class(result_prop_dlts, "ggplot")
@@ -1029,7 +1081,10 @@ test_that("plot-SimulationsSummary shows representative MTD selections", {
 
   expect_true(mtd_plot$scales$get_scales("x")$is_discrete())
   expect_equal(mtd_plot$theme$axis.text.x$angle, 45)
-  expect_doppel("plot-simulations-summary-dose-selected-representative", mtd_plot)
+  expect_doppel(
+    "plot-simulations-summary-dose-selected-representative",
+    mtd_plot
+  )
 
   unrotated_mtd_plot <- plot(
     sim_summary,
@@ -1068,7 +1123,10 @@ test_that("plot-PseudoSimulationsSummary shows representative DLE proportions", 
   dle_plot <- plot(pseudo_summary, type = "propDLE")
 
   expect_s3_class(dle_plot$layers[[1L]]$stat, "StatBin")
-  expect_doppel("plot-pseudo-simulations-summary-prop-dle-representative", dle_plot)
+  expect_doppel(
+    "plot-pseudo-simulations-summary-prop-dle-representative",
+    dle_plot
+  )
 })
 
 test_that("plot-SimulationsSummary shows the corrected summary dashboard", {
@@ -1083,8 +1141,14 @@ test_that("plot-SimulationsSummary shows the corrected summary dashboard", {
       times = c(2, 5, 9, 18, 24, 19, 12, 7, 3, 1)
     ),
     prop_dlts = c(
-      rep(0, 4), rep(1 / 12, 10), rep(2 / 12, 17), rep(3 / 12, 24),
-      rep(4 / 12, 20), rep(5 / 12, 14), rep(6 / 12, 8), rep(7 / 12, 3)
+      rep(0, 4),
+      rep(1 / 12, 10),
+      rep(2 / 12, 17),
+      rep(3 / 12, 24),
+      rep(4 / 12, 20),
+      rep(5 / 12, 14),
+      rep(6 / 12, 8),
+      rep(7 / 12, 3)
     ),
     n_above_target = as.integer(rep(c(0, 3, 6), times = c(91, 7, 2))),
     placebo = FALSE
@@ -1149,11 +1213,54 @@ test_that("plot-SimulationsSummary works correctly", {
   # Test meanFit plot (specific to SimulationsSummary)
   result_mean_fit <- plot(simSummary, type = "meanFit")
   expect_s3_class(result_mean_fit, "ggplot")
+  expect_null(result_mean_fit$scales$get_scales("linetype")$name)
+  expect_null(result_mean_fit$scales$get_scales("colour")$name)
+  expect_null(result_mean_fit$scales$get_scales("fill")$name)
+  expect_s3_class(result_mean_fit$layers[[1L]]$geom, "GeomRect")
+  expect_equal(result_mean_fit$layers[[1L]]$data$ymin, 20)
+  expect_equal(result_mean_fit$layers[[1L]]$data$ymax, 35)
+  expect_identical(
+    result_mean_fit$scales$get_scales("fill")$guide$params$order,
+    1L
+  )
+  expect_identical(result_mean_fit$guides$guides$linetype$params$order, 2L)
+  expect_identical(result_mean_fit$guides$guides$colour$params$order, 2L)
   expect_doppel("plot_simSimsSummary_meanFit", result_mean_fit)
 
   # Test combination with general plots
   result_multiple <- plot(simSummary, type = c("meanFit", "nObs"))
   expect_s3_class(result_multiple, "gtable")
+
+  result_with_mtd_legend <- plot(
+    simSummary,
+    type = c("meanFit", "doseSelected")
+  )
+  expect_s3_class(result_with_mtd_legend, "gtable")
+})
+
+test_that("plot-SimulationsSummary shows a scalar toxicity target", {
+  sim_summary <- new(
+    "SimulationsSummary",
+    target = 0.25,
+    dose_grid = c(1, 2),
+    mean_fit = list(
+      truth = c(0.1, 0.3),
+      mean = c(0.12, 0.28),
+      lower = c(0.05, 0.15),
+      upper = c(0.2, 0.4)
+    ),
+    placebo = FALSE
+  )
+
+  mean_fit_plot <- plot(sim_summary, type = "meanFit")
+
+  expect_s3_class(mean_fit_plot$layers[[1L]]$geom, "GeomHline")
+  expect_equal(mean_fit_plot$layers[[1L]]$data$yintercept, 25)
+  expect_equal(mean_fit_plot$layers[[1L]]$data$target, "Target toxicity")
+  expect_identical(
+    unname(mean_fit_plot$scales$get_scales("linetype")$palette(4L)[4L]),
+    3
+  )
 })
 
 ## plot-DualSimulationsSummary ----
@@ -1433,7 +1540,7 @@ test_that("plot-PseudoDualSimulations works correctly", {
   expect_s3_class(result_doses, "ggplot")
   expect_doppel("plot_pseudoDualSims_dosesTried", result_doses)
   expect_equal(result_doses$labels$x, "Dose level")
-  expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_equal(result_doses$labels$y, "Proportion of patients [%]")
 
   result_sigma2 <- plot(pseudo_dual_sims, type = "sigma2")
   expect_s3_class(result_sigma2, "ggplot")
@@ -1493,7 +1600,7 @@ test_that("plot-PseudoDualFlexiSimulations works correctly", {
   expect_s3_class(result_doses, "ggplot")
   expect_doppel("plot_pseudoDualFlexiSims_dosesTried", result_doses)
   expect_equal(result_doses$labels$x, "Dose level")
-  expect_equal(result_doses$labels$y, "Average proportion [%]")
+  expect_equal(result_doses$labels$y, "Proportion of patients [%]")
 
   result_sigma2 <- plot(pseudo_dual_flexi_sims, type = "sigma2")
   expect_s3_class(result_sigma2, "ggplot")

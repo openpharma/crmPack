@@ -328,6 +328,22 @@ test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
     ggplot_build(factor_lollipop)$data[[2L]]$x,
     seq_along(dose_grid)
   )
+  full_probability <- h_next_best_probability_plot(
+    dose_grid = 1,
+    probability = 1,
+    description = "Probability [%]",
+    colour = "red",
+    prob_plot_type = "bar"
+  )
+  full_probability <- h_next_best_marker(
+    full_probability,
+    dose = 1,
+    y = 110,
+    dose_grid = 1,
+    dose_scale = "linear"
+  )
+  expect_equal(full_probability$coordinates$limits$y, c(0, 115))
+  expect_equal(ggplot_build(full_probability)$data[[2L]]$y, 110)
   expect_error(
     h_next_best_probability_plot(
       dose_grid,
@@ -377,6 +393,21 @@ test_that("h_next_best_probability_plot supports lollipop and legacy bars", {
       dose_scale = "log"
     ),
     "requires all doses to be strictly positive"
+  )
+})
+
+test_that("h_next_best_reference_lines uses the requested line types", {
+  plot <- h_next_best_reference_lines(
+    ggplot(),
+    dose_grid = c(1, 2),
+    dose_scale = "linear",
+    doselimit = 1,
+    safe_dose = 2,
+    overdose_threshold = 25
+  )
+  expect_equal(
+    vapply(ggplot_build(plot)$data, `[[`, character(1L), "linetype"),
+    c("dashed", "dotted", "dashed")
   )
 })
 
