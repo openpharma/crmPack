@@ -1030,7 +1030,8 @@ test_that("plot-GeneralSimulationsSummary works correctly", {
   )
   expect_length(result_dose_selected$layers, 2L)
   expect_true(result_dose_selected$layers[[2L]]$show.legend)
-  true_mtd_percent <- 100 * mean(simSummary@dose_selected == expected_true_mtd)
+  true_mtd_percent <- 100 *
+    mean(simSummary@dose_selected %in% expected_true_mtd)
   expect_true(
     result_dose_selected$layers[[2L]]$data$height > true_mtd_percent
   )
