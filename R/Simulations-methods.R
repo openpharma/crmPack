@@ -86,16 +86,28 @@ h_plot_simulation_trajectory <- function(
     maximum = trajectory_quantiles[, 5L]
   )
 
-  # Repeat trajectory values at each new patient so that ribbons change in
-  # steps, consistently with the median line.
-  ribbon_x_rows <- if (max_patients > 1L) {
-    c(1L, rep(seq.int(2L, max_patients), each = 2L))
-  } else {
-    1L
+  patient_breaks <- NULL
+  if (!is.null(patient_scale)) {
+    patient_breaks <- if (length(patient_scale) == 1L) {
+      if (patient_scale <= max_patients) {
+        seq.int(patient_scale, max_patients, by = patient_scale)
+      } else {
+        max_patients
+      }
+    } else {
+      sort(patient_scale[patient_scale <= max_patients])
+    }
+    if (length(patient_breaks) == 0L) {
+      patient_breaks <- max_patients
+    }
   }
-  ribbon_value_rows <- head(rep(seq_len(max_patients), each = 2L), -1L)
-  ribbon_df <- traj_df[ribbon_value_rows, , drop = FALSE]
-  ribbon_df$patient <- traj_df$patient[ribbon_x_rows]
+
+  # Draw straight ribbon segments between the cohort sizes actually used.
+  ribbon_df <- if (is.null(patient_breaks)) {
+    traj_df
+  } else {
+    traj_df[patient_breaks, , drop = FALSE]
+  }
 
   # Create plot title.
   my_title <- if (has_placebo) {
@@ -124,14 +136,14 @@ h_plot_simulation_trajectory <- function(
       ),
       data = ribbon_df
     ) +
-    geom_step(
+    geom_line(
       aes(
         x = .data$patient,
         y = .data$median,
         colour = "Median"
       ),
       linewidth = 1.2,
-      data = traj_df
+      data = ribbon_df
     ) +
     scale_fill_manual(
       name = NULL,
@@ -151,18 +163,6 @@ h_plot_simulation_trajectory <- function(
     theme(panel.grid.minor = element_blank())
 
   if (!is.null(patient_scale)) {
-    patient_breaks <- if (length(patient_scale) == 1L) {
-      if (patient_scale <= max_patients) {
-        seq.int(patient_scale, max_patients, by = patient_scale)
-      } else {
-        max_patients
-      }
-    } else {
-      sort(patient_scale[patient_scale <= max_patients])
-    }
-    if (length(patient_breaks) == 0L) {
-      patient_breaks <- max_patients
-    }
     plot <- plot +
       scale_x_continuous(
         breaks = patient_breaks

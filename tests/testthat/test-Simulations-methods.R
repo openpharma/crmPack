@@ -162,7 +162,7 @@ test_that("simulation trajectory uses nested blue ranges and a median line", {
 
   expect_s3_class(trajectory$layers[[1L]]$geom, "GeomRibbon")
   expect_s3_class(trajectory$layers[[2L]]$geom, "GeomRibbon")
-  expect_s3_class(trajectory$layers[[3L]]$geom, "GeomStep")
+  expect_s3_class(trajectory$layers[[3L]]$geom, "GeomLine")
   expect_equal(
     unname(trajectory$scales$get_scales("fill")$palette(2L)),
     c("#C6DBEF", "#6BAED6")
@@ -173,11 +173,11 @@ test_that("simulation trajectory uses nested blue ranges and a median line", {
   )
 
   plot_data <- ggplot_build(trajectory)$data
-  expect_equal(plot_data[[1L]]$x, c(1, 2, 2, 3, 3))
-  expect_equal(plot_data[[1L]]$ymin, c(1, 1, 2, 2, 3))
-  expect_equal(plot_data[[1L]]$ymax, c(3, 3, 4, 4, 5))
-  expect_equal(plot_data[[2L]]$ymin, c(1.5, 1.5, 2.5, 2.5, 3.5))
-  expect_equal(plot_data[[2L]]$ymax, c(2.5, 2.5, 3.5, 3.5, 4.5))
+  expect_equal(plot_data[[1L]]$x, c(1, 2, 3))
+  expect_equal(plot_data[[1L]]$ymin, c(1, 2, 3))
+  expect_equal(plot_data[[1L]]$ymax, c(3, 4, 5))
+  expect_equal(plot_data[[2L]]$ymin, c(1.5, 2.5, 3.5))
+  expect_equal(plot_data[[2L]]$ymax, c(2.5, 3.5, 4.5))
   expect_equal(plot_data[[3L]]$y, c(2, 3, 4))
 })
 
@@ -200,6 +200,10 @@ test_that("simulation trajectory supports patient tick intervals and positions",
 
   expect_equal(interval_plot$scales$get_scales("x")$breaks, c(2L, 4L, 6L))
   expect_equal(position_plot$scales$get_scales("x")$breaks, c(1L, 3L))
+  expect_equal(ggplot_build(interval_plot)$data[[1L]]$x, c(2, 4, 6))
+  expect_equal(ggplot_build(position_plot)$data[[1L]]$x, c(1, 3))
+  expect_equal(ggplot_build(interval_plot)$data[[3L]]$x, c(2, 4, 6))
+  expect_equal(ggplot_build(position_plot)$data[[3L]]$x, c(1, 3))
   expect_error(
     do.call(h_plot_simulation_trajectory, c(args, list(patient_scale = 0))),
     "not >= 1",
