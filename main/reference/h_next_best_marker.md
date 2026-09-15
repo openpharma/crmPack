@@ -5,7 +5,15 @@ Add the Next-Best Dose Marker
 ## Usage
 
 ``` r
-h_next_best_marker(plot, dose, y, dose_grid, dose_scale)
+h_next_best_marker(
+  plot,
+  dose,
+  y,
+  dose_grid,
+  dose_scale,
+  label = "Dose Recommendation",
+  colour = "blue"
+)
 ```
 
 ## Arguments
@@ -16,7 +24,7 @@ h_next_best_marker(plot, dose, y, dose_grid, dose_scale)
 
 - dose:
 
-  (`number`) next best dose.
+  (`number`) dose to mark.
 
 - y:
 
@@ -29,6 +37,14 @@ h_next_best_marker(plot, dose, y, dose_grid, dose_scale)
 - dose_scale:
 
   (`string`) dose-axis scale.
+
+- label:
+
+  (`string`) marker label in the legend.
+
+- colour:
+
+  (`string`) marker colour.
 
 ## Value
 

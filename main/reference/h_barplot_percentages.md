@@ -10,7 +10,8 @@ h_barplot_percentages(
   description,
   xaxisround = 0,
   x_is_discrete = FALSE,
-  axis_text_angle = 0
+  axis_text_angle = 0,
+  discrete_levels = NULL
 )
 ```
 
@@ -36,6 +37,11 @@ h_barplot_percentages(
 - axis_text_angle:
 
   (`number`) rotation angle for x-axis tick labels.
+
+- discrete_levels:
+
+  (`numeric` or `NULL`) complete ordered set of discrete x-axis values.
+  Only used when `x_is_discrete` is `TRUE`.
 
 ## Value
 

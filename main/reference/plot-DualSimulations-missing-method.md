@@ -295,4 +295,6 @@ my_sims <- simulate(
 
 # Plot the results of the simulation.
 print(plot(my_sims))
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 ```

@@ -21,7 +21,8 @@ h_next_best_ncrm_loss_plot(
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
-  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0)
+  axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
+  safe_dose_marker = c("line", "triangle")
 )
 ```
 
@@ -95,3 +96,10 @@ h_next_best_ncrm_loss_plot(
   (`number`)\
   rotation angle for x-axis tick labels. Defaults to 45 degrees for
   `axis_ticks = "dosegrid"` and 0 degrees for `axis_ticks = "regular"`.
+
+- safe_dose_marker:
+
+  (`string`)\
+  mark the maximum dose passing the overdose criterion with a red dashed
+  `"line"` (default) or a red `"triangle"` above its probability
+  geometry.

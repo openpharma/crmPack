@@ -6,31 +6,7 @@ Graphical display of the general simulation summary.
 
 This plot method can be applied to
 [`GeneralSimulationsSummary`](https://docs.crmpack.org/reference/GeneralSimulationsSummary-class.md)
-objects in order to summarize them graphically. Possible `type`s of
-plots at the moment are:
-
-- nObs:
-
-  Distribution of the number of patients in the simulated trials
-
-- doseSelected:
-
-  Distribution of the final selected doses in the trials. Note that this
-  can include zero entries, meaning that the trial was stopped because
-  all doses in the dose grid appeared too toxic.
-
-- propDLTs:
-
-  Distribution of the proportion of patients with DLTs in the trials
-
-- nAboveTarget:
-
-  Distribution of the number of patients treated at doses which are
-  above the target toxicity interval (as specified by the `truth` and
-  `target` arguments to
-  [`summary,GeneralSimulations-method`](https://docs.crmpack.org/reference/summary-GeneralSimulations-method.md))
-
-You can specify any subset of these in the `type` argument.
+objects in order to summarize them graphically.
 
 ## Usage
 
@@ -41,6 +17,7 @@ plot(
   y,
   type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget"),
   axis_text_angle = 45,
+  true_mtd_legend = TRUE,
   ...
 )
 ```
@@ -60,13 +37,18 @@ plot(
 - type:
 
   (`character`)\
-  the types of plots you want to obtain.
+  the types of plots you want to obtain, see details.
 
 - axis_text_angle:
 
   (`number`)\
   rotation angle for the MTD estimate x-axis tick labels. Defaults to 45
   degrees.
+
+- true_mtd_legend:
+
+  (`flag`)\
+  whether to show the legend for true MTD triangles. Defaults to `TRUE`.
 
 - ...:
 
@@ -76,3 +58,35 @@ plot(
 
 A single `ggplot` object if a single plot is asked for, otherwise a
 `gtable` object.
+
+## Details
+
+The following plot types are available:
+
+- `"nObs"`:
+
+  The distribution of the total number of patients in the simulated
+  trials. For trials with a placebo, only patients assigned to an active
+  dose are included.
+
+- `"doseSelected"`:
+
+  The distribution of the final selected dose (MTD) across trials. A
+  selected dose of zero indicates that the trial stopped because all
+  doses in the dose grid appeared too toxic. Red triangles mark
+  dose-grid levels whose true toxicity is within the target interval.
+
+- `"propDLTs"`:
+
+  The distribution of the percentage of patients with dose-limiting
+  toxicities (DLTs). For trials with a placebo, this is the percentage
+  among patients assigned to an active dose.
+
+- `"nAboveTarget"`:
+
+  The distribution of the number of patients treated at doses above the
+  target toxicity interval, as determined by the `truth` and `target`
+  arguments supplied to
+  [`summary,GeneralSimulations-method`](https://docs.crmpack.org/reference/summary-GeneralSimulations-method.md).
+
+Any subset of these plot types can be requested with `type`.

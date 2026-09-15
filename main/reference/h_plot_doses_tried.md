@@ -2,8 +2,8 @@
 
 **\[stable\]**
 
-Creates a lollipop or bar plot showing average proportions of doses
-tested.
+Creates a lollipop or bar plot showing the proportion of patients
+treated at each dose across all simulated trials.
 
 ## Usage
 

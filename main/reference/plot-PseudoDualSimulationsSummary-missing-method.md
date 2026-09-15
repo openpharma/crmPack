@@ -270,6 +270,8 @@ my_sum <- summary(
 
 # Plot the summary of the simulations.
 print(plot(my_sim))
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 
 # }
 ```

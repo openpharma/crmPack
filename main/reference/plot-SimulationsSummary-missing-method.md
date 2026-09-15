@@ -16,7 +16,9 @@ plus:
   Plot showing the average fitted dose-toxicity curve across the trials,
   together with 95% credible intervals, and comparison with the assumed
   truth (as specified by the `truth` argument to
-  [`summary,Simulations-method`](https://docs.crmpack.org/reference/summary-Simulations-method.md))
+  [`summary,Simulations-method`](https://docs.crmpack.org/reference/summary-Simulations-method.md)).
+  The target toxicity range is shown as a shaded area; a scalar target
+  is shown as a horizontal dotted line.
 
 You can specify any subset of these in the `type` argument.
 
@@ -29,6 +31,7 @@ plot(
   y,
   type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget", "meanFit"),
   axis_text_angle = 45,
+  true_mtd_legend = TRUE,
   ...
 )
 ```
@@ -55,6 +58,11 @@ plot(
   (`number`)\
   rotation angle for the MTD estimate x-axis tick labels. Defaults to 45
   degrees.
+
+- true_mtd_legend:
+
+  (`flag`)\
+  whether to show the legend for true MTD triangles. Defaults to `TRUE`.
 
 - ...:
 

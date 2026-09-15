@@ -15,7 +15,8 @@ h_next_best_probability_plot(
   dose_scale = c("linear", "log", "factor"),
   axis_ticks = c("dosegrid", "regular"),
   axis_text_angle = ifelse(match.arg(axis_ticks) == "dosegrid", 45, 0),
-  base_plot = ggplot()
+  base_plot = ggplot(),
+  fixed_y_axis = TRUE
 )
 ```
 
@@ -63,6 +64,12 @@ h_next_best_probability_plot(
 
   (`ggplot`) plot containing any background layers to draw below the
   probability geometry.
+
+- fixed_y_axis:
+
+  (`flag`) whether to use the standard probability y-axis extending to
+  115 percent. If `FALSE`, the upper y-axis limit and breaks are
+  determined from the data.
 
 ## Value
 

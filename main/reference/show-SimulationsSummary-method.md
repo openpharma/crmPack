@@ -122,7 +122,7 @@ show(summary(mySims, truth = myTruth))
 #> Proportion of trials selecting target MTD: 100 %
 #> Dose most often selected as MTD: 20 
 #> Observed toxicity rate at dose most often selected: 14 %
-#> Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
+#> Fitted toxicity rate at dose most often selected : mean 28 % (28 %, 28 %) 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

@@ -33,8 +33,12 @@
 #### Miscellaneous
 
 - Next-dose probability plots now identify the increment, safety, and
-  overdose rules and the recommended dose in legends. Multi-panel plots
-  put overdose information first and align their plotting areas.
+  overdose rules and the recommended dose in legends. It is also
+  possible to use a triangle to mark the highest safe dose. Multi-panel
+  plots put overdose information first and align their plotting areas.
+
+- Extended `GeneralSimulationsSummary` with a `true_mtd` slot and
+  enhanced summary plotting accordingly.
 
 - Simulation trajectory plots now use stepped blue ribbons to show the
   minimum and maximum and interquartile ranges alongside the median,
