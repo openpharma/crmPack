@@ -11,6 +11,17 @@ options(testthat.progress.max_fails = 0)
 
 # simulate ----
 
+test_that("h_overdose_threshold uses the toxicity threshold of each rule", {
+  expect_identical(
+    h_overdose_threshold(.DefaultNextBestNCRM()),
+    max(.DefaultNextBestNCRM()@target)
+  )
+  expect_identical(
+    h_overdose_threshold(.DefaultNextBestDualEndpoint()),
+    .DefaultNextBestDualEndpoint()@overdose[1L]
+  )
+})
+
 ## Design ----
 
 test_that("simulate produces consistent results with placebo data", {

@@ -8,10 +8,45 @@
 #' @include mcmc.R
 NULL
 
+#' Obtain the Toxicity Threshold Used for Simulation Overdose Reporting
+#'
+#' @param next_best ([`NextBest`])\cr next-best rule defining the threshold.
+#'
+#' @return A single toxicity probability threshold.
+#'
+#' @keywords internal
+setGeneric(
+  name = "h_overdose_threshold",
+  def = function(next_best) {
+    standardGeneric("h_overdose_threshold")
+  },
+  valueClass = "numeric"
+)
+
+#' @describeIn h_overdose_threshold use the upper toxicity target boundary.
+setMethod(
+  f = "h_overdose_threshold",
+  signature = signature(next_best = "NextBest"),
+  definition = function(next_best) {
+    max(next_best@target)
+  }
+)
+
+#' @describeIn h_overdose_threshold use the lower boundary of the toxicity
+#'   overdose interval instead of the biomarker target.
+setMethod(
+  f = "h_overdose_threshold",
+  signature = signature(next_best = "NextBestDualEndpoint"),
+  definition = function(next_best) {
+    next_best@overdose[1L]
+  }
+)
+
 #' Calculate the Posterior Overdose Probability at a Selected Dose
 #'
 #' @param selected_dose (`numeric`)\cr final recommended dose.
-#' @param next_best ([`NextBest`])\cr next-best rule defining the target.
+#' @param next_best ([`NextBest`])\cr next-best rule defining the overdose
+#'   threshold.
 #' @param model model used to calculate toxicity probabilities.
 #' @param samples ([`Samples`])\cr posterior samples from the final model fit.
 #' @param ... additional arguments passed to [`prob`].
@@ -31,7 +66,7 @@ h_overdose_prob <- function(selected_dose, next_best, model, samples, ...) {
     samples = samples,
     ...
   )
-  mean(prob_samples > max(next_best@target))
+  mean(prob_samples > h_overdose_threshold(next_best))
 }
 
 # simulate ----

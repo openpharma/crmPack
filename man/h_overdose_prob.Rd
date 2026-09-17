@@ -9,7 +9,8 @@ h_overdose_prob(selected_dose, next_best, model, samples, ...)
 \arguments{
 \item{selected_dose}{(\code{numeric})\cr final recommended dose.}
 
-\item{next_best}{(\code{\link{NextBest}})\cr next-best rule defining the target.}
+\item{next_best}{(\code{\link{NextBest}})\cr next-best rule defining the overdose
+threshold.}
 
 \item{model}{model used to calculate toxicity probabilities.}
 
