@@ -71,6 +71,7 @@ test_that("simulate for the class design returns correct objects", {
   )
 
   expect_class(mySims, "Simulations") # check for correct class of returned object
+  expect_number(mySims@overdose_prob, lower = 0, upper = 1)
 
   expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 

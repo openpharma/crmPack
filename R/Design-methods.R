@@ -8,6 +8,32 @@
 #' @include mcmc.R
 NULL
 
+#' Calculate the Posterior Overdose Probability at a Selected Dose
+#'
+#' @param selected_dose (`numeric`)\cr final recommended dose.
+#' @param next_best ([`NextBest`])\cr next-best rule defining the target.
+#' @param model model used to calculate toxicity probabilities.
+#' @param samples ([`Samples`])\cr posterior samples from the final model fit.
+#' @param ... additional arguments passed to [`prob`].
+#'
+#' @return A single posterior overdose probability, or `NA_real_` if no dose
+#'   was selected.
+#'
+#' @keywords internal
+h_overdose_prob <- function(selected_dose, next_best, model, samples, ...) {
+  if (anyNA(selected_dose)) {
+    return(NA_real_)
+  }
+
+  prob_samples <- prob(
+    dose = selected_dose,
+    model = model,
+    samples = samples,
+    ...
+  )
+  mean(prob_samples > max(next_best@target))
+}
+
 # simulate ----
 
 ## Design ----
@@ -202,6 +228,12 @@ setMethod(
         samples = samples
       )
       additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+      overdose_prob <- h_overdose_prob(
+        selected_dose = dose,
+        next_best = object@nextBest,
+        model = object@model,
+        samples = samples
+      )
 
       list(
         data = data,
@@ -209,7 +241,8 @@ setMethod(
         fit = subset(fit_model, select = c(middle, lower, upper)),
         stop = attr(should_stop, "message"),
         report_results = stopit_results,
-        additional_stats = additional_stats
+        additional_stats = additional_stats,
+        overdose_prob = overdose_prob
       )
     }
 
@@ -239,6 +272,7 @@ setMethod(
       stop_report = simulations_output$stop_matrix,
       stop_reasons = simulations_output$stopReasons,
       additional_stats = simulations_output$additional_stats,
+      overdose_prob = as.numeric(sapply(result_list, "[[", "overdose_prob")),
       seed = rng_state
     )
   }
@@ -874,6 +908,12 @@ setMethod(
       )
 
       additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+      overdose_prob <- h_overdose_prob(
+        selected_dose = dose,
+        next_best = object@nextBest,
+        model = object@model,
+        samples = samples
+      )
 
       list(
         data = data,
@@ -887,6 +927,7 @@ setMethod(
         sigma2w_est = median(1 / samples@data$precW),
         stop = attr(should_stop, "message"),
         additional_stats = additional_stats,
+        overdose_prob = overdose_prob,
         report_results = stopit_results
       )
     }
@@ -930,6 +971,7 @@ setMethod(
       stop_report = stop_report,
       stop_reasons = stop_reasons,
       additional_stats = additional_stats,
+      overdose_prob = as.numeric(sapply(result_list, "[[", "overdose_prob")),
       seed = rng_state
     )
   }
@@ -3633,6 +3675,12 @@ setMethod(
 
       # Calculate additional statistics.
       additional_stats <- lapply(derive, function(f) f(target_dose_samples))
+      overdose_prob <- h_overdose_prob(
+        selected_dose = dose,
+        next_best = object@nextBest,
+        model = object@model,
+        samples = samples
+      )
 
       # Return simulation results.
       list(
@@ -3645,7 +3693,8 @@ setMethod(
           "message"
         ),
         report_results = stop_results,
-        additional_stats = additional_stats
+        additional_stats = additional_stats,
+        overdose_prob = overdose_prob
       )
     }
 
@@ -3680,6 +3729,7 @@ setMethod(
     stop_report <- as.matrix(do.call(rbind, stop_results))
 
     additional_stats <- lapply(result_list, "[[", "additional_stats")
+    overdose_prob <- as.numeric(sapply(result_list, "[[", "overdose_prob"))
 
     # Return simulation results.
     DASimulations(
@@ -3690,6 +3740,7 @@ setMethod(
       stop_report = stop_report,
       stop_reasons = stop_reasons,
       additional_stats = additional_stats,
+      overdose_prob = overdose_prob,
       seed = rng_state
     )
   }
@@ -3919,17 +3970,28 @@ setMethod(
         current$grouped,
         group = "combo"
       )
-      lapply(
-        X = current[c("mono", "combo")],
-        FUN = with,
+      lapply(c("mono", "combo"), function(group) {
+        this_group <- current[[group]]
         list(
-          data = data,
-          dose = dose,
-          fit = subset(fit, select = -dose),
-          stop = attr(stop, "message"),
-          results = results
+          data = this_group$data,
+          dose = this_group$dose,
+          fit = subset(this_group$fit, select = -dose),
+          stop = attr(this_group$stop, "message"),
+          results = this_group$results,
+          overdose_prob = h_overdose_prob(
+            selected_dose = this_group$dose,
+            next_best = if (group == "mono") {
+              object@mono@nextBest
+            } else {
+              object@combo@nextBest
+            },
+            model = object@model,
+            samples = current$samples,
+            group = group
+          )
         )
-      )
+      }) |>
+        setNames(c("mono", "combo"))
     }
     vars_needed <- c(
       "simSeeds",
@@ -3957,6 +4019,7 @@ setMethod(
       report_results <- lapply(this_list, "[[", "results")
       stop_report <- as.matrix(do.call(rbind, report_results))
       additional_stats <- lapply(this_list, "[[", "additional_stats")
+      overdose_prob <- as.numeric(sapply(this_list, "[[", "overdose_prob"))
 
       Simulations(
         data = data_list,
@@ -3965,6 +4028,7 @@ setMethod(
         stop_reasons = stop_reasons,
         stop_report = stop_report,
         additional_stats = additional_stats,
+        overdose_prob = overdose_prob,
         seed = rng_state
       )
     })

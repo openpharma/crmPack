@@ -35,7 +35,8 @@ v_general_simulations <- function(object) {
 
 #' @describeIn v_general_simulations validates that the [`Simulations`] object
 #'   contains valid object `fit`, `stop_reasons`, `stop_report`, and
-#'   `additional_stats` compared to the general class [`GeneralSimulations`].
+#'   `additional_stats`, and `overdose_prob` compared to the general class
+#'   [`GeneralSimulations`].
 #'
 v_simulations <- function(object) {
   v <- Validate()
@@ -49,6 +50,17 @@ v_simulations <- function(object) {
   v$check(
     identical(length(object@stop_reasons), nSims),
     "stop_reasons must have same length as data"
+  )
+
+  v$check(
+    checkmate::test_numeric(
+      object@overdose_prob,
+      len = nSims,
+      lower = 0,
+      upper = 1,
+      any.missing = TRUE
+    ),
+    "overdose_prob must contain one probability (or NA) per simulation"
   )
 
   v$check(
