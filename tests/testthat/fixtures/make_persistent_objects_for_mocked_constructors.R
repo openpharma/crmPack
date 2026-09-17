@@ -4,6 +4,13 @@
 # execution time of test-CrmPackClass-class.R is reduced frm 67 to 3 seconds
 # by the use of these mocks.
 
+fixture_mcmc_options <- McmcOptions(
+  burnin = 250,
+  samples = 1000,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 12345L
+)
+
 # Simulations ----
 
 design <- .DefaultDesign()
@@ -15,8 +22,12 @@ myTruth <- probFunction(design@model, alpha0 = 7, alpha1 = 8)
   truth = myTruth,
   nsim = 1,
   seed = 819,
-  mcmcOptions = .DefaultMcmcOptions(),
+  mcmcOptions = fixture_mcmc_options,
   parallel = FALSE
+)
+stopifnot(
+  length(.default_simulations@overdose_prob) ==
+    length(.default_simulations@data)
 )
 
 saveRDS(
@@ -42,10 +53,14 @@ exp_cond_cdf <- function(x, onset = 15) {
   trueTmax = 80,
   nsim = 2,
   seed = 819,
-  mcmcOptions = .DefaultMcmcOptions(),
+  mcmcOptions = fixture_mcmc_options,
   firstSeparate = TRUE,
   deescalate = FALSE,
   parallel = FALSE
+)
+stopifnot(
+  length(.default_da_simulations@overdose_prob) ==
+    length(.default_da_simulations@data)
 )
 
 saveRDS(
@@ -137,7 +152,11 @@ true_tox <- function(dose) {
   parallel = FALSE,
   seed = 3,
   startingDose = 6,
-  mcmcOptions = .DefaultMcmcOptions()
+  mcmcOptions = fixture_mcmc_options
+)
+stopifnot(
+  length(.default_dual_simulations@overdose_prob) ==
+    length(.default_dual_simulations@data)
 )
 
 saveRDS(
@@ -190,7 +209,7 @@ pseudo_truth <- probFunction(pseudo_model, phi1 = -53.66584, phi2 = 10.50499)
   truth = pseudo_truth,
   nsim = 1,
   seed = 819,
-  mcmcOptions = .DefaultMcmcOptions(),
+  mcmcOptions = fixture_mcmc_options,
   parallel = FALSE
 )
 
@@ -360,7 +379,7 @@ myTruthGain <- (myTruthEff) / (1 + (myTruthDLE(d1) / (1 - myTruthDLE(d1))))
   trueEff = myTruthEff,
   trueSigma2 = 0.025,
   trueSigma2betaW = 1,
-  mcmcOptions = .DefaultMcmcOptions(),
+  mcmcOptions = fixture_mcmc_options,
   nsim = 1,
   seed = 819,
   parallel = FALSE

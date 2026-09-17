@@ -9,20 +9,20 @@
       Target dose interval corresponding to this was NA, NA 
       Intervals are corresponding to 10 and 90 % quantiles
       
-      Number of patients overall : mean 20 (20, 20) 
-      Number of patients treated above target tox interval : mean 20 (20, 20) 
-      Proportions of DLTs in the trials : mean 30 % (30 %, 30 %) 
+      Number of patients overall : mean 17 (17, 17) 
+      Number of patients treated above target tox interval : mean 17 (17, 17) 
+      Proportions of DLTs in the trials : mean 24 % (24 %, 24 %) 
       Mean toxicity risks for the patients on active : mean 100 % (100 %, 100 %) 
-      Doses selected as MTD : mean 20 (20, 20) 
+      Doses selected as MTD : mean 25 (25, 25) 
       True toxicity at doses selected : mean 100 % (100 %, 100 %) 
       Proportion of trials selecting target MTD: 0 %
-      Dose most often selected as MTD: 20 
-      Observed toxicity rate at dose most often selected: 14 %
-      Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
+      Dose most often selected as MTD: 25 
+      Observed toxicity rate at dose most often selected: 75 %
+      Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
       Stop reason triggered:
        ≥ 3 cohorts dosed :  100 %
        P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
-       ≥ 20 patients dosed :  100 %
+       ≥ 20 patients dosed :  0 %
 
 # summary-DualSimulations works correctly
 
@@ -44,7 +44,7 @@
       Proportion of trials selecting target MTD: 0 %
       Dose most often selected as MTD: 1 
       Observed toxicity rate at dose most often selected: 0 %
-      Fitted toxicity rate at dose most often selected : mean 9 % (9 %, 9 %) 
+      Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
       Stop reason triggered:
        P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
        ≥ 10 patients dosed :  100 %
@@ -129,7 +129,7 @@
       Proportion of trials selecting target MTD: 0 %
       Dose most often selected as MTD: 1 
       Observed toxicity rate at dose most often selected: 0 %
-      Fitted toxicity rate at dose most often selected : mean 9 % (9 %, 9 %) 
+      Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
       Stop reason triggered:
        P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
        ≥ 10 patients dosed :  100 %
