@@ -663,6 +663,9 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' @slot stop_report (`matrix`)\cr matrix of stopping rule outcomes
 #' @slot fit_at_dose_most_selected (`numeric`)\cr fitted toxicity rate at dose most often selected
 #' @slot additional_stats (`list`)\cr list of additional statistical summary
+#' @slot overdose_prob (`numeric`)\cr posterior probabilities that toxicity at
+#'   the recommended dose exceeds the upper target bound, for simulations in
+#'   which a dose was recommended
 #' @slot mean_fit (`list`)\cr list with the average, lower (2.5%) and upper (97.5%)
 #' quantiles of the mean fitted toxicity at each dose level
 #'
@@ -675,6 +678,7 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
       stop_report = "matrix",
       fit_at_dose_most_selected = "numeric",
       additional_stats = "list",
+      overdose_prob = "numeric",
       mean_fit = "list"
     ),
     contains = "GeneralSimulationsSummary"

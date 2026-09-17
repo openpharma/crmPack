@@ -19,6 +19,7 @@
       Dose most often selected as MTD: 25 
       Observed toxicity rate at dose most often selected: 75 %
       Fitted toxicity rate at dose most often selected : mean 26 % (26 %, 26 %) 
+      Overdose probability at selected dose : mean 16 % (16 %, 16 %) 
       Stop reason triggered:
        ≥ 3 cohorts dosed :  100 %
        P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
@@ -45,6 +46,7 @@
       Dose most often selected as MTD: 1 
       Observed toxicity rate at dose most often selected: 0 %
       Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+      Overdose probability at selected dose : mean 0 % (0 %, 0 %) 
       Stop reason triggered:
        P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
        ≥ 10 patients dosed :  100 %
@@ -80,6 +82,7 @@
       Dose most often selected as MTD: 10 
       Observed toxicity rate at dose most often selected: NaN %
       Fitted toxicity rate at dose most often selected : mean 6 % (6 %, 6 %) 
+      Overdose probability at selected dose : mean 0 % (0 %, 0 %) 
       Stop reason triggered:
        ≥ 6 patients dosed :  100 %
 
@@ -106,6 +109,7 @@
       Number of backfill patients : mean 9 (9, 9) 
       Doses for backfill patients: 5: 33.3%, 10: 33.3%, 20: 33.3% 
       Fitted toxicity rate at dose most often selected : mean 9 % (3 %, 14 %) 
+      Overdose probability at selected dose : mean 0 % (0 %, 0 %) 
       Stop reason triggered:
        ≥ 20 patients dosed :  100 %
 
@@ -130,6 +134,7 @@
       Dose most often selected as MTD: 1 
       Observed toxicity rate at dose most often selected: 0 %
       Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
+      Overdose probability at selected dose : mean 0 % (0 %, 0 %) 
       Stop reason triggered:
        P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %
        ≥ 10 patients dosed :  100 %

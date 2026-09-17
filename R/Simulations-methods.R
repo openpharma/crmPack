@@ -1374,12 +1374,19 @@ setMethod(
       )
     )
 
+    # Summarize overdose probabilities only where a final dose was recommended.
+    has_recommendation <- !is.na(object@doses)
+    overdose_prob <- object@overdose_prob[
+      has_recommendation & !is.na(object@overdose_prob)
+    ]
+
     # Give back an object of class SimulationsSummary.
     .SimulationsSummary(
       start,
       stop_report = object@stop_report,
       additional_stats = object@additional_stats,
       fit_at_dose_most_selected = fit_at_dose_most_selected,
+      overdose_prob = overdose_prob,
       mean_fit = mean_fit
     )
   }
@@ -2219,6 +2226,13 @@ setMethod(
       "fit_at_dose_most_selected",
       "Fitted toxicity rate at dose most often selected"
     )
+
+    if (length(object@overdose_prob) > 0L && !all(is.na(object@overdose_prob))) {
+      r$report(
+        "overdose_prob",
+        "Overdose probability at selected dose"
+      )
+    }
 
     # Report results of additional statistics summary.
     if (length(unlist(object@additional_stats)) > 0) {

@@ -456,6 +456,7 @@ test_that("summary-Simulations works correctly", {
   expect_true("mean_fit" %in% slotNames(result))
   expect_true("stop_report" %in% slotNames(result))
   expect_true("additional_stats" %in% slotNames(result))
+  expect_true("overdose_prob" %in% slotNames(result))
 
   # Check specific slot values
   expect_true(is.numeric(result@fit_at_dose_most_selected))
@@ -472,6 +473,25 @@ test_that("summary-Simulations works correctly", {
   expect_true("lower" %in% names(result@mean_fit))
   expect_true("upper" %in% names(result@mean_fit))
   expect_equal(length(result@mean_fit$truth), length(result@dose_grid))
+  expect_equal(result@overdose_prob, mySims@overdose_prob)
+})
+
+test_that("summary-Simulations conditions overdose probabilities on recommendations", {
+  mySims <- .DefaultSimulations()
+  mySims@data <- rep(mySims@data, 2L)
+  mySims@doses <- c(mySims@doses, NA_real_)
+  mySims@fit <- rep(mySims@fit, 2L)
+  mySims@stop_reasons <- rep(mySims@stop_reasons, 2L)
+  mySims@stop_report <- mySims@stop_report[rep(1L, 2L), , drop = FALSE]
+  mySims@overdose_prob <- c(0.2, NA_real_)
+
+  result <- summary(mySims, truth = plogis)
+
+  expect_equal(result@overdose_prob, 0.2)
+  expect_output(
+    show(result),
+    "Overdose probability at selected dose : mean 20 %"
+  )
 })
 
 ## summary-DualSimulations ----
