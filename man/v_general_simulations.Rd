@@ -41,7 +41,8 @@ contains valid \code{data} object and valid \code{dose} simulations.
 
 \item \code{v_simulations()}: validates that the \code{\link{Simulations}} object
 contains valid object \code{fit}, \code{stop_reasons}, \code{stop_report}, and
-\code{additional_stats} compared to the general class \code{\link{GeneralSimulations}}.
+\code{additional_stats}, and \code{overdose_prob} compared to the general class
+\code{\link{GeneralSimulations}}.
 
 \item \code{v_hierarchical_simulations()}: validates that the
 \code{\link{HierarchicalSimulations}} object contains valid hierarchical data,

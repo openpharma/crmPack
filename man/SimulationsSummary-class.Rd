@@ -25,6 +25,10 @@ it contains two slots with model fit information.
 
 \item{\code{additional_stats}}{(\code{list})\cr list of additional statistical summary}
 
+\item{\code{overdose_prob}}{(\code{numeric})\cr posterior probabilities that toxicity at
+the recommended dose exceeds the upper target bound, for simulations in
+which a dose was recommended}
+
 \item{\code{mean_fit}}{(\code{list})\cr list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 }}

@@ -102,13 +102,17 @@ GeneralSimulations <- function(data, doses, seed) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' This class captures the trial simulations from model based designs.
-#' Additional slots `fit`, `stop_reasons`, `stop_report`,`additional_stats` compared to
+#' Additional slots `fit`, `stop_reasons`, `stop_report`, `additional_stats`,
+#' and `overdose_prob` compared to
 #' the general class [`GeneralSimulations`].
 #'
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
 #' @slot stop_report matrix of stopping rule outcomes
 #' @slot additional_stats list of additional statistical summary
+#' @slot overdose_prob (`numeric`)\cr posterior probability that the toxicity
+#'   probability at the final recommended dose exceeds the upper target bound,
+#'   for each simulation run. This is `NA` when no dose is recommended.
 #' @aliases Simulations
 #' @export
 .Simulations <-
@@ -118,7 +122,8 @@ GeneralSimulations <- function(data, doses, seed) {
       fit = "list",
       stop_report = "matrix",
       stop_reasons = "list",
-      additional_stats = "list"
+      additional_stats = "list",
+      overdose_prob = "numeric"
     ),
     prototype = prototype(
       fit = list(
@@ -127,7 +132,8 @@ GeneralSimulations <- function(data, doses, seed) {
       ),
       stop_report = matrix(TRUE, nrow = 2),
       stop_reasons = list("A", "A"),
-      additional_stats = list(a = 1, b = 1)
+      additional_stats = list(a = 1, b = 1),
+      overdose_prob = c(0.1, 0.2)
     ),
     contains = "GeneralSimulations",
     validity = v_simulations
@@ -141,18 +147,31 @@ GeneralSimulations <- function(data, doses, seed) {
 #' @param stop_reasons (`list`)\cr see slot definition.
 #' @param stop_report see [`Simulations`]
 #' @param additional_stats (`list`)\cr see slot definition.
+#' @param overdose_prob (`numeric`)\cr see slot definition. If omitted, it is
+#'   initialized to `NA` for backwards compatibility.
 #' @param \dots additional parameters from [`GeneralSimulations`]
 #'
 #' @example examples/Simulations-class-Simulations.R
 #' @export
-Simulations <- function(fit, stop_reasons, stop_report, additional_stats, ...) {
+Simulations <- function(
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  ...,
+  overdose_prob = NULL
+) {
   start <- GeneralSimulations(...)
+  if (is.null(overdose_prob)) {
+    overdose_prob <- rep(NA_real_, length(start@doses))
+  }
   .Simulations(
     start,
     fit = fit,
     stop_report = stop_report,
     stop_reasons = stop_reasons,
-    additional_stats = additional_stats
+    additional_stats = additional_stats,
+    overdose_prob = overdose_prob
   )
 }
 
@@ -644,6 +663,9 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' @slot stop_report (`matrix`)\cr matrix of stopping rule outcomes
 #' @slot fit_at_dose_most_selected (`numeric`)\cr fitted toxicity rate at dose most often selected
 #' @slot additional_stats (`list`)\cr list of additional statistical summary
+#' @slot overdose_prob (`numeric`)\cr posterior probabilities that toxicity at
+#'   the recommended dose exceeds the upper target bound, for simulations in
+#'   which a dose was recommended
 #' @slot mean_fit (`list`)\cr list with the average, lower (2.5%) and upper (97.5%)
 #' quantiles of the mean fitted toxicity at each dose level
 #'
@@ -656,6 +678,7 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
       stop_report = "matrix",
       fit_at_dose_most_selected = "numeric",
       additional_stats = "list",
+      overdose_prob = "numeric",
       mean_fit = "list"
     ),
     contains = "GeneralSimulationsSummary"

@@ -8,7 +8,14 @@
 \alias{.DefaultSimulations}
 \title{\code{Simulations}}
 \usage{
-Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
+Simulations(
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  ...,
+  overdose_prob = NULL
+)
 
 .DefaultSimulations()
 }
@@ -22,12 +29,16 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 \item{additional_stats}{(\code{list})\cr see slot definition.}
 
 \item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
+
+\item{overdose_prob}{(\code{numeric})\cr see slot definition. If omitted, it is
+initialized to \code{NA} for backwards compatibility.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 This class captures the trial simulations from model based designs.
-Additional slots \code{fit}, \code{stop_reasons}, \code{stop_report},\code{additional_stats} compared to
+Additional slots \code{fit}, \code{stop_reasons}, \code{stop_report}, \code{additional_stats},
+and \code{overdose_prob} compared to
 the general class \code{\link{GeneralSimulations}}.
 }
 \section{Slots}{
@@ -40,6 +51,10 @@ the general class \code{\link{GeneralSimulations}}.
 \item{\code{stop_report}}{matrix of stopping rule outcomes}
 
 \item{\code{additional_stats}}{list of additional statistical summary}
+
+\item{\code{overdose_prob}}{(\code{numeric})\cr posterior probability that the toxicity
+probability at the final recommended dose exceeds the upper target bound,
+for each simulation run. This is \code{NA} when no dose is recommended.}
 }}
 
 \note{

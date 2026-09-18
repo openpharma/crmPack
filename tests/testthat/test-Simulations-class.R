@@ -131,13 +131,43 @@ test_that("Simulations object can be created with the user constructor", {
   expect_valid(result, "Simulations")
   expect_identical(result@fit, fit)
   expect_identical(result@stop_reasons, stop_reasons)
+  expect_identical(result@overdose_prob, rep(NA_real_, length(doses)))
 })
 
 test_that("Simulations user constructor arguments names are as expected", {
   expect_function(
     Simulations,
-    args = c("fit", "stop_reasons", "stop_report", "additional_stats", "..."),
+    args = c(
+      "fit",
+      "stop_reasons",
+      "stop_report",
+      "additional_stats",
+      "...",
+      "overdose_prob"
+    ),
     ordered = TRUE
+  )
+})
+
+test_that("Simulations validates overdose probabilities", {
+  result <- .DefaultSimulations()
+
+  expect_length(result@overdose_prob, length(result@data))
+  expect_true(all(is.na(result@overdose_prob) |
+    result@overdose_prob >= 0 & result@overdose_prob <= 1))
+
+  expect_error(
+    Simulations(
+      fit = result@fit,
+      stop_reasons = result@stop_reasons,
+      stop_report = result@stop_report,
+      additional_stats = result@additional_stats,
+      overdose_prob = 1.1,
+      data = result@data,
+      doses = result@doses,
+      seed = result@seed
+    ),
+    "overdose_prob must contain one probability"
   )
 })
 

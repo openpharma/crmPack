@@ -11,6 +11,17 @@ options(testthat.progress.max_fails = 0)
 
 # simulate ----
 
+test_that("h_overdose_threshold uses the toxicity threshold of each rule", {
+  expect_identical(
+    h_overdose_threshold(.DefaultNextBestNCRM()),
+    max(.DefaultNextBestNCRM()@target)
+  )
+  expect_identical(
+    h_overdose_threshold(.DefaultNextBestDualEndpoint()),
+    .DefaultNextBestDualEndpoint()@overdose[1L]
+  )
+})
+
 ## Design ----
 
 test_that("simulate produces consistent results with placebo data", {
@@ -71,6 +82,7 @@ test_that("simulate for the class design returns correct objects", {
   )
 
   expect_class(mySims, "Simulations") # check for correct class of returned object
+  expect_number(mySims@overdose_prob, lower = 0, upper = 1)
 
   expect_equal(any(sapply(mySims@fit[[1]], is.numeric)), TRUE) # check if all elements in mySims@fit are numeric
 
