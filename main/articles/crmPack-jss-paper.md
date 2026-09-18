@@ -942,7 +942,7 @@ Simulator*. <https://www.berryconsultants.com/software>.
 
 Thall, Peter F. 2010. “Bayesian Models and Decision Algorithms for
 Complex Early Phase Clinical Trials.” *Statistical Science* 25 (2):
-227–44. <https://pubmed.ncbi.nlm.nih.gov/21318084/>.
+227–44. <https://doi.org/10.1214/09-STS315>.
 
 Toumazi, Artemis, Moreno Ursino, and Sarah Zohar. 2017. *: A Bayesian
 Dose-Finding Design Using Pharmacokinetics (PK) for Phase i Clinical

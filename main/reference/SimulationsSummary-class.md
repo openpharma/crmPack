@@ -29,6 +29,13 @@ it contains two slots with model fit information.
   (`list`)\
   list of additional statistical summary
 
+- `overdose_prob`:
+
+  (`numeric`)\
+  posterior probabilities that toxicity at the recommended dose exceeds
+  the upper target bound, for simulations in which a dose was
+  recommended
+
 - `mean_fit`:
 
   (`list`)\

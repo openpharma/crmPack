@@ -40,6 +40,9 @@
 - Extended `GeneralSimulationsSummary` with a `true_mtd` slot and
   enhanced summary plotting accordingly.
 
+- Extended `Simulations` and `SimulationsSummary` classes with overdose
+  probability at the final selected dose.
+
 - Simulation trajectory plots now use stepped blue ribbons to show the
   minimum and maximum and interquartile ranges alongside the median,
   with a legend and patient-axis ticks inferred from cohort boundaries.

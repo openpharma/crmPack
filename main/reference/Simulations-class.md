@@ -3,14 +3,21 @@
 **\[stable\]**
 
 This class captures the trial simulations from model based designs.
-Additional slots `fit`, `stop_reasons`, `stop_report`,`additional_stats`
-compared to the general class
+Additional slots `fit`, `stop_reasons`, `stop_report`,
+`additional_stats`, and `overdose_prob` compared to the general class
 [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md).
 
 ## Usage
 
 ``` r
-Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
+Simulations(
+  fit,
+  stop_reasons,
+  stop_report,
+  additional_stats,
+  ...,
+  overdose_prob = NULL
+)
 
 .DefaultSimulations()
 ```
@@ -41,6 +48,12 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
   additional parameters from
   [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md)
 
+- overdose_prob:
+
+  (`numeric`)\
+  see slot definition. If omitted, it is initialized to `NA` for
+  backwards compatibility.
+
 ## Slots
 
 - `fit`:
@@ -60,6 +73,13 @@ Simulations(fit, stop_reasons, stop_report, additional_stats, ...)
 - `additional_stats`:
 
   list of additional statistical summary
+
+- `overdose_prob`:
+
+  (`numeric`)\
+  posterior probability that the toxicity probability at the final
+  recommended dose exceeds the upper target bound, for each simulation
+  run. This is `NA` when no dose is recommended.
 
 ## Note
 

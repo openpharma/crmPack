@@ -44,7 +44,7 @@ case validation passes.
 - `v_simulations()`: validates that the
   [`Simulations`](https://docs.crmpack.org/reference/Simulations-class.md)
   object contains valid object `fit`, `stop_reasons`, `stop_report`, and
-  `additional_stats` compared to the general class
+  `additional_stats`, and `overdose_prob` compared to the general class
   [`GeneralSimulations`](https://docs.crmpack.org/reference/GeneralSimulations-class.md).
 
 - `v_hierarchical_simulations()`: validates that the
