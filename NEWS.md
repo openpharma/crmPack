@@ -49,6 +49,18 @@
 * The dependency `ggplot2` package now needs to have minimum version 3.2.0 instead of previously
   3.0.0. This should not be a practical restriction because version 3.2.0 was already released in 2019.
 
+### Bug Fixes
+
+* `examine()` for `DADesign` now identifies the current cohort in `cohort` and
+  lists one cohort index per additional hypothetical DLT in `DLT_cohorts`.
+  The numeric `DLTsearly_1` column has been replaced by `DLT_scenario`, with
+  values `"no additional DLTs"`, `"late DLTs"`, and `"early DLTs"`. Documentation
+  now explains the scenario allocations and that `DLTs` can include patients
+  from earlier cohorts. The method also correctly counts eligible patients,
+  evaluates both timing scenarios without duplicate allocations, and advances
+  using only the current cohort's zero-DLT recommendation. These fixes remove
+  replacement-length warnings and correct the no-increment stopping logic.
+
 # Version 2.2.1
 
 ### Miscellaneous

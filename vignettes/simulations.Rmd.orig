@@ -127,3 +127,33 @@ mySims <- simulate(design,
   parallel = FALSE
 )
 ```
+
+Alternatively we can also use `examine()` to look at possible trial outcomes.
+Each cohort is reached assuming no additional DLTs in earlier cohorts. `DLTs`
+is the hypothetical number of additional DLTs among the current cohort and
+patients from earlier cohorts whose DLT windows are still open at the next
+decision. Thus it can exceed the cohort size.
+
+`DLT_scenario` identifies the allocation scenario: `"no additional DLTs"`,
+`"late DLTs"` (earlier-enrolled eligible patients at their available follow-up
+times), or `"early DLTs"` (later-enrolled eligible patients with early event
+times). See `?examine` for the timing details.
+
+`cohort` indexes the current cohort, continuing any indices already present in
+the design data. `dose` is that cohort's dose. `DLT_cohorts` lists the cohort
+indices of the additional hypothetical DLTs, separated by commas and sorted.
+For example, `"1, 2, 2"` means one DLT in cohort 1 and two in cohort 2; `""`
+means no additional DLTs. Previously observed DLTs are excluded.
+
+Each hypothetical scenario requires an MCMC fit. `maxNoIncrement` limits the
+number of consecutive unchanged dose recommendations on the zero-DLT path
+(default: 100); reaching this limit produces a warning.
+
+```{r examine}
+set.seed(321)
+examineTable <- examine(
+  design,
+  mcmcOptions = options
+)
+examineTable
+```
