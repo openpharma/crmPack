@@ -143,7 +143,9 @@ times). See `?examine` for the timing details.
 the design data. `dose` is that cohort's dose. `DLT_cohorts` lists the cohort
 indices of the additional hypothetical DLTs, separated by commas and sorted.
 For example, `"1, 2, 2"` means one DLT in cohort 1 and two in cohort 2; `""`
-means no additional DLTs. Previously observed DLTs are excluded.
+means no additional DLTs. `DLT_time` lists their corresponding onset times,
+relative to the start of each patient's cohort, in the same order. Previously
+observed DLTs are excluded from both columns.
 
 Each hypothetical scenario requires an MCMC fit. `maxNoIncrement` limits the
 number of consecutive unchanged dose recommendations on the zero-DLT path

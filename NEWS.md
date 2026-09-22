@@ -54,8 +54,9 @@
 * `examine()` for `DADesign` now identifies the current cohort in `cohort` and
   lists one cohort index per additional hypothetical DLT in `DLT_cohorts`.
   The numeric `DLTsearly_1` column has been replaced by `DLT_scenario`, with
-  values `"no additional DLTs"`, `"late DLTs"`, and `"early DLTs"`. Documentation
-  now explains the scenario allocations and that `DLTs` can include patients
+  values `"no additional DLTs"`, `"late DLTs"`, and `"early DLTs"`.
+  `DLT_time` includes the onset time of each
+  hypothetical DLT relative to its cohort start and is aligned with `DLT_cohorts`. Documentation now explains the scenario allocations and that `DLTs` can include patients
   from earlier cohorts. The method also correctly counts eligible patients,
   evaluates both timing scenarios without duplicate allocations, and advances
   using only the current cohort's zero-DLT recommendation. These fixes remove

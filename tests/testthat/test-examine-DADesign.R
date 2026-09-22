@@ -22,9 +22,23 @@ test_that("DADesign examination counts eligible patients and follows the latest 
   expect_no_warning(result <- examine(design))
   expect_type(result$cohort, "integer")
   expect_type(result$DLT_cohorts, "character")
+  expect_type(result$DLT_time, "character")
   expect_equal(result$cohort[result$DLTs == 0], 1:4)
   expect_equal(result$DLT_cohorts, vapply(evaluated, function(data) {
     paste(sort(data@cohort[data@y == 1]), collapse = ", ")
+  }, character(1)))
+  expect_equal(result$DLT_time, vapply(evaluated, function(data) {
+    dlt_indices <- which(data@y == 1)
+    if (length(dlt_indices) == 0L) {
+      return("")
+    }
+    dlt_order <- order(data@cohort[dlt_indices], dlt_indices)
+    cohort_start <- vapply(
+      data@cohort[dlt_indices],
+      function(cohort) min(data@t0[data@cohort == cohort]),
+      numeric(1)
+    )
+    paste((data@t0[dlt_indices] + data@u[dlt_indices] - cohort_start)[dlt_order], collapse = ", ")
   }, character(1)))
   second <- subset(result, cohort == 2 & DLTs == 3)
   expect_equal(second$DLT_cohorts, c("1, 1, 2", "2, 2, 2"))
@@ -74,5 +88,6 @@ test_that("DADesign examination preserves existing cohort indices and excludes o
   expect_no_warning(result <- examine(design))
   expect_true(all(result$cohort == 3L))
   expect_equal(result$DLT_cohorts, c("", "2", "3", "2, 2", "2, 3", "2, 2, 3", "2, 2, 3"))
+  expect_equal(result$DLT_time[result$DLTs == 0], "")
   expect_equal(result$DLTs, vapply(evaluated, function(data) sum(data@y) - 1, numeric(1)))
 })

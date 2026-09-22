@@ -43,7 +43,10 @@ The character column \code{DLT_cohorts} lists one cohort index per additional
 hypothetical DLT, sorted and separated by commas. Repeated indices denote
 multiple DLTs in the same cohort: \code{"1, 2, 2"} means one DLT in cohort 1 and
 two in cohort 2. It is \code{""} when \code{DLTs} is zero and excludes previously
-observed DLTs. The \code{dose} column always refers to the current cohort.
+observed DLTs. The character column \code{DLT_time} gives the corresponding
+DLT onset times, relative to the start of each patient's cohort, in the
+same order and comma-separated format as \code{DLT_cohorts}. It is \code{""} when
+\code{DLTs} is zero. The \code{dose} column always refers to the current cohort.
 
 The additional column \code{DLT_scenario} identifies the scenario, not a count:
 \code{"no additional DLTs"} denotes no additional DLTs; \code{"late DLTs"} assigns

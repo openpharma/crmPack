@@ -4112,7 +4112,10 @@ setMethod(
 #'   hypothetical DLT, sorted and separated by commas. Repeated indices denote
 #'   multiple DLTs in the same cohort: `"1, 2, 2"` means one DLT in cohort 1 and
 #'   two in cohort 2. It is `""` when `DLTs` is zero and excludes previously
-#'   observed DLTs. The `dose` column always refers to the current cohort.
+#'   observed DLTs. The character column `DLT_time` gives the corresponding
+#'   DLT onset times, relative to the start of each patient's cohort, in the
+#'   same order and comma-separated format as `DLT_cohorts`. It is `""` when
+#'   `DLTs` is zero. The `dose` column always refers to the current cohort.
 #'
 #'   The additional column `DLT_scenario` identifies the scenario, not a count:
 #'   `"no additional DLTs"` denotes no additional DLTs; `"late DLTs"` assigns
@@ -4504,6 +4507,7 @@ setMethod(
       dose = numeric(),
       DLTs = integer(),
       DLT_cohorts = character(),
+      DLT_time = character(),
       nextDose = numeric(),
       stop = logical(),
       increment = integer()
@@ -4601,6 +4605,7 @@ setMethod(
               dose = dose,
               DLTs = num_dlts,
               DLT_cohorts = "",
+              DLT_time = "",
               nextDose = next_dose,
               stop = stop_this_trial,
               increment = as.integer(increment)
@@ -4687,6 +4692,15 @@ setMethod(
               data = data_current
             )
 
+            dlt_cohorts <- base_data@cohort[dlt_indices]
+            dlt_order <- order(dlt_cohorts, dlt_indices)
+            cohort_start <- vapply(
+              dlt_cohorts,
+              function(cohort) min(observed_t0[base_data@cohort == cohort]),
+              numeric(1)
+            )
+            dlt_times <- observed_t0[dlt_indices] + curr_surv[dlt_indices] - cohort_start
+
             ret <- rbind(
               ret,
               list(
@@ -4694,7 +4708,8 @@ setMethod(
                 DLT_scenario = dlt_scenario,
                 dose = dose,
                 DLTs = num_dlts,
-                DLT_cohorts = paste(sort(base_data@cohort[dlt_indices]), collapse = ", "),
+                DLT_cohorts = paste(dlt_cohorts[dlt_order], collapse = ", "),
+                DLT_time = paste(dlt_times[dlt_order], collapse = ", "),
                 nextDose = next_dose,
                 stop = stop_this_trial,
                 increment = as.integer(increment)
