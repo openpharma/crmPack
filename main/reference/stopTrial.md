@@ -472,7 +472,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 30 % for dose 3 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 0 % for dose 20 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -486,7 +486,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 30 % for dose 3 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 0 % for dose 20 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -499,7 +499,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 30 % for dose 3 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 0 % for dose 20 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -588,7 +588,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 50 % for dose 18 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 30 % for dose 12 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -602,7 +602,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 50 % for dose 18 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 30 % for dose 12 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -613,9 +613,9 @@ stopTrial(
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 50 % for dose 18 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 30 % for dose 12 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -703,7 +703,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 40 % for dose 10 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 10 and thus above the required 50 %"
 #> 
 #> attr(,"message")[[3]]
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
@@ -717,9 +717,9 @@ stopTrial(
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 40 % for dose 10 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 10 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -1049,9 +1049,9 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 50 % for dose 12 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 6 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 
@@ -1118,7 +1118,7 @@ stopTrial(
 )
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability of MTD above 50 % of current dose 18 is 100 % and thus greater than or equal to the required 90 %"
+#> [1] "Probability of MTD above 50 % of current dose 20 is 100 % and thus greater than or equal to the required 90 %"
 #> attr(,"report_label")
 #> [1] "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9"
 
@@ -1346,7 +1346,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target biomarker is 0 % for dose 1.5 and thus below the required 50 %"
+#> [1] "Probability for target biomarker is 0 % for dose NA and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative)"
 # }
@@ -1418,7 +1418,7 @@ stopTrial(
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"
+#> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -1438,7 +1438,7 @@ stopTrial(
 #> attr(,"individual")[[3]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"
+#> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
@@ -1515,24 +1515,24 @@ stopTrial(
 #> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Probability for target toxicity is 40 % for dose 14 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 70 and thus below the required 50 %"
 #> 
 #> attr(,"message")[[2]]
 #> attr(,"message")[[2]][[1]]
-#> [1] "Next best dose is 14 and thus not the highest dose"
+#> [1] "Next best dose is 70 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]][[2]]
-#> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 70. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[2]][[3]]
-#> [1] "Probability for target toxicity is 60 % for dose 14 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 80 % for dose 70 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 40 % for dose 14 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 20 % for dose 70 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -1540,33 +1540,33 @@ stopTrial(
 #> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Next best dose is 14 and thus not the highest dose"
+#> [1] "Next best dose is 70 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 70. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "Probability for target toxicity is 60 % for dose 14 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 80 % for dose 70 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Next best dose is 14 and thus not the highest dose"
+#> [1] "Next best dose is 70 and thus not the highest dose"
 #> attr(,"report_label")
 #> [1] "NBD is the highest dose"
 #> 
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 70. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
 #> attr(,"individual")[[3]]
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 60 % for dose 14 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 80 % for dose 70 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0 ≤ prob(DLE | NBD) ≤ 0.2) ≥ 0.5"
 #> 
@@ -1606,7 +1606,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 40 % for dose 50 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 20 % for dose 40 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 data <- .DefaultDataOrdinal()
@@ -1638,7 +1638,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 20 % for dose 10 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 10 % for dose 50 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 my_rule <- StoppingExternal(report_label = "Based on combo stop")

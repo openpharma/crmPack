@@ -17,10 +17,12 @@ escalation or stopping rules.
 
 You can install the development version of `crmPack` from GitHub with:
 
+\
 `devtools``::`[`install_github`](https://devtools.r-lib.org/reference/install-deprecated.html)`(``"openpharma/crmPack"``)`
 
 You can install the stable release version of `crmPack` from CRAN with:
 
+\
 [`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"crmPack"``)`
 
 ## Examples

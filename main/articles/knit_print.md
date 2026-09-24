@@ -6,7 +6,9 @@ Objects created by `crmPack` are almost always S4 objects. Like all S4
 objects, by default they do not render in a particularly user-friendly
 way.
 
-`cs`` ``<-`` `[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)`` ``cs`
+\
+`cs`` ``<-`` `[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)`\
+`cs`
 
     #> An object of class "CohortSizeDLT"
     #> Slot "intervals":
@@ -20,6 +22,7 @@ little or no cost to the end user: in the simplest case, demonstrated
 below, all that needs to be done is to reference the object in a
 markdown or Quarto chunk.
 
+\
 `cs`
 
 [TABLE]
@@ -49,7 +52,20 @@ document.
 
 As a simple demonstration of the concept, consider:
 
-`knit_print.DustySpringfield`` ``<-`` ``function``(``x``, ``...``)`` ``{`` `` ``"I just don't know what to do with myself"`` ``}`` `` ``lyric`` ``<-`` ``10`` `` ``lyric`` ``#> [1] 10`` `` `[`class`](https://rdrr.io/r/base/class.html)`(``lyric``)`` ``<-`` ``"DustySpringfield"`` `` ``lyric`` ``#> I just don't know what to do with myself`
+\
+`knit_print.DustySpringfield`` ``<-`` ``function``(``x``, ``...``)`` ``{`\
+`  ``"I just don't know what to do with myself"`\
+`}`\
+\
+`lyric`` ``<-`` ``10`\
+\
+`lyric`\
+`#> [1] 10`\
+\
+[`class`](https://rdrr.io/r/base/class.html)`(``lyric``)`` ``<-`` ``"DustySpringfield"`\
+\
+`lyric`\
+`#> I just don't know what to do with myself`
 
 The actions of `knit_print` are entirely arbitrary, but this mechanism
 provides developers with an easy way to provide nicely-rendered versions
@@ -80,24 +96,29 @@ and the second the scalar with `"s"` appended[^1].
 
 So, for example:
 
+\
 [`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3``)`
 
 A constant size of 3 participants.
 
-[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3``)``, label ``=`` ``"subject"``)`
+\
+[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``3``)``, label ``=`` ``"subject"``)`
 
 A constant size of 3 subjects.
 
 Dose units are defined by the `units` parameter. By default, no units
 are printed.
 
-`d`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.3``, ``0.9``, ``2.5``, ``5``, ``10``, ``15``)``)`` ``d`
+\
+`d`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.3``, ``0.9``, ``2.5``, ``5``, ``10``, ``15``)``)`\
+`d`
 
 No participants are yet evaluable.
 
 The dose grid is 0.1, 0.3, 0.9, 2.5, 5, 10 and 15.
 
-[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(``d``, units ``=`` ``"mg/dL"``)`
+\
+[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(``d``, units ``=`` ``"mg/dL"``)`
 
 No participants are yet evaluable.
 
@@ -107,7 +128,8 @@ mg/dL and 15 mg/dL.
 The format used to display dose levels (and other information in other
 classes) can be changed with the `fmt` parameter:
 
-[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(``d``, units ``=`` ``"mg/dL"``, fmt ``=`` ``"%.2f"``)`
+\
+[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(``d``, units ``=`` ``"mg/dL"``, fmt ``=`` ``"%.2f"``)`
 
 No participants are yet evaluable.
 
@@ -117,7 +139,9 @@ mg/dL, 10.00 mg/dL and 15.00 mg/dL.
 `biomarker_label` and `biomarker_units` allow the representation of a
 biomarker to be customised.
 
-`x`` ``<-`` `[`.DefaultDualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md)`(``)`` ``x`
+\
+`x`` ``<-`` `[`.DefaultDualEndpointRW`](https://docs.crmpack.org/reference/DualEndpointRW-class.md)`(``)`\
+`x`
 
 The relationships between dose and toxicity and between dose and PD
 biomarker will be modelled simultaneously.
@@ -147,7 +171,9 @@ where f(d) is a first order random walk such that
  f(d) = \beta_{W_i} - \beta_{W_{i - 1}}\sim N(0, 0.01 \times (d_i - d_{i - 1})) 
 ```
 
-` `[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(``x``, biomarker_name ``=`` ``"CRP"``, biomarker_units ``=`` ``"mg/dL"``)`
+\
+\
+[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(``x``, biomarker_name ``=`` ``"CRP"``, biomarker_units ``=`` ``"mg/dL"``)`
 
 The relationships between dose and toxicity and between dose and PD
 biomarker will be modelled simultaneously.
@@ -183,6 +209,7 @@ Some `crmPack` classes have slots whose values are themselves `crmPack`
 classes. `CohortSizeMax` is a simple example. In these cases, the slot
 values are each passed to `knit_print` in turn.
 
+\
 [`.DefaultCohortSizeMax`](https://docs.crmpack.org/reference/CohortSizeMax-class.md)`(``)`
 
 The maximum of the cohort sizes defined in the following rules:
@@ -205,6 +232,7 @@ controlled by the `level` parameter. The default value of `level` is
 the level of the parent slot[^2]. Class-specific parameters are passed
 to slot-specific `knit_print` methods using `...`.
 
+\
 [`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`.DefaultDesign`](https://docs.crmpack.org/reference/Design-class.md)`(``)``)`
 
 ## Design
@@ -290,7 +318,15 @@ Slot headers can be customised using the `sections` parameter.
 `sections` should be a named vector. Names should be valid slot names
 for the object being rendered and values the requested slot headers.
 
-[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`` `` `[`.DefaultDesign`](https://docs.crmpack.org/reference/Design-class.md)`(``)``,`` `` level ``=`` ``4``,`` `` sections ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`` `` ``"nextBest"`` ``=`` ``"Selection of the dose for the following cohort"``,`` `` ``"startingDose"`` ``=`` ``"Initial dose"`` `` ``)`` ``)`
+\
+[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`\
+`  `[`.DefaultDesign`](https://docs.crmpack.org/reference/Design-class.md)`(``)``,`\
+`  level ``=`` ``4``,`\
+`  sections ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    ``"nextBest"`` ``=`` ``"Selection of the dose for the following cohort"``,`\
+`    ``"startingDose"`` ``=`` ``"Initial dose"`\
+`  ``)`\
+`)`
 
 ``` math
 Output not shown.
@@ -306,7 +342,14 @@ Output not shown.
 To restore the default behaviour for `crmPack` objects, simply wrap the
 object in a call to `normal_print()`.
 
-`normal_print``(``cs``)`` ``#> An object of class "CohortSizeDLT"`` ``#> Slot "intervals":`` ``#> [1] 0 1 2`` ``#> `` ``#> Slot "cohort_size":`` ``#> [1] 1 3 5`
+\
+`normal_print``(``cs``)`\
+`#> An object of class "CohortSizeDLT"`\
+`#> Slot "intervals":`\
+`#> [1] 0 1 2`\
+`#> `\
+`#> Slot "cohort_size":`\
+`#> [1] 1 3 5`
 
 ## Accessing the output of `knit_print`
 
@@ -320,17 +363,58 @@ Setting `asis` to `FALSE` will display the raw HTML code generated by
 `knit_print` to be displayed. Alternatively, it may allow easier
 manipulation of the return value.
 
-`csOutput1`` ``<-`` `[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)``)`` `[`class`](https://rdrr.io/r/base/class.html)`(``csOutput1``)`` ``#> [1] "knit_asis"`` ``csOutput1`
+\
+`csOutput1`` ``<-`` `[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)``)`\
+[`class`](https://rdrr.io/r/base/class.html)`(``csOutput1``)`\
+`#> [1] "knit_asis"`\
+`csOutput1`
 
 [TABLE]
 
 Defined by the number of toxicities so far observed {.table}
 
-`csOutput2`` ``<-`` `[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)``, asis ``=`` ``FALSE``)`` `[`class`](https://rdrr.io/r/base/class.html)`(``csOutput2``)`` ``#> [1] "character"`` ``csOutput2`` ``#> [1] "<table>\n<caption>Defined by the number of toxicities so far observed</caption>\n <thead>\n<tr>\n<th style=\"border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; \" colspan=\"2\"><div style=\"border-bottom: 1px solid #ddd; padding-bottom: 5px; \">No of toxicities</div></th>\n<th style=\"empty-cells: hide;border-bottom:hidden;\" colspan=\"1\"></th>\n</tr>\n <tr>\n <th style=\"text-align:right;\"> Lower </th>\n <th style=\"text-align:right;\"> Upper </th>\n <th style=\"text-align:right;\"> Cohort size </th>\n </tr>\n </thead>\n<tbody>\n <tr>\n <td style=\"text-align:right;\"> 0 </td>\n <td style=\"text-align:right;\"> 1 </td>\n <td style=\"text-align:right;\"> 1 </td>\n </tr>\n <tr>\n <td style=\"text-align:right;\"> 1 </td>\n <td style=\"text-align:right;\"> 2 </td>\n <td style=\"text-align:right;\"> 3 </td>\n </tr>\n <tr>\n <td style=\"text-align:right;\"> 2 </td>\n <td style=\"text-align:right;\"> Inf </td>\n <td style=\"text-align:right;\"> 5 </td>\n </tr>\n</tbody>\n</table>\n\n"`
+\
+`csOutput2`` ``<-`` `[`knit_print`](https://docs.crmpack.org/reference/knit_print.md)`(`[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)``, asis ``=`` ``FALSE``)`\
+[`class`](https://rdrr.io/r/base/class.html)`(``csOutput2``)`\
+`#> [1] "character"`\
+`csOutput2`\
+`#> [1] "<table>\n<caption>Defined by the number of toxicities so far observed</caption>\n <thead>\n<tr>\n<th style=\"border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; \" colspan=\"2\"><div style=\"border-bottom: 1px solid #ddd; padding-bottom: 5px; \">No of toxicities</div></th>\n<th style=\"empty-cells: hide;border-bottom:hidden;\" colspan=\"1\"></th>\n</tr>\n  <tr>\n   <th style=\"text-align:right;\"> Lower </th>\n   <th style=\"text-align:right;\"> Upper </th>\n   <th style=\"text-align:right;\"> Cohort size </th>\n  </tr>\n </thead>\n<tbody>\n  <tr>\n   <td style=\"text-align:right;\"> 0 </td>\n   <td style=\"text-align:right;\"> 1 </td>\n   <td style=\"text-align:right;\"> 1 </td>\n  </tr>\n  <tr>\n   <td style=\"text-align:right;\"> 1 </td>\n   <td style=\"text-align:right;\"> 2 </td>\n   <td style=\"text-align:right;\"> 3 </td>\n  </tr>\n  <tr>\n   <td style=\"text-align:right;\"> 2 </td>\n   <td style=\"text-align:right;\"> Inf </td>\n   <td style=\"text-align:right;\"> 5 </td>\n  </tr>\n</tbody>\n</table>\n\n"`
 
 But with the chunk option `output` set to `asis`…
 
-[`cat`](https://rdrr.io/r/base/cat.html)`(``csOutput2``)`` ``#> <table>`` ``#> <caption>Defined by the number of toxicities so far observed</caption>`` ``#> <thead>`` ``#> <tr>`` ``#> <th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">No of toxicities</div></th>`` ``#> <th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>`` ``#> </tr>`` ``#> <tr>`` ``#> <th style="text-align:right;"> Lower </th>`` ``#> <th style="text-align:right;"> Upper </th>`` ``#> <th style="text-align:right;"> Cohort size </th>`` ``#> </tr>`` ``#> </thead>`` ``#> <tbody>`` ``#> <tr>`` ``#> <td style="text-align:right;"> 0 </td>`` ``#> <td style="text-align:right;"> 1 </td>`` ``#> <td style="text-align:right;"> 1 </td>`` ``#> </tr>`` ``#> <tr>`` ``#> <td style="text-align:right;"> 1 </td>`` ``#> <td style="text-align:right;"> 2 </td>`` ``#> <td style="text-align:right;"> 3 </td>`` ``#> </tr>`` ``#> <tr>`` ``#> <td style="text-align:right;"> 2 </td>`` ``#> <td style="text-align:right;"> Inf </td>`` ``#> <td style="text-align:right;"> 5 </td>`` ``#> </tr>`` ``#> </tbody>`` ``#> </table>`
+\
+[`cat`](https://rdrr.io/r/base/cat.html)`(``csOutput2``)`\
+`#> <table>`\
+`#> <caption>Defined by the number of toxicities so far observed</caption>`\
+`#>  <thead>`\
+`#> <tr>`\
+`#> <th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">No of toxicities</div></th>`\
+`#> <th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>`\
+`#> </tr>`\
+`#>   <tr>`\
+`#>    <th style="text-align:right;"> Lower </th>`\
+`#>    <th style="text-align:right;"> Upper </th>`\
+`#>    <th style="text-align:right;"> Cohort size </th>`\
+`#>   </tr>`\
+`#>  </thead>`\
+`#> <tbody>`\
+`#>   <tr>`\
+`#>    <td style="text-align:right;"> 0 </td>`\
+`#>    <td style="text-align:right;"> 1 </td>`\
+`#>    <td style="text-align:right;"> 1 </td>`\
+`#>   </tr>`\
+`#>   <tr>`\
+`#>    <td style="text-align:right;"> 1 </td>`\
+`#>    <td style="text-align:right;"> 2 </td>`\
+`#>    <td style="text-align:right;"> 3 </td>`\
+`#>   </tr>`\
+`#>   <tr>`\
+`#>    <td style="text-align:right;"> 2 </td>`\
+`#>    <td style="text-align:right;"> Inf </td>`\
+`#>    <td style="text-align:right;"> 5 </td>`\
+`#>   </tr>`\
+`#> </tbody>`\
+`#> </table>`
 
 ## Providing your own `knit_print` method
 
@@ -344,6 +428,7 @@ The formal arguments to
 As an example, consider `knit_print.NextBestNCRM`, which currently
 returns a paragraph of text:
 
+\
 [`.DefaultNextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(``)`
 
 The dose recommended for the next cohort will be chosen in the following
@@ -358,7 +443,30 @@ probability of toxicity is in the target toxicity range of 0.2 to 0.35
 You might feel this is better presented as a bulleted list. You can
 achieve this as follows[^3]:
 
-`knit_print.NextBestNCRM`` ``<-`` ``function``(``x``, ``...``)`` ``{`` `` ``knitr``::`[`asis_output`](https://rdrr.io/pkg/knitr/man/asis_output.html)`(`` `` `[`paste0`](https://rdrr.io/r/base/paste.html)`(`` `` ``"The dose recommended for the next cohort will be chosen in the following "``,`` `` ``"way.\n\n- First, doses that are ineligible according to the increments rule "``,`` `` ``"will be discarded.\n- Next, any dose for which the mean posterior probability of "``,`` `` ``" toxicity being in the overdose range - ("``,`` `` ``x``@``overdose``[``1``]``, ``", "``, ``x``@``overdose``[``2``]``,`` `` ``"] - is "``,`` `` ``x``@``max_overdose_prob``,`` `` ``" or more will also be discarded.\n- Finally, the dose amongst those remaining "``,`` `` ``"which has the highest chance that the mean posterior probability of toxicity "``,`` `` ``"is in the target toxicity range of "``,`` `` ``x``@``target``[``1``]``,`` `` ``" to "``,`` `` ``x``@``target``[``2``]``,`` `` ``" (inclusive) will be selected.\n\n"`` `` ``)`` `` ``)`` ``}`` `[`registerS3method`](https://rdrr.io/r/base/ns-internal.html)`(``"knit_print"``, ``"NextBestNCRM"``, ``knit_print.NextBestNCRM``)`` `` `[`.DefaultNextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(``)`
+\
+`knit_print.NextBestNCRM`` ``<-`` ``function``(``x``, ``...``)`` ``{`\
+`  ``knitr``::`[`asis_output`](https://rdrr.io/pkg/knitr/man/asis_output.html)`(`\
+`    `[`paste0`](https://rdrr.io/r/base/paste.html)`(`\
+`      ``"The dose recommended for the next cohort will be chosen in the following "``,`\
+`      ``"way.\n\n-  First, doses that are ineligible according to the increments rule "``,`\
+`      ``"will be discarded.\n-  Next, any dose for which the mean posterior probability of "``,`\
+`      ``" toxicity being in the overdose range - ("``,`\
+`      ``x``@``overdose``[``1``]``, ``", "``, ``x``@``overdose``[``2``]``,`\
+`      ``"] - is "``,`\
+`      ``x``@``max_overdose_prob``,`\
+`      ``" or more will also be discarded.\n-  Finally, the dose amongst those remaining "``,`\
+`      ``"which has the highest chance that the mean posterior probability of toxicity "``,`\
+`      ``"is in the target toxicity range of "``,`\
+`      ``x``@``target``[``1``]``,`\
+`      ``" to "``,`\
+`      ``x``@``target``[``2``]``,`\
+`      ``" (inclusive) will be selected.\n\n"`\
+`    ``)`\
+`  ``)`\
+`}`\
+[`registerS3method`](https://rdrr.io/r/base/ns-internal.html)`(``"knit_print"``, ``"NextBestNCRM"``, ``knit_print.NextBestNCRM``)`\
+\
+[`.DefaultNextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(``)`
 
 The dose recommended for the next cohort will be chosen in the following
 way.
