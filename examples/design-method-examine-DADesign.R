@@ -71,7 +71,13 @@ design <- DADesign(
 set.seed(4235)
 # MCMC parameters are set to small values only to show this example. They should be
 # increased for a real case.
-# This procedure will take a while.
+# Each hypothetical scenario requires an MCMC fit, so this can take a while.
+# DLTs counts additional hypothetical events, including earlier patients whose
+# DLT windows are still open. DLT_scenario identifies the scenario:
+# "no additional DLTs", "late DLTs" (earlier-enrolled patients), or
+# "early DLTs" (later-enrolled patients).
+# cohort identifies the current cohort. DLT_cohorts lists one cohort index per
+# additional DLT (e.g. "1, 2, 2"), or "" when there are none.
 options <- McmcOptions(
   burnin = 10,
   step = 1,
@@ -80,10 +86,7 @@ options <- McmcOptions(
   rng_seed = 12
 )
 \donttest{
-testthat::expect_warning(
-  result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
-  "Stopping because 2 times no increment"
-)
+result <- examine(design, mcmcOptions = options)
 }
 
 # nolint end

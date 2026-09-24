@@ -2021,7 +2021,7 @@ test_that("examine for DADesign works as expected", {
   expect_data_frame(result)
   expect_named(
     result,
-    c("DLTsearly_1", "dose", "DLTs", "nextDose", "stop", "increment")
+    c("cohort", "DLT_scenario", "dose", "DLTs", "DLT_cohorts", "DLT_time", "nextDose", "stop", "increment")
   )
 })
 

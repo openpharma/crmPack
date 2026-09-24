@@ -4097,7 +4097,37 @@ setMethod(
 #' @param maxNoIncrement maximum number of contiguous next doses at 0
 #'   DLTs that are the same as before, i.e. no increment (default to 100)
 #'
-#' @return The data frame
+#' @return A data frame with the current `dose`, hypothetical `DLTs`,
+#'   recommended `nextDose`, `stop` (whether the stopping rule is met), and
+#'   percentage `increment` relative to `dose`.
+#'
+#'   For `DADesign`, `DLTs` is the number of additional hypothetical DLTs
+#'   assigned among the current cohort and earlier patients still within their
+#'   DLT window at the next cohort-opening time. It is not restricted to the
+#'   current cohort and does not include DLTs already present in `object@data`.
+#'   Each cohort is reached along the path with no additional DLTs.
+#'   The integer column `cohort` identifies the current cohort, starting at 1
+#'   for empty data or continuing the existing cohort indices in `object@data`.
+#'   The character column `DLT_cohorts` lists one cohort index per additional
+#'   hypothetical DLT, sorted and separated by commas. Repeated indices denote
+#'   multiple DLTs in the same cohort: `"1, 2, 2"` means one DLT in cohort 1 and
+#'   two in cohort 2. It is `""` when `DLTs` is zero and excludes previously
+#'   observed DLTs. The character column `DLT_time` gives the corresponding
+#'   DLT onset times, relative to the start of each patient's cohort, in the
+#'   same order and comma-separated format as `DLT_cohorts`. It is `""` when
+#'   `DLTs` is zero. The `dose` column always refers to the current cohort.
+#'
+#'   The additional column `DLT_scenario` identifies the scenario, not a count:
+#'   `"no additional DLTs"` denotes no additional DLTs; `"late DLTs"` assigns
+#'   DLTs to the earliest-enrolled
+#'   eligible patients, at their available follow-up times; `"early DLTs"` assigns DLTs to
+#'   the latest-enrolled eligible patients, as early as one day after the
+#'   previous cohort-opening decision or one day after enrollment, whichever
+#'   is later. For `"early DLTs"`, if `DLTs` is at least the current cohort size,
+#'   the hypothetical decision occurs one day after its last patient enrolls;
+#'   otherwise it occurs at the usual next cohort-opening time.
+#'   Both scenarios are evaluated for every positive `DLTs` count. They are
+#'   illustrative allocations, not all possible patient-level outcomes.
 #'
 #' @export
 #' @keywords methods regression
@@ -4438,7 +4468,7 @@ setMethod(
   "examine",
   signature = signature(object = "DADesign"),
   def = function(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement) {
-    # Check follow-up sufficiency (TRUE/FALSE);
+    # Check whether the cohort has sufficient follow-up.
     ready_to_open <- function(day, window, this_surv) {
       size <- length(this_surv)
       start_time <- apply(
@@ -4455,7 +4485,7 @@ setMethod(
         (max(follow_up) >= min(window$patientFollowMin, max(this_surv)))
     }
 
-    # Determine when to open the next cohort; applies to all trials.
+    # Determine when the next cohort can open.
     next_open <- function(window, this_surv) {
       size <- length(this_surv)
       window$patientGap <- window$patientGap[1:size]
@@ -4472,9 +4502,12 @@ setMethod(
 
     # Initialize result table.
     ret <- data.frame(
-      DLTsearly_1 = integer(),
+      cohort = integer(),
+      DLT_scenario = character(),
       dose = numeric(),
       DLTs = integer(),
+      DLT_cohorts = character(),
+      DLT_time = character(),
       nextDose = numeric(),
       stop = logical(),
       increment = integer()
@@ -4483,6 +4516,7 @@ setMethod(
     # Base data and trial state.
     base_data <- object@data
     should_stop <- FALSE
+    no_increment_counter <- 0L
     dose <- object@startingDose
 
     # Observed facts trackers (cumulative across cohorts).
@@ -4496,9 +4530,6 @@ setMethod(
 
     # DLT window length.
     t_max <- base_data@Tmax
-
-    # Number of patients with unfinished DLT window (initially none).
-    prev_size <- 0
 
     # Iterate cohorts until stopping.
     while (!should_stop) {
@@ -4518,15 +4549,14 @@ setMethod(
       trial_time <- trial_time +
         next_open(window = safety_window, this_surv = rep(t_max, cohort_size))
 
-      # Count patients still within DLT window (for nFollow loop).
-      n_follow <- cohort_size + prev_size
-
       # Identify censored patients indices.
       npt <- length(base_data@x)
       censored_indices <- c(
         which((trial_time - base_data@t0) < base_data@Tmax & base_data@y == 0),
         (npt + 1):(npt + cohort_size)
       )
+
+      n_follow <- length(censored_indices)
 
       # For all possible number of DLTs (0..n_follow):
       for (num_dlts in 0:n_follow) {
@@ -4564,12 +4594,18 @@ setMethod(
             data = base_data
           )
 
+          next_dose_no_dlts <- next_dose
+          stop_already <- stop_this_trial
+
           ret <- rbind(
             ret,
             list(
-              DLTsearly_1 = 0,
+              cohort = tail(base_data@cohort, 1L),
+              DLT_scenario = "no additional DLTs",
               dose = dose,
               DLTs = num_dlts,
+              DLT_cohorts = "",
+              DLT_time = "",
               nextDose = next_dose,
               stop = stop_this_trial,
               increment = as.integer(increment)
@@ -4577,17 +4613,22 @@ setMethod(
           )
         } else {
           # Consider two extremes: DLTs at longest vs shortest follow-ups.
-          for (dlt_early in 1:num_dlts) {
+          for (dlt_scenario in c("late DLTs", "early DLTs")) {
+            dlt_indices <- if (dlt_scenario == "late DLTs") {
+              head(censored_indices, num_dlts)
+            } else {
+              head(rev(censored_indices), num_dlts)
+            }
             curr_dlts <- observed_dlts
+            curr_dlts[dlt_indices] <- 1
             curr_surv <- observed_surv
 
-            if (dlt_early == 1) {
+            if (dlt_scenario == "late DLTs") {
               # Longest follow-up patients have DLTs.
-              curr_dlts[censored_indices][1:num_dlts] <- 1
-              curr_surv[censored_indices][1:num_dlts] <- apply(
+              curr_surv[dlt_indices] <- apply(
                 rbind(
                   rep(t_max, num_dlts),
-                  trial_time - observed_t0[censored_indices][1:num_dlts]
+                  trial_time - observed_t0[dlt_indices]
                 ),
                 2,
                 min
@@ -4603,11 +4644,10 @@ setMethod(
               )
             } else {
               # Shortest follow-up patients have DLTs.
-              curr_dlts[rev(censored_indices)][1:num_dlts] <- 1
-              curr_surv[rev(censored_indices)][1:num_dlts] <- apply(
+              curr_surv[dlt_indices] <- apply(
                 rbind(
                   rep(1, num_dlts),
-                  prev_time + 1 - observed_t0[rev(censored_indices)][1:num_dlts]
+                  prev_time + 1 - observed_t0[dlt_indices]
                 ),
                 2,
                 max
@@ -4652,12 +4692,24 @@ setMethod(
               data = data_current
             )
 
+            dlt_cohorts <- base_data@cohort[dlt_indices]
+            dlt_order <- order(dlt_cohorts, dlt_indices)
+            cohort_start <- vapply(
+              dlt_cohorts,
+              function(cohort) min(observed_t0[base_data@cohort == cohort]),
+              numeric(1)
+            )
+            dlt_times <- observed_t0[dlt_indices] + curr_surv[dlt_indices] - cohort_start
+
             ret <- rbind(
               ret,
               list(
-                DLTsearly_1 = dlt_early,
+                cohort = tail(base_data@cohort, 1L),
+                DLT_scenario = dlt_scenario,
                 dose = dose,
                 DLTs = num_dlts,
+                DLT_cohorts = paste(dlt_cohorts[dlt_order], collapse = ", "),
+                DLT_time = paste(dlt_times[dlt_order], collapse = ", "),
                 nextDose = next_dose,
                 stop = stop_this_trial,
                 increment = as.integer(increment)
@@ -4670,20 +4722,12 @@ setMethod(
       # Update previous time and compute next state.
       prev_time <- trial_time
 
-      # Filter results at this dose with 0 DLTs and derive new dose.
-      results_no_dlts <- subset(ret, dose == dose & DLTs == 0)
-      new_dose <- as.numeric(results_no_dlts$nextDose)
-      dose_diff <- new_dose - dose
-      stop_already <- any(results_no_dlts$stop)
-
-      # Update dose to the maximum recommended among ties.
-      dose <- max(new_dose)
-
-      # Patients still within DLT window.
-      prev_size <- sum(base_data@u[base_data@y == 0] < base_data@Tmax)
+      # Advance only along the current cohort's zero-DLT scenario.
+      dose_diff <- next_dose_no_dlts - dose
+      dose <- next_dose_no_dlts
 
       # No-increment counter and stopping due to no increment.
-      no_increment_counter <- if (all(dose_diff == 0)) {
+      no_increment_counter <- if (dose_diff == 0) {
         no_increment_counter + 1L
       } else {
         0L
