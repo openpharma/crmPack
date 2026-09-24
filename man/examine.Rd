@@ -297,8 +297,6 @@ set.seed(4235)
 # "early DLTs" (later-enrolled patients).
 # cohort identifies the current cohort. DLT_cohorts lists one cohort index per
 # additional DLT (e.g. "1, 2, 2"), or "" when there are none.
-# maxNoIncrement = 2 stops after two consecutive unchanged zero-DLT dose
-# recommendations, with the warning checked below. The default is 100.
 options <- McmcOptions(
   burnin = 10,
   step = 1,
