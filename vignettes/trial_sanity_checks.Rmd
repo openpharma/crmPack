@@ -99,7 +99,7 @@ examine(design) %>% kable()
 | dose| DLTs| nextDose|stop  | increment|
 |----:|----:|--------:|:-----|---------:|
 |    3|    0|        5|FALSE |        67|
-|    3|    1|       NA|FALSE |        NA|
+|    3|    1|        1|FALSE |       -67|
 |    5|    0|       10|FALSE |       100|
 |    5|    1|        3|FALSE |       -40|
 |   10|    0|       20|FALSE |       100|
@@ -242,7 +242,7 @@ examine(revised_design) %>% kable()
 | dose| DLTs| nextDose|stop  | increment|
 |----:|----:|--------:|:-----|---------:|
 |    3|    0|        5|FALSE |        67|
-|    3|    1|       NA|FALSE |        NA|
+|    3|    1|        1|FALSE |       -67|
 |    5|    0|       10|FALSE |       100|
 |    5|    1|        3|FALSE |       -40|
 |   10|    0|       20|FALSE |       100|
@@ -408,22 +408,24 @@ examine(revised_design1) %>% kable()
 |   25|    1|       15|FALSE |       -40|
 |   25|    0|       25|FALSE |         0|
 |   25|    1|       20|FALSE |       -20|
-|   25|    0|       25|FALSE |         0|
-|   25|    1|       20|FALSE |       -20|
 |   25|    0|       40|FALSE |        60|
-|   25|    1|       25|FALSE |         0|
+|   25|    1|       20|FALSE |       -20|
 |   40|    0|       50|FALSE |        25|
-|   40|    1|       40|FALSE |         0|
+|   40|    1|       25|FALSE |       -38|
 |   40|    2|       25|FALSE |       -38|
 |   40|    3|       20|FALSE |       -50|
+|   50|    0|       50|FALSE |         0|
+|   50|    1|       50|FALSE |         0|
+|   50|    2|       25|FALSE |       -50|
+|   50|    3|       25|FALSE |       -50|
 |   50|    0|       80|FALSE |        60|
 |   50|    1|       50|FALSE |         0|
-|   50|    2|       40|FALSE |       -20|
-|   50|    3|       25|FALSE |       -50|
+|   50|    2|       50|FALSE |         0|
+|   50|    3|       40|TRUE  |       -20|
 |   80|    0|      100|TRUE  |        25|
-|   80|    1|       50|TRUE  |       -38|
+|   80|    1|       80|TRUE  |         0|
 |   80|    2|       50|TRUE  |       -38|
-|   80|    3|       40|TRUE  |       -50|
+|   80|    3|       50|TRUE  |       -38|
 
 
 

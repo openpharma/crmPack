@@ -719,7 +719,7 @@ The dose recommended for the next cohort will be chosen in the following way.
 
 
 
-`crmPack` defines 160 classes. Custom `knit_print` methods exist for 110
+`crmPack` defines 161 classes. Custom `knit_print` methods exist for 111
 of them. Of the remaining 50 classes, 27 are virtual classes
 that will never be directly instantiated by end users. That leaves 23 classes for which
 `knit_print` methods may be useful. These classes are listed below.
