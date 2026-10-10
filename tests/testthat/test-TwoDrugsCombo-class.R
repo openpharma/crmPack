@@ -245,8 +245,8 @@ test_that("MCMC runs for TwoDrugsCombo model", {
   result <- mcmc(data = data, model = model, options = options)
   expect_s4_class(result, "Samples")
   expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
-  expect_equal(ncol(result@data$alpha0), 2L)
-  expect_equal(ncol(result@data$alpha1), 2L)
+  expect_equal(unname(ncol(result@data$alpha0)), 2L)
+  expect_equal(unname(ncol(result@data$alpha1)), 2L)
 })
 
 test_that("MCMC runs for TwoDrugsCombo after a single combo patient with DLT", {
@@ -263,8 +263,8 @@ test_that("MCMC runs for TwoDrugsCombo after a single combo patient with DLT", {
   result <- mcmc(data = data, model = model, options = options)
   expect_s4_class(result, "Samples")
   expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
-  expect_equal(dim(result@data$alpha0), c(10L, 2L))
-  expect_equal(dim(result@data$alpha1), c(10L, 2L))
+  expect_equal(unname(dim(result@data$alpha0)), c(10L, 2L))
+  expect_equal(unname(dim(result@data$alpha1)), c(10L, 2L))
   expect_numeric(result@data$eta, len = 10L, any.missing = FALSE)
 })
 
@@ -279,8 +279,8 @@ test_that("MCMC runs for TwoDrugsCombo with mixture agents", {
     result <- mcmc(data = data, model = model, options = options)
     expect_s4_class(result, "Samples")
     expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
-    expect_equal(ncol(result@data$alpha0), 2L)
-    expect_equal(ncol(result@data$alpha1), 2L)
+    expect_equal(unname(ncol(result@data$alpha0)), 2L)
+    expect_equal(unname(ncol(result@data$alpha1)), 2L)
   }
 })
 
@@ -292,8 +292,8 @@ test_that("MCMC runs for TwoDrugsCombo without alpha or ref_dose", {
   result <- mcmc(data = data, model = model, options = options)
   expect_s4_class(result, "Samples")
   expect_subset(c("beta0", "beta1", "eta"), names(result@data))
-  expect_equal(ncol(result@data$beta0), 2L)
-  expect_equal(ncol(result@data$beta1), 2L)
+  expect_equal(unname(ncol(result@data$beta0)), 2L)
+  expect_equal(unname(ncol(result@data$beta1)), 2L)
 })
 
 test_that("MCMC runs for TwoDrugsCombo model with empty data (i.e. prior)", {
@@ -304,8 +304,8 @@ test_that("MCMC runs for TwoDrugsCombo model with empty data (i.e. prior)", {
   result <- mcmc(data = data, model = model, options = options)
   expect_s4_class(result, "Samples")
   expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
-  expect_equal(ncol(result@data$alpha0), 2L)
-  expect_equal(ncol(result@data$alpha1), 2L)
+  expect_equal(unname(ncol(result@data$alpha0)), 2L)
+  expect_equal(unname(ncol(result@data$alpha1)), 2L)
 })
 
 test_that("MCMC runs also when LogisticLogNormalSub models are used inside", {
@@ -316,8 +316,8 @@ test_that("MCMC runs also when LogisticLogNormalSub models are used inside", {
   result <- mcmc(data = data, model = model, options = options)
   expect_s4_class(result, "Samples")
   expect_subset(c("alpha0", "alpha1", "eta"), names(result@data))
-  expect_equal(ncol(result@data$alpha0), 2L)
-  expect_equal(ncol(result@data$alpha1), 2L)
+  expect_equal(unname(ncol(result@data$alpha0)), 2L)
+  expect_equal(unname(ncol(result@data$alpha1)), 2L)
 })
 
 test_that("MCMC also works when a models with different parameters are combined", {

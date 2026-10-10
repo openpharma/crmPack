@@ -1375,7 +1375,7 @@ test_that("hierarchical mcmc runs and returns expected sample structure", {
       names(result@data)
   ))
   expect_length(result@data$alpha0_my_mono, 20)
-  expect_equal(dim(result@data$alpha0_my_combo), c(20L, 2L))
+  expect_equal(unname(dim(result@data$alpha0_my_combo)), c(20L, 2L))
   expect_equal(
     result@arm_samples,
     list(
