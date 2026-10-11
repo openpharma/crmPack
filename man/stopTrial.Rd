@@ -394,6 +394,8 @@ myStopping3 <- StoppingMinPatients(nPatients = 20)
 myStopping <- (myStopping1 & myStopping2) | myStopping3
 # Example of usage for `StoppingMissingDose` StopTrial class.
 
+\donttest{
+
 # Create the data.
 my_data <- Data(
   x = c(0.01, 0.1, 0.5, 3, 6, 10, 10, 10),
@@ -465,7 +467,9 @@ stopTrial(
   data = my_data,
   model = my_model
 )
+}
 # nolint start
+\donttest{
 
 # Create some data
 data <- Data(
@@ -534,7 +538,9 @@ stopTrial(
 )
 
 # nolint end
+}
 # nolint start
+\donttest{
 
 # Create some data
 data <- Data(
@@ -599,7 +605,9 @@ stopTrial(
 )
 
 # nolint end
+}
 # nolint start
+\donttest{
 
 # Create some data
 data <- Data(
@@ -664,7 +672,9 @@ stopTrial(
 )
 
 # nolint end
+}
 # nolint start
+\donttest{
 
 # Create the data
 data <- Data(
@@ -718,6 +728,7 @@ myStopping <- StoppingCohortsNearDose(nCohorts = 3, percentage = 0.2)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
+}
 data <- Data(
   x = c(1, 2, 3, 4),
   y = c(0, 1, 0, 0),
@@ -730,6 +741,7 @@ data <- Data(
 my_stopping <- StoppingDoseStabilized()
 stopTrial(stopping = my_stopping, dose = 4, data = data)
 # nolint start
+\donttest{
 
 # Create the data
 data <- Data(
@@ -783,7 +795,9 @@ myStopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
+}
 # nolint start
+\donttest{
 
 # Create the data
 data <- Data(
@@ -837,7 +851,9 @@ myStopping <- StoppingMinCohorts(nCohorts = 6)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
+}
 # nolint start
+\donttest{
 
 # Create the data
 data <- Data(
@@ -891,6 +907,7 @@ myStopping <- StoppingMinPatients(nPatients = 20)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
+}
 # nolint start
 
 # Create the data
@@ -1281,6 +1298,7 @@ stopTrial(
   data = my_data
 )
 # nolint start
+\donttest{
 
 # Create the data
 data <- Data(
@@ -1349,6 +1367,7 @@ stopTrial(
 )
 
 # nolint end
+}
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
 options <- McmcOptions(burnin = 5, step = 1, samples = 10)

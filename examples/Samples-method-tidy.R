@@ -1,3 +1,4 @@
+\donttest{
 options <- McmcOptions(
   burnin = 100,
   step = 1,
@@ -14,3 +15,4 @@ model <- LogisticLogNormal(
 
 samples <- mcmc(emptydata, model, options)
 samples %>% tidy()
+}
