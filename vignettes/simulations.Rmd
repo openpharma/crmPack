@@ -118,3 +118,74 @@ mySims <- simulate(design,
   parallel = FALSE
 )
 ```
+
+Alternatively we can also use `examine()` to look at possible trial outcomes.
+Each cohort is reached assuming no additional DLTs in earlier cohorts. `DLTs`
+is the hypothetical number of additional DLTs among the current cohort and
+patients from earlier cohorts whose DLT windows are still open at the next
+decision. Thus it can exceed the cohort size.
+
+`DLT_scenario` identifies the allocation scenario: `"no additional DLTs"`,
+`"late DLTs"` (earlier-enrolled eligible patients at their available follow-up
+times), or `"early DLTs"` (later-enrolled eligible patients with early event
+times). See `?examine` for the timing details.
+
+`cohort` indexes the current cohort, continuing any indices already present in
+the design data. `dose` is that cohort's dose. `DLT_cohorts` lists the cohort
+indices of the additional hypothetical DLTs, separated by commas and sorted.
+For example, `"1, 2, 2"` means one DLT in cohort 1 and two in cohort 2; `""`
+means no additional DLTs. `DLT_time` lists their corresponding onset times,
+relative to the start of each patient's cohort, in the same order. Previously
+observed DLTs are excluded from both columns.
+
+Each hypothetical scenario requires an MCMC fit. `maxNoIncrement` limits the
+number of consecutive unchanged dose recommendations on the zero-DLT path
+(default: 100); reaching this limit produces a warning.
+
+
+``` r
+set.seed(321)
+examineTable <- examine(
+  design,
+  mcmcOptions = options
+)
+examineTable
+#>    cohort       DLT_scenario dose DLTs   DLT_cohorts           DLT_time
+#> 1       1 no additional DLTs    8    0                                 
+#> 2       1          late DLTs    8    1             1                 21
+#> 3       1         early DLTs    8    1             1                 15
+#> 4       1          late DLTs    8    2          1, 1             21, 21
+#> 5       1         early DLTs    8    2          1, 1              8, 15
+#> 6       1          late DLTs    8    3       1, 1, 1         21, 21, 21
+#> 7       1         early DLTs    8    3       1, 1, 1           1, 8, 15
+#> 8       2 no additional DLTs   36    0                                 
+#> 9       2          late DLTs   36    1             1                 42
+#> 10      2         early DLTs   36    1             2                 15
+#> 11      2          late DLTs   36    2          1, 1             42, 42
+#> 12      2         early DLTs   36    2          2, 2              8, 15
+#> 13      2          late DLTs   36    3       1, 1, 2         42, 42, 21
+#> 14      2         early DLTs   36    3       2, 2, 2           1, 8, 15
+#> 15      2          late DLTs   36    4    1, 1, 2, 2     42, 42, 21, 21
+#> 16      2         early DLTs   36    4    1, 2, 2, 2       22, 1, 8, 15
+#> 17      2          late DLTs   36    5 1, 1, 2, 2, 2 42, 42, 21, 21, 21
+#> 18      2         early DLTs   36    5 1, 1, 2, 2, 2   22, 22, 1, 8, 15
+#>    nextDose  stop increment
+#> 1        36 FALSE       350
+#> 2        48 FALSE       500
+#> 3        38 FALSE       375
+#> 4        20 FALSE       150
+#> 5        14 FALSE        75
+#> 6        12 FALSE        50
+#> 7        10 FALSE        25
+#> 8        50 FALSE        39
+#> 9        32 FALSE       -11
+#> 10       24 FALSE       -33
+#> 11       30 FALSE       -17
+#> 12       28 FALSE       -22
+#> 13       16 FALSE       -56
+#> 14       22 FALSE       -39
+#> 15       14 FALSE       -61
+#> 16       26 FALSE       -28
+#> 17       16 FALSE       -56
+#> 18       14 FALSE       -61
+```

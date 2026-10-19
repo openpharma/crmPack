@@ -1,5 +1,7 @@
 # Example of usage for `StoppingMissingDose` StopTrial class.
 
+\donttest{
+
 # Create the data.
 my_data <- Data(
   x = c(0.01, 0.1, 0.5, 3, 6, 10, 10, 10),
@@ -71,3 +73,4 @@ stopTrial(
   data = my_data,
   model = my_model
 )
+}

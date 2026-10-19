@@ -66,6 +66,7 @@ options <- McmcOptions(
   samples = 10
 )
 
+\donttest{
 time <- system.time(
   mySims <- simulate(
     design,
@@ -77,5 +78,6 @@ time <- system.time(
     parallel = FALSE
   )
 )[3]
+}
 
 # nolint end

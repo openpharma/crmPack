@@ -580,10 +580,10 @@ values.
 # given a particular models and samples.
 # Every single dose corresponds to one particular sample in `my_samples`.
 dose(0.3, my_model, my_samples)
-#>  [1]  1.34841076  0.11025416  0.86730537  1.53660845  1.20567406  0.83567002
-#>  [7]  1.64091143  2.28460821  4.52450730  1.44885220  1.58322190  0.02608328
-#> [13]  1.21766897  0.39543888  1.28366789  0.73875076 19.61886830  0.60780362
-#> [19]  0.05915204  1.29433795
+#>  [1] 5.764816e-01 1.003141e+00 1.090389e+00 1.152964e+00 1.834854e-01
+#>  [6] 1.892888e+00 6.623943e-03 2.120591e+00 1.107195e+00 7.848503e-05
+#> [11] 9.280628e-01 2.527625e+01 4.582232e-01 1.494800e+01 1.449023e+00
+#> [16] 2.533996e-01 3.334492e+00 1.409196e+00 1.488667e-01 5.061865e-01
 
 # True dose-DLT relationship.
 # Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.
@@ -602,10 +602,9 @@ true_dose_fun(0.3)
 # Toxicity probabilities for a given dose (equal to 10), model and samples.
 # Every single probability value corresponds to one particular sample in `my_samples`.
 prob(10, my_model, my_samples)
-#>  [1] 0.93817478 0.22611044 0.99172210 0.73879550 0.86176537 0.02110999
-#>  [7] 0.78785107 0.66024799 0.16678261 0.89131170 0.99387321 0.78392448
-#> [13] 0.87738055 0.95835853 0.92685442 0.74505590 0.36538941 0.93118090
-#> [19] 0.83881343 0.98010014
+#>  [1] 0.7323336 0.9701552 0.9847560 0.9874946 0.8199989 0.9802354 0.3041193
+#>  [8] 0.8648901 0.9499393 0.6888586 0.9701999 0.4253856 0.7725674 0.3538183
+#> [15] 0.7739564 0.9489853 0.5819845 0.9890029 0.8117047 0.6546124
 
 # True DLT-dose relationship.
 # Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.

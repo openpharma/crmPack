@@ -1,4 +1,5 @@
 # nolint start
+\donttest{
 
 # Create some data
 data <- Data(
@@ -63,3 +64,4 @@ stopTrial(
 )
 
 # nolint end
+}

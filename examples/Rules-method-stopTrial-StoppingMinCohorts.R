@@ -1,4 +1,5 @@
 # nolint start
+\donttest{
 
 # Create the data
 data <- Data(
@@ -52,3 +53,4 @@ myStopping <- StoppingMinCohorts(nCohorts = 6)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 
 # nolint end
+}

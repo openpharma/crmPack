@@ -302,7 +302,9 @@ print(tidied_data)
 .DefaultDataOrdinal() \%>\% tidy()
 .DefaultDataGrouped() \%>\% tidy()
 .DefaultDataDA() \%>\% tidy()
+\donttest{
 .DefaultSimulations() \%>\% tidy()
+}
 .DefaultLogisticIndepBeta() \%>\% tidy()
 .DefaultEffloglog() \%>\% tidy()
 IncrementsMaxToxProb(prob = c("DLAE" = 0.2, "CRS" = 0.05)) \%>\% tidy()
@@ -325,6 +327,7 @@ NextBestNCRM(
   tidy()
 .DefaultNextBestNCRMLoss() \%>\% tidy()
 .DefaultDualDesign() \%>\% tidy()
+\donttest{
 options <- McmcOptions(
   burnin = 100,
   step = 1,
@@ -341,5 +344,6 @@ model <- LogisticLogNormal(
 
 samples <- mcmc(emptydata, model, options)
 samples \%>\% tidy()
+}
 }
 \keyword{methods}
