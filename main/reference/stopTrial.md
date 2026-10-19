@@ -301,6 +301,8 @@ myStopping3 <- StoppingMinPatients(nPatients = 20)
 myStopping <- (myStopping1 & myStopping2) | myStopping3
 # Example of usage for `StoppingMissingDose` StopTrial class.
 
+# \donttest{
+
 # Create the data.
 my_data <- Data(
   x = c(0.01, 0.1, 0.5, 3, 6, 10, 10, 10),
@@ -397,7 +399,9 @@ stopTrial(
 #> 
 #> attr(,"report_label")
 #> [1] NA
+# }
 # nolint start
+# \donttest{
 
 # Create some data
 data <- Data(
@@ -517,7 +521,9 @@ stopTrial(
 #> [1] NA
 
 # nolint end
+# }
 # nolint start
+# \donttest{
 
 # Create some data
 data <- Data(
@@ -588,7 +594,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[1]][[2]]
-#> [1] "Probability for target toxicity is 30 % for dose 12 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 18 and thus above the required 50 %"
 #> 
 #> 
 #> attr(,"message")[[2]]
@@ -602,7 +608,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 30 % for dose 12 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 18 and thus above the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -613,9 +619,9 @@ stopTrial(
 #> [1] "≥ 3 cohorts dosed"
 #> 
 #> attr(,"individual")[[2]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 30 % for dose 12 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 18 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -633,7 +639,9 @@ stopTrial(
 #> [1] NA
 
 # nolint end
+# }
 # nolint start
+# \donttest{
 
 # Create some data
 data <- Data(
@@ -703,7 +711,7 @@ stopTrial(
 #> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "Probability for target toxicity is 50 % for dose 10 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 6 and thus above the required 50 %"
 #> 
 #> attr(,"message")[[3]]
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
@@ -719,7 +727,7 @@ stopTrial(
 #> attr(,"individual")[[2]]
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 50 % for dose 10 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 50 % for dose 6 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -734,7 +742,9 @@ stopTrial(
 #> [1] NA
 
 # nolint end
+# }
 # nolint start
+# \donttest{
 
 # Create the data
 data <- Data(
@@ -794,6 +804,7 @@ stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 #> [1] "≥ 3 cohorts dosed in 0.2 % dose range around NBD"
 
 # nolint end
+# }
 data <- Data(
   x = c(1, 2, 3, 4),
   y = c(0, 1, 0, 0),
@@ -811,6 +822,7 @@ stopTrial(stopping = my_stopping, dose = 4, data = data)
 #> attr(,"report_label")
 #> [1] "NBD unchanged for 1 cohort"
 # nolint start
+# \donttest{
 
 # Create the data
 data <- Data(
@@ -865,12 +877,14 @@ myStopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
 stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0.2% of the next best dose 20. This is below the required 9 patients"
+#> [1] "1 patients lie within 0.2% of the next best dose 6. This is below the required 9 patients"
 #> attr(,"report_label")
 #> [1] "≥ 9 patients dosed in 0.2 % dose range around NBD"
 
 # nolint end
+# }
 # nolint start
+# \donttest{
 
 # Create the data
 data <- Data(
@@ -930,7 +944,9 @@ stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 #> [1] "≥ 6 cohorts dosed"
 
 # nolint end
+# }
 # nolint start
+# \donttest{
 
 # Create the data
 data <- Data(
@@ -990,6 +1006,7 @@ stopTrial(stopping = myStopping, dose = doseRecommendation$value, data = data)
 #> [1] "≥ 20 patients dosed"
 
 # nolint end
+# }
 # nolint start
 
 # Create the data
@@ -1051,7 +1068,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 20 % for dose 6 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 10 % for dose 0.5 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 
@@ -1118,7 +1135,7 @@ stopTrial(
 )
 #> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability of MTD above 50 % of current dose 20 is 100 % and thus greater than or equal to the required 90 %"
+#> [1] "Probability of MTD above 50 % of current dose 12 is 100 % and thus greater than or equal to the required 90 %"
 #> attr(,"report_label")
 #> [1] "P(MTD > 0.5 * NBD | P(DLE) = 0.33) ≥ 0.9"
 
@@ -1180,9 +1197,9 @@ stopTrial(
   model = my_model,
   data = my_data
 )
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "CV of MTD is 0 % and thus below the required precision threshold of 40 %"
+#> [1] "CV of MTD is 45 % and thus above the required precision threshold of 40 %"
 #> attr(,"report_label")
 #> [1] "CV(MTD) > 0.3"
 # Create the data.
@@ -1418,7 +1435,7 @@ stopTrial(
 #> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 38. This is below the required 3 patients"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
@@ -1438,13 +1455,14 @@ stopTrial(
 #> attr(,"individual")[[3]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 38. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
 #> attr(,"report_label")
 #> [1] NA
 # nolint start
+# \donttest{
 
 # Create the data
 data <- Data(
@@ -1512,27 +1530,27 @@ stopTrial(
   model = model,
   data = data
 )
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Probability for target toxicity is 20 % for dose 70 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 100 % for dose 50 and thus above the required 50 %"
 #> 
 #> attr(,"message")[[2]]
 #> attr(,"message")[[2]][[1]]
-#> [1] "Next best dose is 70 and thus not the highest dose"
+#> [1] "Next best dose is 50 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]][[2]]
-#> [1] "0 patients lie within 0% of the next best dose 70. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 50. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[2]][[3]]
-#> [1] "Probability for target toxicity is 80 % for dose 70 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 0 % for dose 50 and thus below the required 50 %"
 #> 
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
-#> [1] FALSE
+#> [1] TRUE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 20 % for dose 70 and thus below the required 50 %"
+#> [1] "Probability for target toxicity is 100 % for dose 50 and thus above the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"
 #> 
@@ -1540,33 +1558,33 @@ stopTrial(
 #> [1] FALSE
 #> attr(,"message")
 #> attr(,"message")[[1]]
-#> [1] "Next best dose is 70 and thus not the highest dose"
+#> [1] "Next best dose is 50 and thus not the highest dose"
 #> 
 #> attr(,"message")[[2]]
-#> [1] "0 patients lie within 0% of the next best dose 70. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 50. This is below the required 3 patients"
 #> 
 #> attr(,"message")[[3]]
-#> [1] "Probability for target toxicity is 80 % for dose 70 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 0 % for dose 50 and thus below the required 50 %"
 #> 
 #> attr(,"individual")
 #> attr(,"individual")[[1]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Next best dose is 70 and thus not the highest dose"
+#> [1] "Next best dose is 50 and thus not the highest dose"
 #> attr(,"report_label")
 #> [1] "NBD is the highest dose"
 #> 
 #> attr(,"individual")[[2]]
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "0 patients lie within 0% of the next best dose 70. This is below the required 3 patients"
+#> [1] "0 patients lie within 0% of the next best dose 50. This is below the required 3 patients"
 #> attr(,"report_label")
 #> [1] "≥ 3 patients dosed in 0 % dose range around NBD"
 #> 
 #> attr(,"individual")[[3]]
-#> [1] TRUE
+#> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 80 % for dose 70 and thus above the required 50 %"
+#> [1] "Probability for target toxicity is 0 % for dose 50 and thus below the required 50 %"
 #> attr(,"report_label")
 #> [1] "P(0 ≤ prob(DLE | NBD) ≤ 0.2) ≥ 0.5"
 #> 
@@ -1577,6 +1595,7 @@ stopTrial(
 #> [1] NA
 
 # nolint end
+# }
 data <- .DefaultDataOrdinal()
 model <- .DefaultLogisticLogNormalOrdinal()
 options <- McmcOptions(burnin = 5, step = 1, samples = 10)
@@ -1606,7 +1625,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 20 % for dose 40 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 40 % for dose 50 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 data <- .DefaultDataOrdinal()
@@ -1638,7 +1657,7 @@ stopTrial(
 )
 #> [1] FALSE
 #> attr(,"message")
-#> [1] "Probability for target toxicity is 10 % for dose 50 and thus below the required 60 %"
+#> [1] "Probability for target toxicity is 50 % for dose 50 and thus below the required 60 %"
 #> attr(,"report_label")
 #> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"
 my_rule <- StoppingExternal(report_label = "Based on combo stop")

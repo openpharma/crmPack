@@ -263,7 +263,7 @@ The likelihood is as follows:
 `#>         y[i] ~ dbern(p[i])`\
 `#>     }`\
 `#> }`\
-`#> <environment: 0xc1296f620>`
+`#> <environment: 0x753ce8dc78>`
 
 The prior is as follows:
 
@@ -285,7 +285,7 @@ The prior is as follows:
 `#>     log_eta ~ dnorm(eta_gamma, eta_tau)`\
 `#>     eta <- exp(log_eta)`\
 `#> }`\
-`#> <environment: 0xc0f85c858>`
+`#> <environment: 0x753f876510>`
 
 So everything looks as expected. Note that for the interaction term
 `crmPack` uses the normalized dose $`x_1/x_1^{*}`$ for drug 1, while it
@@ -487,7 +487,7 @@ The likelihood is as follows:
 `#>         y_combo[i] ~ dbern(p_combo[i])`\
 `#>     }`\
 `#> }`\
-`#> <environment: 0xc035d95e8>`
+`#> <environment: 0x7540098510>`
 
 The prior is as follows:
 
@@ -542,7 +542,7 @@ The prior is as follows:
 `#> mu_interaction <- mu_interaction_mean + mu_interaction_sd * z_mu_interaction`\
 `#> tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, -2))`\
 `#> }`\
-`#> <environment: 0xc105169a8>`
+`#> <environment: 0x7547784cb8>`
 
 ### Design implementation
 

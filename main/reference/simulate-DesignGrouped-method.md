@@ -177,13 +177,13 @@ mono_sims_sum
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 0 % (0 %, 0 %) 
 #> Mean toxicity risks for the patients on active : mean 3 % (3 %, 3 %) 
-#> Doses selected as MTD : mean 12 (12, 12) 
+#> Doses selected as MTD : mean 18 (18, 18) 
 #> True toxicity at doses selected : mean 5 % (5 %, 5 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 12 
+#> Dose most often selected as MTD: 18 
 #> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 8 % (8 %, 8 %) 
-#> Overdose probability at selected dose : mean 4 % (4 %, 4 %) 
+#> Fitted toxicity rate at dose most often selected : mean 7 % (7 %, 7 %) 
+#> Overdose probability at selected dose : mean 1 % (1 %, 1 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %
@@ -198,14 +198,14 @@ combo_sims_sum
 #> Number of patients overall : mean 12 (12, 12) 
 #> Number of patients treated above target tox interval : mean 0 (0, 0) 
 #> Proportions of DLTs in the trials : mean 17 % (17 %, 17 %) 
-#> Mean toxicity risks for the patients on active : mean 9 % (9 %, 9 %) 
-#> Doses selected as MTD : mean 6 (6, 6) 
-#> True toxicity at doses selected : mean 12 % (12 %, 12 %) 
+#> Mean toxicity risks for the patients on active : mean 12 % (12 %, 12 %) 
+#> Doses selected as MTD : mean 12 (12, 12) 
+#> True toxicity at doses selected : mean 17 % (17 %, 17 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 6 
-#> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 15 % (15 %, 15 %) 
-#> Overdose probability at selected dose : mean 11 % (11 %, 11 %) 
+#> Dose most often selected as MTD: 12 
+#> Observed toxicity rate at dose most often selected: 0 %
+#> Fitted toxicity rate at dose most often selected : mean 14 % (14 %, 14 %) 
+#> Overdose probability at selected dose : mean 9 % (9 %, 9 %) 
 #> Stop reason triggered:
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  0 %
 #>  ≥ 10 patients dosed :  100 %

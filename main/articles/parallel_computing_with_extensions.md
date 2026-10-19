@@ -404,8 +404,9 @@ at the end of the vignette.
 `early_scenario`` ``<-`` ``scenario_setup``(``0.05``, ``0.3``, ``700``)`\
 `toxic_scenario`` ``<-`` ``scenario_setup``(``0.6``, ``0.3``, ``-``300``)`\
 `peak_scenario`` ``<-`` ``function``(`\
-`    ``dose``,`\
-`    ``scenario`` ``=`` `[`cbind`](https://rdrr.io/r/base/cbind.html)`(``emptydata``@``doseGrid``, `[`c`](https://rdrr.io/r/base/c.html)`(`[`rep`](https://rdrr.io/r/base/rep.html)`(``0.05``, ``11``)``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``0.80``, ``8``)``)``)``)`` ``{`\
+`  ``dose``,`\
+`  ``scenario`` ``=`` `[`cbind`](https://rdrr.io/r/base/cbind.html)`(``emptydata``@``doseGrid``, `[`c`](https://rdrr.io/r/base/c.html)`(`[`rep`](https://rdrr.io/r/base/rep.html)`(``0.05``, ``11``)``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``0.80``, ``8``)``)``)`\
+`)`` ``{`\
 `  ``scenario``[`[`match`](https://rdrr.io/r/base/match.html)`(``dose``, ``scenario``[``, ``1``]``)``, ``2``]`\
 `}`\
 \

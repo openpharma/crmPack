@@ -308,8 +308,8 @@ and
 ``` math
 \Sigma=
  \left(\begin{smallmatrix}
-   1.78 & 0.12 \\
-   0.12 & 0.01
+   1.76 & 0.1 \\
+   0.1 & 0.01
  \end{smallmatrix}\right)
 ```
 and will approximately have 5% probability each for the DLT rate to
@@ -487,7 +487,7 @@ Again, this specific rule can be evaluated by a function, here called
 `#> `\
 `#> attr(,"message")[[2]]`\
 `#> attr(,"message")[[2]][[1]]`\
-`#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"`\
+`#> [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"`\
 `#> `\
 `#> attr(,"message")[[2]][[2]]`\
 `#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"`\
@@ -505,7 +505,7 @@ Again, this specific rule can be evaluated by a function, here called
 `#> [1] FALSE`\
 `#> attr(,"message")`\
 `#> attr(,"message")[[1]]`\
-`#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"`\
+`#> [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"`\
 `#> `\
 `#> attr(,"message")[[2]]`\
 `#> [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"`\
@@ -514,7 +514,7 @@ Again, this specific rule can be evaluated by a function, here called
 `#> attr(,"individual")[[1]]`\
 `#> [1] FALSE`\
 `#> attr(,"message")`\
-`#> [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"`\
+`#> [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"`\
 `#> attr(,"report_label")`\
 `#> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"`\
 `#> `\
@@ -594,7 +594,7 @@ dose can be reached in the next cohort if also no DLTs are observed at
 `#> 19  200    2      150 FALSE       -25`\
 `#> 20  200    3      125 FALSE       -38`\
 `#> 21  250    0      300 FALSE        20`\
-`#> 22  250    1      275 FALSE        10`\
+`#> 22  250    1      250 FALSE         0`\
 `#> 23  250    2      200 FALSE       -20`\
 `#> 24  250    3      150 FALSE       -40`
 
@@ -636,7 +636,7 @@ Now we can proceed to the simulations using the function `simulate`:
 The number of simulated trials depends on the required accuracy of the
 results. The argument `parallel` can be set to `TRUE` if one wishes to
 run the iterations in parallel on all processors of the computer, which
-can yield a meaningful speedup. Here we needed 57 seconds for 100
+can yield a meaningful speedup. Here we needed 225 seconds for 100
 simulated trials on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class `Simulations` containing multiple
@@ -675,20 +675,21 @@ description of the results:
 `#> Intervals are corresponding to 10 and 90 % quantiles`\
 `#> `\
 `#> Number of patients on placebo : mean 7 (6, 8) `\
-`#> Number of patients on active : mean 21 (18, 24) `\
+`#> Number of patients on active : mean 22 (18, 24) `\
 `#> Number of patients overall : mean 29 (24, 32) `\
 `#> Number of patients treated above target tox interval : mean 2 (0, 3) `\
 `#> Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) `\
-`#> Proportions of DLTs in the trials for patients on active : mean 27 % (17 %, 33 %) `\
+`#> Proportions of DLTs in the trials for patients on active : mean 26 % (17 %, 33 %) `\
 `#> Mean toxicity risks for the patients on active : mean 27 % (18 %, 34 %) `\
-`#> Doses selected as MTD : mean 49.5 (50, 50) `\
+`#> Doses selected as MTD : mean 49.8 (50, 50) `\
 `#> True toxicity at doses selected : mean 27 % (26 %, 26 %) `\
-`#> Proportion of trials selecting target MTD: 92 %`\
+`#> Proportion of trials selecting target MTD: 93 %`\
 `#> Dose most often selected as MTD: 50 `\
 `#> Observed toxicity rate at dose most often selected: 25 %`\
-`#> Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 28 %) `\
+`#> Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 28 %) `\
+`#> Overdose probability at selected dose : mean 11 % (1 %, 22 %) `\
 `#> Stop reason triggered:`\
-`#>  ≥ 30 patients dosed :  54 %`\
+`#>  ≥ 30 patients dosed :  53 %`\
 `#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  62 %`\
 `#>  ≥ 9 patients dosed in 20 % dose range around NBD :  93 %`
 

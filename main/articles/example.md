@@ -206,16 +206,16 @@ We can look in detail at the structure of `model` as follows:
 `#>   .. .. ..@ .Data: num 56`\
 `#>   ..@ datamodel      :function ()  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 290 17 295 5 17 5 290 295`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ priormodel     :function ()  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 146 18 150 5 18 5 146 150`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ modelspecs     :function (from_prior)  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ init           :function ()  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ datanames      : chr [1:3] "nObs" "y" "x"`\
 `#>   ..@ datanames_prior: chr(0) `\
 `#>   ..@ sample         : chr [1:2] "alpha0" "alpha1"`
@@ -405,7 +405,7 @@ dose of 0.1 mg and a maximum dose of 100 mg:
 `#> Emini is: 0.05912244288`\
 `#> xmini are:`\
 `#> 0.5995305301 0.6542658519 1.344683068 0.003274296776 0.04149785291 `\
-`#> Totally it used 16.361409 secs`\
+`#> Totally it used 30.668903 secs`\
 `#> No. of function call is: 10483`\
 `#> Algorithm reached max number of iterations.`
 
@@ -477,16 +477,16 @@ the red points, is contained in the `model` list element:
 `#>   .. .. ..@ .Data: num 50`\
 `#>   ..@ datamodel      :function ()  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 220 17 225 5 17 5 220 225`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ priormodel     :function ()  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 226 18 230 5 18 5 226 230`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ modelspecs     :function (from_prior)  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ init           :function ()  `\
 `#>   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160`\
-`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x8fcb783c0> `\
+`#>   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x753f7d1150> `\
 `#>   ..@ datanames      : chr [1:3] "nObs" "y" "x"`\
 `#>   ..@ datanames_prior: chr(0) `\
 `#>   ..@ sample         : chr [1:2] "alpha0" "alpha1"`
@@ -933,7 +933,7 @@ value of the recommended next best dose, and `plot` contains a plot that
 illustrates how the next best dose was computed. In this case we used
 the N-CRM rule, therefore the plot gives the target-dosing and
 overdosing probabilities together with the safety bar of 25%, the
-maximum dose and the final recommendation (the blue triangle):
+maximum dose and the final recommendation (the red triangle):
 
 \
 `doseRecommendation``$``value`\
@@ -1416,8 +1416,8 @@ example we have
 `#> 16   24    3     18.0 FALSE       -25`\
 `#> 17   30    0     38.0 FALSE        27`\
 `#> 18   30    1     38.0 FALSE        27`\
-`#> 19   30    2     36.0 FALSE        20`\
-`#> 20   30    3     28.0 FALSE        -7`\
+`#> 19   30    2     34.0 FALSE        13`\
+`#> 20   30    3     26.0 FALSE       -13`\
 `#> 21   38    0     50.0 FALSE        32`\
 `#> 22   38    1     50.0 FALSE        32`\
 `#> 23   38    2     42.0 FALSE        11`\
@@ -1425,7 +1425,7 @@ example we have
 `#> 25   50    0     58.0  TRUE        16`\
 `#> 26   50    1     54.0  TRUE         8`\
 `#> 27   50    2     50.0  TRUE         0`\
-`#> 28   50    3     44.0  TRUE       -12`
+`#> 28   50    3     46.0  TRUE        -8`
 
 Note that it is important to set a seed, since minor changes might occur
 due to sampling variations. However, the `mcmcOptions` parameter should
@@ -1498,10 +1498,10 @@ increased of course to at least 500:
 `)``)``[``3``]`\
 `time`\
 `#> elapsed `\
-`#>  45.932`
+`#> 181.696`
 
 We have wrapped the call to `simulate` in a `system.time` to obtain the
-required time for the simulations (about 46 seconds in this case). The
+required time for the simulations (about 182 seconds in this case). The
 argument `args` could contain additional arguments for the `truth`
 function, which we did not require here and therefore let it at the
 default `NULL`. We specify the number of simulations with `nsim` and the
@@ -1524,9 +1524,7 @@ class, in this case `Simulations`:
 From the help page
 
 \
-[`help`](https://rdrr.io/r/utils/help.html)`(``"Simulations-class"``, help ``=`` ``"html"``)`\
-`#> No documentation for 'Simulations-class' in specified packages and libraries:`\
-`#> you could try '??Simulations-class'`
+[`help`](https://rdrr.io/r/utils/help.html)`(``"Simulations-class"``, help ``=`` ``"html"``)`
 
 we see that this class is a subclass of the `GeneralSimulations` class.
 By looking at the help pages for `Simulations` and the parent class
@@ -1615,6 +1613,7 @@ above:
 `#> Dose most often selected as MTD: 20 `\
 `#> Observed toxicity rate at dose most often selected: 21 %`\
 `#> Fitted toxicity rate at dose most often selected : mean 26 % (23 %, 33 %) `\
+`#> Overdose probability at selected dose : mean 20 % (15 %, 24 %) `\
 `#> Stop reason triggered:`\
 `#>  ≥ 3 cohorts dosed :  100 %`\
 `#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %`\
@@ -1664,13 +1663,10 @@ we can only plot this one and add x-axis customization on top: (see the
 \
 `dosePlot`` ``<-`` `[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``simSum``, type ``=`` ``"doseSelected"``)`` ``+`\
 `  `[`scale_x_continuous`](https://ggplot2.tidyverse.org/reference/scale_continuous.html)`(``breaks ``=`` ``10``:``30``, limits ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``10``, ``30``)``)`\
-[`print`](https://rdrr.io/r/base/print.html)`(``dosePlot``)`
-
-![A fistogram showing the proportion of simulatd trials that identified
-each dose as the MTD. All but one of the simulated trials identified a
-dose between 16 and 26 as the MTD.](example-figures/sim-sum-plot2-1.png)
-
-plot of chunk sim-sum-plot2
+[`print`](https://rdrr.io/r/base/print.html)`(``dosePlot``)`\
+`` #> Error in `scale_x_continuous()`: ``\
+`#> ! Discrete value supplied to a continuous scale.`\
+`#> ℹ Example values: 14, 16, 18, 20, and 22.`
 
 Some further examples will be given for simulations using the `TDDesign`
 and the `TDsamplesDesign` classes. For illustration purpose, we will
@@ -1955,7 +1951,7 @@ Finally we can execute the simulations:
 `)``)``[``3``]`\
 `time`\
 `#> elapsed `\
-`#>   5.276`
+`#>  20.637`
 
 And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
@@ -1993,6 +1989,7 @@ intending to compare the performance of our CRM relative to a truth:
 `#> Dose most often selected as MTD: 16 `\
 `#> Observed toxicity rate at dose most often selected: 11 %`\
 `#> Fitted toxicity rate at dose most often selected : mean 23 % (11 %, 36 %) `\
+`#> Overdose probability at selected dose : mean 20 % (16 %, 23 %) `\
 `#> Stop reason triggered:`\
 `#>  ≥ 3 cohorts dosed :  100 %`\
 `#>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  80 %`\
@@ -2432,6 +2429,7 @@ corresponding function:
 `#> Dose most often selected as MTD: 0.1 `\
 `#> Observed toxicity rate at dose most often selected: 0 %`\
 `#> Fitted toxicity rate at dose most often selected : mean 1 % (1 %, 2 %) `\
+`#> Overdose probability at selected dose : mean 0 % (0 %, 0 %) `\
 `#> Stop reason triggered:`\
 `#>  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %`\
 `#>  ≥ 40 patients dosed :  100 %`\

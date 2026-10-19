@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 2.2.1.9000
+## Version 2.3.0
+
+CRAN release: 2026-10-11
 
 #### New Features
 
