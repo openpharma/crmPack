@@ -1,0 +1,482 @@
+# Ordinal CRM
+
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`
+
+## Introduction
+
+The original CRM model introduced by (O’Quigley et al. 1990)
+dichotomises toxicity events as either “Not toxic” or “DLT”. The ordinal
+CRM generalises this model by classifying toxicities on an ordinal scale
+with an arbitrary number of categories (though use of more than three or
+four would be unusual).
+
+This approach is particularly useful in non-oncology settings, where
+there is a greater interest in adverse events that are not dose limiting
+but are nonetheless undesirable.
+
+## Implementation
+
+### Ordinal data
+
+`crmPack` uses the `DataOrdinal` class to record data observed during an
+ordinal CRM trial. The `OrdinalData` class differs from the `Data` class
+only in that it contains an extra slot, `yCategories`, that defines both
+the number of toxicity grades and their labels.For example:
+
+\
+`empty_ordinal_data`` ``<-`` `[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)`(`\
+`  doseGrid ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`seq`](https://rdrr.io/r/base/seq.html)`(``from ``=`` ``10``, to ``=`` ``100``, by ``=`` ``10``)``)``,`\
+`  yCategories ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"No tox"`` ``=`` ``0L``, ``"Sub-tox AE"`` ``=`` ``1L``, ``"DLT"`` ``=`` ``2L``)``,`\
+`  placebo ``=`` ``FALSE`\
+`)`
+
+defines a `DataOrdinal` object with three toxicity grades, labelled “No
+tox\`”, “Sub-tox AE” and “DLT”.
+
+> Note that the `yCategories` slot must be an integer vector with values
+> ordered from `0` to `length(yCategories) - 1`. Its labels must be
+> unique. The first entry, which must have value `0`, is always regarded
+> as the “no event” category. See \[The LogisticLogNormalOrdinal class\]
+> below.
+
+The `update`, `plot` and `dose_grid_range` methods work exactly as they
+do for `Data` objects:
+
+\
+[`dose_grid_range`](https://docs.crmpack.org/reference/dose_grid_range.md)`(``empty_ordinal_data``)`\
+`#> [1]  10 100`\
+\
+`ordinal_data`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``empty_ordinal_data``, x ``=`` ``10``, y ``=`` ``0``)`\
+`ordinal_data`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``ordinal_data``, x ``=`` ``20``, y ``=`` ``0``)`\
+`ordinal_data`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``ordinal_data``, x ``=`` ``30``, y ``=`` ``0``)`\
+`ordinal_data`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``ordinal_data``, x ``=`` ``40``, y ``=`` ``0``)`\
+`ordinal_data`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``ordinal_data``, x ``=`` ``50``, y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``, ``0``)``)`\
+`ordinal_data`` ``<-`` `[`update`](https://rdrr.io/r/stats/update.html)`(``ordinal_data``, x ``=`` ``60``, y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``, ``2``)``)`\
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``ordinal_data``)`
+
+![A graph showing Patient ID on the x axis and dose administered on the
+y axis. The shape and colour of the symbols indicate the toxicity status
+of the patient: red triangles for DLTs, orange circles for sub-toxic AEs
+and black triangles for no reported toxicities. Patients 1 to 4 are
+dosed at 10, 20, 30 and 40, with no toxicitis reported. patients 5 to 7
+are dosed at 50, with patient 6 reporting a sub-toxic AE. Patients 8 to
+10 are treated at 60. Patient 9 reports a sub-toxic AE and patient 10 a
+DLT.](ordinal-crm-figures/data-ordinal-2-1.png)
+
+plot of chunk data-ordinal-2
+
+### The `LogisticLogNormalOrdinal` class
+
+`crmPack` fits a constrained logistic log normal model to ordinal data.
+The logit of the probability of toxicity at each grade for a given dose
+is modelled in the log odds space as a linear regression with common
+slope and a different intercept for each toxicity grade.
+
+> Note, unlike other model classes, `LogisticLogNormalOrdinal` requires
+> a diagonal covariance matrix. This is because the constraints on the
+> \$alpha;s - the intercept parameters - imposes a correlation on the
+> model’s parameters. Thus, any covariance structure requested by the
+> end user could not be honoured by the model.
+
+Let p_(k)(d) be the probability that the response of a patient treated
+at dose d is in category k or higher, k=0, …, K; d=1, …, D.
+
+Then
+
+``` math
+ \log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)  
+```
+for k=1, …, K \[p₀(d) = 1 by definition\] where d_(ref) is a reference
+dose.
+
+The αs are constrained such that α₁ \> α₂ \> … \> α_(K).
+
+The priors for the model’s parameters are:
+
+``` math
+ \alpha_k \sim N(\mu_{\alpha_k}, \sigma_{\alpha_k}^2) 
+```
+
+and
+
+``` math
+ \log(\beta) \sim N(\mu_\beta, \sigma_\beta^2) 
+```
+
+A `LogisticLogOrdinal` is initialised in exactly the same way as a
+`LogisticLogNormal` object:
+
+\
+`ordinal_model`` ``<-`` `[`LogisticLogNormalOrdinal`](https://docs.crmpack.org/reference/LogisticLogNormalOrdinal-class.md)`(`\
+`  mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``3``, ``4``, ``0``)``,`\
+`  cov ``=`` `[`diag`](https://rdrr.io/r/base/diag.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``4``, ``3``, ``1``)``)``,`\
+`  ref_dose ``=`` ``55`\
+`)`
+
+The entries in the `mean` and `cov` parameters define the hyper priors
+for α₁ to α_(K-1) and β in that order.
+
+### Model fitting
+
+`mcmc` works as expected with ordinal models:
+
+\
+`opts`` ``<-`` `[`.DefaultMcmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(``)`\
+\
+`samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``ordinal_data``, ``ordinal_model``, ``opts``)`
+
+> The warning message is expected and can be ignored. It will be
+> suppressed in a future version of `crmPack`. See issue 748.
+
+The `Samples` object returned by `mcmc` is a standard `Samples object`.
+The names of the entries in its `data` slot are
+
+\
+[`names`](https://rdrr.io/r/base/names.html)`(``samples``@``data``)`\
+`#> [1] "alpha1" "alpha2" "beta"`
+
+It can be passed to the `fit` method, using the `grade` parameter to
+specify the toxicity grade for which cumulative probabilities of
+toxicity are required:
+
+\
+[`fit`](https://docs.crmpack.org/reference/fit.md)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``1L``)`\
+`#>    dose     middle        lower     upper`\
+`#> 1    10 0.04019822 2.897408e-09 0.2468767`\
+`#> 2    20 0.07973470 8.027579e-06 0.3220379`\
+`#> 3    30 0.13659922 7.644669e-04 0.4193244`\
+`#> 4    40 0.22087088 1.795655e-02 0.5144159`\
+`#> 5    50 0.34323847 1.143794e-01 0.6436029`\
+`#> 6    60 0.48545318 1.874246e-01 0.8151587`\
+`#> 7    70 0.59274821 2.222408e-01 0.9514772`\
+`#> 8    80 0.66273611 2.451235e-01 0.9875557`\
+`#> 9    90 0.71045672 2.612279e-01 0.9966190`\
+`#> 10  100 0.74481100 2.767126e-01 0.9988747`\
+[`fit`](https://docs.crmpack.org/reference/fit.md)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``2L``)`\
+`#>    dose     middle        lower     upper`\
+`#> 1    10 0.02226212 1.210051e-09 0.1592406`\
+`#> 2    20 0.04340619 4.589052e-06 0.2111844`\
+`#> 3    30 0.07415143 3.905345e-04 0.2659111`\
+`#> 4    40 0.12219125 8.058728e-03 0.3424755`\
+`#> 5    50 0.20099778 5.026028e-02 0.4317816`\
+`#> 6    60 0.31879821 8.766318e-02 0.6589305`\
+`#> 7    70 0.43349684 1.113269e-01 0.8856783`\
+`#> 8    80 0.51830747 1.353735e-01 0.9722908`\
+`#> 9    90 0.57983227 1.511631e-01 0.9924933`\
+`#> 10  100 0.62571178 1.625211e-01 0.9974539`
+
+The `cumulative` flag can be used to request grade-specific
+probabilities.
+
+\
+[`fit`](https://docs.crmpack.org/reference/fit.md)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``1L``, cumulative ``=`` ``FALSE``)`\
+`#>    dose     middle        lower     upper`\
+`#> 1    10 0.01793611 6.019603e-10 0.1265468`\
+`#> 2    20 0.03632851 1.476905e-06 0.2057096`\
+`#> 3    30 0.06244779 1.296868e-04 0.2803779`\
+`#> 4    40 0.09867963 1.978395e-03 0.3473362`\
+`#> 5    50 0.14224069 5.480540e-03 0.4601057`\
+`#> 6    60 0.16665497 7.646865e-03 0.4956968`\
+`#> 7    70 0.15925137 6.488433e-03 0.4717355`\
+`#> 8    80 0.14442864 4.211910e-03 0.4490895`\
+`#> 9    90 0.13062445 1.732756e-03 0.4343244`\
+`#> 10  100 0.11909922 6.646330e-04 0.4273017`\
+[`fit`](https://docs.crmpack.org/reference/fit.md)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``2L``, cumulative ``=`` ``FALSE``)`\
+`#>    dose     middle        lower     upper`\
+`#> 1    10 0.02226212 1.210051e-09 0.1592406`\
+`#> 2    20 0.04340619 4.589052e-06 0.2111844`\
+`#> 3    30 0.07415143 3.905345e-04 0.2659111`\
+`#> 4    40 0.12219125 8.058728e-03 0.3424755`\
+`#> 5    50 0.20099778 5.026028e-02 0.4317816`\
+`#> 6    60 0.31879821 8.766318e-02 0.6589305`\
+`#> 7    70 0.43349684 1.113269e-01 0.8856783`\
+`#> 8    80 0.51830747 1.353735e-01 0.9722908`\
+`#> 9    90 0.57983227 1.511631e-01 0.9924933`\
+`#> 10  100 0.62571178 1.625211e-01 0.9974539`
+
+> Note that, for `grade == K - 1`, the cumulative and grade-specific
+> probabilities of toxicities are identical.
+
+The `plot` method also takes `grade` and `cumulative` parameters.
+
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``2L``)`
+
+![A graph of the posterior probability of toxicity (DLT only) against
+dose. The mean probability of toxicity is barely above 0% at a dose of
+zero and rises in a sigmoidal curve to around 65% at a dose of 100. The
+confidence interval is relatively narrow for low doses but widens
+considerably for doses over 60, extending from around 15% to 100% for a
+dose of 100.](ordinal-crm-figures/plot1-1.png)
+
+plot of chunk plot1
+
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``1L``)`
+
+![A graph of the posterior cumulative probability of toxicity (sub-toxic
+AE or DLT) against dose. The mean probability of toxicity is barely
+above 0% at a dose of zero and rises in a sigmoidal curve to around 75%
+at a dose of 100. The confidence interval is relatively narrow for low
+doses but widens considerably for doses over 60, extending from around
+30% to 100% for a dose of 100.](ordinal-crm-figures/plot2-1.png)
+
+plot of chunk plot2
+
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(``samples``, ``ordinal_model``, ``ordinal_data``, grade ``=`` ``1L``, cumulative ``=`` ``FALSE``)`
+
+![A graph of the posterior probability of sub toxic AE against dose. The
+mean probability of toxicity is barely above 0% at a dose of zero, rises
+to a peak of about 18% at a dose of 60 before falling to around 12% at a
+dose of 100. The confidence interval is relatively narrow for low doses
+but widens considerably for doses over 60, extending from around 30% to
+100% for a dose of 100.](ordinal-crm-figures/plot3-1.png)
+
+plot of chunk plot3
+
+### `Rules` classes for ordinal models
+
+For each class of `Rule` (that is, `CohortSize`, `Increments`,
+`NextBest` and `Stopping`), `crmPack` provides a single wrapper class
+that allows the `Rule` to be applied in trials using ordinal CRM models.
+The wrapper class has the name `<Rule>Ordinal` and takes two parameters,
+`rule` and `grade`. `rule` defines the standard `crmPck` `Rule` and
+`grade` the toxicity grade at which the rule should be applied.
+
+For example
+
+\
+`dlt_rule`` ``<-`` `[`CohortSizeDLT`](https://docs.crmpack.org/reference/CohortSizeDLT-class.md)`(``intervals ``=`` ``0``:``2``, cohort_size ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``, ``3``, ``5``)``)`\
+`ordinal_rule_1`` ``<-`` `[`CohortSizeOrdinal`](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)`(``grade ``=`` ``1L``, rule ``=`` ``dlt_rule``)`\
+`ordinal_rule_2`` ``<-`` `[`CohortSizeOrdinal`](https://docs.crmpack.org/reference/CohortSizeOrdinal-class.md)`(``grade ``=`` ``2L``, rule ``=`` ``dlt_rule``)`\
+\
+[`size`](https://docs.crmpack.org/reference/size.md)`(``ordinal_rule_1``, ``50``, ``empty_ordinal_data``)`\
+`#> [1] 1`\
+[`size`](https://docs.crmpack.org/reference/size.md)`(``ordinal_rule_2``, ``50``, ``empty_ordinal_data``)`\
+`#> [1] 1`\
+[`size`](https://docs.crmpack.org/reference/size.md)`(``ordinal_rule_1``, ``50``, ``ordinal_data``)`\
+`#> [1] 5`\
+[`size`](https://docs.crmpack.org/reference/size.md)`(``ordinal_rule_2``, ``50``, ``ordinal_data``)`\
+`#> [1] 3`
+
+`Rules` based on different toxicity grades can be combined to produce
+complex rules. Here we define two `Increments` rules, one based on
+toxicity grade 1, the other on toxicity grade 2. Recall two sub toxic
+AEs and one DLT have been reported in the example data set.
+
+Thus, the rule based on sub-toxic AEs allows a maximum increment of 0.67
+because three events have been reported, giving a maximum permitted dose
+of 100.2. As only one DLT has been reported, the second rule allows an
+increment of 0.5, giving a maximum permitted dose of 90.
+
+\
+`ordinal_rule_1`` ``<-`` `[`IncrementsOrdinal`](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)`(`\
+`  grade ``=`` ``1L``,`\
+`  rule ``=`` `[`IncrementsRelativeDLT`](https://docs.crmpack.org/reference/IncrementsRelativeDLT-class.md)`(``intervals ``=`` ``0``:``2``, increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``3``, ``1.5``, ``0.67``)``)`\
+`)`\
+[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``ordinal_rule_1``, ``ordinal_data``)`\
+`#> [1] 100.2`\
+`ordinal_rule_2`` ``<-`` `[`IncrementsOrdinal`](https://docs.crmpack.org/reference/IncrementsOrdinal-class.md)`(`\
+`  grade ``=`` ``2L``,`\
+`  rule ``=`` `[`IncrementsRelativeDLT`](https://docs.crmpack.org/reference/IncrementsRelativeDLT-class.md)`(``intervals ``=`` ``0``:``1``, increments ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``3``, ``0.5``)``)`\
+`)`\
+[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``ordinal_rule_2``, ``ordinal_data``)`\
+`#> [1] 90`
+
+The two grade-specific rules can be combined into a single rule using
+`IncrementsMin`:
+
+\
+`trial_rule`` ``<-`` `[`IncrementsMin`](https://docs.crmpack.org/reference/IncrementsMin-class.md)`(`[`list`](https://rdrr.io/r/base/list.html)`(``ordinal_rule_1``, ``ordinal_rule_2``)``)`\
+[`maxDose`](https://docs.crmpack.org/reference/maxDose.md)`(``trial_rule``, ``ordinal_data``)`\
+`#> [1] 90`
+
+## On the need for a diagonal covariance matrix
+
+Consider a standard logistic log Normal CRM model:
+
+\
+`model`` ``<-`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`\
+`  mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``-``3``, ``1``)``,`\
+`  cov ``=`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``4``, ``-``0.5``, ``-``0.5``, ``3``)``, ncol ``=`` ``2``)``,`\
+`  ref_dose ``=`` ``45`\
+`)`\
+\
+`model``@``params``@``cov`\
+`#>      [,1] [,2]`\
+`#> [1,]  4.0 -0.5`\
+`#> [2,] -0.5  3.0`
+
+We can estimate the prior using an empty `Data` object…
+
+\
+`data`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` `[`seq`](https://rdrr.io/r/base/seq.html)`(``10``, ``100``, ``10``)``)`\
+`options`` ``<-`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(`\
+`  samples ``=`` ``30000``,`\
+`  rng_kind ``=`` ``"Mersenne-Twister"``,`\
+`  rng_seed ``=`` ``8191316`\
+`)`\
+`samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``data``, ``model``, ``options``)`
+
+and then obtain the correlation between the model’s parameters
+\[recalling that the prior is defined in terms of log(alpha1)\]…
+
+\
+`d`` ``<-`` `[`as.matrix`](https://rdrr.io/r/base/matrix.html)`(`[`cbind`](https://rdrr.io/r/base/cbind.html)`(``samples``@``data``$``alpha0``, `[`log`](https://rdrr.io/r/base/Log.html)`(``samples``@``data``$``alpha1``)``)``)`\
+`sigmaHat`` ``<-`` `[`cov`](https://rdrr.io/r/stats/cor.html)`(``d``)`\
+`sigmaHat`\
+`#>            [,1]       [,2]`\
+`#> [1,]  4.0094331 -0.5416752`\
+`#> [2,] -0.5416752  3.0363958`
+
+So we requested a covariance of -0.5 and got -0.5416755.2. Pretty good!
+
+Now look an ordinal CRM model with non-zero correlation between its
+parameters.
+
+To begin, take a copy of the current `LogisticLogNormalOrdinal` model
+and give it a non-diagonal covariance matrix by accessing its
+`params@cov` slot directly, deliberately avoiding object validation.
+
+> NB This is poor practice and not recommended. It is done here purely
+> for illustration.
+
+\
+`ordinal_model_temp`` ``<-`` ``ordinal_model`\
+`ordinal_model_temp``@``params``@``cov`` ``<-`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``4``, ``-``0.5``, ``-``0.5``, ``-``0.5``, ``3``, ``-``0.5``, ``-``0.5``, ``-``0.5``, ``1``)``, ncol ``=`` ``3``)`\
+\
+`ordinal_model_temp``@``params``@``cov`\
+`#>      [,1] [,2] [,3]`\
+`#> [1,]  4.0 -0.5 -0.5`\
+`#> [2,] -0.5  3.0 -0.5`\
+`#> [3,] -0.5 -0.5  1.0`
+
+Fit the revised model to obtain the prior.
+
+\
+`ordinal_data`` ``<-`` `[`DataOrdinal`](https://docs.crmpack.org/reference/DataOrdinal-class.md)`(``doseGrid ``=`` `[`seq`](https://rdrr.io/r/base/seq.html)`(``10``, ``100``, ``10``)``)`\
+`ordinal_samples`` ``<-`` `[`mcmc`](https://docs.crmpack.org/reference/mcmc.md)`(``ordinal_data``, ``ordinal_model_temp``, ``options``)`
+
+Finally, look at the covariance matrix, remembering to use `log(beta)`
+rather than `beta`…
+
+\
+`ordinalD`` ``<-`` `[`as.matrix`](https://rdrr.io/r/base/matrix.html)`(`\
+`  `[`cbind`](https://rdrr.io/r/base/cbind.html)`(`\
+`    ``ordinal_samples``@``data``$``alpha1``,`\
+`    ``ordinal_samples``@``data``$``alpha2``,`\
+`    `[`log`](https://rdrr.io/r/base/Log.html)`(``ordinal_samples``@``data``$``beta``)`\
+`  ``)`\
+`)`\
+`sigmaHat`` ``<-`` `[`cov`](https://rdrr.io/r/stats/cor.html)`(``ordinalD``)`\
+`sigmaHat`\
+`#>             [,1]        [,2]         [,3]`\
+`#> [1,]  4.00158899 2.768345336 -0.001112980`\
+`#> [2,]  2.76834534 2.924696828  0.008697924`\
+`#> [3,] -0.00111298 0.008697924  1.012033823`
+
+The correlations are nothing like what we requested. This is due to the
+constraints imposed on the intercepts by the model. The situation will
+most likely worsen as the number of toxicity categories increases.
+
+We have an open issue - \#755 -to examine options for allowing end users
+to specify correlation structures for ordinal CRM models. If you would
+like to contribute, please do so.
+
+## Some observations
+
+- We are currently considering the need for making grade-specific
+  functionality available across more `crmPack` methods. If you have a
+  specific use case that is not currently supported, please contact us.
+- If you have a need for ordinal CRM in dual endpoint models, please let
+  us know.
+- Had `crmPack` supported ordinal CRM from the outset, the classes that
+  support standard, binary, CRM models would have been sub-classes of
+  the more general ordinal implementations. We did consider taking this
+  approach when adding support for ordinal CRM models to the existing
+  code. We decided against doing so for purely defensive and
+  conservative reasons. Had we introduced the ordinal classes as parents
+  of the existing classes, changes to the code base would have been much
+  more substantial and we were concerned that we might miss some
+  implicit assumptions about the dimensionality of the existing models.
+  We therefore chose to implement ordinal classes as siblings, rather
+  than parents, of the existing classes. This approach minimises the
+  risk of breaking existing end-user code at the risk of slightly
+  greater complexity in using the new classes.
+
+## Environment
+
+    #> R version 4.6.1 (2026-06-24)
+    #> Platform: aarch64-apple-darwin23
+    #> Running under: macOS Golden Gate 27.0.1
+    #> 
+    #> Matrix products: default
+    #> BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+    #> LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+    #> 
+    #> locale:
+    #> [1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+    #> 
+    #> time zone: Europe/Zurich
+    #> tzcode source: internal
+    #> 
+    #> attached base packages:
+    #> [1] stats     graphics  grDevices utils     datasets  methods   base     
+    #> 
+    #> other attached packages:
+    #>  [1] kableExtra_1.4.0   tibble_3.3.1       ggmcmc_1.5.1.2     tidyr_1.3.2       
+    #>  [5] dplyr_1.2.1        data.tree_1.2.0    knitr_1.52         decider_0.0.0.9012
+    #>  [9] crmPack_2.3.0      testthat_3.3.2     ggplot2_4.0.3      webshot2_0.1.2    
+    #> 
+    #> loaded via a namespace (and not attached):
+    #>   [1] RColorBrewer_1.1-3   tensorA_0.36.2.1     sys_3.4.3           
+    #>   [4] rstudioapi_0.19.0    jsonlite_2.0.0       magrittr_2.0.5      
+    #>   [7] farver_2.1.2         rmarkdown_2.32       fs_2.1.0            
+    #>  [10] ragg_1.5.2           vctrs_0.7.3          rhub_2.0.1          
+    #>  [13] memoise_2.0.1        askpass_1.2.1        webshot_0.5.5       
+    #>  [16] htmltools_0.5.9      usethis_3.2.2        distributional_0.8.1
+    #>  [19] lambda.r_1.2.4       curl_8.0.0           rjags_4-17          
+    #>  [22] GenSA_1.1.15         parallelly_1.48.0    StanHeaders_2.32.10 
+    #>  [25] htmlwidgets_1.6.4    desc_1.4.3           futile.options_1.0.1
+    #>  [28] cachem_1.1.0         lifecycle_1.0.5      iterators_1.0.14    
+    #>  [31] pkgconfig_2.0.3      Matrix_1.7-6         R6_2.6.1            
+    #>  [34] fastmap_1.2.0        rbibutils_2.4.1      digest_0.6.39       
+    #>  [37] GGally_2.4.0         rprojroot_2.1.1      pkgload_1.5.3       
+    #>  [40] textshaping_1.0.5    labeling_0.4.3       abind_1.4-8         
+    #>  [43] httr_1.4.9           compiler_4.6.1       rngtools_1.5.2      
+    #>  [46] withr_3.0.3          doParallel_1.0.17    S7_0.2.2            
+    #>  [49] backports_1.5.1      inline_0.3.21        ggstats_0.13.0      
+    #>  [52] QuickJSR_1.11.0      pkgbuild_1.4.8       R.utils_2.13.0      
+    #>  [55] MASS_7.3-66          openssl_2.4.2        rappdirs_0.3.4      
+    #>  [58] sessioninfo_1.2.4    loo_2.10.1           tools_4.6.1         
+    #>  [61] chromote_0.5.1       otel_0.2.0           zip_3.0.2           
+    #>  [64] R.oo_1.27.1          glue_1.8.1           DiagrammeR_1.0.12   
+    #>  [67] R.cache_0.17.0       promises_1.5.0       grid_4.6.1          
+    #>  [70] checkmate_2.3.4      generics_0.1.4       gtable_0.3.6        
+    #>  [73] R.methodsS3_1.8.2    flock_0.7            websocket_1.4.4     
+    #>  [76] xml2_1.6.0           foreach_1.5.2        pillar_1.11.1       
+    #>  [79] stringr_1.6.0        posterior_1.7.0      later_1.4.8         
+    #>  [82] splines_4.6.1        lattice_0.23-1       survival_3.8-12     
+    #>  [85] tidyselect_1.2.1     httpgd_2.1.4         gitcreds_0.1.2      
+    #>  [88] gridExtra_2.3.1      V8_8.2.0             svglite_2.2.2       
+    #>  [91] stats4_4.6.1         futile.logger_1.4.9  xfun_0.61           
+    #>  [94] devtools_2.5.2       credentials_2.0.3    brio_1.1.5          
+    #>  [97] matrixStats_1.5.0    rstan_2.32.7         visNetwork_2.1.4    
+    #> [100] stringi_1.8.9        rematch_2.0.0        unigd_0.2.0         
+    #> [103] yaml_2.3.12          evaluate_1.0.5       codetools_0.2-20    
+    #> [106] sess_3.0.1           cli_3.6.6            RcppParallel_6.2.0  
+    #> [109] systemfonts_1.3.2    Rdpack_2.6.6         processx_3.9.0      
+    #> [112] styler_1.11.0        Rcpp_1.1.2           gert_2.3.1          
+    #> [115] coda_0.19-4.1        parallel_4.6.1       ellipsis_0.3.3      
+    #> [118] whoami_1.3.0         doRNG_1.8.6.3        viridisLite_0.4.3   
+    #> [121] mvtnorm_1.4-2        scales_1.4.0         openxlsx_4.2.8.1    
+    #> [124] purrr_1.2.2          rlang_1.3.0          formatR_1.14
+
+## References
+
+O’Quigley, John, Margaret Pepe, and Lloyd Fisher. 1990. “Continual
+Reassessment Method: A Practical Design for Phase 1 Clinical Trials in
+Cancer.” *Biometrics* 46 (1): 33–48.
