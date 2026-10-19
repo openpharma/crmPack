@@ -54,5 +54,5 @@ h_next_best_mg_ci(dose_target, dose_mg, prob_target, placebo, model, model_eff)
 Yeung WY, Whitehead J, Reigner B, Beyer U, Diack C, Jaki T (2015).
 “Bayesian adaptive dose-escalation procedure for binary and continuous
 responses utilizing a gain function.” *Pharmaceutical Statistics*.
-[doi:10.1002/pst.1706](https://doi.org/10.1002/pst.1706) , Published
+[doi:10.1002/pst.1706](https://doi.org/10.1002/pst.1706) . Published
 online ahead of print.

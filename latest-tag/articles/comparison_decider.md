@@ -30,77 +30,61 @@ We are going to use the example as described in the `decider` vignette
 
 ## Using `decider`
 
-``` r
-
-library(decider)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``decider``)`
 
 This is the data from the historical Arm C:
 
-``` r
-
-historical_data <- list(
-  dose1 = c(0, 0, 0, 0, 0),
-  dose2 = c(2, 4, 8, 12, 16),
-  n.pat = c(3, 3, 3, 9, 12),
-  n.dlt = c(0, 0, 0, 1, 2),
-  trial = c("H1", "H1", "H1", "H1", "H1")
-)
-```
+\
+`historical_data`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`  dose1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``0``)``,`\
+`  dose2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``4``, ``8``, ``12``, ``16``)``,`\
+`  n.pat ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``3``, ``3``, ``3``, ``9``, ``12``)``,`\
+`  n.dlt ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``1``, ``2``)``,`\
+`  trial ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"H1"``, ``"H1"``, ``"H1"``, ``"H1"``, ``"H1"``)`\
+`)`
 
 The monotherapy dose grid for Arm A is:
 
-``` r
-
-d1 <- c(0.1, 0.2, 0.4, 0.8, 1.6, 2.4, 3.6, 5, 6)
-```
+\
+`d1`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.2``, ``0.4``, ``0.8``, ``1.6``, ``2.4``, ``3.6``, ``5``, ``6``)`
 
 The dose grid for compound 2 in Arm B is more sparse:
 
-``` r
-
-d2 <- c(8, 12)
-```
+\
+`d2`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``8``, ``12``)`
 
 The overall dose grid for combination Arm B is therefore:
 
-``` r
-
-doses_of_interest <- rbind(
-  c(d1, rep(d1, times = length(d2))),
-  c(rep(0, length(d1)), rep(d2, each = length(d1)))
-)
-```
+\
+`doses_of_interest`` ``<-`` `[`rbind`](https://rdrr.io/r/base/cbind.html)`(`\
+`  `[`c`](https://rdrr.io/r/base/c.html)`(``d1``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``d1``, times ``=`` `[`length`](https://rdrr.io/r/base/length.html)`(``d2``)``)``)``,`\
+`  `[`c`](https://rdrr.io/r/base/c.html)`(`[`rep`](https://rdrr.io/r/base/rep.html)`(``0``, `[`length`](https://rdrr.io/r/base/length.html)`(``d1``)``)``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``d2``, each ``=`` `[`length`](https://rdrr.io/r/base/length.html)`(``d1``)``)``)`\
+`)`
 
 The reference doses to be used in the models are:
 
-``` r
-
-dose_ref1 <- 6
-dose_ref2 <- 12
-```
+\
+`dose_ref1`` ``<-`` ``6`\
+`dose_ref2`` ``<-`` ``12`
 
 We further need to specify the arms and types of the arms as follows:
 
-``` r
-
-trials_of_interest <- c("A", "B")
-types_of_interest <- c("mono1", "combi")
-```
+\
+`trials_of_interest`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"A"``, ``"B"``)`\
+`types_of_interest`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"mono1"``, ``"combi"``)`
 
 The prior for the hypermeans is specified like this:
 
-``` r
-
-#                Parameter   Mean         SD
-prior_mu <- list(
-  mu_a1 = c(logit(0.33), 2),
-  mu_b1 = c(0, 1), # standard normal
-  mu_a2 = c(logit(0.33), 2),
-  mu_b2 = c(0, 1), # standard normal
-  mu_eta = c(0, 1.121)
-)
-```
+\
+`#                Parameter   Mean         SD`\
+`prior_mu`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`  mu_a1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`logit`](https://docs.crmpack.org/reference/logit.md)`(``0.33``)``, ``2``)``,`\
+`  mu_b1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``, ``# standard normal`\
+`  mu_a2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`logit`](https://docs.crmpack.org/reference/logit.md)`(``0.33``)``, ``2``)``,`\
+`  mu_b2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``, ``# standard normal`\
+`  mu_eta ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1.121``)`\
+`)`
 
 The prior mean for $`\mu_{\alpha_{1}}`$ is set to
 $`\text{logit}(0.33)`$, which implies that we assume the reference dose
@@ -116,17 +100,15 @@ reference dose. So $`1.121 = \log(9) / z_{0.975}`$.
 The prior for the between-trial heterogeneity parameters is specified
 like this:
 
-``` r
-
-#                 Parameter    Mean        SD
-prior_tau <- list(
-  tau_a1 = c(log(0.25), log(2) / 1.96),
-  tau_b1 = c(log(0.125), log(2) / 1.96),
-  tau_a2 = c(log(0.25), log(2) / 1.96),
-  tau_b2 = c(log(0.125), log(2) / 1.96),
-  tau_eta = c(log(0.125), log(2) / 1.96)
-)
-```
+\
+`#                 Parameter    Mean        SD`\
+`prior_tau`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`  tau_a1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`log`](https://rdrr.io/r/base/Log.html)`(``0.25``)``, `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)``,`\
+`  tau_b1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`log`](https://rdrr.io/r/base/Log.html)`(``0.125``)``, `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)``,`\
+`  tau_a2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`log`](https://rdrr.io/r/base/Log.html)`(``0.25``)``, `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)``,`\
+`  tau_b2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`log`](https://rdrr.io/r/base/Log.html)`(``0.125``)``, `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)``,`\
+`  tau_eta ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`log`](https://rdrr.io/r/base/Log.html)`(``0.125``)``, `[`log`](https://rdrr.io/r/base/Log.html)`(``2``)`` ``/`` ``1.96``)`\
+`)`
 
 These are all the log normal prior parameters for the corresponding
 $`\tau`$ parameters. These are all “moderate” degrees of heterogeneity,
@@ -135,107 +117,146 @@ according to Neuenschwander et al. (2014).
 Then we look at the following scenario, where two cohorts of patients
 are available from Arm A:
 
-``` r
-
-scenario1 <- list(
-  dose1 = c(0.1, 0.2),
-  dose2 = c(0, 0),
-  n.pat = c(3, 3),
-  n.dlt = c(0, 1),
-  trial = c("A", "A")
-)
-```
+\
+`scenario1`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`  dose1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.2``)``,`\
+`  dose2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``)``,`\
+`  n.pat ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``3``, ``3``)``,`\
+`  n.dlt ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``1``)``,`\
+`  trial ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"A"``, ``"A"``)`\
+`)`
 
 We note that the `trial` specification here needs to match the name used
 in `trials_of_interest` above.
 
 Now we can call the scenario function:
 
-``` r
-
-result1 <- scenario_jointBLRM(
-  data = scenario1,
-  historical.data = historical_data,
-  doses.of.interest = doses_of_interest,
-  dose.ref1 = dose_ref1,
-  dose.ref2 = dose_ref2,
-  trials.of.interest = trials_of_interest,
-  types.of.interest = types_of_interest,
-  prior.mu = prior_mu,
-  prior.tau = prior_tau
-)
-```
+\
+`result1`` ``<-`` ``scenario_jointBLRM``(`\
+`  data ``=`` ``scenario1``,`\
+`  historical.data ``=`` ``historical_data``,`\
+`  doses.of.interest ``=`` ``doses_of_interest``,`\
+`  dose.ref1 ``=`` ``dose_ref1``,`\
+`  dose.ref2 ``=`` ``dose_ref2``,`\
+`  trials.of.interest ``=`` ``trials_of_interest``,`\
+`  types.of.interest ``=`` ``types_of_interest``,`\
+`  prior.mu ``=`` ``prior_mu``,`\
+`  prior.tau ``=`` ``prior_tau``,`\
+`  seed ``=`` ``3819`\
+`)`
 
 We can look at the results:
 
-``` r
-
-result1
-#> $`trial-A`
-#>          mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
-#> 0.1+0 0.11505 0.10896 0.00318 0.08149 0.40634     0.74216        0.20297
-#> 0.2+0 0.15387 0.12863 0.00688 0.11915 0.48290     0.61867        0.27528
-#> 0.4+0 0.20711 0.15485 0.01337 0.17135 0.58132     0.47111        0.32385
-#> 0.8+0 0.27568 0.18724 0.02253 0.23954 0.70208     0.33305        0.32322
-#> 1.6+0 0.35576 0.22084 0.03425 0.32339 0.82381     0.22605        0.28433
-#> 2.4+0 0.40480 0.23821 0.04191 0.37755 0.88007     0.18025        0.25264
-#> 3.6+0 0.45332 0.25259 0.04977 0.43477 0.92355     0.14518        0.22102
-#> 5+0   0.49125 0.26169 0.05656 0.48232 0.94892     0.12342        0.19609
-#> 6+0   0.51154 0.26574 0.06055 0.50820 0.95939     0.11249        0.18375
-#>       P([0.33,1])
-#> 0.1+0     0.05487
-#> 0.2+0     0.10605
-#> 0.4+0     0.20504
-#> 0.8+0     0.34373
-#> 1.6+0     0.48962
-#> 2.4+0     0.56711
-#> 3.6+0     0.63380
-#> 5+0       0.68049
-#> 6+0       0.70376
-#> 
-#> $`trial-B`
-#>           mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))
-#> 0.1+8  0.18534 0.12621 0.02797 0.15491 0.50970     0.51761        0.35520
-#> 0.2+8  0.21998 0.14255 0.03585 0.18767 0.57986     0.41529        0.38942
-#> 0.4+8  0.26690 0.16328 0.04685 0.23245 0.66165     0.30341        0.39695
-#> 0.8+8  0.32777 0.18832 0.06063 0.29344 0.75698     0.20730        0.36169
-#> 1.6+8  0.40067 0.21604 0.07480 0.37062 0.85205     0.13635        0.29835
-#> 2.4+8  0.44627 0.23254 0.08003 0.42257 0.90132     0.11041        0.25509
-#> 3.6+8  0.49152 0.24928 0.08151 0.47790 0.93945     0.09693        0.21483
-#> 5+8    0.52622 0.26373 0.07724 0.52446 0.96240     0.09451        0.18637
-#> 6+8    0.54411 0.27252 0.07176 0.55143 0.97242     0.09751        0.17168
-#> 0.1+12 0.22328 0.12701 0.05241 0.19676 0.53904     0.36694        0.45421
-#> 0.2+12 0.25633 0.14148 0.06149 0.22807 0.60281     0.28219        0.45986
-#> 0.4+12 0.30113 0.16029 0.07336 0.27114 0.68080     0.19867        0.43366
-#> 0.8+12 0.35934 0.18395 0.08742 0.32938 0.77218     0.13246        0.36863
-#> 1.6+12 0.42907 0.21224 0.09801 0.40323 0.86510     0.09192        0.28459
-#> 2.4+12 0.47243 0.23115 0.09700 0.45351 0.91288     0.08308        0.23750
-#> 3.6+12 0.51465 0.25293 0.08667 0.50839 0.95026     0.08672        0.19644
-#> 5+12   0.54564 0.27384 0.07004 0.55585 0.97264     0.09949        0.16874
-#> 6+12   0.56071 0.28703 0.05732 0.58306 0.98177     0.11127        0.15508
-#>        P([0.33,1])
-#> 0.1+8      0.12719
-#> 0.2+8      0.19529
-#> 0.4+8      0.29964
-#> 0.8+8      0.43101
-#> 1.6+8      0.56530
-#> 2.4+8      0.63450
-#> 3.6+8      0.68824
-#> 5+8        0.71912
-#> 6+8        0.73081
-#> 0.1+12     0.17885
-#> 0.2+12     0.25795
-#> 0.4+12     0.36767
-#> 0.8+12     0.49891
-#> 1.6+12     0.62349
-#> 2.4+12     0.67942
-#> 3.6+12     0.71684
-#> 5+12       0.73177
-#> 6+12       0.73365
-```
+\
+`result1`\
+`` #> $`trial-A` ``\
+`#>          mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))`\
+`#> 0.1+0 0.11479 0.10869 0.00311 0.08149 0.40243     0.74108        0.20509`\
+`#> 0.2+0 0.15362 0.12839 0.00681 0.11868 0.47993     0.61939        0.27436`\
+`#> 0.4+0 0.20692 0.15483 0.01315 0.17076 0.58171     0.47247        0.32265`\
+`#> 0.8+0 0.27562 0.18745 0.02261 0.23940 0.70550     0.33297        0.32360`\
+`#> 1.6+0 0.35580 0.22114 0.03411 0.32326 0.82755     0.22619        0.28467`\
+`#> 2.4+0 0.40489 0.23848 0.04152 0.37742 0.88451     0.18058        0.25176`\
+`#> 3.6+0 0.45346 0.25275 0.04956 0.43407 0.92687     0.14457        0.22160`\
+`#> 5+0   0.49144 0.26178 0.05658 0.48177 0.95107     0.12236        0.19710`\
+`#> 6+0   0.51177 0.26580 0.06038 0.50800 0.96129     0.11191        0.18482`\
+`#>       P([0.33,1])`\
+`#> 0.1+0     0.05383`\
+`#> 0.2+0     0.10625`\
+`#> 0.4+0     0.20488`\
+`#> 0.8+0     0.34343`\
+`#> 1.6+0     0.48914`\
+`#> 2.4+0     0.56766`\
+`#> 3.6+0     0.63383`\
+`#> 5+0       0.68054`\
+`#> 6+0       0.70327`\
+`#> `\
+`` #> $`trial-B` ``\
+`#>           mean      sd  q.2.5%   q.50% q.97.5% P([0,0.16)) P([0.16,0.33))`\
+`#> 0.1+8  0.18532 0.12574 0.02792 0.15549 0.50891     0.51642        0.35703`\
+`#> 0.2+8  0.21997 0.14221 0.03572 0.18739 0.57802     0.41292        0.39155`\
+`#> 0.4+8  0.26694 0.16307 0.04672 0.23216 0.66265     0.30404        0.39703`\
+`#> 0.8+8  0.32790 0.18837 0.06055 0.29352 0.75850     0.20644        0.36283`\
+`#> 1.6+8  0.40083 0.21637 0.07448 0.37067 0.85505     0.13707        0.29704`\
+`#> 2.4+8  0.44638 0.23299 0.08127 0.42218 0.90297     0.11115        0.25545`\
+`#> 3.6+8  0.49155 0.24974 0.08260 0.47743 0.94130     0.09733        0.21504`\
+`#> 5+8    0.52620 0.26418 0.07843 0.52496 0.96383     0.09504        0.18686`\
+`#> 6+8    0.54406 0.27297 0.07261 0.55181 0.97352     0.09740        0.17310`\
+`#> 0.1+12 0.22334 0.12679 0.05283 0.19699 0.54017     0.36499        0.45491`\
+`#> 0.2+12 0.25637 0.14136 0.06204 0.22759 0.60438     0.27993        0.46306`\
+`#> 0.4+12 0.30120 0.16029 0.07387 0.27114 0.68231     0.19820        0.43482`\
+`#> 0.8+12 0.35946 0.18418 0.08771 0.32932 0.77416     0.13208        0.36929`\
+`#> 1.6+12 0.42916 0.21272 0.09821 0.40303 0.86742     0.09211        0.28463`\
+`#> 2.4+12 0.47244 0.23171 0.09767 0.45369 0.91511     0.08355        0.23692`\
+`#> 3.6+12 0.51454 0.25346 0.08738 0.50860 0.95252     0.08684        0.19640`\
+`#> 5+12   0.54545 0.27432 0.06937 0.55594 0.97407     0.10030        0.16967`\
+`#> 6+12   0.56046 0.28749 0.05723 0.58262 0.98268     0.11168        0.15580`\
+`#>        P([0.33,1])`\
+`#> 0.1+8      0.12655`\
+`#> 0.2+8      0.19553`\
+`#> 0.4+8      0.29893`\
+`#> 0.8+8      0.43073`\
+`#> 1.6+8      0.56589`\
+`#> 2.4+8      0.63340`\
+`#> 3.6+8      0.68763`\
+`#> 5+8        0.71810`\
+`#> 6+8        0.72950`\
+`#> 0.1+12     0.18010`\
+`#> 0.2+12     0.25701`\
+`#> 0.4+12     0.36698`\
+`#> 0.8+12     0.49863`\
+`#> 1.6+12     0.62326`\
+`#> 2.4+12     0.67953`\
+`#> 3.6+12     0.71676`\
+`#> 5+12       0.73003`\
+`#> 6+12       0.73252`
 
 For each trial of interest, the posterior toxicities previously
 designated to be of interest are shown.
+
+The public scenario helper returns these posterior summaries, but not
+the underlying parameter draws. For the parameter-level comparison
+below, we call the same internal sampler with the same data, settings,
+and internal seed used by `scenario_jointBLRM()`. Thus,
+`decider_samples` contains the draws from which the summaries in
+`result1` were calculated.
+
+\
+`decider_data`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`  dose1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``historical_data``$``dose1``, ``scenario1``$``dose1``)``,`\
+`  dose2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``historical_data``$``dose2``, ``scenario1``$``dose2``)``,`\
+`  n.pat ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``historical_data``$``n.pat``, ``scenario1``$``n.pat``)``,`\
+`  n.dlt ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``historical_data``$``n.dlt``, ``scenario1``$``n.dlt``)``,`\
+`  trial ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``historical_data``$``trial``, ``scenario1``$``trial``)`\
+`)`\
+`decider_trial`` ``<-`` `[`factor`](https://rdrr.io/r/base/factor.html)`(``decider_data``$``trial``)`\
+`decider_study_index`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`  A ``=`` `[`match`](https://rdrr.io/r/base/match.html)`(``"A"``, `[`levels`](https://rdrr.io/r/base/levels.html)`(``decider_trial``)``)``,`\
+`  B ``=`` `[`nlevels`](https://rdrr.io/r/base/nlevels.html)`(``decider_trial``)`` ``+`` ``1L``,`\
+`  C ``=`` `[`match`](https://rdrr.io/r/base/match.html)`(``"H1"``, `[`levels`](https://rdrr.io/r/base/levels.html)`(``decider_trial``)``)`\
+`)`\
+\
+[`set.seed`](https://rdrr.io/r/base/Random.html)`(``3819``)`\
+`decider_internal_seed`` ``<-`` `[`sample.int`](https://rdrr.io/r/base/sample.html)`(``.Machine``$``integer.max``, ``1``)`\
+`decider_samples`` ``<-`` ``decider``:::``sampling_jointBLRM``(`\
+`  dose1 ``=`` ``decider_data``$``dose1``,`\
+`  dose2 ``=`` ``decider_data``$``dose2``,`\
+`  dose.ref1 ``=`` ``dose_ref1``,`\
+`  dose.ref2 ``=`` ``dose_ref2``,`\
+`  n.pat ``=`` ``decider_data``$``n.pat``,`\
+`  n.dlt ``=`` ``decider_data``$``n.dlt``,`\
+`  n.study ``=`` `[`as.integer`](https://rdrr.io/r/base/integer.html)`(``decider_trial``)``,`\
+`  MAP.prior ``=`` ``TRUE``,`\
+`  prior.mu ``=`` ``prior_mu``,`\
+`  prior.tau ``=`` ``prior_tau``,`\
+`  iter ``=`` ``26000``,`\
+`  warmup ``=`` ``1000``,`\
+`  refresh ``=`` ``0``,`\
+`  adapt_delta ``=`` ``0.8``,`\
+`  max_treedepth ``=`` ``15``,`\
+`  chains ``=`` ``4``,`\
+`  seed ``=`` ``decider_internal_seed`\
+`)`
 
 Under the hood, the implementation works as follows:
 
@@ -258,59 +279,51 @@ Now we are going to define the same design and scenario in `crmPack`.
 
 We start with the monotherapy model for compound 1:
 
-``` r
-
-library(crmPack)
-
-mono_model1 <- LogisticLogNormal(
-  mean = c(logit(0.33), 0),
-  cov = diag(c(2, 1)^2),
-  ref_dose = dose_ref1
-)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`crmPack`](https://docs.crmpack.org/)`)`\
+\
+`mono_model1`` ``<-`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`\
+`  mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`logit`](https://docs.crmpack.org/reference/logit.md)`(``0.33``)``, ``0``)``,`\
+`  cov ``=`` `[`diag`](https://rdrr.io/r/base/diag.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``1``)``^``2``)``,`\
+`  ref_dose ``=`` ``dose_ref1`\
+`)`
 
 And for compound 2 the same:
 
-``` r
-
-mono_model2 <- LogisticLogNormal(
-  mean = c(logit(0.33), 0),
-  cov = diag(c(2, 1)^2),
-  ref_dose = dose_ref2
-)
-```
+\
+`mono_model2`` ``<-`` `[`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)`(`\
+`  mean ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`logit`](https://docs.crmpack.org/reference/logit.md)`(``0.33``)``, ``0``)``,`\
+`  cov ``=`` `[`diag`](https://rdrr.io/r/base/diag.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``2``, ``1``)``^``2``)``,`\
+`  ref_dose ``=`` ``dose_ref2`\
+`)`
 
 Then we define the combination model:
 
-``` r
-
-combo_model <- TwoDrugsCombo(
-  list(
-    compound1 = mono_model1,
-    compound2 = mono_model2
-  ),
-  gamma = 0, # prior mean for the interaction parameter
-  tau = 1 / (1.121^2) # prior precision for the interaction parameter
-)
-```
+\
+`combo_model`` ``<-`` `[`TwoDrugsCombo`](https://docs.crmpack.org/reference/TwoDrugsCombo-class.md)`(`\
+`  `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    compound1 ``=`` ``mono_model1``,`\
+`    compound2 ``=`` ``mono_model2`\
+`  ``)``,`\
+`  gamma ``=`` ``0``, ``# prior mean for the interaction parameter`\
+`  tau ``=`` ``1`` ``/`` ``(``1.121``^``2``)`` ``# prior precision for the interaction parameter`\
+`)`
 
 We define the historical data which is already available:
 
-``` r
-
-hist_data_comp2 <- Data(
-  x = rep(historical_data$dose2, historical_data$n.pat),
-  y = unlist(Map(
-    function(n_pat, n_dlt) {
-      c(rep(0, n_pat - n_dlt), rep(1, n_dlt))
-    },
-    historical_data$n.pat,
-    historical_data$n.dlt
-  )),
-  doseGrid = historical_data$dose2
-)
-hist_data_comp2
-```
+\
+`hist_data_comp2`` ``<-`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`\
+`  x ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``historical_data``$``dose2``, ``historical_data``$``n.pat``)``,`\
+`  y ``=`` `[`unlist`](https://rdrr.io/r/base/unlist.html)`(`[`Map`](https://rdrr.io/r/base/funprog.html)`(`\
+`    ``function``(``n_pat``, ``n_dlt``)`` ``{`\
+`      `[`c`](https://rdrr.io/r/base/c.html)`(`[`rep`](https://rdrr.io/r/base/rep.html)`(``0``, ``n_pat`` ``-`` ``n_dlt``)``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, ``n_dlt``)``)`\
+`    ``}``,`\
+`    ``historical_data``$``n.pat``,`\
+`    ``historical_data``$``n.dlt`\
+`  ``)``)``,`\
+`  doseGrid ``=`` ``historical_data``$``dose2`\
+`)`\
+`hist_data_comp2`
 
 |  ID | Cohort | Dose | DLT?  |
 |----:|-------:|-----:|:------|
@@ -354,107 +367,123 @@ The dose grid is 2, 4, 8, 12 and 16.
 We are going to use simple rules here (they are not relevant for the
 current scenario comparison):
 
-``` r
-
-my_stopping <- StoppingMinPatients(nPatients = 50)
-my_increments <- IncrementsRelative(0, 2)
-myNextBest <- NextBestNCRM(
-  target = c(0.16, 0.33),
-  overdose = c(0.33, 1),
-  max_overdose_prob = 0.25
-)
-my_cohort_size <- CohortSizeConst(size = 3)
-my_increments_combo <- IncrementsComboOneDrugOnly()
-```
+\
+`my_stopping`` ``<-`` `[`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)`(``nPatients ``=`` ``50``)`\
+`my_increments`` ``<-`` `[`IncrementsRelative`](https://docs.crmpack.org/reference/IncrementsRelative-class.md)`(``0``, ``2``)`\
+`myNextBest`` ``<-`` `[`NextBestNCRM`](https://docs.crmpack.org/reference/NextBestNCRM-class.md)`(`\
+`  target ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.16``, ``0.33``)``,`\
+`  overdose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.33``, ``1``)``,`\
+`  max_overdose_prob ``=`` ``0.25`\
+`)`\
+`my_cohort_size`` ``<-`` `[`CohortSizeConst`](https://docs.crmpack.org/reference/CohortSizeConst-class.md)`(``size ``=`` ``3``)`\
+`my_increments_combo`` ``<-`` `[`IncrementsComboOneDrugOnly`](https://docs.crmpack.org/reference/IncrementsComboOneDrugOnly-class.md)`(``)`
 
 Then we define the design arms accordingly:
 
-``` r
-
-designArmA <- DesignArm(
-  "A",
-  design = Design(
-    data = Data(doseGrid = d1),
-    startingDose = d1[1],
-    model = mono_model1,
-    stopping = my_stopping,
-    increments = my_increments,
-    nextBest = myNextBest,
-    cohort_size = my_cohort_size
-  )
-)
-
-designArmB <- DesignArm(
-  "B",
-  design = DesignCombo(
-    data = DataCombo(doseGrid = list(compound1 = d1, compound2 = c(0, d2))),
-    startingDose = c(compound1 = d1[1], compound2 = 0),
-    model = combo_model,
-    stopping = my_stopping,
-    increments = my_increments_combo,
-    nextBest = myNextBest,
-    cohort_size = my_cohort_size
-  ),
-  open_when = ArmMinDoseCondition("A", min_dose = d1[2])
-)
-
-designArmC <- HistoricalArm(
-  "C",
-  data = hist_data_comp2,
-  model = mono_model2
-)
-```
+\
+`designArmA`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`\
+`  ``"A"``,`\
+`  design ``=`` `[`Design`](https://docs.crmpack.org/reference/Design-class.md)`(`\
+`    data ``=`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(``doseGrid ``=`` ``d1``)``,`\
+`    startingDose ``=`` ``d1``[``1``]``,`\
+`    model ``=`` ``mono_model1``,`\
+`    stopping ``=`` ``my_stopping``,`\
+`    increments ``=`` ``my_increments``,`\
+`    nextBest ``=`` ``myNextBest``,`\
+`    cohort_size ``=`` ``my_cohort_size`\
+`  ``)`\
+`)`\
+\
+`designArmB`` ``<-`` `[`DesignArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`\
+`  ``"B"``,`\
+`  design ``=`` `[`DesignCombo`](https://docs.crmpack.org/reference/DesignCombo-class.md)`(`\
+`    data ``=`` `[`DataCombo`](https://docs.crmpack.org/reference/DataCombo-class.md)`(``doseGrid ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``compound1 ``=`` ``d1``, compound2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``d2``)``)``)``,`\
+`    startingDose ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``compound1 ``=`` ``d1``[``1``]``, compound2 ``=`` ``0``)``,`\
+`    model ``=`` ``combo_model``,`\
+`    stopping ``=`` ``my_stopping``,`\
+`    increments ``=`` ``my_increments_combo``,`\
+`    nextBest ``=`` ``myNextBest``,`\
+`    cohort_size ``=`` ``my_cohort_size`\
+`  ``)``,`\
+`  open_when ``=`` `[`ArmMinDoseCondition`](https://docs.crmpack.org/reference/ArmMinDoseCondition-class.md)`(``"A"``, min_dose ``=`` ``d1``[``2``]``)`\
+`)`\
+\
+`designArmC`` ``<-`` `[`HistoricalArm`](https://docs.crmpack.org/reference/DesignArm-class.md)`(`\
+`  ``"C"``,`\
+`  data ``=`` ``hist_data_comp2``,`\
+`  model ``=`` ``mono_model2`\
+`)`
 
 Now we can define the hierarchical design:
 
-``` r
+\
+`design_hierarchical`` ``<-`` `[`HierarchicalDesign`](https://docs.crmpack.org/reference/HierarchicalDesign-class.md)`(`\
+`  ``designArmA``,`\
+`  ``designArmB``,`\
+`  ``designArmC``,`\
+`  exchangeable_parameters ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    comp1_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      A ``=`` ``"alpha0"``,`\
+`      B ``=`` ``"alpha0[1]"`\
+`    ``)``,`\
+`    comp1_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      A ``=`` ``"alpha1"``,`\
+`      B ``=`` ``"alpha1[1]"`\
+`    ``)``,`\
+`    comp2_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      B ``=`` ``"alpha0[2]"``,`\
+`      C ``=`` ``"alpha0"`\
+`    ``)``,`\
+`    comp2_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      B ``=`` ``"alpha1[2]"``,`\
+`      C ``=`` ``"alpha1"`\
+`    ``)``,`\
+`    eta ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      B ``=`` ``"eta"`\
+`    ``)`\
+`  ``)``,`\
+`  pool_correlations ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    comp1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"comp1_intercept"``, ``"comp1_slope"``)``,`\
+`    comp2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"comp2_intercept"``, ``"comp2_slope"``)`\
+`  ``)``,`\
+`  pool_priors ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    comp1_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      mu ``=`` ``prior_mu``$``mu_a1``,`\
+`      tau ``=`` ``prior_tau``$``tau_a1`\
+`    ``)``,`\
+`    comp1_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      mu ``=`` ``prior_mu``$``mu_b1``,`\
+`      tau ``=`` ``prior_tau``$``tau_b1`\
+`    ``)``,`\
+`    comp2_intercept ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      mu ``=`` ``prior_mu``$``mu_a2``,`\
+`      tau ``=`` ``prior_tau``$``tau_a2`\
+`    ``)``,`\
+`    comp2_slope ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      mu ``=`` ``prior_mu``$``mu_b2``,`\
+`      tau ``=`` ``prior_tau``$``tau_b2`\
+`    ``)``,`\
+`    eta ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      mu ``=`` ``prior_mu``$``mu_eta``,`\
+`      tau ``=`` ``prior_tau``$``tau_eta`\
+`    ``)`\
+`  ``)`\
+`)`
 
-design_hierarchical <- HierarchicalDesign(
-  designArmA,
-  designArmB,
-  designArmC,
-  exchangeable_parameters = list(
-    comp1_intercept = list(
-      A = "alpha0",
-      B = "alpha0[1]"
-    ),
-    comp1_slope = list(
-      A = "alpha1",
-      B = "alpha1[1]"
-    ),
-    comp2_intercept = list(
-      B = "alpha0[2]",
-      C = "alpha0"
-    ),
-    comp2_slope = list(
-      B = "alpha1[2]",
-      C = "alpha1"
-    )
-  ),
-  pool_correlations = list(
-    comp1 = c("comp1_intercept", "comp1_slope"),
-    comp2 = c("comp2_intercept", "comp2_slope")
-  ),
-  pool_priors = list(
-    comp1_intercept = list(
-      mu = prior_mu$mu_a1,
-      tau = prior_tau$tau_a1
-    ),
-    comp1_slope = list(
-      mu = prior_mu$mu_b1,
-      tau = prior_tau$tau_b1
-    ),
-    comp2_intercept = list(
-      mu = prior_mu$mu_a2,
-      tau = prior_tau$tau_a2
-    ),
-    comp2_slope = list(
-      mu = prior_mu$mu_b2,
-      tau = prior_tau$tau_b2
-    )
-  )
-)
+The interaction parameter is included in its own exchangeable pool. Thus
+each combination arm has a separate interaction parameter $`\eta_j`$,
+conditionally distributed as
+
+``` math
+\eta_j \mid \mu_\eta, \tau_\eta \sim
+\textrm{Normal}(\mu_\eta, \tau_\eta^2),
 ```
+
+with the same hyperpriors for $`\mu_\eta`$ and $`\tau_\eta`$ as in
+`decider`. A one-member pool is used here because there is only one
+combination arm; with multiple combination arms the same definition
+gives each arm its own interaction parameter while allowing exchangeable
+borrowing between them.
 
 Note that each entry in `pool_correlations` can correlate exactly two
 scalar exchangeable parameter pools. In this example, `comp1` correlates
@@ -464,139 +493,493 @@ more parameters are not currently supported.
 
 Then we define the scenario:
 
-``` r
-
-scenario_hierarchical <- HierarchicalData(
-  A = Data(
-    x = c(0.1, 0.1, 0.1, 0.2, 0.2, 0.2),
-    y = c(0, 0, 0, 0, 0, 1),
-    doseGrid = designArmA@design@data@doseGrid
-  ),
-  B = designArmB@design@data,
-  C = designArmC@design@data
-)
-```
+\
+`scenario_hierarchical`` ``<-`` `[`HierarchicalData`](https://docs.crmpack.org/reference/HierarchicalData-class.md)`(`\
+`  A ``=`` `[`Data`](https://docs.crmpack.org/reference/Data-class.md)`(`\
+`    x ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0.1``, ``0.1``, ``0.1``, ``0.2``, ``0.2``, ``0.2``)``,`\
+`    y ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``0``, ``0``, ``0``, ``0``, ``0``, ``1``)``,`\
+`    doseGrid ``=`` ``designArmA``@``design``@``data``@``doseGrid`\
+`  ``)``,`\
+`  B ``=`` ``designArmB``@``design``@``data``,`\
+`  C ``=`` ``designArmC``@``design``@``data`\
+`)`
 
 And then we can use the
 [`scenario()`](https://docs.crmpack.org/reference/scenario.md) function:
 
-``` r
-
-result1CrmPack <- scenario(
-  design_hierarchical,
-  data = scenario_hierarchical,
-  mcmcOptions = McmcOptions(
-    burnin = 5000,
-    step = 2,
-    samples = 10000,
-    rng_kind = "Mersenne-Twister",
-    rng_seed = 3819
-  )
-)
-```
+\
+`result1CrmPack`` ``<-`` `[`scenario`](https://docs.crmpack.org/reference/scenario.md)`(`\
+`  ``design_hierarchical``,`\
+`  data ``=`` ``scenario_hierarchical``,`\
+`  mcmcOptions ``=`` `[`McmcOptions`](https://docs.crmpack.org/reference/McmcOptions-class.md)`(`\
+`    burnin ``=`` ``20000``,`\
+`    step ``=`` ``2``,`\
+`    samples ``=`` ``100000``,`\
+`    rng_kind ``=`` ``"Mersenne-Twister"``,`\
+`    rng_seed ``=`` ``3819`\
+`  ``)`\
+`)`
 
 We can look at the fit results:
 
-``` r
-
-result1CrmPack$fit
-#> $A
-#>   dose    middle       lower     upper
-#> 1  0.1 0.1243629 0.001983149 0.4447039
-#> 2  0.2 0.1691437 0.005421067 0.5176949
-#> 3  0.4 0.2316401 0.012774287 0.6171189
-#> 4  0.8 0.3134354 0.025165397 0.7237392
-#> 5  1.6 0.4088233 0.046346391 0.8344929
-#> 6  2.4 0.4663527 0.062999307 0.8960003
-#> 7  3.6 0.5223718 0.081262006 0.9375435
-#> 8  5.0 0.5654181 0.093475089 0.9607800
-#> 9  6.0 0.5881013 0.101496929 0.9701936
-#> 
-#> $B
-#>    compound1 compound2    middle        lower     upper
-#> 1        0.1         0 0.1287210 0.0009008035 0.4950683
-#> 2        0.2         0 0.1715809 0.0027887507 0.5808261
-#> 3        0.4         0 0.2304561 0.0084762575 0.6670085
-#> 4        0.8         0 0.3078396 0.0210190510 0.7639231
-#> 5        1.6         0 0.4007660 0.0419817437 0.8535624
-#> 6        2.4         0 0.4585329 0.0579081484 0.9000331
-#> 7        3.6         0 0.5156918 0.0765671794 0.9382719
-#> 8        5.0         0 0.5599775 0.0880010019 0.9597159
-#> 9        6.0         0 0.5833753 0.0954404754 0.9691243
-#> 10       0.1         8 0.1987472 0.0271291162 0.5469986
-#> 11       0.2         8 0.2379558 0.0335245728 0.6219824
-#> 12       0.4         8 0.2918255 0.0436300211 0.7030354
-#> 13       0.8         8 0.3627260 0.0597723187 0.7880641
-#> 14       1.6         8 0.4479221 0.0816901281 0.8747722
-#> 15       2.4         8 0.5005518 0.0934479329 0.9180274
-#> 16       3.6         8 0.5515829 0.1005119862 0.9517291
-#> 17       5.0         8 0.5893431 0.0982267889 0.9710842
-#> 18       6.0         8 0.6080775 0.0930881948 0.9792230
-#> 19       0.1        12 0.2313307 0.0486355825 0.5690668
-#> 20       0.2        12 0.2690172 0.0580148150 0.6351475
-#> 21       0.4        12 0.3208138 0.0723543594 0.7146302
-#> 22       0.8        12 0.3890159 0.0889914757 0.7980709
-#> 23       1.6        12 0.4707538 0.1072696545 0.8855545
-#> 24       2.4        12 0.5206346 0.1090337843 0.9271278
-#> 25       3.6        12 0.5676056 0.1026940979 0.9614384
-#> 26       5.0        12 0.6003154 0.0847778070 0.9788900
-#> 27       6.0        12 0.6152905 0.0716012475 0.9862993
-#> 
-#> $C
-#>   dose     middle        lower     upper
-#> 1    2 0.03171161 0.0000348671 0.1440801
-#> 2    4 0.04567867 0.0006526297 0.1628323
-#> 3    8 0.07447265 0.0117508246 0.2017312
-#> 4   12 0.10943082 0.0309949946 0.2457575
-#> 5   16 0.15235644 0.0401576762 0.3306516
-```
+\
+`result1CrmPack``$``fit`\
+`#> $A`\
+`#>   dose    middle       lower     upper`\
+`#> 1  0.1 0.1145638 0.003242997 0.4039016`\
+`#> 2  0.2 0.1531443 0.006965511 0.4791348`\
+`#> 3  0.4 0.2061103 0.013046402 0.5797054`\
+`#> 4  0.8 0.2743383 0.021845606 0.7050774`\
+`#> 5  1.6 0.3538963 0.033114229 0.8242544`\
+`#> 6  2.4 0.4025788 0.040632531 0.8818548`\
+`#> 7  3.6 0.4507303 0.048607949 0.9250483`\
+`#> 8  5.0 0.4883849 0.055278969 0.9497937`\
+`#> 9  6.0 0.5085354 0.059025056 0.9600121`\
+`#> `\
+`#> $B`\
+`#>    compound1 compound2    middle       lower     upper`\
+`#> 1        0.1         0 0.1182987 0.001874605 0.4559461`\
+`#> 2        0.2         0 0.1555321 0.004608167 0.5345317`\
+`#> 3        0.4         0 0.2059665 0.010066603 0.6294228`\
+`#> 4        0.8         0 0.2712659 0.018552209 0.7343474`\
+`#> 5        1.6         0 0.3492500 0.030239089 0.8374834`\
+`#> 6        2.4         0 0.3980527 0.037350322 0.8877980`\
+`#> 7        3.6         0 0.4469119 0.045289913 0.9272576`\
+`#> 8        5.0         0 0.4853478 0.052104606 0.9506019`\
+`#> 9        6.0         0 0.5059501 0.055713251 0.9606872`\
+`#> 10       0.1         8 0.1848912 0.027797053 0.5074243`\
+`#> 11       0.2         8 0.2193303 0.035647160 0.5764916`\
+`#> 12       0.4         8 0.2660168 0.046325986 0.6597510`\
+`#> 13       0.8         8 0.3265623 0.059819665 0.7575669`\
+`#> 14       1.6         8 0.3990081 0.074217951 0.8547246`\
+`#> 15       2.4         8 0.4442954 0.080466594 0.9027538`\
+`#> 16       3.6         8 0.4892381 0.081642768 0.9410320`\
+`#> 17       5.0         8 0.5237206 0.077055551 0.9637166`\
+`#> 18       6.0         8 0.5415186 0.071112153 0.9732953`\
+`#> 19       0.1        12 0.2228088 0.052696578 0.5386444`\
+`#> 20       0.2        12 0.2556630 0.061864866 0.6008869`\
+`#> 21       0.4        12 0.3002409 0.073471361 0.6793323`\
+`#> 22       0.8        12 0.3581414 0.087348039 0.7727541`\
+`#> 23       1.6        12 0.4274556 0.098385029 0.8673500`\
+`#> 24       2.4        12 0.4705309 0.097504585 0.9144013`\
+`#> 25       3.6        12 0.5124794 0.086888993 0.9519413`\
+`#> 26       5.0        12 0.5433086 0.069807168 0.9736904`\
+`#> 27       6.0        12 0.5583265 0.056910280 0.9823670`\
+`#> `\
+`#> $C`\
+`#>   dose     middle        lower     upper`\
+`#> 1    2 0.02460650 4.793384e-06 0.1133971`\
+`#> 2    4 0.03868410 1.752571e-04 0.1404200`\
+`#> 3    8 0.06999088 5.738939e-03 0.1855041`\
+`#> 4   12 0.11073085 2.753790e-02 0.2435263`\
+`#> 5   16 0.16418890 4.374777e-02 0.3587250`
 
 We can also check the probabilities to be in target and overdosing
 intervals:
 
-``` r
+\
+`result1CrmPack``$``next_best``$``A``$``probs`\
+`#>       dose  target overdose`\
+`#>  [1,]  0.1 0.20034  0.05460`\
+`#>  [2,]  0.2 0.27280  0.10590`\
+`#>  [3,]  0.4 0.32488  0.20156`\
+`#>  [4,]  0.8 0.32324  0.34144`\
+`#>  [5,]  1.6 0.28236  0.48714`\
+`#>  [6,]  2.4 0.25191  0.56363`\
+`#>  [7,]  3.6 0.22161  0.63034`\
+`#>  [8,]  5.0 0.19782  0.67646`\
+`#>  [9,]  6.0 0.18614  0.69891`\
+`result1CrmPack``$``next_best``$``B``$``probs`\
+`#>    compound1 compound2 target_prob overdose_prob not_eligible`\
+`#> 1        0.1         0     0.19051       0.07283        FALSE`\
+`#> 2        0.2         0     0.24700       0.12309        FALSE`\
+`#> 3        0.4         0     0.29509       0.20807        FALSE`\
+`#> 4        0.8         0     0.30610       0.33237         TRUE`\
+`#> 5        1.6         0     0.27802       0.47361         TRUE`\
+`#> 6        2.4         0     0.25074       0.55132         TRUE`\
+`#> 7        3.6         0     0.22075       0.62031         TRUE`\
+`#> 8        5.0         0     0.19779       0.66861         TRUE`\
+`#> 9        6.0         0     0.18538       0.69285         TRUE`\
+`#> 10       0.1         8     0.35555       0.12578        FALSE`\
+`#> 11       0.2         8     0.39134       0.19427        FALSE`\
+`#> 12       0.4         8     0.39878       0.29627         TRUE`\
+`#> 13       0.8         8     0.36393       0.42774         TRUE`\
+`#> 14       1.6         8     0.29811       0.56336         TRUE`\
+`#> 15       2.4         8     0.25635       0.63029         TRUE`\
+`#> 16       3.6         8     0.21624       0.68399         TRUE`\
+`#> 17       5.0         8     0.18734       0.71495         TRUE`\
+`#> 18       6.0         8     0.17439       0.72623         TRUE`\
+`#> 19       0.1        12     0.45577       0.17785        FALSE`\
+`#> 20       0.2        12     0.46200       0.25568         TRUE`\
+`#> 21       0.4        12     0.43539       0.36440         TRUE`\
+`#> 22       0.8        12     0.37159       0.49499         TRUE`\
+`#> 23       1.6        12     0.28659       0.61978         TRUE`\
+`#> 24       2.4        12     0.23968       0.67531         TRUE`\
+`#> 25       3.6        12     0.19992       0.71250         TRUE`\
+`#> 26       5.0        12     0.17059       0.72856         TRUE`\
+`#> 27       6.0        12     0.15689       0.73076         TRUE`
 
-result1CrmPack$next_best$A$probs
-#>       dose target overdose
-#>  [1,]  0.1 0.2257   0.0721
-#>  [2,]  0.2 0.2820   0.1445
-#>  [3,]  0.4 0.3192   0.2618
-#>  [4,]  0.8 0.3050   0.4295
-#>  [5,]  1.6 0.2542   0.5932
-#>  [6,]  2.4 0.2133   0.6761
-#>  [7,]  3.6 0.1597   0.7510
-#>  [8,]  5.0 0.1393   0.7929
-#>  [9,]  6.0 0.1326   0.8100
-result1CrmPack$next_best$B$probs
-#>    compound1 compound2 target_prob overdose_prob not_eligible
-#> 1        0.1         0      0.2056        0.0943        FALSE
-#> 2        0.2         0      0.2585        0.1560        FALSE
-#> 3        0.4         0      0.2981        0.2612         TRUE
-#> 4        0.8         0      0.2877        0.4134         TRUE
-#> 5        1.6         0      0.2488        0.5726         TRUE
-#> 6        2.4         0      0.2145        0.6569         TRUE
-#> 7        3.6         0      0.1760        0.7310         TRUE
-#> 8        5.0         0      0.1492        0.7817         TRUE
-#> 9        6.0         0      0.1394        0.8007         TRUE
-#> 10       0.1         8      0.3531        0.1634        FALSE
-#> 11       0.2         8      0.3762        0.2427        FALSE
-#> 12       0.4         8      0.3661        0.3637         TRUE
-#> 13       0.8         8      0.3140        0.5136         TRUE
-#> 14       1.6         8      0.2409        0.6586         TRUE
-#> 15       2.4         8      0.1992        0.7223         TRUE
-#> 16       3.6         8      0.1600        0.7738         TRUE
-#> 17       5.0         8      0.1403        0.7971         TRUE
-#> 18       6.0         8      0.1305        0.8060         TRUE
-#> 19       0.1        12      0.4301        0.2074        FALSE
-#> 20       0.2        12      0.4256        0.2966         TRUE
-#> 21       0.4        12      0.3871        0.4233         TRUE
-#> 22       0.8        12      0.3155        0.5652         TRUE
-#> 23       1.6        12      0.2308        0.6977         TRUE
-#> 24       2.4        12      0.1921        0.7469         TRUE
-#> 25       3.6        12      0.1574        0.7835         TRUE
-#> 26       5.0        12      0.1370        0.7929         TRUE
-#> 27       6.0        12      0.1292        0.7908         TRUE
+## Comparison of parameter posteriors
+
+The toxicity summaries at different doses are strongly dependent because
+they are all transformations of the same small set of model parameters.
+We therefore compare those parameter posteriors directly. The slopes are
+shown on their positive, natural scale: `decider` stores their
+logarithms, whereas `crmPack` stores the exponentiated slopes.
+
+\
+`crm_samples_A`` ``<-`` `[`armSamples`](https://docs.crmpack.org/reference/armSamples.md)`(``result1CrmPack``$``samples``, ``"A"``)`\
+`crm_samples_B`` ``<-`` `[`armSamples`](https://docs.crmpack.org/reference/armSamples.md)`(``result1CrmPack``$``samples``, ``"B"``)`\
+`crm_samples_C`` ``<-`` `[`armSamples`](https://docs.crmpack.org/reference/armSamples.md)`(``result1CrmPack``$``samples``, ``"C"``)`\
+\
+`# Thin only for plotting; all retained draws are still used in the tables.`\
+`n_plot_draws`` ``<-`` ``5000L`\
+`decider_plot_index`` ``<-`` `[`unique`](https://rdrr.io/r/base/unique.html)`(`[`round`](https://rdrr.io/r/base/Round.html)`(`[`seq`](https://rdrr.io/r/base/seq.html)`(`\
+`  ``1``,`\
+`  `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``decider_samples``)``,`\
+`  length.out ``=`` `[`min`](https://rdrr.io/r/base/Extremes.html)`(``n_plot_draws``, `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``decider_samples``)``)`\
+`)``)``)`\
+`crm_plot_index`` ``<-`` `[`unique`](https://rdrr.io/r/base/unique.html)`(`[`round`](https://rdrr.io/r/base/Round.html)`(`[`seq`](https://rdrr.io/r/base/seq.html)`(`\
+`  ``1``,`\
+`  `[`length`](https://rdrr.io/r/base/length.html)`(``crm_samples_A``@``data``$``alpha0``)``,`\
+`  length.out ``=`` `[`min`](https://rdrr.io/r/base/Extremes.html)`(``n_plot_draws``, `[`length`](https://rdrr.io/r/base/length.html)`(``crm_samples_A``@``data``$``alpha0``)``)`\
+`)``)``)`\
+\
+`parameter_labels`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`  ``"Arm A: compound 1 intercept"``,`\
+`  ``"Arm A: compound 1 slope"``,`\
+`  ``"Arm B: compound 1 intercept"``,`\
+`  ``"Arm B: compound 1 slope"``,`\
+`  ``"Arm B: compound 2 intercept"``,`\
+`  ``"Arm B: compound 2 slope"``,`\
+`  ``"Arm B: interaction"``,`\
+`  ``"Arm C: compound 2 intercept"``,`\
+`  ``"Arm C: compound 2 slope"`\
+`)`\
+\
+`decider_parameter_draws`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  implementation ``=`` ``"decider"``,`\
+`  parameter ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``parameter_labels``, each ``=`` `[`length`](https://rdrr.io/r/base/length.html)`(``decider_plot_index``)``)``,`\
+`  value ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    ``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,1]"``, ``decider_study_index``[``"A"``]``)`\
+`    ``]``,`\
+`    `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,2]"``, ``decider_study_index``[``"A"``]``)`\
+`    ``]``)``,`\
+`    ``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,1]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``,`\
+`    `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,2]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``)``,`\
+`    ``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,3]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``,`\
+`    `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,4]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``)``,`\
+`    ``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,5]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``,`\
+`    ``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,3]"``, ``decider_study_index``[``"C"``]``)`\
+`    ``]``,`\
+`    `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`      ``decider_plot_index``,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,4]"``, ``decider_study_index``[``"C"``]``)`\
+`    ``]``)`\
+`  ``)`\
+`)`\
+\
+`crm_parameter_draws`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  implementation ``=`` ``"crmPack"``,`\
+`  parameter ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``parameter_labels``, each ``=`` `[`length`](https://rdrr.io/r/base/length.html)`(``crm_plot_index``)``)``,`\
+`  value ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    ``crm_samples_A``@``data``$``alpha0``[``crm_plot_index``]``,`\
+`    ``crm_samples_A``@``data``$``alpha1``[``crm_plot_index``]``,`\
+`    ``crm_samples_B``@``data``$``alpha0``[``crm_plot_index``, ``1``]``,`\
+`    ``crm_samples_B``@``data``$``alpha1``[``crm_plot_index``, ``1``]``,`\
+`    ``crm_samples_B``@``data``$``alpha0``[``crm_plot_index``, ``2``]``,`\
+`    ``crm_samples_B``@``data``$``alpha1``[``crm_plot_index``, ``2``]``,`\
+`    ``crm_samples_B``@``data``$``eta``[``crm_plot_index``]``,`\
+`    ``crm_samples_C``@``data``$``alpha0``[``crm_plot_index``]``,`\
+`    ``crm_samples_C``@``data``$``alpha1``[``crm_plot_index``]`\
+`  ``)`\
+`)`\
+\
+`parameter_draws`` ``<-`` `[`rbind`](https://rdrr.io/r/base/cbind.html)`(``decider_parameter_draws``, ``crm_parameter_draws``)`\
+`parameter_draws``$``implementation`` ``<-`` `[`factor`](https://rdrr.io/r/base/factor.html)`(`\
+`  ``parameter_draws``$``implementation``,`\
+`  levels ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"decider"``, ``"crmPack"``)`\
+`)`\
+`parameter_draws``$``parameter`` ``<-`` `[`factor`](https://rdrr.io/r/base/factor.html)`(`\
+`  ``parameter_draws``$``parameter``,`\
+`  levels ``=`` ``parameter_labels`\
+`)`
+
+First we compare the parameters for the two monotherapy arms:
+
+\
+`ggplot2``::`[`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)`(`\
+`  ``parameter_draws``[`[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^Arm [AC]"``, ``parameter_draws``$``parameter``)``, ``]``,`\
+`  ``ggplot2``::`[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(`\
+`    x ``=`` ``value``,`\
+`    colour ``=`` ``implementation``,`\
+`    fill ``=`` ``implementation`\
+`  ``)`\
+`)`` ``+`\
+`  ``ggplot2``::`[`geom_density`](https://ggplot2.tidyverse.org/reference/geom_density.html)`(``alpha ``=`` ``0.15``, linewidth ``=`` ``0.6``)`` ``+`\
+`  ``ggplot2``::`[`facet_wrap`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)`(``ggplot2``::`[`vars`](https://ggplot2.tidyverse.org/reference/vars.html)`(``parameter``)``, scales ``=`` ``"free"``, ncol ``=`` ``2``)`` ``+`\
+`  ``ggplot2``::`[`labs`](https://ggplot2.tidyverse.org/reference/labs.html)`(`\
+`    x ``=`` ``NULL``,`\
+`    y ``=`` ``"Posterior density"``,`\
+`    colour ``=`` ``NULL``,`\
+`    fill ``=`` ``NULL`\
+`  ``)`` ``+`\
+`  ``ggplot2``::`[`theme_minimal`](https://ggplot2.tidyverse.org/reference/ggtheme.html)`(``)`` ``+`\
+`  ``ggplot2``::`[`theme`](https://ggplot2.tidyverse.org/reference/theme.html)`(``legend.position ``=`` ``"top"``)`
+
+![plot of chunk
+unnamed-chunk-27](comparison_decider-figures/unnamed-chunk-27-1.png)
+
+plot of chunk unnamed-chunk-27
+
+And then the parameters for the combination arm, including the
+interaction parameter:
+
+\
+`ggplot2``::`[`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html)`(`\
+`  ``parameter_draws``[`[`grepl`](https://rdrr.io/r/base/grep.html)`(``"^Arm B"``, ``parameter_draws``$``parameter``)``, ``]``,`\
+`  ``ggplot2``::`[`aes`](https://ggplot2.tidyverse.org/reference/aes.html)`(`\
+`    x ``=`` ``value``,`\
+`    colour ``=`` ``implementation``,`\
+`    fill ``=`` ``implementation`\
+`  ``)`\
+`)`` ``+`\
+`  ``ggplot2``::`[`geom_density`](https://ggplot2.tidyverse.org/reference/geom_density.html)`(``alpha ``=`` ``0.15``, linewidth ``=`` ``0.6``)`` ``+`\
+`  ``ggplot2``::`[`facet_wrap`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)`(``ggplot2``::`[`vars`](https://ggplot2.tidyverse.org/reference/vars.html)`(``parameter``)``, scales ``=`` ``"free"``, ncol ``=`` ``2``)`` ``+`\
+`  ``ggplot2``::`[`labs`](https://ggplot2.tidyverse.org/reference/labs.html)`(`\
+`    x ``=`` ``NULL``,`\
+`    y ``=`` ``"Posterior density"``,`\
+`    colour ``=`` ``NULL``,`\
+`    fill ``=`` ``NULL`\
+`  ``)`` ``+`\
+`  ``ggplot2``::`[`theme_minimal`](https://ggplot2.tidyverse.org/reference/ggtheme.html)`(``)`` ``+`\
+`  ``ggplot2``::`[`theme`](https://ggplot2.tidyverse.org/reference/theme.html)`(``legend.position ``=`` ``"top"``)`
+
+![plot of chunk
+unnamed-chunk-28](comparison_decider-figures/unnamed-chunk-28-1.png)
+
+plot of chunk unnamed-chunk-28
+
+## Monte Carlo uncertainty of the differences
+
+Overlapping densities alone cannot establish that two posterior
+distributions are equivalent. We therefore calculate chain-aware Monte
+Carlo standard errors (MCSEs) for the quantities compared below. The
+four Stan chains are kept separate; `crmPack` currently uses one JAGS
+chain. For each implementation,
+[`posterior::mcse_mean()`](https://mc-stan.org/posterior/reference/mcse_mean.html)
+accounts for serial autocorrelation through the bulk effective sample
+size. Because the Stan and JAGS fits are independent, the MCSE of their
+difference is
+
+``` math
+\operatorname{MCSE}(\hat\theta_{\text{decider}} -
+                    \hat\theta_{\text{crmPack}})
+=
+\sqrt{\operatorname{MCSE}(\hat\theta_{\text{decider}})^2 +
+      \operatorname{MCSE}(\hat\theta_{\text{crmPack}})^2}.
 ```
+
+The overdose probability is itself the posterior mean of the indicator
+$`I\{p_{\text{DLT}} \geq 0.33\}`$, so the same calculation applies.
+
+\
+`#' Summarize MCMC Means While Preserving Chain Structure`\
+`#'`\
+`#' @param draws A numeric matrix with draws in rows and estimands in columns.`\
+`#' @param n_chains Number of chains, stored as consecutive row blocks.`\
+`#'`\
+`#' @return A data frame with posterior means, MCSEs, ESSs, and split R-hat.`\
+`vignette_mcmc_summary`` ``<-`` ``function``(``draws``, ``n_chains``)`` ``{`\
+`  ``draws`` ``<-`` `[`as.matrix`](https://rdrr.io/r/base/matrix.html)`(``draws``)`\
+`  `[`storage.mode`](https://rdrr.io/r/base/mode.html)`(``draws``)`` ``<-`` ``"double"`\
+`  `[`stopifnot`](https://rdrr.io/r/base/stopifnot.html)`(`[`nrow`](https://rdrr.io/r/base/nrow.html)`(``draws``)`` `[`%%`](https://rdrr.io/r/base/Arithmetic.html)` ``n_chains`` ``==`` ``0L``)`\
+\
+`  ``draws_array`` ``<-`` `[`array`](https://rdrr.io/r/base/array.html)`(`\
+`    ``draws``,`\
+`    dim ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`nrow`](https://rdrr.io/r/base/nrow.html)`(``draws``)`` ``/`` ``n_chains``, ``n_chains``, `[`ncol`](https://rdrr.io/r/base/nrow.html)`(``draws``)``)``,`\
+`    dimnames ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`      iteration ``=`` ``NULL``,`\
+`      chain ``=`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"chain"``, `[`seq_len`](https://rdrr.io/r/base/seq.html)`(``n_chains``)``)``,`\
+`      variable ``=`` `[`colnames`](https://rdrr.io/r/base/colnames.html)`(``draws``)`\
+`    ``)`\
+`  ``)`\
+\
+`  ``posterior``::`[`summarise_draws`](https://mc-stan.org/posterior/reference/draws_summary.html)`(`\
+`    ``posterior``::`[`as_draws_array`](https://mc-stan.org/posterior/reference/draws_array.html)`(``draws_array``)``,`\
+`    mean ``=`` ``mean``,`\
+`    mcse ``=`` ``posterior``::`[`mcse_mean`](https://mc-stan.org/posterior/reference/mcse_mean.html)`,`\
+`    ess ``=`` ``posterior``::`[`ess_bulk`](https://mc-stan.org/posterior/reference/ess_bulk.html)`,`\
+`    rhat ``=`` ``posterior``::`[`rhat`](https://mc-stan.org/posterior/reference/rhat.html)\
+`  ``)`` ``|>`\
+`    `[`as.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``)`\
+`}`\
+\
+`#' Compare Independent MCMC Estimates`\
+`#'`\
+`#' @param decider_draws A matrix containing the four Stan chains.`\
+`#' @param crmPack_draws A matrix containing the single JAGS chain.`\
+`#'`\
+`#' @return A data frame with each estimate and uncertainty of their difference.`\
+`vignette_compare_mcmc`` ``<-`` ``function``(``decider_draws``, ``crmPack_draws``)`` ``{`\
+`  ``decider_summary`` ``<-`` ``vignette_mcmc_summary``(``decider_draws``, n_chains ``=`` ``4L``)`\
+`  ``crmPack_summary`` ``<-`` ``vignette_mcmc_summary``(``crmPack_draws``, n_chains ``=`` ``1L``)`\
+`  ``difference`` ``<-`` ``decider_summary``$``mean`` ``-`` ``crmPack_summary``$``mean`\
+`  ``difference_mcse`` ``<-`` `[`sqrt`](https://rdrr.io/r/base/MathFun.html)`(`\
+`    ``decider_summary``$``mcse``^``2`` ``+`` ``crmPack_summary``$``mcse``^``2`\
+`  ``)`\
+\
+`  `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`    decider ``=`` ``decider_summary``$``mean``,`\
+`    crmPack ``=`` ``crmPack_summary``$``mean``,`\
+`    difference ``=`` ``difference``,`\
+`    difference_mcse ``=`` ``difference_mcse``,`\
+`    z_mcse ``=`` ``difference`` ``/`` ``difference_mcse``,`\
+`    decider_ess ``=`` ``decider_summary``$``ess``,`\
+`    crmPack_ess ``=`` ``crmPack_summary``$``ess``,`\
+`    decider_rhat ``=`` ``decider_summary``$``rhat``,`\
+`    crmPack_rhat ``=`` ``crmPack_summary``$``rhat`\
+`  ``)`\
+`}`\
+\
+`# Calculate DLT probabilities from the decider parameter draws.`\
+`prob_samples_A_decider`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`    ``decider_samples``[`\
+`      ,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,1]"``, ``decider_study_index``[``"A"``]``)`\
+`    ``]``,`\
+`    `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, `[`length`](https://rdrr.io/r/base/length.html)`(``d1``)``)`\
+`  ``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`        ,`\
+`        `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,2]"``, ``decider_study_index``[``"A"``]``)`\
+`      ``]``)``,`\
+`      `[`log`](https://rdrr.io/r/base/Log.html)`(``d1`` ``/`` ``dose_ref1``)`\
+`    ``)`\
+`)`\
+\
+`combo_grid`` ``<-`` `[`as.matrix`](https://rdrr.io/r/base/matrix.html)`(`[`expand.grid`](https://rdrr.io/r/base/expand.grid.html)`(``designArmB``@``design``@``data``@``doseGrid``)``)`\
+`prob_samples_B_decider_comp1`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`    ``decider_samples``[`\
+`      ,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,1]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``,`\
+`    `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``combo_grid``)``)`\
+`  ``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`        ,`\
+`        `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,2]"``, ``decider_study_index``[``"B"``]``)`\
+`      ``]``)``,`\
+`      `[`log`](https://rdrr.io/r/base/Log.html)`(``combo_grid``[``, ``1``]`` ``/`` ``dose_ref1``)`\
+`    ``)`\
+`)`\
+`prob_samples_B_decider_comp2`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`    ``decider_samples``[`\
+`      ,`\
+`      `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,3]"``, ``decider_study_index``[``"B"``]``)`\
+`    ``]``,`\
+`    `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``combo_grid``)``)`\
+`  ``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      `[`exp`](https://rdrr.io/r/base/Log.html)`(``decider_samples``[`\
+`        ,`\
+`        `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,4]"``, ``decider_study_index``[``"B"``]``)`\
+`      ``]``)``,`\
+`      `[`log`](https://rdrr.io/r/base/Log.html)`(``combo_grid``[``, ``2``]`` ``/`` ``dose_ref2``)`\
+`    ``)`\
+`)`\
+`prob_samples_B_decider_independent`` ``<-`` ``prob_samples_B_decider_comp1`` ``+`\
+`  ``prob_samples_B_decider_comp2`` ``-`\
+`  ``prob_samples_B_decider_comp1`` ``*`` ``prob_samples_B_decider_comp2`\
+`prob_samples_B_decider`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`qlogis`](https://rdrr.io/r/stats/Logistic.html)`(``prob_samples_B_decider_independent``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      ``decider_samples``[`\
+`        ,`\
+`        `[`sprintf`](https://rdrr.io/r/base/sprintf.html)`(``"log_ab[%i,5]"``, ``decider_study_index``[``"B"``]``)`\
+`      ``]``,`\
+`      ``(``combo_grid``[``, ``1``]`` ``/`` ``dose_ref1``)`` ``*`` ``(``combo_grid``[``, ``2``]`` ``/`` ``dose_ref2``)`\
+`    ``)`\
+`)`\
+\
+`# Apply the same algebra to the crmPack parameter draws.`\
+`prob_samples_A_formula`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`outer`](https://rdrr.io/r/base/outer.html)`(``crm_samples_A``@``data``$``alpha0``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, `[`length`](https://rdrr.io/r/base/length.html)`(``d1``)``)``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(``crm_samples_A``@``data``$``alpha1``, `[`log`](https://rdrr.io/r/base/Log.html)`(``d1`` ``/`` ``dose_ref1``)``)`\
+`)`\
+`prob_samples_B_comp1`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`outer`](https://rdrr.io/r/base/outer.html)`(``crm_samples_B``@``data``$``alpha0``[``, ``1``]``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``combo_grid``)``)``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      ``crm_samples_B``@``data``$``alpha1``[``, ``1``]``,`\
+`      `[`log`](https://rdrr.io/r/base/Log.html)`(``combo_grid``[``, ``1``]`` ``/`` ``dose_ref1``)`\
+`    ``)`\
+`)`\
+`prob_samples_B_comp2`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`outer`](https://rdrr.io/r/base/outer.html)`(``crm_samples_B``@``data``$``alpha0``[``, ``2``]``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``, `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``combo_grid``)``)``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      ``crm_samples_B``@``data``$``alpha1``[``, ``2``]``,`\
+`      `[`log`](https://rdrr.io/r/base/Log.html)`(``combo_grid``[``, ``2``]`` ``/`` ``dose_ref2``)`\
+`    ``)`\
+`)`\
+`prob_samples_B_independent`` ``<-`` ``prob_samples_B_comp1`` ``+`\
+`  ``prob_samples_B_comp2`` ``-`\
+`  ``prob_samples_B_comp1`` ``*`` ``prob_samples_B_comp2`\
+`prob_samples_B_formula`` ``<-`` `[`plogis`](https://rdrr.io/r/stats/Logistic.html)`(`\
+`  `[`qlogis`](https://rdrr.io/r/stats/Logistic.html)`(``prob_samples_B_independent``)`` ``+`\
+`    `[`outer`](https://rdrr.io/r/base/outer.html)`(`\
+`      ``crm_samples_B``@``data``$``eta``,`\
+`      ``(``combo_grid``[``, ``1``]`` ``/`` ``dose_ref1``)`` ``*`` ``(``combo_grid``[``, ``2``]`` ``/`` ``dose_ref2``)`\
+`    ``)`\
+`)`\
+\
+[`colnames`](https://rdrr.io/r/base/colnames.html)`(``prob_samples_A_decider``)`` ``<-`` `[`colnames`](https://rdrr.io/r/base/colnames.html)`(``prob_samples_A_formula``)`` ``<-`\
+`  `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"dose_"``, ``d1``)`\
+[`colnames`](https://rdrr.io/r/base/colnames.html)`(``prob_samples_B_decider``)`` ``<-`` `[`colnames`](https://rdrr.io/r/base/colnames.html)`(``prob_samples_B_formula``)`` ``<-`\
+`  `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"dose_"``, ``combo_grid``[``, ``1``]``, ``"_"``, ``combo_grid``[``, ``2``]``)`\
+\
+`combo_interest`` ``<-`` ``combo_grid``[``, ``2``]`` ``>`` ``0`\
+`mcse_A_center`` ``<-`` ``vignette_compare_mcmc``(`\
+`  ``prob_samples_A_decider``,`\
+`  ``prob_samples_A_formula`\
+`)`\
+`mcse_A_overdose`` ``<-`` ``vignette_compare_mcmc``(`\
+`  ``prob_samples_A_decider`` ``>=`` ``0.33``,`\
+`  ``prob_samples_A_formula`` ``>`` ``0.33`\
+`)`\
+`mcse_B_center`` ``<-`` ``vignette_compare_mcmc``(`\
+`  ``prob_samples_B_decider``[``, ``combo_interest``]``,`\
+`  ``prob_samples_B_formula``[``, ``combo_interest``]`\
+`)`\
+`mcse_B_overdose`` ``<-`` ``vignette_compare_mcmc``(`\
+`  ``prob_samples_B_decider``[``, ``combo_interest``]`` ``>=`` ``0.33``,`\
+`  ``prob_samples_B_formula``[``, ``combo_interest``]`` ``>`` ``0.33`\
+`)`
 
 ## Comparison of fit
 
@@ -604,74 +987,283 @@ Based on this we can first compare the fit results.
 
 Let’s look at the results for Arm A:
 
-``` r
+\
+`fitTrialADecider`` ``<-`` ``result1``$``` `trial-A` ``` ``|>`` `[`as.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``)`\
+`fitTrialACrmPack`` ``<-`` ``result1CrmPack``$``fit``$``A`\
+`probsTrialACrmPack`` ``<-`` ``result1CrmPack``$``next_best``$``A``$``probs`` ``|>`` `[`as.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``)`\
+`diffTrialA`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  dose ``=`` ``fitTrialACrmPack``$``dose``,`\
+`  center ``=`` ``fitTrialADecider``$``mean`` ``-`` ``fitTrialACrmPack``$``middle``,`\
+`  lower ``=`` ``fitTrialADecider``$``` `q.2.5%` ``` ``-`` ``fitTrialACrmPack``$``lower``,`\
+`  upper ``=`` ``fitTrialADecider``$``` `q.97.5%` ``` ``-`` ``fitTrialACrmPack``$``upper``,`\
+`  target ``=`` ``fitTrialADecider``$``` `P([0.16,0.33))` ``` ``-`` ``probsTrialACrmPack``$``target``,`\
+`  overdose ``=`` ``fitTrialADecider``$``` `P([0.33,1])` ``` ``-`` ``probsTrialACrmPack``$``overdose`\
+`)`\
+`diffTrialA`\
+`#>   dose       center         lower         upper   target overdose`\
+`#> 1  0.1 0.0002262233 -0.0001329968 -0.0014715969  0.00475 -0.00077`\
+`#> 2  0.2 0.0004756962 -0.0001555109  0.0007951688  0.00156  0.00035`\
+`#> 3  0.4 0.0008096753  0.0001035978  0.0020045820 -0.00223  0.00332`\
+`#> 4  0.8 0.0012817021  0.0007643937  0.0004225573  0.00036  0.00199`\
+`#> 5  1.6 0.0019037021  0.0009957709  0.0032955707  0.00231  0.00200`\
+`#> 6  2.4 0.0023112058  0.0008874688  0.0026552100 -0.00015  0.00403`\
+`#> 7  3.6 0.0027297339  0.0009520506  0.0018217285 -0.00001  0.00349`\
+`#> 8  5.0 0.0030550875  0.0013010314  0.0012763310 -0.00072  0.00408`\
+`#> 9  6.0 0.0032345832  0.0013549436  0.0012778866 -0.00132  0.00436`
 
-fitTrialADecider <- result1$`trial-A` |> as.data.frame()
-fitTrialACrmPack <- result1CrmPack$fit$A
-probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
-diffTrialA <- data.frame(
-  dose = fitTrialACrmPack$dose,
-  center = fitTrialADecider$mean - fitTrialACrmPack$middle,
-  lower = fitTrialADecider$`q.2.5%` - fitTrialACrmPack$lower,
-  upper = fitTrialADecider$`q.97.5%` - fitTrialACrmPack$upper,
-  target = fitTrialADecider$`P([0.16,0.33))` - probsTrialACrmPack$target,
-  overdose = fitTrialADecider$`P([0.33,1])` - probsTrialACrmPack$overdose
-)
-diffTrialA
-#>   dose       center         lower       upper   target overdose
-#> 1  0.1 -0.009312929  0.0011968515 -0.03836388 -0.02273 -0.01723
-#> 2  0.2 -0.015273703  0.0014589330 -0.03479491 -0.00672 -0.03845
-#> 3  0.4 -0.024530145  0.0005957135 -0.03579893  0.00465 -0.05676
-#> 4  0.8 -0.037755406 -0.0026353972 -0.02165919  0.01822 -0.08577
-#> 5  1.6 -0.053063266 -0.0120963908 -0.01068291  0.03013 -0.10358
-#> 6  2.4 -0.061552748 -0.0210893069 -0.01593032  0.03934 -0.10899
-#> 7  3.6 -0.069051821 -0.0314920062 -0.01399350  0.06132 -0.11720
-#> 8  5.0 -0.074168100 -0.0369150894 -0.01186000  0.05679 -0.11241
-#> 9  6.0 -0.076561259 -0.0409469286 -0.01080363  0.05115 -0.10624
-```
+The corresponding differences relative to their combined MCSEs are: They
+are recomputed from the unrounded posterior draws, so they can differ
+slightly from the five-decimal `decider` summaries above.
+
+\
+`mcseDiffTrialA`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  dose ``=`` ``d1``,`\
+`  center ``=`` ``mcse_A_center``$``difference``,`\
+`  center_mcse ``=`` ``mcse_A_center``$``difference_mcse``,`\
+`  center_z ``=`` ``mcse_A_center``$``z_mcse``,`\
+`  overdose ``=`` ``mcse_A_overdose``$``difference``,`\
+`  overdose_mcse ``=`` ``mcse_A_overdose``$``difference_mcse``,`\
+`  overdose_z ``=`` ``mcse_A_overdose``$``z_mcse`\
+`)`\
+`mcseDiffTrialA`\
+`#>   dose       center  center_mcse  center_z overdose overdose_mcse overdose_z`\
+`#> 1  0.1 0.0002223525 0.0004673296 0.4757938 -0.00077   0.001066215 -0.7221810`\
+`#> 2  0.2 0.0004708032 0.0005417377 0.8690612  0.00035   0.001427666  0.2451555`\
+`#> 3  0.4 0.0008134503 0.0006727561 1.2091310  0.00332   0.001820818  1.8233561`\
+`#> 4  0.8 0.0012866927 0.0008804576 1.4613908  0.00199   0.002186950  0.9099430`\
+`#> 5  1.6 0.0019070591 0.0011223435 1.6991759  0.00200   0.002407911  0.8305955`\
+`#> 6  2.4 0.0023101820 0.0012512718 1.8462671  0.00403   0.002447100  1.6468475`\
+`#> 7  3.6 0.0027256945 0.0013578306 2.0073892  0.00349   0.002415865  1.4446169`\
+`#> 8  5.0 0.0030580359 0.0014255956 2.1450936  0.00408   0.002365669  1.7246704`\
+`#> 9  6.0 0.0032333576 0.0014558659 2.2209172  0.00436   0.002336136  1.8663297`
 
 And then the results for Arm B:
 
-``` r
+\
+`fitTrialBDecider`` ``<-`` ``result1``$``` `trial-B` ``` ``|>`` `[`as.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``)`\
+`fitTrialBCrmPack`` ``<-`` ``result1CrmPack``$``fit``$``B`` ``|>`` ``dplyr``::`[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(``compound2`` ``>`` ``0``)`\
+`probsTrialBCrmPack`` ``<-`` ``result1CrmPack``$``next_best``$``B``$``probs`` ``|>`\
+`  `[`as.data.frame`](https://rdrr.io/r/base/as.data.frame.html)`(``)`` ``|>`\
+`  ``dplyr``::`[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(``compound2`` ``>`` ``0``)`\
+`diffTrialB`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  dose1 ``=`` ``fitTrialBCrmPack``$``compound1``,`\
+`  dose2 ``=`` ``fitTrialBCrmPack``$``compound2``,`\
+`  center ``=`` ``fitTrialBDecider``$``mean`` ``-`` ``fitTrialBCrmPack``$``middle``,`\
+`  lower ``=`` ``fitTrialBDecider``$``` `q.2.5%` ``` ``-`` ``fitTrialBCrmPack``$``lower``,`\
+`  upper ``=`` ``fitTrialBDecider``$``` `q.97.5%` ``` ``-`` ``fitTrialBCrmPack``$``upper``,`\
+`  target ``=`` ``fitTrialBDecider``$``` `P([0.16,0.33))` ``` ``-`` ``probsTrialBCrmPack``$``target``,`\
+`  overdose ``=`` ``fitTrialBDecider``$``` `P([0.33,1])` ``` ``-`` ``probsTrialBCrmPack``$``overdose`\
+`)`\
+`diffTrialB`\
+`#>    dose1 dose2       center         lower        upper   target overdose`\
+`#> 1    0.1     8 0.0004288336  1.229470e-04 1.485720e-03  0.00148  0.00077`\
+`#> 2    0.2     8 0.0006397378  7.284038e-05 1.528382e-03  0.00021  0.00126`\
+`#> 3    0.4     8 0.0009232087  3.940136e-04 2.899002e-03 -0.00175  0.00266`\
+`#> 4    0.8     8 0.0013377451  7.303348e-04 9.331388e-04 -0.00110  0.00299`\
+`#> 5    1.6     8 0.0018218572  2.620494e-04 3.253747e-04 -0.00107  0.00253`\
+`#> 6    2.4     8 0.0020845536  8.034064e-04 2.162077e-04 -0.00090  0.00311`\
+`#> 7    3.6     8 0.0023118875  9.572318e-04 2.679834e-04 -0.00120  0.00364`\
+`#> 8    5.0     8 0.0024794277  1.374449e-03 1.133994e-04 -0.00048  0.00315`\
+`#> 9    6.0     8 0.0025413613  1.497847e-03 2.246740e-04 -0.00129  0.00327`\
+`#> 10   0.1    12 0.0005311862  1.334218e-04 1.525592e-03 -0.00086  0.00225`\
+`#> 11   0.2    12 0.0007070475  1.751336e-04 3.493077e-03  0.00106  0.00133`\
+`#> 12   0.4    12 0.0009590911  3.986392e-04 2.977744e-03 -0.00057  0.00258`\
+`#> 13   0.8    12 0.0013186143  3.619614e-04 1.405876e-03 -0.00230  0.00364`\
+`#> 14   1.6    12 0.0017044294 -1.750290e-04 6.995063e-05 -0.00196  0.00348`\
+`#> 15   2.4    12 0.0019091405  1.654154e-04 7.087091e-04 -0.00276  0.00422`\
+`#> 16   3.6    12 0.0020606496  4.910071e-04 5.787121e-04 -0.00352  0.00426`\
+`#> 17   5.0    12 0.0021414062 -4.371676e-04 3.796025e-04 -0.00092  0.00147`\
+`#> 18   6.0    12 0.0021334943  3.197200e-04 3.129978e-04 -0.00109  0.00176`
 
-fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
-fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
-probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
-  as.data.frame() |>
-  dplyr::filter(compound2 > 0)
-diffTrialB <- data.frame(
-  dose1 = fitTrialBCrmPack$compound1,
-  dose2 = fitTrialBCrmPack$compound2,
-  center = fitTrialBDecider$mean - fitTrialBCrmPack$middle,
-  lower = fitTrialBDecider$`q.2.5%` - fitTrialBCrmPack$lower,
-  upper = fitTrialBDecider$`q.97.5%` - fitTrialBCrmPack$upper,
-  target = fitTrialBDecider$`P([0.16,0.33))` - probsTrialBCrmPack$target,
-  overdose = fitTrialBDecider$`P([0.33,1])` - probsTrialBCrmPack$overdose
-)
-diffTrialB
-#>    dose1 dose2       center         lower        upper  target overdose
-#> 1    0.1     8 -0.013407244  0.0008408838 -0.037298554 0.00210 -0.03621
-#> 2    0.2     8 -0.017975764  0.0023254272 -0.042122429 0.01322 -0.04741
-#> 3    0.4     8 -0.024925547  0.0032199789 -0.041385400 0.03085 -0.06406
-#> 4    0.8     8 -0.034955970  0.0008576813 -0.031084066 0.04769 -0.08259
-#> 5    1.6     8 -0.047252126 -0.0068901281 -0.022722205 0.05745 -0.09330
-#> 6    2.4     8 -0.054281766 -0.0134179329 -0.016707430 0.05589 -0.08780
-#> 7    3.6     8 -0.060062918 -0.0190019862 -0.012279097 0.05483 -0.08556
-#> 8    5.0     8 -0.063123072 -0.0209867889 -0.008684232 0.04607 -0.07798
-#> 9    6.0     8 -0.063967492 -0.0213281948 -0.006802991 0.04118 -0.07519
-#> 10   0.1    12 -0.008050737  0.0037744175 -0.030026757 0.02411 -0.02855
-#> 11   0.2    12 -0.012687201  0.0034751850 -0.032337455 0.03426 -0.03865
-#> 12   0.4    12 -0.019683791  0.0010056406 -0.033830159 0.04656 -0.05563
-#> 13   0.8    12 -0.029675878 -0.0015714757 -0.025890884 0.05313 -0.06629
-#> 14   1.6    12 -0.041683818 -0.0092596545 -0.020454517 0.05379 -0.07421
-#> 15   2.4    12 -0.048204631 -0.0120337843 -0.014247833 0.04540 -0.06748
-#> 16   3.6    12 -0.052955635 -0.0160240979 -0.011178377 0.03904 -0.06666
-#> 17   5.0    12 -0.054675371 -0.0147378070 -0.006250009 0.03174 -0.06113
-#> 18   6.0    12 -0.054580516 -0.0142812475 -0.004529342 0.02588 -0.05715
-```
+And the MCSE-standardized differences for Arm B are:
 
-So these differences look relatively small, and there does not seem to
-be any systematic bias in the differences.
+\
+`mcseDiffTrialB`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  dose1 ``=`` ``combo_grid``[``combo_interest``, ``1``]``,`\
+`  dose2 ``=`` ``combo_grid``[``combo_interest``, ``2``]``,`\
+`  center ``=`` ``mcse_B_center``$``difference``,`\
+`  center_mcse ``=`` ``mcse_B_center``$``difference_mcse``,`\
+`  center_z ``=`` ``mcse_B_center``$``z_mcse``,`\
+`  overdose ``=`` ``mcse_B_overdose``$``difference``,`\
+`  overdose_mcse ``=`` ``mcse_B_overdose``$``difference_mcse``,`\
+`  overdose_z ``=`` ``mcse_B_overdose``$``z_mcse`\
+`)`\
+`mcseDiffTrialB`\
+`#>    dose1 dose2       center  center_mcse  center_z overdose overdose_mcse`\
+`#> 1    0.1     8 0.0004310782 0.0005620182 0.7670182  0.00077   0.001534168`\
+`#> 2    0.2     8 0.0006361515 0.0006275757 1.0136649  0.00126   0.001787252`\
+`#> 3    0.4     8 0.0009252088 0.0007274786 1.2718021  0.00266   0.002033010`\
+`#> 4    0.8     8 0.0013418357 0.0008813283 1.5225151  0.00299   0.002274193`\
+`#> 5    1.6     8 0.0018196320 0.0010782980 1.6875039  0.00253   0.002362027`\
+`#> 6    2.4     8 0.0020820910 0.0011949730 1.7423749  0.00311   0.002340537`\
+`#> 7    3.6     8 0.0023141915 0.0013005579 1.7793837  0.00364   0.002274389`\
+`#> 8    5.0     8 0.0024751667 0.0013755899 1.7993493  0.00315   0.002215618`\
+`#> 9    6.0     8 0.0025378890 0.0014139972 1.7948331  0.00327   0.002186204`\
+`#> 10   0.1    12 0.0005273417 0.0005701111 0.9249805  0.00225   0.001762270`\
+`#> 11   0.2    12 0.0007085024 0.0006266937 1.1305402  0.00133   0.001952396`\
+`#> 12   0.4    12 0.0009630238 0.0007171145 1.3429149  0.00258   0.002156534`\
+`#> 13   0.8    12 0.0013219148 0.0008615928 1.5342687  0.00364   0.002295372`\
+`#> 14   1.6    12 0.0017093623 0.0010531967 1.6230228  0.00348   0.002305798`\
+`#> 15   2.4    12 0.0019079102 0.0011713344 1.6288348  0.00422   0.002252137`\
+`#> 16   3.6    12 0.0020653852 0.0012851403 1.6071281  0.00426   0.002190581`\
+`#> 17   5.0    12 0.0021397686 0.0013740135 1.5573126  0.00147   0.002148382`\
+`#> 18   6.0    12 0.0021353553 0.0014232450 1.5003427  0.00176   0.002130431`\
+`#>    overdose_z`\
+`#> 1   0.5019007`\
+`#> 2   0.7049931`\
+`#> 3   1.3084046`\
+`#> 4   1.3147522`\
+`#> 5   1.0711139`\
+`#> 6   1.3287548`\
+`#> 7   1.6004299`\
+`#> 8   1.4217250`\
+`#> 9   1.4957436`\
+`#> 10  1.2767623`\
+`#> 11  0.6812143`\
+`#> 12  1.1963642`\
+`#> 13  1.5857998`\
+`#> 14  1.5092391`\
+`#> 15  1.8737756`\
+`#> 16  1.9446891`\
+`#> 17  0.6842359`\
+`#> 18  0.8261237`
+
+For context, these are the minimum bulk ESS and maximum split R-hat
+values across doses:
+
+\
+`mcseDiagnostics`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  arm ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"A"``, ``"B"``)``, each ``=`` ``2``)``,`\
+`  estimand ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"center"``, ``"overdose"``)``, times ``=`` ``2``)``,`\
+`  min_decider_ess ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_center``$``decider_ess``)``,`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_overdose``$``decider_ess``)``,`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_center``$``decider_ess``)``,`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_overdose``$``decider_ess``)`\
+`  ``)``,`\
+`  min_crmPack_ess ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_center``$``crmPack_ess``)``,`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_overdose``$``crmPack_ess``)``,`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_center``$``crmPack_ess``)``,`\
+`    `[`min`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_overdose``$``crmPack_ess``)`\
+`  ``)``,`\
+`  max_decider_rhat ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_center``$``decider_rhat``)``,`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_overdose``$``decider_rhat``)``,`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_center``$``decider_rhat``)``,`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_overdose``$``decider_rhat``)`\
+`  ``)``,`\
+`  max_crmPack_rhat ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_center``$``crmPack_rhat``)``,`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_A_overdose``$``crmPack_rhat``)``,`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_center``$``crmPack_rhat``)``,`\
+`    `[`max`](https://rdrr.io/r/base/Extremes.html)`(``mcse_B_overdose``$``crmPack_rhat``)`\
+`  ``)`\
+`)`\
+`mcseDiagnostics``[``, ``-``(``1``:``2``)``]`` ``<-`` `[`signif`](https://rdrr.io/r/base/Round.html)`(``mcseDiagnostics``[``, ``-``(``1``:``2``)``]``, ``6``)`\
+`mcseDiagnostics`\
+`#>   arm estimand min_decider_ess min_crmPack_ess max_decider_rhat`\
+`#> 1   A   center         92528.1         50161.9          1.00006`\
+`#> 2   A overdose         83880.7         65749.2          1.00002`\
+`#> 3   B   center         97983.1         56767.5          1.00004`\
+`#> 4   B overdose         92194.7         73712.0          1.00003`\
+`#>   max_crmPack_rhat`\
+`#> 1          1.00000`\
+`#> 2          1.00000`\
+`#> 3          1.00003`\
+`#> 4          1.00007`
+
+For the single JAGS chain, split R-hat compares the first and second
+halves of the chain; unlike the four-chain Stan R-hat, it cannot detect
+disagreement between independently initialized chains.
+
+The overdose differences do not need to be balanced around zero across
+doses. All rows in each table use the same posterior parameter draws, so
+their Monte Carlo errors are strongly correlated. Indeed, the posterior
+mean toxicity from `decider` is slightly higher at every dose in both
+arms. A small coherent location or slope difference therefore tends to
+move all overdose probabilities in the same direction as well. The rows
+are not independent replicates for which an approximately equal number
+of positive and negative signs would be expected.
+
+We can also isolate the downstream calculation from MCMC variation. The
+following code applies the algebra used by `decider` to the `crmPack`
+parameter draws and compares it with
+[`crmPack::prob()`](https://docs.crmpack.org/reference/prob.md). It also
+checks the only syntactic interval difference: `decider` counts toxicity
+probabilities greater than or equal to 0.33, while `crmPack` uses
+probabilities strictly greater than 0.33.
+
+\
+`prob_samples_A_crmPack`` ``<-`` `[`vapply`](https://rdrr.io/r/base/lapply.html)`(`\
+`  ``d1``,`\
+`  ``function``(``current_dose``)`` ``{`\
+`    `[`prob`](https://docs.crmpack.org/reference/prob.md)`(`\
+`      dose ``=`` `[`rep`](https://rdrr.io/r/base/rep.html)`(``current_dose``, `[`length`](https://rdrr.io/r/base/length.html)`(``crm_samples_A``@``data``$``alpha0``)``)``,`\
+`      model ``=`` ``mono_model1``,`\
+`      samples ``=`` ``crm_samples_A`\
+`    ``)`\
+`  ``}``,`\
+`  `[`numeric`](https://rdrr.io/r/base/numeric.html)`(`[`length`](https://rdrr.io/r/base/length.html)`(``crm_samples_A``@``data``$``alpha0``)``)`\
+`)`\
+\
+`prob_samples_B_crmPack`` ``<-`` `[`prob`](https://docs.crmpack.org/reference/prob.md)`(`\
+`  dose ``=`` ``combo_grid``,`\
+`  model ``=`` ``combo_model``,`\
+`  samples ``=`` ``crm_samples_B`\
+`)`\
+\
+`all_formula_probabilities`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`  ``prob_samples_A_formula``,`\
+`  ``prob_samples_B_formula`\
+`)`\
+`downstream_check`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`\
+`  max_abs_probability_difference_A ``=`` `[`max`](https://rdrr.io/r/base/Extremes.html)`(`[`abs`](https://rdrr.io/r/base/MathFun.html)`(`\
+`    ``prob_samples_A_crmPack`` ``-`` ``prob_samples_A_formula`\
+`  ``)``)``,`\
+`  max_abs_probability_difference_B ``=`` `[`max`](https://rdrr.io/r/base/Extremes.html)`(`[`abs`](https://rdrr.io/r/base/MathFun.html)`(`\
+`    ``prob_samples_B_crmPack`` ``-`` ``prob_samples_B_formula`\
+`  ``)``)``,`\
+`  draws_exactly_at_0.33 ``=`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``all_formula_probabilities`` ``==`` ``0.33``)``,`\
+`  max_overdose_difference_due_to_boundary ``=`` `[`max`](https://rdrr.io/r/base/Extremes.html)`(`[`abs`](https://rdrr.io/r/base/MathFun.html)`(`\
+`    `[`colMeans`](https://rdrr.io/r/base/colSums.html)`(``prob_samples_B_formula`` ``>=`` ``0.33``)`` ``-`\
+`      `[`colMeans`](https://rdrr.io/r/base/colSums.html)`(``prob_samples_B_formula`` ``>`` ``0.33``)`\
+`  ``)``)`\
+`)`\
+[`signif`](https://rdrr.io/r/base/Round.html)`(``downstream_check``, ``3``)`\
+`#>        max_abs_probability_difference_A        max_abs_probability_difference_B `\
+`#>                                0.00e+00                                2.22e-16 `\
+`#>                   draws_exactly_at_0.33 max_overdose_difference_due_to_boundary `\
+`#>                                0.00e+00                                0.00e+00`
+
+Thus the probability transformation and overdose counting do not explain
+the small systematic sign. Whether the remaining differences can be
+attributed to Monte Carlo error must instead be assessed using the
+MCSE-standardized differences above. Because an MCMC draw moves the
+entire dose-toxicity curve coherently, neither the raw number of
+positive signs nor the number of doses whose standardized difference
+exceeds a threshold should be treated as a set of independent tests.
+
+For this run, all overdose differences are within 1.95 combined MCSEs.
+The Arm B posterior mean differences are within 1.80 MCSEs. The Arm A
+posterior mean differences increase with dose and reach 2.01, 2.15, and
+2.22 MCSEs at the three highest doses. The overdose results are
+therefore compatible with Monte Carlo uncertainty at the resolution of
+these fits, but the coherent Arm A mean shift is mild evidence that
+Monte Carlo error may not explain every observed difference.
+
+The original version of this comparison used 10,000 retained draws from
+one centered JAGS chain. That was not sufficient for this hierarchical
+model: changing the random seed materially changed some target and
+overdose probabilities. The hierarchical JAGS model now uses the same
+type of non-centered parameterization as the Stan model: independent
+standard-normal variables are transformed using the pool means,
+between-trial standard deviations, and the analytic Cholesky factor for
+each correlated pair. The generated standard-normal hypermean nodes use
+a reserved `z_mu_` prefix, keeping them distinct from public hypermeans
+even for pool-name pairs such as `"x"` and `"x_z"`. This helps to
+increase the effective sample size (ESS) a lot for the arm-level and
+hypermean parameters, which mixed poorly in the centered model.
 
 ## Comparison of model code
 
@@ -968,68 +1560,69 @@ Here we have the following JAGS model:
         alpha0_B[2L] <- alpha0_drug2_B
         alpha1_B[1L] <- alpha1_drug1_B
         alpha1_B[2L] <- alpha1_drug2_B
-        eta_B ~ dnorm(eta_gamma_B, eta_tau_B)
         alpha0_C <- theta_C[1]
         alpha1_C <- exp(theta_C[2])
-        theta_A[1:2] ~ dmnorm(mu_comp1_corr[], prec_comp1_corr[, 
-            ])
-        theta_drug1_B[1:2] ~ dmnorm(mu_comp1_corr[], prec_comp1_corr[, 
-            ])
-        mu_comp1_corr[1] <- mu_comp1_intercept
-        mu_comp1_corr[2] <- mu_comp1_slope
+        theta_A_z[1] ~ dnorm(0, 1)
+        theta_A_z[2] ~ dnorm(0, 1)
+        theta_A[1] <- mu_comp1_intercept + tau_comp1_intercept * 
+            theta_A_z[1]
+        theta_A[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 * 
+            theta_A_z[1] + sqrt(1 - pow(rho_comp1, 2)) * theta_A_z[2])
+        theta_drug1_B_z[1] ~ dnorm(0, 1)
+        theta_drug1_B_z[2] ~ dnorm(0, 1)
+        theta_drug1_B[1] <- mu_comp1_intercept + tau_comp1_intercept * 
+            theta_drug1_B_z[1]
+        theta_drug1_B[2] <- mu_comp1_slope + tau_comp1_slope * (rho_comp1 * 
+            theta_drug1_B_z[1] + sqrt(1 - pow(rho_comp1, 2)) * theta_drug1_B_z[2])
         rho_comp1 ~ dunif(rho_comp1_lower, rho_comp1_upper)
-        prec_comp1_corr[1, 1] <- 1/(pow(tau_comp1_intercept, 2) * 
-            (1 - pow(rho_comp1, 2)))
-        prec_comp1_corr[2, 2] <- 1/(pow(tau_comp1_slope, 2) * (1 - 
-            pow(rho_comp1, 2)))
-        prec_comp1_corr[1, 2] <- -rho_comp1/(tau_comp1_intercept * 
-            tau_comp1_slope * (1 - pow(rho_comp1, 2)))
-        prec_comp1_corr[2, 1] <- prec_comp1_corr[1, 2]
-        mu_comp1_intercept ~ dnorm(mu_comp1_intercept_mean, pow(mu_comp1_intercept_sd, 
-            -2))
+        z_mu_comp1_intercept ~ dnorm(0, 1)
+        mu_comp1_intercept <- mu_comp1_intercept_mean + mu_comp1_intercept_sd * 
+            z_mu_comp1_intercept
         tau_comp1_intercept ~ dlnorm(tau_comp1_intercept_meanlog, 
             pow(tau_comp1_intercept_sdlog, -2))
-        mu_comp1_slope ~ dnorm(mu_comp1_slope_mean, pow(mu_comp1_slope_sd, 
-            -2))
+        z_mu_comp1_slope ~ dnorm(0, 1)
+        mu_comp1_slope <- mu_comp1_slope_mean + mu_comp1_slope_sd * 
+            z_mu_comp1_slope
         tau_comp1_slope ~ dlnorm(tau_comp1_slope_meanlog, pow(tau_comp1_slope_sdlog, 
             -2))
-        theta_drug2_B[1:2] ~ dmnorm(mu_comp2_corr[], prec_comp2_corr[, 
-            ])
-        theta_C[1:2] ~ dmnorm(mu_comp2_corr[], prec_comp2_corr[, 
-            ])
-        mu_comp2_corr[1] <- mu_comp2_intercept
-        mu_comp2_corr[2] <- mu_comp2_slope
+        theta_drug2_B_z[1] ~ dnorm(0, 1)
+        theta_drug2_B_z[2] ~ dnorm(0, 1)
+        theta_drug2_B[1] <- mu_comp2_intercept + tau_comp2_intercept * 
+            theta_drug2_B_z[1]
+        theta_drug2_B[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 * 
+            theta_drug2_B_z[1] + sqrt(1 - pow(rho_comp2, 2)) * theta_drug2_B_z[2])
+        theta_C_z[1] ~ dnorm(0, 1)
+        theta_C_z[2] ~ dnorm(0, 1)
+        theta_C[1] <- mu_comp2_intercept + tau_comp2_intercept * 
+            theta_C_z[1]
+        theta_C[2] <- mu_comp2_slope + tau_comp2_slope * (rho_comp2 * 
+            theta_C_z[1] + sqrt(1 - pow(rho_comp2, 2)) * theta_C_z[2])
         rho_comp2 ~ dunif(rho_comp2_lower, rho_comp2_upper)
-        prec_comp2_corr[1, 1] <- 1/(pow(tau_comp2_intercept, 2) * 
-            (1 - pow(rho_comp2, 2)))
-        prec_comp2_corr[2, 2] <- 1/(pow(tau_comp2_slope, 2) * (1 - 
-            pow(rho_comp2, 2)))
-        prec_comp2_corr[1, 2] <- -rho_comp2/(tau_comp2_intercept * 
-            tau_comp2_slope * (1 - pow(rho_comp2, 2)))
-        prec_comp2_corr[2, 1] <- prec_comp2_corr[1, 2]
-        mu_comp2_intercept ~ dnorm(mu_comp2_intercept_mean, pow(mu_comp2_intercept_sd, 
-            -2))
+        z_mu_comp2_intercept ~ dnorm(0, 1)
+        mu_comp2_intercept <- mu_comp2_intercept_mean + mu_comp2_intercept_sd * 
+            z_mu_comp2_intercept
         tau_comp2_intercept ~ dlnorm(tau_comp2_intercept_meanlog, 
             pow(tau_comp2_intercept_sdlog, -2))
-        mu_comp2_slope ~ dnorm(mu_comp2_slope_mean, pow(mu_comp2_slope_sd, 
-            -2))
+        z_mu_comp2_slope ~ dnorm(0, 1)
+        mu_comp2_slope <- mu_comp2_slope_mean + mu_comp2_slope_sd * 
+            z_mu_comp2_slope
         tau_comp2_slope ~ dlnorm(tau_comp2_slope_meanlog, pow(tau_comp2_slope_sdlog, 
             -2))
+        eta_B_z ~ dnorm(0, 1)
+        eta_B <- mu_eta + tau_eta * eta_B_z
+        z_mu_eta ~ dnorm(0, 1)
+        mu_eta <- mu_eta_mean + mu_eta_sd * z_mu_eta
+        tau_eta ~ dlnorm(tau_eta_meanlog, pow(tau_eta_sdlog, -2))
     }
 
 ### Conclusion
 
-There are still some minor differences:
-
-- In `decider`, the $`\eta`$ parameter is part of the 5-parameter
-  hierarchical vector and has its own hypermean and heterogeneity. In
-  `crmPack`, the $`\eta`$ parameter is not part of the hierarchical
-  vector. When there is only combo arm then this does not matter.
-- JAGS uses Bernoulli observations, Stan uses binomial cohort counts,
-  but the likelihoods are equivalent.
-
-Apart from these, the probabilistic models are equivalent. We could also
-see that in the fit results which are very close to each other.
+We could see in this example that the `crmPack` and `decider` models are
+equivalent. This is a welcome independent validation of both of the
+packages with regards to the implementation of the hierarchical
+combination model. The MCMC results in the given fit example are
+compatible. Further improvements can be made in the future with multiple
+JAGS chains.
 
 ## References
 

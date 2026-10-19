@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -104,7 +105,7 @@ Daniel Sabanés Bové</h4>
             
             <h4 data-toc-skip class="date">02 January 2019</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/vignettes/example.Rmd" class="external-link"><code>vignettes/example.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/vignettes/example.Rmd" class="external-link"><code>vignettes/example.Rmd</code></a></small>
       <div class="d-none name"><code>example.Rmd</code></div>
     </div>
 
@@ -305,16 +306,16 @@ follows:</p>
 <span><span class="co">#&gt;   .. .. ..@ .Data: num 56</span></span>
 <span><span class="co">#&gt;   ..@ datamodel      :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 290 17 295 5 17 5 290 295</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ priormodel     :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 146 18 150 5 18 5 146 150</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ modelspecs     :function (from_prior)  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ init           :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ datanames      : chr [1:3] "nObs" "y" "x"</span></span>
 <span><span class="co">#&gt;   ..@ datanames_prior: chr(0) </span></span>
 <span><span class="co">#&gt;   ..@ sample         : chr [1:2] "alpha0" "alpha1"</span></span></code></pre></div>
@@ -515,7 +516,7 @@ dose of 0.1 mg and a maximum dose of 100 mg:</p>
 <span><span class="co">#&gt; Emini is: 0.05912244288</span></span>
 <span><span class="co">#&gt; xmini are:</span></span>
 <span><span class="co">#&gt; 0.5995305301 0.6542658519 1.344683068 0.003274296776 0.04149785291 </span></span>
-<span><span class="co">#&gt; Totally it used 16.361409 secs</span></span>
+<span><span class="co">#&gt; Totally it used 30.668903 secs</span></span>
 <span><span class="co">#&gt; No. of function call is: 10483</span></span>
 <span><span class="co">#&gt; Algorithm reached max number of iterations.</span></span></code></pre></div>
 <p>We use a few grid points between the minimum and the maximum to guide
@@ -581,16 +582,16 @@ contained in the <code>model</code> list element:</p>
 <span><span class="co">#&gt;   .. .. ..@ .Data: num 50</span></span>
 <span><span class="co">#&gt;   ..@ datamodel      :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 220 17 225 5 17 5 220 225</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ priormodel     :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 226 18 230 5 18 5 226 230</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ modelspecs     :function (from_prior)  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 151 18 157 5 18 5 151 157</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ init           :function ()  </span></span>
 <span><span class="co">#&gt;   .. ..- attr(*, "srcref")= 'srcref' int [1:8] 158 12 160 5 12 5 158 160</span></span>
-<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x8fcb783c0&gt; </span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x753f7d1150&gt; </span></span>
 <span><span class="co">#&gt;   ..@ datanames      : chr [1:3] "nObs" "y" "x"</span></span>
 <span><span class="co">#&gt;   ..@ datanames_prior: chr(0) </span></span>
 <span><span class="co">#&gt;   ..@ sample         : chr [1:2] "alpha0" "alpha1"</span></span></code></pre></div>
@@ -1442,8 +1443,8 @@ shown. In the current example we have</p>
 <span><span class="co">#&gt; 16   24    3     18.0 FALSE       -25</span></span>
 <span><span class="co">#&gt; 17   30    0     38.0 FALSE        27</span></span>
 <span><span class="co">#&gt; 18   30    1     38.0 FALSE        27</span></span>
-<span><span class="co">#&gt; 19   30    2     36.0 FALSE        20</span></span>
-<span><span class="co">#&gt; 20   30    3     28.0 FALSE        -7</span></span>
+<span><span class="co">#&gt; 19   30    2     34.0 FALSE        13</span></span>
+<span><span class="co">#&gt; 20   30    3     26.0 FALSE       -13</span></span>
 <span><span class="co">#&gt; 21   38    0     50.0 FALSE        32</span></span>
 <span><span class="co">#&gt; 22   38    1     50.0 FALSE        32</span></span>
 <span><span class="co">#&gt; 23   38    2     42.0 FALSE        11</span></span>
@@ -1451,7 +1452,7 @@ shown. In the current example we have</p>
 <span><span class="co">#&gt; 25   50    0     58.0  TRUE        16</span></span>
 <span><span class="co">#&gt; 26   50    1     54.0  TRUE         8</span></span>
 <span><span class="co">#&gt; 27   50    2     50.0  TRUE         0</span></span>
-<span><span class="co">#&gt; 28   50    3     44.0  TRUE       -12</span></span></code></pre></div>
+<span><span class="co">#&gt; 28   50    3     46.0  TRUE        -8</span></span></code></pre></div>
 <p>Note that it is important to set a seed, since minor changes might
 occur due to sampling variations. However, the <code>mcmcOptions</code>
 parameter should be chosen in order to minimize such variation. The
@@ -1517,10 +1518,10 @@ increased of course to at least 500:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span>
 <span><span class="co">#&gt; elapsed </span></span>
-<span><span class="co">#&gt;  45.932</span></span></code></pre></div>
+<span><span class="co">#&gt; 181.696</span></span></code></pre></div>
 <p>We have wrapped the call to <code>simulate</code> in a
 <code>system.time</code> to obtain the required time for the simulations
-(about 46 seconds in this case). The argument <code>args</code> could
+(about 182 seconds in this case). The argument <code>args</code> could
 contain additional arguments for the <code>truth</code> function, which
 we did not require here and therefore let it at the default
 <code>NULL</code>. We specify the number of simulations with
@@ -1540,9 +1541,7 @@ class, in this case <code>Simulations</code>:</p>
 <span><span class="co">#&gt; [1] "crmPack"</span></span></code></pre></div>
 <p>From the help page</p>
 <div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="st">"Simulations-class"</span>, help <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; No documentation for 'Simulations-class' in specified packages and libraries:</span></span>
-<span><span class="co">#&gt; you could try '??Simulations-class'</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="st">"Simulations-class"</span>, help <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <p>we see that this class is a subclass of the
 <code>GeneralSimulations</code> class. By looking at the help pages for
 <code>Simulations</code> and the parent class
@@ -1612,6 +1611,7 @@ to supply a true dose-toxicity function. We take the same
 <span><span class="co">#&gt; Dose most often selected as MTD: 20 </span></span>
 <span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 21 %</span></span>
 <span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 26 % (23 %, 33 %) </span></span>
+<span><span class="co">#&gt; Overdose probability at selected dose : mean 20 % (15 %, 24 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  ≥ 3 cohorts dosed :  100 %</span></span>
 <span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %</span></span>
@@ -1656,12 +1656,10 @@ the plots)</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dosePlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">simSum</span>, type <span class="op">=</span> <span class="st">"doseSelected"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fl">10</span><span class="op">:</span><span class="fl">30</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dosePlot</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="example-figures/sim-sum-plot2-1.png" alt="A fistogram showing the proportion of simulatd trials that identified each dose as the MTD.  All but one of the simulated trials identified a dose between 16 and 26 as the MTD." width="100%"><p class="caption">
-plot of chunk sim-sum-plot2
-</p>
-</div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dosePlot</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in `scale_x_continuous()`:</span></span>
+<span><span class="co">#&gt; ! Discrete value supplied to a continuous scale.</span></span>
+<span><span class="co">#&gt; ℹ Example values: 14, 16, 18, 20, and 22.</span></span></code></pre></div>
 <p>Some further examples will be given for simulations using the
 <code>TDDesign</code> and the <code>TDsamplesDesign</code> classes. For
 illustration purpose, we will generate only 10 trial outcomes.</p>
@@ -1921,7 +1919,7 @@ dose as the starting dose:</p>
 <span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">time</span></span>
 <span><span class="co">#&gt; elapsed </span></span>
-<span><span class="co">#&gt;   5.276</span></span></code></pre></div>
+<span><span class="co">#&gt;  20.637</span></span></code></pre></div>
 <p>And now, exactly in the same way as above for the operating
 characteristics simulations, we can summarize the resulting predictive
 simulations, for example show the predicted trajectories of doses:</p>
@@ -1956,6 +1954,7 @@ truth:</p>
 <span><span class="co">#&gt; Dose most often selected as MTD: 16 </span></span>
 <span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 11 %</span></span>
 <span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (11 %, 36 %) </span></span>
+<span><span class="co">#&gt; Overdose probability at selected dose : mean 20 % (16 %, 23 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  ≥ 3 cohorts dosed :  100 %</span></span>
 <span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  80 %</span></span>
@@ -2354,6 +2353,7 @@ corresponding function:</p>
 <span><span class="co">#&gt; Dose most often selected as MTD: 0.1 </span></span>
 <span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 0 %</span></span>
 <span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 1 % (1 %, 2 %) </span></span>
+<span><span class="co">#&gt; Overdose probability at selected dose : mean 0 % (0 %, 0 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  P(0.9 ≤ Biomarker ≤ 1) ≥ 0.5 (relative) :  0 %</span></span>
 <span><span class="co">#&gt;  ≥ 40 patients dosed :  100 %</span></span>

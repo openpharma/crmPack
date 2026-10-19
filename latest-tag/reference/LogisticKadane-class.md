@@ -74,8 +74,8 @@ function.
 Kadane JB, Dickey JM, Winkler RL, Smith WS, Peters SC (1980).
 “Interactive Elicitation of Opinion for a Normal Linear Model.” *Journal
 of the American Statistical Association*, **75**(372), 845–854. ISSN
-01621459, 1537274X,
-[doi:10.2307/2287171](https://doi.org/10.2307/2287171) ,
+01621459, 1537274X.
+[doi:10.2307/2287171](https://doi.org/10.2307/2287171) .
 <http://www.jstor.org/stable/2287171>.
 
 ## See also

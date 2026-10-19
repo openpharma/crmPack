@@ -34,7 +34,7 @@ samples generated during the simulations.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,6 +86,7 @@ samples generated during the simulations.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -109,7 +110,7 @@ samples generated during the simulations.">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot <code>PseudoSimulationsSummary</code>
 </h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>plot-PseudoSimulationsSummary-missing-method.Rd</code></div>
     </div>
 
@@ -130,6 +131,7 @@ samples generated during the simulations.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nObs"</span>, <span class="st">"doseSelected"</span>, <span class="st">"propDLE"</span>, <span class="st">"nAboveTargetEndOfTrial"</span>, <span class="st">"meanFit"</span><span class="op">)</span>,</span>
+<span>  axis_text_angle <span class="op">=</span> <span class="fl">45</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -153,6 +155,12 @@ samples generated during the simulations.</p>
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a>
 </dt>
 <dd><p>(<code>character</code>)<br> the types of plots you want to obtain.</p></dd>
+
+
+<dt id="arg-axis-text-angle">axis_text_angle<a class="anchor" aria-label="anchor" href="#arg-axis-text-angle"></a>
+</dt>
+<dd><p>(<code>number</code>)<br> rotation angle for the MTD estimate
+x-axis tick labels. Defaults to 45 degrees.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>

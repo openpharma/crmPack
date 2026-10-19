@@ -28,7 +28,7 @@ the design. This means, from the generated data.frame one can read off:">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,7 @@ the design. This means, from the generated data.frame one can read off:">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -102,7 +103,7 @@ the design. This means, from the generated data.frame one can read off:">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Obtain Hypothetical Trial Course Table for a Design</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Design-methods.R" class="external-link"><code>R/Design-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Design-methods.R" class="external-link"><code>R/Design-methods.R</code></a></small>
       <div class="d-none name"><code>examine.Rd</code></div>
     </div>
 
@@ -160,7 +161,35 @@ the standard options are used</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a>
 </h2>
-    <p>The data frame</p>
+    <p>A data frame with the current <code>dose</code>, hypothetical <code>DLTs</code>,
+recommended <code>nextDose</code>, <code>stop</code> (whether the stopping rule is met), and
+percentage <code>increment</code> relative to <code>dose</code>.</p>
+<p>For <code>DADesign</code>, <code>DLTs</code> is the number of additional hypothetical DLTs
+assigned among the current cohort and earlier patients still within their
+DLT window at the next cohort-opening time. It is not restricted to the
+current cohort and does not include DLTs already present in <code>object@data</code>.
+Each cohort is reached along the path with no additional DLTs.
+The integer column <code>cohort</code> identifies the current cohort, starting at 1
+for empty data or continuing the existing cohort indices in <code>object@data</code>.
+The character column <code>DLT_cohorts</code> lists one cohort index per additional
+hypothetical DLT, sorted and separated by commas. Repeated indices denote
+multiple DLTs in the same cohort: <code>"1, 2, 2"</code> means one DLT in cohort 1 and
+two in cohort 2. It is <code>""</code> when <code>DLTs</code> is zero and excludes previously
+observed DLTs. The character column <code>DLT_time</code> gives the corresponding
+DLT onset times, relative to the start of each patient's cohort, in the
+same order and comma-separated format as <code>DLT_cohorts</code>. It is <code>""</code> when
+<code>DLTs</code> is zero. The <code>dose</code> column always refers to the current cohort.</p>
+<p>The additional column <code>DLT_scenario</code> identifies the scenario, not a count:
+<code>"no additional DLTs"</code> denotes no additional DLTs; <code>"late DLTs"</code> assigns
+DLTs to the earliest-enrolled
+eligible patients, at their available follow-up times; <code>"early DLTs"</code> assigns DLTs to
+the latest-enrolled eligible patients, as early as one day after the
+previous cohort-opening decision or one day after enrollment, whichever
+is later. For <code>"early DLTs"</code>, if <code>DLTs</code> is at least the current cohort size,
+the hypothetical decision occurs one day after its last patient enrolls;
+otherwise it occurs at the usual next cohort-opening time.
+Both scenarios are evaluated for every positive <code>DLTs</code> count. They are
+illustrative allocations, not all possible patient-level outcomes.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
@@ -441,7 +470,13 @@ listed.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4235</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># MCMC parameters are set to small values only to show this example. They should be</span></span></span>
 <span class="r-in"><span><span class="co"># increased for a real case.</span></span></span>
-<span class="r-in"><span><span class="co"># This procedure will take a while.</span></span></span>
+<span class="r-in"><span><span class="co"># Each hypothetical scenario requires an MCMC fit, so this can take a while.</span></span></span>
+<span class="r-in"><span><span class="co"># DLTs counts additional hypothetical events, including earlier patients whose</span></span></span>
+<span class="r-in"><span><span class="co"># DLT windows are still open. DLT_scenario identifies the scenario:</span></span></span>
+<span class="r-in"><span><span class="co"># "no additional DLTs", "late DLTs" (earlier-enrolled patients), or</span></span></span>
+<span class="r-in"><span><span class="co"># "early DLTs" (later-enrolled patients).</span></span></span>
+<span class="r-in"><span><span class="co"># cohort identifies the current cohort. DLT_cohorts lists one cohort index per</span></span></span>
+<span class="r-in"><span><span class="co"># additional DLT (e.g. "1, 2, 2"), or "" when there are none.</span></span></span>
 <span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>  step <span class="op">=</span> <span class="fl">1</span>,</span></span>
@@ -450,10 +485,7 @@ listed.</p>
 <span class="r-in"><span>  rng_seed <span class="op">=</span> <span class="fl">12</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_warning</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">examine</span><span class="op">(</span><span class="va">design</span>, mcmcOptions <span class="op">=</span> <span class="va">options</span>, maxNoIncrement <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"Stopping because 2 times no increment"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">examine</span><span class="op">(</span><span class="va">design</span>, mcmcOptions <span class="op">=</span> <span class="va">options</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>

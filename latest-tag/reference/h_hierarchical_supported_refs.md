@@ -5,6 +5,9 @@
 Returns the parameter reference syntax that may be used for a model in
 the `exchangeable_parameters` argument of
 [`HierarchicalModel()`](https://docs.crmpack.org/reference/HierarchicalModel-class.md).
+Combination models additionally support `"eta"`, which pools the
+arm-specific interaction parameters (or their logarithms when
+`log_normal_eta = TRUE`).
 
 ## Usage
 

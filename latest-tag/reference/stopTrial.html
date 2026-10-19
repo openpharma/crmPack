@@ -23,6 +23,7 @@ This function returns whether to stop the trial.
 
 
 
+
 Stopping rule based precision of the MTD estimation.
 The trial is stopped, when the MTD can be estimated with sufficient precision.
 The criteria is based on the robust coefficient of variation (CV) calculated
@@ -44,6 +45,7 @@ based on DLT probability.
 ">
 <meta property="og:description" content="
 This function returns whether to stop the trial.
+
 
 
 
@@ -82,7 +84,7 @@ based on DLT probability.
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,6 +136,7 @@ based on DLT probability.
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -156,7 +159,7 @@ based on DLT probability.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Stop the trial?</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Rules-methods.R" class="external-link"><code>R/Rules-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Rules-methods.R" class="external-link"><code>R/Rules-methods.R</code></a></small>
       <div class="d-none name"><code>stopTrial.Rd</code></div>
     </div>
 
@@ -168,6 +171,7 @@ based on DLT probability.
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
@@ -211,6 +215,9 @@ based on DLT probability.</p>
 <span><span class="fu">stopTrial</span><span class="op">(</span><span class="va">stopping</span>, <span class="va">dose</span>, <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'StoppingCohortsNearDose,numeric,ANY,ANY,GeneralData'</span></span>
+<span><span class="fu">stopTrial</span><span class="op">(</span><span class="va">stopping</span>, <span class="va">dose</span>, <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'StoppingDoseStabilized,numeric,ANY,ANY,GeneralData'</span></span>
 <span><span class="fu">stopTrial</span><span class="op">(</span><span class="va">stopping</span>, <span class="va">dose</span>, <span class="va">samples</span>, <span class="va">model</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'StoppingPatientsNearDose,numeric,ANY,ANY,GeneralData'</span></span>
@@ -396,6 +403,14 @@ rules.</p></li>
 )</code>: Stop based on number of cohorts near to next best
 dose.</p></li>
 <li><p><code>stopTrial(
+  stopping = StoppingDoseStabilized,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = GeneralData
+)</code>: Stop when the next best dose is unchanged over a
+prespecified number of consecutive cohorts.</p></li>
+<li><p><code>stopTrial(
   stopping = StoppingPatientsNearDose,
   dose = numeric,
   samples = ANY,
@@ -529,6 +544,8 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span><span class="va">myStopping</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">myStopping1</span> <span class="op">&amp;</span> <span class="va">myStopping2</span><span class="op">)</span> <span class="op">|</span> <span class="va">myStopping3</span></span></span>
 <span class="r-in"><span><span class="co"># Example of usage for `StoppingMissingDose` StopTrial class.</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data.</span></span></span>
 <span class="r-in"><span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
@@ -625,7 +642,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create some data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -700,7 +719,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]][[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 60 % for dose 14 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 90 % for dose 12 and thus above the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
@@ -714,7 +733,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 60 % for dose 14 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 90 % for dose 12 and thus above the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[1]]</span>
@@ -727,7 +746,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 60 % for dose 14 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 90 % for dose 12 and thus above the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -745,7 +764,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create some data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -861,7 +882,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create some data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -931,7 +954,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of cohorts is 6 and thus reached the prespecified minimum number 3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 70 % for dose 6 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 20 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"</span>
@@ -945,9 +968,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 3 cohorts dosed"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 70 % for dose 6 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 20 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -962,7 +985,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -1017,12 +1042,30 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span><span class="fu">stopTrial</span><span class="op">(</span>stopping <span class="op">=</span> <span class="va">myStopping</span>, dose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 cohorts lie within 0.2% of the next best dose 20. This is below the required 3 cohorts"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 cohorts lie within 0.2% of the next best dose 12. This is below the required 3 cohorts"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 3 cohorts dosed in 0.2 % dose range around NBD"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  cohort <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  doseGrid <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Stop if the next best dose has been administered to the previous cohort already.</span></span></span>
+<span class="r-in"><span><span class="va">my_stopping</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingDoseStabilized-class.html">StoppingDoseStabilized</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">stopTrial</span><span class="op">(</span>stopping <span class="op">=</span> <span class="va">my_stopping</span>, dose <span class="op">=</span> <span class="fl">4</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The next best dose 4 matches the dose administered to 1 most recent consecutive cohorts and thus reached the prespecified number 1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NBD unchanged for 1 cohort"</span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -1077,12 +1120,14 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span><span class="fu">stopTrial</span><span class="op">(</span>stopping <span class="op">=</span> <span class="va">myStopping</span>, dose <span class="op">=</span> <span class="va">doseRecommendation</span><span class="op">$</span><span class="va">value</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0.2% of the next best dose 14. This is below the required 9 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "3 patients lie within 0.2% of the next best dose 10. This is below the required 9 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 9 patients dosed in 0.2 % dose range around NBD"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -1142,7 +1187,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 6 cohorts dosed"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -1202,6 +1249,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 20 patients dosed"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data</span></span></span>
@@ -1261,9 +1309,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 70 % for dose 20 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 20 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span>
 <span class="r-in"><span></span></span>
@@ -1392,9 +1440,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">my_model</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">my_data</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CV of MTD is 20 % and thus below the required precision threshold of 40 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CV of MTD is 108 % and thus above the required precision threshold of 40 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CV(MTD) &gt; 0.3"</span>
 <span class="r-in"><span><span class="co"># Create the data.</span></span></span>
@@ -1630,7 +1678,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Number of patients is 8 and thus below the prespecified minimum number 20"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[1]]</span>
@@ -1650,13 +1698,14 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1 patients lie within 0% of the next best dose 6. This is below the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 14. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 3 patients dosed in 0 % dose range around NBD"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span><span class="co"># nolint start</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
@@ -1727,24 +1776,24 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 60 % for dose 64 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 100 % for dose 32 and thus above the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]][[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 64 and thus not the highest dose"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 32 and thus not the highest dose"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]][[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 64. This is below the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 32. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]][[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 30 % for dose 64 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 32 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 60 % for dose 64 and thus above the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 100 % for dose 32 and thus above the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1752,33 +1801,33 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 64 and thus not the highest dose"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 32 and thus not the highest dose"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 64. This is below the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 32. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 30 % for dose 64 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 32 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 64 and thus not the highest dose"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Next best dose is 32 and thus not the highest dose"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NBD is the highest dose"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 64. This is below the required 3 patients"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0 patients lie within 0% of the next best dose 32. This is below the required 3 patients"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "≥ 3 patients dosed in 0 % dose range around NBD"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"individual")[[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 30 % for dose 64 and thus below the required 50 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 32 and thus below the required 50 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0 ≤ prob(DLE | NBD) ≤ 0.2) ≥ 0.5"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1789,6 +1838,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nolint end</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataOrdinal-class.html">.DefaultDataOrdinal</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="LogisticLogNormalOrdinal-class.html">.DefaultLogisticLogNormalOrdinal</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">options</span> <span class="op">&lt;-</span> <span class="fu"><a href="McmcOptions-class.html">McmcOptions</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">5</span>, step <span class="op">=</span> <span class="fl">1</span>, samples <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
@@ -1818,7 +1868,7 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 20 % for dose 50 and thus below the required 60 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 40 % for dose 50 and thus below the required 60 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"</span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataOrdinal-class.html">.DefaultDataOrdinal</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -1848,9 +1898,9 @@ DLE and efficacy responses without DLE and efficacy samples involved.</p></li>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="va">model</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 60 % for dose 50 and thus above the required 60 %"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Probability for target toxicity is 0 % for dose 40 and thus below the required 60 %"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"report_label")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.6"</span>
 <span class="r-in"><span><span class="va">my_rule</span> <span class="op">&lt;-</span> <span class="fu"><a href="StoppingExternal-class.html">StoppingExternal</a></span><span class="op">(</span>report_label <span class="op">=</span> <span class="st">"Based on combo stop"</span><span class="op">)</span></span></span>

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -101,7 +102,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Combination designs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/vignettes/combo_designs.Rmd" class="external-link"><code>vignettes/combo_designs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/vignettes/combo_designs.Rmd" class="external-link"><code>vignettes/combo_designs.Rmd</code></a></small>
       <div class="d-none name"><code>combo_designs.Rmd</code></div>
     </div>
 
@@ -399,7 +400,7 @@ readable.</p>
 <span><span class="co">#&gt;         y[i] ~ dbern(p[i])</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x93966f0a8&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x753ce8dc78&gt;</span></span></code></pre></div>
 <p>The prior is as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">combo_model2</span><span class="op">@</span><span class="va">priormodel</span></span>
@@ -419,7 +420,7 @@ readable.</p>
 <span><span class="co">#&gt;     log_eta ~ dnorm(eta_gamma, eta_tau)</span></span>
 <span><span class="co">#&gt;     eta &lt;- exp(log_eta)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x93b97ebd8&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x753f876510&gt;</span></span></code></pre></div>
 <p>So everything looks as expected. Note that for the interaction term
 <code>crmPack</code> uses the normalized dose
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mi>/</mi><msubsup><mi>x</mi><mn>1</mn><mo>*</mo></msubsup></mrow><annotation encoding="application/x-tex">x_1/x_1^{*}</annotation></semantics></math>
@@ -478,7 +479,7 @@ belonging to that pool, the implementation uses
 or a correlated bivariate normal block for the two pairs named in
 <code>pool_correlations</code>.</li>
 <li>Hyperpriors on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo>,</mo><msub><mi>μ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>μ</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo>,</mo><msub><mi>μ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)})^\top</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo>,</mo><msub><mi>μ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>μ</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo>,</mo><msub><mi>μ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>μ</mi><mi>η</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mu = (\mu_{\alpha_1}, \mu_{\log(\beta_1)}, \mu_{\alpha_2}, \mu_{\log(\beta_2)}, \mu_\eta)^\top</annotation></semantics></math>
 e.g.:
 <ul>
 <li>
@@ -487,18 +488,18 @@ e.g.:
 </li>
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><msup><mn>0.7</mn><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu_{\log(\beta_1)} \sim \textrm{Normal}(0, 0.7^2)</annotation></semantics></math></li>
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu_{\log(\beta_2)} \sim \textrm{Normal}(0, 1)</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>η</mi></msub><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><msup><mn>1.121</mn><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu_\eta \sim \textrm{Normal}(0, 1.121^2)</annotation></semantics></math></li>
 </ul>
 </li>
-<li>The interaction parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-is not included in an exchangeable pool in the implementation below. It
-keeps the <code>TwoDrugsCombo</code> prior, here
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mo stretchy="false" form="prefix">(</mo><mi>γ</mi><mo>,</mo><mn>1</mn><mi>/</mi><mi>τ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\eta \sim \textrm{Normal}(\gamma, 1/\tau)</annotation></semantics></math>
-with <code>gamma = 0</code> and <code>tau = 1</code>. If
-<code>log_normal_eta = TRUE</code>, the same <code>gamma</code> and
-<code>tau</code> are used for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(\eta)</annotation></semantics></math>
-instead.</li>
+<li>Each combination arm has its own interaction parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>η</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\eta_j</annotation></semantics></math>,
+and these parameters form an exchangeable pool with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>j</mi></msub><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>η</mi></msub><mo>,</mo><msubsup><mi>τ</mi><mi>η</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\eta_j \sim \textrm{Normal}(\mu_\eta, \tau_\eta^2)</annotation></semantics></math>.
+A one-member pool is valid when only one combination arm is present;
+with multiple combination arms the parameters remain distinct while
+borrowing through the shared hyperparameters. If
+<code>log_normal_eta = TRUE</code>, the corresponding pool is defined on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>η</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(\eta_j)</annotation></semantics></math>.</li>
 <li>Structured assumptions for the hierarchical covariance
 <ul>
 <li>Assume that only
@@ -511,8 +512,8 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(\beta_2)</annotation></semantics></math>
 are correlated, but not the other parameters. This can be represented by
 two entries in <code>pool_correlations</code>, giving a block diagonal
-structure with 6 hyperparameters (standard deviations
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo>,</mo><msub><mi>τ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>τ</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo>,</mo><msub><mi>τ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub></mrow><annotation encoding="application/x-tex">\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}</annotation></semantics></math>
+structure with 7 hyperparameters (standard deviations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo>,</mo><msub><mi>τ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>τ</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo>,</mo><msub><mi>τ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>τ</mi><mi>η</mi></msub></mrow><annotation encoding="application/x-tex">\tau_{\alpha_1}, \tau_{\log(\beta_1)}, \tau_{\alpha_2}, \tau_{\log(\beta_2)}, \tau_\eta</annotation></semantics></math>
 plus the two correlations
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\rho_1</annotation></semantics></math>
 and
@@ -531,6 +532,7 @@ overridden in <code>pool_priors</code>, e.g. with
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo>∼</mo><mtext mathvariant="normal">LogNormal</mtext><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.5</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msup><mi>κ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_{\alpha_1} \sim \textrm{LogNormal}(\log(0.5), \kappa^2)</annotation></semantics></math></li>
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo>∼</mo><mtext mathvariant="normal">LogNormal</mtext><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.75</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msup><mi>κ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_{\alpha_2} \sim \textrm{LogNormal}(\log(0.75), \kappa^2)</annotation></semantics></math></li>
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>,</mo><msub><mi>τ</mi><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo>∼</mo><mtext mathvariant="normal">LogNormal</mtext><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.25</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msup><mi>κ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_{\log(\beta_1)}, \tau_{\log(\beta_2)} \sim \textrm{LogNormal}(\log(0.25), \kappa^2)</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>η</mi></msub><mo>∼</mo><mtext mathvariant="normal">LogNormal</mtext><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.125</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msup><mi>κ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_\eta \sim \textrm{LogNormal}(\log(0.125), \kappa^2)</annotation></semantics></math></li>
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ρ</mi><mn>1</mn></msub><mo>,</mo><msub><mi>ρ</mi><mn>2</mn></msub><mo>∼</mo><mtext mathvariant="normal">Uniform</mtext><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho_1, \rho_2 \sim \textrm{Uniform}(-1, 1)</annotation></semantics></math></li>
 </ul>
 </li>
@@ -560,6 +562,9 @@ overridden in <code>pool_priors</code>, e.g. with
 <span>  drug2_slope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    mono_drug2 <span class="op">=</span> <span class="st">"alpha1"</span>,</span>
 <span>    combo <span class="op">=</span> <span class="st">"alpha1[2]"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  interaction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    combo <span class="op">=</span> <span class="st">"eta"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -584,6 +589,10 @@ overridden in <code>pool_priors</code>, e.g. with
 <span>  drug2_slope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.25</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.96</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  interaction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1.121</span><span class="op">)</span>,</span>
+<span>    tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.125</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.96</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -601,13 +610,18 @@ overridden in <code>pool_priors</code>, e.g. with
 LogisticLogNormal, mono_drug2 = LogisticLogNormal, combo =
 TwoDrugsCombo.</p>
 <p>Exchangeable parameter pools: drug1_intercept, drug1_slope,
-drug2_intercept, drug2_slope.</p>
+drug2_intercept, drug2_slope, interaction.</p>
 <p>The public constructor argument is called
 <code>exchangeable_parameters</code> because it specifies which
 parameters are exchangeable across arms. The fitted object stores the
 same specification in its <code>parameter_pools</code> slot, and the
 optional <code>pool_correlations</code> and <code>pool_priors</code>
-arguments customize those pools.</p>
+arguments customize those pools. The <code>interaction</code> entry is a
+one-member pool in this example. This retains the hierarchical marginal
+prior for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>;
+additional combination arms can be added to that pool without making
+their interaction parameters identical.</p>
 <p>We can look at the JAGS code, which has been automatically compiled
 for this model.</p>
 <p>The likelihood is as follows:</p>
@@ -653,12 +667,11 @@ for this model.</p>
 <span><span class="co">#&gt;         y_combo[i] ~ dbern(p_combo[i])</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x93800b700&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x7540098510&gt;</span></span></code></pre></div>
 <p>The prior is as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hierarchical_model</span><span class="op">@</span><span class="va">priormodel</span></span>
-<span><span class="co">#&gt; function () </span></span>
-<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt; function() {</span></span>
 <span><span class="co">#&gt;     alpha0_mono_drug1 &lt;- theta_mono_drug1[1]</span></span>
 <span><span class="co">#&gt;     alpha1_mono_drug1 &lt;- exp(theta_mono_drug1[2])</span></span>
 <span><span class="co">#&gt;     alpha0_mono_drug2 &lt;- theta_mono_drug2[1]</span></span>
@@ -671,53 +684,43 @@ for this model.</p>
 <span><span class="co">#&gt;     alpha0_combo[2L] &lt;- alpha0_drug2_combo</span></span>
 <span><span class="co">#&gt;     alpha1_combo[1L] &lt;- alpha1_drug1_combo</span></span>
 <span><span class="co">#&gt;     alpha1_combo[2L] &lt;- alpha1_drug2_combo</span></span>
-<span><span class="co">#&gt;     eta_combo ~ dnorm(eta_gamma_combo, eta_tau_combo)</span></span>
-<span><span class="co">#&gt;     theta_mono_drug1[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[, </span></span>
-<span><span class="co">#&gt;         ])</span></span>
-<span><span class="co">#&gt;     theta_drug1_combo[1:2] ~ dmnorm(mu_drug1_corr[], prec_drug1_corr[, </span></span>
-<span><span class="co">#&gt;         ])</span></span>
-<span><span class="co">#&gt;     mu_drug1_corr[1] &lt;- mu_drug1_intercept</span></span>
-<span><span class="co">#&gt;     mu_drug1_corr[2] &lt;- mu_drug1_slope</span></span>
-<span><span class="co">#&gt;     rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)</span></span>
-<span><span class="co">#&gt;     prec_drug1_corr[1, 1] &lt;- 1/(pow(tau_drug1_intercept, 2) * </span></span>
-<span><span class="co">#&gt;         (1 - pow(rho_drug1, 2)))</span></span>
-<span><span class="co">#&gt;     prec_drug1_corr[2, 2] &lt;- 1/(pow(tau_drug1_slope, 2) * (1 - </span></span>
-<span><span class="co">#&gt;         pow(rho_drug1, 2)))</span></span>
-<span><span class="co">#&gt;     prec_drug1_corr[1, 2] &lt;- -rho_drug1/(tau_drug1_intercept * </span></span>
-<span><span class="co">#&gt;         tau_drug1_slope * (1 - pow(rho_drug1, 2)))</span></span>
-<span><span class="co">#&gt;     prec_drug1_corr[2, 1] &lt;- prec_drug1_corr[1, 2]</span></span>
-<span><span class="co">#&gt;     mu_drug1_intercept ~ dnorm(mu_drug1_intercept_mean, pow(mu_drug1_intercept_sd, </span></span>
-<span><span class="co">#&gt;         -2))</span></span>
-<span><span class="co">#&gt;     tau_drug1_intercept ~ dlnorm(tau_drug1_intercept_meanlog, </span></span>
-<span><span class="co">#&gt;         pow(tau_drug1_intercept_sdlog, -2))</span></span>
-<span><span class="co">#&gt;     mu_drug1_slope ~ dnorm(mu_drug1_slope_mean, pow(mu_drug1_slope_sd, </span></span>
-<span><span class="co">#&gt;         -2))</span></span>
-<span><span class="co">#&gt;     tau_drug1_slope ~ dlnorm(tau_drug1_slope_meanlog, pow(tau_drug1_slope_sdlog, </span></span>
-<span><span class="co">#&gt;         -2))</span></span>
-<span><span class="co">#&gt;     theta_mono_drug2[1:2] ~ dmnorm(mu_drug2_corr[], prec_drug2_corr[, </span></span>
-<span><span class="co">#&gt;         ])</span></span>
-<span><span class="co">#&gt;     theta_drug2_combo[1:2] ~ dmnorm(mu_drug2_corr[], prec_drug2_corr[, </span></span>
-<span><span class="co">#&gt;         ])</span></span>
-<span><span class="co">#&gt;     mu_drug2_corr[1] &lt;- mu_drug2_intercept</span></span>
-<span><span class="co">#&gt;     mu_drug2_corr[2] &lt;- mu_drug2_slope</span></span>
-<span><span class="co">#&gt;     rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)</span></span>
-<span><span class="co">#&gt;     prec_drug2_corr[1, 1] &lt;- 1/(pow(tau_drug2_intercept, 2) * </span></span>
-<span><span class="co">#&gt;         (1 - pow(rho_drug2, 2)))</span></span>
-<span><span class="co">#&gt;     prec_drug2_corr[2, 2] &lt;- 1/(pow(tau_drug2_slope, 2) * (1 - </span></span>
-<span><span class="co">#&gt;         pow(rho_drug2, 2)))</span></span>
-<span><span class="co">#&gt;     prec_drug2_corr[1, 2] &lt;- -rho_drug2/(tau_drug2_intercept * </span></span>
-<span><span class="co">#&gt;         tau_drug2_slope * (1 - pow(rho_drug2, 2)))</span></span>
-<span><span class="co">#&gt;     prec_drug2_corr[2, 1] &lt;- prec_drug2_corr[1, 2]</span></span>
-<span><span class="co">#&gt;     mu_drug2_intercept ~ dnorm(mu_drug2_intercept_mean, pow(mu_drug2_intercept_sd, </span></span>
-<span><span class="co">#&gt;         -2))</span></span>
-<span><span class="co">#&gt;     tau_drug2_intercept ~ dlnorm(tau_drug2_intercept_meanlog, </span></span>
-<span><span class="co">#&gt;         pow(tau_drug2_intercept_sdlog, -2))</span></span>
-<span><span class="co">#&gt;     mu_drug2_slope ~ dnorm(mu_drug2_slope_mean, pow(mu_drug2_slope_sd, </span></span>
-<span><span class="co">#&gt;         -2))</span></span>
-<span><span class="co">#&gt;     tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, </span></span>
-<span><span class="co">#&gt;         -2))</span></span>
+<span><span class="co">#&gt; theta_mono_drug1_z[1] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_mono_drug1_z[2] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_mono_drug1[1] &lt;- mu_drug1_intercept + tau_drug1_intercept * theta_mono_drug1_z[1]</span></span>
+<span><span class="co">#&gt; theta_mono_drug1[2] &lt;- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_mono_drug1_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_mono_drug1_z[2])</span></span>
+<span><span class="co">#&gt; theta_drug1_combo_z[1] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_drug1_combo_z[2] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_drug1_combo[1] &lt;- mu_drug1_intercept + tau_drug1_intercept * theta_drug1_combo_z[1]</span></span>
+<span><span class="co">#&gt; theta_drug1_combo[2] &lt;- mu_drug1_slope + tau_drug1_slope * (rho_drug1 * theta_drug1_combo_z[1] + sqrt(1 - pow(rho_drug1, 2)) * theta_drug1_combo_z[2])</span></span>
+<span><span class="co">#&gt; rho_drug1 ~ dunif(rho_drug1_lower, rho_drug1_upper)</span></span>
+<span><span class="co">#&gt; z_mu_drug1_intercept ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; mu_drug1_intercept &lt;- mu_drug1_intercept_mean + mu_drug1_intercept_sd * z_mu_drug1_intercept</span></span>
+<span><span class="co">#&gt; tau_drug1_intercept ~ dlnorm(tau_drug1_intercept_meanlog, pow(tau_drug1_intercept_sdlog, -2))</span></span>
+<span><span class="co">#&gt; z_mu_drug1_slope ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; mu_drug1_slope &lt;- mu_drug1_slope_mean + mu_drug1_slope_sd * z_mu_drug1_slope</span></span>
+<span><span class="co">#&gt; tau_drug1_slope ~ dlnorm(tau_drug1_slope_meanlog, pow(tau_drug1_slope_sdlog, -2))</span></span>
+<span><span class="co">#&gt; theta_mono_drug2_z[1] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_mono_drug2_z[2] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_mono_drug2[1] &lt;- mu_drug2_intercept + tau_drug2_intercept * theta_mono_drug2_z[1]</span></span>
+<span><span class="co">#&gt; theta_mono_drug2[2] &lt;- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_mono_drug2_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_mono_drug2_z[2])</span></span>
+<span><span class="co">#&gt; theta_drug2_combo_z[1] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_drug2_combo_z[2] ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; theta_drug2_combo[1] &lt;- mu_drug2_intercept + tau_drug2_intercept * theta_drug2_combo_z[1]</span></span>
+<span><span class="co">#&gt; theta_drug2_combo[2] &lt;- mu_drug2_slope + tau_drug2_slope * (rho_drug2 * theta_drug2_combo_z[1] + sqrt(1 - pow(rho_drug2, 2)) * theta_drug2_combo_z[2])</span></span>
+<span><span class="co">#&gt; rho_drug2 ~ dunif(rho_drug2_lower, rho_drug2_upper)</span></span>
+<span><span class="co">#&gt; z_mu_drug2_intercept ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; mu_drug2_intercept &lt;- mu_drug2_intercept_mean + mu_drug2_intercept_sd * z_mu_drug2_intercept</span></span>
+<span><span class="co">#&gt; tau_drug2_intercept ~ dlnorm(tau_drug2_intercept_meanlog, pow(tau_drug2_intercept_sdlog, -2))</span></span>
+<span><span class="co">#&gt; z_mu_drug2_slope ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; mu_drug2_slope &lt;- mu_drug2_slope_mean + mu_drug2_slope_sd * z_mu_drug2_slope</span></span>
+<span><span class="co">#&gt; tau_drug2_slope ~ dlnorm(tau_drug2_slope_meanlog, pow(tau_drug2_slope_sdlog, -2))</span></span>
+<span><span class="co">#&gt; eta_combo_z ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; eta_combo &lt;- mu_interaction + tau_interaction * eta_combo_z</span></span>
+<span><span class="co">#&gt; z_mu_interaction ~ dnorm(0, 1)</span></span>
+<span><span class="co">#&gt; mu_interaction &lt;- mu_interaction_mean + mu_interaction_sd * z_mu_interaction</span></span>
+<span><span class="co">#&gt; tau_interaction ~ dlnorm(tau_interaction_meanlog, pow(tau_interaction_sdlog, -2))</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x93cfc58f8&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x7547784cb8&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="design-implementation-1">Design implementation<a class="anchor" aria-label="anchor" href="#design-implementation-1"></a>
@@ -783,7 +786,7 @@ pools and corresponding pool arguments:</p>
 <span><span class="co">#&gt; Arms (3): mono_drug1, mono_drug2, combo</span></span>
 <span><span class="co">#&gt; Active arms: mono_drug1, mono_drug2, combo</span></span>
 <span><span class="co">#&gt; Inactive arms: &lt;none&gt;</span></span>
-<span><span class="co">#&gt; Exchangeable parameter pools (4): drug1_intercept, drug1_slope, drug2_intercept, drug2_slope</span></span></code></pre></div>
+<span><span class="co">#&gt; Exchangeable parameter pools (5): drug1_intercept, drug1_slope, drug2_intercept, drug2_slope, interaction</span></span></code></pre></div>
 <p>Here the arm names match the model implementation above, which makes
 it clear that <code>mono_drug1</code> shares information with the first
 single-agent parameter pair in the combination arm, and
@@ -831,19 +834,19 @@ single-agent parameter pair in the combination arm, and
 <span><span class="co">#&gt; Target dose interval corresponding to this was 32.7, 42.3 </span></span>
 <span><span class="co">#&gt; Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Number of patients overall : mean 16 (3, 21) </span></span>
-<span><span class="co">#&gt; Number of patients treated above target tox interval : mean 3 (0, 6) </span></span>
-<span><span class="co">#&gt; Proportions of DLTs in the trials : mean 15 % (0 %, 24 %) </span></span>
-<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 13 % (4 %, 22 %) </span></span>
-<span><span class="co">#&gt; Doses selected as MTD : mean 22.5 (0, 45.5) </span></span>
-<span><span class="co">#&gt; True toxicity at doses selected : mean 16 % (2 %, 41 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target MTD: 10 %</span></span>
-<span><span class="co">#&gt; Dose most often selected as MTD: 0 </span></span>
-<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: NaN %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean NA % (NA %, NA %) </span></span>
+<span><span class="co">#&gt; Number of patients overall : mean 21 (21, 21) </span></span>
+<span><span class="co">#&gt; Number of patients treated above target tox interval : mean 3 (0, 9) </span></span>
+<span><span class="co">#&gt; Proportions of DLTs in the trials : mean 20 % (14 %, 29 %) </span></span>
+<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 18 % (8 %, 28 %) </span></span>
+<span><span class="co">#&gt; Doses selected as MTD : mean 31.8 (20, 40.5) </span></span>
+<span><span class="co">#&gt; True toxicity at doses selected : mean 21 % (8 %, 32 %) </span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target MTD: 35 %</span></span>
+<span><span class="co">#&gt; Dose most often selected as MTD: 30 </span></span>
+<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 19 %</span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 25 % (15 %, 34 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
-<span><span class="co">#&gt;  ≥ 20 patients dosed :  70 %</span></span>
-<span><span class="co">#&gt;  Stopped because of missing dose :  30 %</span></span>
+<span><span class="co">#&gt;  ≥ 20 patients dosed :  100 %</span></span>
+<span><span class="co">#&gt;  Stopped because of missing dose :  0 %</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Arm: mono_drug2 </span></span>
 <span><span class="co">#&gt; Summary of 20 simulations</span></span>
@@ -855,13 +858,13 @@ single-agent parameter pair in the combination arm, and
 <span><span class="co">#&gt; Number of patients overall : mean 21 (21, 21) </span></span>
 <span><span class="co">#&gt; Number of patients treated above target tox interval : mean 0 (0, 0) </span></span>
 <span><span class="co">#&gt; Proportions of DLTs in the trials : mean 13 % (5 %, 20 %) </span></span>
-<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 15 % (10 %, 20 %) </span></span>
-<span><span class="co">#&gt; Doses selected as MTD : mean 42.8 (25, 50) </span></span>
-<span><span class="co">#&gt; True toxicity at doses selected : mean 21 % (8 %, 27 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target MTD: 65 %</span></span>
+<span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 15 % (7 %, 24 %) </span></span>
+<span><span class="co">#&gt; Doses selected as MTD : mean 44.5 (34.5, 50) </span></span>
+<span><span class="co">#&gt; True toxicity at doses selected : mean 22 % (13 %, 27 %) </span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target MTD: 75 %</span></span>
 <span><span class="co">#&gt; Dose most often selected as MTD: 50 </span></span>
-<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 24 %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 25 % (11 %, 50 %) </span></span>
+<span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 15 %</span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (8 %, 44 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
 <span><span class="co">#&gt;  ≥ 20 patients dosed :  100 %</span></span>
 <span><span class="co">#&gt;  Stopped because of missing dose :  0 %</span></span>
@@ -869,18 +872,18 @@ single-agent parameter pair in the combination arm, and
 <span><span class="co">#&gt; Arm: combo </span></span>
 <span><span class="co">#&gt; Summary of 20 combination simulations</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Number of patients overall : mean 12 (3, 21) </span></span>
-<span><span class="co">#&gt; Proportions of DLTs in the trials : mean 29 % (14 %, 33 %) </span></span>
-<span><span class="co">#&gt; Mean toxicity risks from fitted surfaces : mean 50 % (30 %, 62 %) </span></span>
-<span><span class="co">#&gt; Selected dose for drug 1: mean 9.8 (0, 21) </span></span>
-<span><span class="co">#&gt; Selected dose for drug 2: mean 7.2 (0, 20) </span></span>
+<span><span class="co">#&gt; Number of patients overall : mean 19 (19, 21) </span></span>
+<span><span class="co">#&gt; Proportions of DLTs in the trials : mean 25 % (14 %, 33 %) </span></span>
+<span><span class="co">#&gt; Mean toxicity risks from fitted surfaces : mean 50 % (28 %, 72 %) </span></span>
+<span><span class="co">#&gt; Selected dose for drug 1: mean 18.2 (9, 30) </span></span>
+<span><span class="co">#&gt; Selected dose for drug 2: mean 13 (9, 20.5) </span></span>
 <span><span class="co">#&gt; Target toxicity interval was 20, 35 %</span></span>
-<span><span class="co">#&gt; True toxicity at selected combinations : mean 12 % (2 %, 26 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target combination: 30 %</span></span>
-<span><span class="co">#&gt; Most frequently selected combination: 0, 0 </span></span>
-<span><span class="co">#&gt; Observed toxicity rate at most selected combination: NA %</span></span>
+<span><span class="co">#&gt; True toxicity at selected combinations : mean 21 % (10 %, 33 %) </span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target combination: 40 %</span></span>
+<span><span class="co">#&gt; Most frequently selected combination: 20, 10 </span></span>
+<span><span class="co">#&gt; Observed toxicity rate at most selected combination: 23.3 %</span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
-<span><span class="co">#&gt;  ≥ 20 patients dosed :  50 %</span></span></code></pre></div>
+<span><span class="co">#&gt;  ≥ 20 patients dosed :  90 %</span></span></code></pre></div>
 <p>It is also possible to extract the arm specific simulations to
 produce separate plots etc.:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -964,7 +967,7 @@ immediate-opening condition. Conditions can be combined with
 <code class="sourceCode R"><span><span class="va">design_arm_combo_delayed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DesignArm-class.html">DesignArm</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"combo"</span>,</span>
 <span>  design <span class="op">=</span> <span class="va">design_combo</span>,</span>
-<span>  open_when <span class="op">=</span> <span class="fu"><a href="../reference/ArmMinDoseCondition-class.html">ArmMinDoseCondition</a></span><span class="op">(</span><span class="st">"mono_drug1"</span>, min_dose <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">&amp;</span> </span>
+<span>  open_when <span class="op">=</span> <span class="fu"><a href="../reference/ArmMinDoseCondition-class.html">ArmMinDoseCondition</a></span><span class="op">(</span><span class="st">"mono_drug1"</span>, min_dose <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>    <span class="fu"><a href="../reference/ArmMinDoseCondition-class.html">ArmMinDoseCondition</a></span><span class="op">(</span><span class="st">"mono_drug2"</span>, min_dose <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1021,12 +1024,14 @@ data.</p>
 <span>  <span class="op">)</span>,</span>
 <span>  combo <span class="op">=</span> <span class="fu"><a href="../reference/DataCombo-class.html">DataCombo</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="fl">10</span>, <span class="fl">10</span>,</span>
-<span>        <span class="fl">10</span>, <span class="fl">10</span>, </span>
+<span>        <span class="fl">10</span>, <span class="fl">10</span>,</span>
+<span>        <span class="fl">10</span>, <span class="fl">10</span>,</span>
 <span>        <span class="fl">10</span>, <span class="fl">20</span>,</span>
 <span>        <span class="fl">10</span>, <span class="fl">20</span>,</span>
-<span>        <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>        <span class="fl">10</span>, <span class="fl">20</span></span>
+<span>      <span class="op">)</span>,</span>
 <span>      ncol <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>      byrow <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>    <span class="op">)</span>,</span>

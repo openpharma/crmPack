@@ -30,7 +30,7 @@ arms.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,7 @@ arms.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -104,7 +105,7 @@ arms.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1><code>HierarchicalModel</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/HierarchicalModel-class.R" class="external-link"><code>R/HierarchicalModel-class.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/HierarchicalModel-class.R" class="external-link"><code>R/HierarchicalModel-class.R</code></a></small>
       <div class="d-none name"><code>HierarchicalModel-class.Rd</code></div>
     </div>
 
@@ -145,7 +146,10 @@ arms.</p>
 which parameters are exchangeable across arms. This will be
 used to define the hierarchical structure of the model. Each
 list entry contains the arms as names and the parameters to be shared
-as a string.</p></dd>
+as a string. For <code><a href="TwoDrugsCombo-class.html">TwoDrugsCombo</a></code> arms, <code>"eta"</code> refers to the
+arm-specific interaction parameter. A one-member pool is permitted so that
+a hierarchical marginal prior can be used even when only one combination
+arm is present.</p></dd>
 
 
 <dt id="arg-pool-correlations">pool_correlations<a class="anchor" aria-label="anchor" href="#arg-pool-correlations"></a>
@@ -170,7 +174,9 @@ in one multivariate hierarchy is not supported.</p></dd>
 </h2>
     <p>The class currently stores the structural pieces from the design
 prototype as a named list of arm-specific models and a named list of
-exchangeable parameter pools used to dynamically compile a joint JAGS model.</p>
+exchangeable parameter pools used to dynamically compile a joint JAGS
+model. Exchangeable normal priors and their hypermeans use a non-centered
+parameterization.</p>
     </div>
     <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a>
@@ -253,6 +259,18 @@ function directly.</p>
 <span class="r-in"><span>    mono_slope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      my_mono <span class="op">=</span> <span class="st">"alpha1"</span>,</span></span>
 <span class="r-in"><span>      my_combo <span class="op">=</span> <span class="st">"alpha1[1]"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span>,</span></span>
+<span class="r-in"><span>    interaction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      my_combo <span class="op">=</span> <span class="st">"eta"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pool_priors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    interaction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1.121</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.125</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        sdlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.96</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -261,7 +279,7 @@ function directly.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An object of class 'HierarchicalModel'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Arms (2): my_mono, my_combo</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Arm models: my_mono = LogisticLogNormal, my_combo = TwoDrugsCombo</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exchangeable parameter pools (2): mono_intercept, mono_slope</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exchangeable parameter pools (3): mono_intercept, mono_slope, interaction</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

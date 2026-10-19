@@ -24,6 +24,12 @@ function is provided for this class.
   (`numeric`)\
   corresponding target dose interval
 
+- `true_mtd`:
+
+  (`numeric`)\
+  dose-grid level(s) whose true toxicity lies in the target interval, or
+  is closest to a scalar target
+
 - `nsim`:
 
   (`integer`)\

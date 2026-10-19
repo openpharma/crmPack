@@ -32,6 +32,7 @@ plot(
   y,
   type = c("nObs", "doseSelected", "propDLE", "nAboveTargetEndOfTrial", "meanFit",
     "meanEffFit"),
+  axis_text_angle = 45,
   ...
 )
 ```
@@ -52,6 +53,12 @@ plot(
 
   (`character`)\
   the types of plots you want to obtain.
+
+- axis_text_angle:
+
+  (`number`)\
+  rotation angle for the MTD estimate x-axis tick labels. Defaults to 45
+  degrees.
 
 - ...:
 
@@ -263,6 +270,8 @@ my_sum <- summary(
 
 # Plot the summary of the simulations.
 print(plot(my_sim))
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
 
 # }
 ```

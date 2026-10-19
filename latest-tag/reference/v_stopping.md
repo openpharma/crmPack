@@ -54,9 +54,11 @@ case validation passes.
   [`StoppingPatientsNearDose`](https://docs.crmpack.org/reference/StoppingPatientsNearDose-class.md)
   object contains valid `nPatients` and `percentage` parameters.
 
-- `v_stopping_min_cohorts()`: validates that the
+- `v_stopping_min_cohorts()`: validates that a
   [`StoppingMinCohorts`](https://docs.crmpack.org/reference/StoppingMinCohorts-class.md)
-  object contains valid `nCohorts` parameter.
+  or
+  [`StoppingDoseStabilized`](https://docs.crmpack.org/reference/StoppingDoseStabilized-class.md)
+  object contains a valid `nCohorts` parameter.
 
 - `v_stopping_min_patients()`: validates that the
   [`StoppingMinPatients`](https://docs.crmpack.org/reference/StoppingMinPatients-class.md)

@@ -1,6 +1,82 @@
 # Changelog
 
+## Version 2.3.0
+
+CRAN release: 2026-10-11
+
+#### New Features
+
+- Added `StoppingDoseStabilized`, a stopping rule that stops when the
+  current next best dose has been administered to a prespecified number
+  of consecutive cohorts.
+
+- Additional plotting options for one-dimensional `nextBest` methods are
+  available, including log and equally spaced factor dose scales,
+  lollipop layers instead of bars, and dose-grid or regularly spaced
+  axis ticks.
+
+#### Enhancements
+
+- `HierarchicalModel` now compiles exchangeable normal priors in
+  non-centered form for JAGS, including analytic Cholesky
+  transformations for correlated parameter pairs. Non-centered hypermean
+  nodes use a reserved `z_mu_` prefix so pool names such as `"x"` and
+  `"x_z"` cannot generate conflicting JAGS nodes. In the
+  `comparison_decider` example, this increased the minimum effective
+  sample size across monitored parameters from approximately 450 to
+  47,000 for 100,000 retained draws, without increasing runtime.
+
+- `HierarchicalModel` and `HierarchicalDesign` now support exchangeable
+  `"eta"` pools for `TwoDrugsCombo` arms. Each combination arm retains
+  its own interaction parameter while sharing hyperparameters, and
+  singleton interaction pools are supported so that the same
+  hierarchical marginal prior can be used with one combination arm.
+
+#### Miscellaneous
+
+- Next-dose probability plots now identify the increment, safety, and
+  overdose rules and the recommended dose in legends. It is also
+  possible to use a triangle to mark the highest safe dose. Multi-panel
+  plots put overdose information first and align their plotting areas.
+
+- Extended `GeneralSimulationsSummary` with a `true_mtd` slot and
+  enhanced summary plotting accordingly.
+
+- Extended `Simulations` and `SimulationsSummary` classes with overdose
+  probability at the final selected dose.
+
+- Simulation trajectory plots now use stepped blue ribbons to show the
+  minimum and maximum and interquartile ranges alongside the median,
+  with a legend and patient-axis ticks inferred from cohort boundaries.
+  Patient tick positions can also be supplied with the new
+  `patient_scale` argument.
+
+- Minor grid lines are suppressed when dose-grid or factor axes are
+  used, making next-dose and simulation plots easier to read.
+
+- The dependency `ggplot2` package now needs to have minimum version
+  3.2.0 instead of previously 3.0.0. This should not be a practical
+  restriction because version 3.2.0 was already released in 2019.
+
+#### Bug Fixes
+
+- [`examine()`](https://docs.crmpack.org/reference/examine.md) for
+  `DADesign` now identifies the current cohort in `cohort` and lists one
+  cohort index per additional hypothetical DLT in `DLT_cohorts`. The
+  numeric `DLTsearly_1` column has been replaced by `DLT_scenario`, with
+  values `"no additional DLTs"`, `"late DLTs"`, and `"early DLTs"`.
+  `DLT_time` includes the onset time of each hypothetical DLT relative
+  to its cohort start and is aligned with `DLT_cohorts`. Documentation
+  now explains the scenario allocations and that `DLTs` can include
+  patients from earlier cohorts. The method also correctly counts
+  eligible patients, evaluates both timing scenarios without duplicate
+  allocations, and advances using only the current cohort’s zero-DLT
+  recommendation. These fixes remove replacement-length warnings and
+  correct the no-increment stopping logic.
+
 ## Version 2.2.1
+
+CRAN release: 2026-07-27
 
 #### Miscellaneous
 
@@ -430,9 +506,9 @@ CRAN release: 2015-11-12
 - Bugfix: The MinimalInformative function previously produced too
   uninformative prior quantiles, which were not fulfilling the
   requirements in the function’s documentation. With this bugfix, the
-  correct (as per the Neuenschwander et al
-  2008. publication) prior quantiles are specified and then approximated
-        with logistic (log) normal priors.
+  correct (as per the Neuenschwander et al (2008) publication) prior
+  quantiles are specified and then approximated with logistic (log)
+  normal priors.
 
 ## Version 0.1.1
 

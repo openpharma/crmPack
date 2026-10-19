@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -101,7 +102,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/vignettes/crmPack-jss-paper.Rmd" class="external-link"><code>vignettes/crmPack-jss-paper.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/vignettes/crmPack-jss-paper.Rmd" class="external-link"><code>vignettes/crmPack-jss-paper.Rmd</code></a></small>
       <div class="d-none name"><code>crmPack-jss-paper.Rmd</code></div>
     </div>
 
@@ -448,10 +449,10 @@ dose) to avoid long computation time:</p>
 <code>LogisticLogNormal</code>) has prior parameters</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0.0720313</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu = (0.0720313, 2)</annotation></semantics></math></p>
 <p>and</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.78</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.12</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.12</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.01</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma=
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1.76</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.1</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0.1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0.01</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma=
  \left(\begin{smallmatrix}
-   1.78 &amp; 0.12 \\
-   0.12 &amp; 0.01
+   1.76 &amp; 0.1 \\
+   0.1 &amp; 0.01
  \end{smallmatrix}\right)</annotation></semantics></math> and will
 approximately have 5% probability each for the DLT rate to exceed 10%
 (<code>threshmin</code> argument) at the 25 mg dose and to be below 20%
@@ -622,7 +623,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]][[1]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]][[2]]</span></span>
 <span><span class="co">#&gt; [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
@@ -640,7 +641,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
 <span><span class="co">#&gt; attr(,"message")[[1]]</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"message")[[2]]</span></span>
 <span><span class="co">#&gt; [1] "3 patients lie within 20% of the next best dose 100. This is below the required 9 patients"</span></span>
@@ -649,7 +650,7 @@ combining the atomic rules with logical operators as follows:</p>
 <span><span class="co">#&gt; attr(,"individual")[[1]]</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; attr(,"message")</span></span>
-<span><span class="co">#&gt; [1] "Probability for target toxicity is 33 % for dose 100 and thus below the required 50 %"</span></span>
+<span><span class="co">#&gt; [1] "Probability for target toxicity is 32 % for dose 100 and thus below the required 50 %"</span></span>
 <span><span class="co">#&gt; attr(,"report_label")</span></span>
 <span><span class="co">#&gt; [1] "P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -726,7 +727,7 @@ recommended as 275, 200 and 150 mg, respectively.</p>
 <span><span class="co">#&gt; 19  200    2      150 FALSE       -25</span></span>
 <span><span class="co">#&gt; 20  200    3      125 FALSE       -38</span></span>
 <span><span class="co">#&gt; 21  250    0      300 FALSE        20</span></span>
-<span><span class="co">#&gt; 22  250    1      275 FALSE        10</span></span>
+<span><span class="co">#&gt; 22  250    1      250 FALSE         0</span></span>
 <span><span class="co">#&gt; 23  250    2      200 FALSE       -20</span></span>
 <span><span class="co">#&gt; 24  250    3      150 FALSE       -40</span></span></code></pre></div>
 <p><strong>Simulating operating characteristics</strong> For the many
@@ -764,7 +765,7 @@ used:</p>
 the results. The argument <code>parallel</code> can be set to
 <code>TRUE</code> if one wishes to run the iterations in parallel on all
 processors of the computer, which can yield a meaningful speedup. Here
-we needed 57 seconds for 100 simulated trials on an Intel Core i5-6300U
+we needed 225 seconds for 100 simulated trials on an Intel Core i5-6300U
 CPU with 2.4 GHz.</p>
 <p>The result is an object of class <code>Simulations</code> containing
 multiple slots, with e.g., the <code>data</code> slot containing the
@@ -799,20 +800,21 @@ description of the results:</p>
 <span><span class="co">#&gt; Intervals are corresponding to 10 and 90 % quantiles</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Number of patients on placebo : mean 7 (6, 8) </span></span>
-<span><span class="co">#&gt; Number of patients on active : mean 21 (18, 24) </span></span>
+<span><span class="co">#&gt; Number of patients on active : mean 22 (18, 24) </span></span>
 <span><span class="co">#&gt; Number of patients overall : mean 29 (24, 32) </span></span>
 <span><span class="co">#&gt; Number of patients treated above target tox interval : mean 2 (0, 3) </span></span>
 <span><span class="co">#&gt; Proportions of DLTs in the trials for patients on placebo : mean 0 % (0 %, 0 %) </span></span>
-<span><span class="co">#&gt; Proportions of DLTs in the trials for patients on active : mean 27 % (17 %, 33 %) </span></span>
+<span><span class="co">#&gt; Proportions of DLTs in the trials for patients on active : mean 26 % (17 %, 33 %) </span></span>
 <span><span class="co">#&gt; Mean toxicity risks for the patients on active : mean 27 % (18 %, 34 %) </span></span>
-<span><span class="co">#&gt; Doses selected as MTD : mean 49.5 (50, 50) </span></span>
+<span><span class="co">#&gt; Doses selected as MTD : mean 49.8 (50, 50) </span></span>
 <span><span class="co">#&gt; True toxicity at doses selected : mean 27 % (26 %, 26 %) </span></span>
-<span><span class="co">#&gt; Proportion of trials selecting target MTD: 92 %</span></span>
+<span><span class="co">#&gt; Proportion of trials selecting target MTD: 93 %</span></span>
 <span><span class="co">#&gt; Dose most often selected as MTD: 50 </span></span>
 <span><span class="co">#&gt; Observed toxicity rate at dose most often selected: 25 %</span></span>
-<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (17 %, 28 %) </span></span>
+<span><span class="co">#&gt; Fitted toxicity rate at dose most often selected : mean 23 % (16 %, 28 %) </span></span>
+<span><span class="co">#&gt; Overdose probability at selected dose : mean 11 % (1 %, 22 %) </span></span>
 <span><span class="co">#&gt; Stop reason triggered:</span></span>
-<span><span class="co">#&gt;  ≥ 30 patients dosed :  54 %</span></span>
+<span><span class="co">#&gt;  ≥ 30 patients dosed :  53 %</span></span>
 <span><span class="co">#&gt;  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  62 %</span></span>
 <span><span class="co">#&gt;  ≥ 9 patients dosed in 20 % dose range around NBD :  93 %</span></span></code></pre></div>
 A plot of the summary results can also be produced, see Figure
@@ -1420,7 +1422,7 @@ Simulator</em>. <a href="https://www.berryconsultants.com/software" class="exter
 <div id="ref-Thall2010" class="csl-entry">
 Thall, Peter F. 2010. <span>“Bayesian Models and Decision Algorithms for
 Complex Early Phase Clinical Trials.”</span> <em>Statistical
-Science</em> 25 (2): 227–44. <a href="https://pubmed.ncbi.nlm.nih.gov/21318084/" class="external-link">https://pubmed.ncbi.nlm.nih.gov/21318084/</a>.
+Science</em> 25 (2): 227–44. <a href="https://doi.org/10.1214/09-STS315" class="external-link">https://doi.org/10.1214/09-STS315</a>.
 </div>
 <div id="ref-dfpk" class="csl-entry">
 Toumazi, Artemis, Moreno Ursino, and Sarah Zohar. 2017. <em>: A Bayesian

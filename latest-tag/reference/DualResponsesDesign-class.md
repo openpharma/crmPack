@@ -37,23 +37,23 @@ DualResponsesDesign(eff_model, data, ...)
 
   `model`
 
-  :   (`ModelTox`)\
-      see slot definition.
+  : (`ModelTox`)\
+    see slot definition.
 
   `stopping`
 
-  :   (`Stopping`)\
-      see slot definition.
+  : (`Stopping`)\
+    see slot definition.
 
   `increments`
 
-  :   (`Increments`)\
-      see slot definition.
+  : (`Increments`)\
+    see slot definition.
 
   `pl_cohort_size`
 
-  :   (`CohortSize`)\
-      see slot definition.
+  : (`CohortSize`)\
+    see slot definition.
 
 ## Slots
 

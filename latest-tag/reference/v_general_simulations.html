@@ -28,7 +28,7 @@ GeneralSimulations or inherited classes and therefore not exported.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,7 @@ GeneralSimulations or inherited classes and therefore not exported.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -102,7 +103,7 @@ GeneralSimulations or inherited classes and therefore not exported.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Internal Helper Functions for Validation of <code><a href="GeneralSimulations-class.html">GeneralSimulations</a></code> Objects</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Simulations-validity.R" class="external-link"><code>R/Simulations-validity.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Simulations-validity.R" class="external-link"><code>R/Simulations-validity.R</code></a></small>
       <div class="d-none name"><code>v_general_simulations.Rd</code></div>
     </div>
 
@@ -155,7 +156,8 @@ or <code>TRUE</code> in case validation passes.</p>
 contains valid <code>data</code> object and valid <code>dose</code> simulations.</p></li>
 <li><p><code>v_simulations()</code>: validates that the <code><a href="Simulations-class.html">Simulations</a></code> object
 contains valid object <code>fit</code>, <code>stop_reasons</code>, <code>stop_report</code>, and
-<code>additional_stats</code> compared to the general class <code><a href="GeneralSimulations-class.html">GeneralSimulations</a></code>.</p></li>
+<code>additional_stats</code>, and <code>overdose_prob</code> compared to the general class
+<code><a href="GeneralSimulations-class.html">GeneralSimulations</a></code>.</p></li>
 <li><p><code>v_hierarchical_simulations()</code>: validates that the
 <code><a href="HierarchicalSimulations-class.html">HierarchicalSimulations</a></code> object contains valid hierarchical data,
 posterior samples, fits, and stopping outputs.</p></li>

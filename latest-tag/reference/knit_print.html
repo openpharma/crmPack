@@ -110,6 +110,7 @@ crmPack objects in Markdown and Quarto files
 
 
 
+
 ">
 <meta property="og:description" content="
 
@@ -209,6 +210,7 @@ crmPack objects in Markdown and Quarto files
 
 
 
+
 ">
 <meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
@@ -220,7 +222,7 @@ crmPack objects in Markdown and Quarto files
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -272,6 +274,7 @@ crmPack objects in Markdown and Quarto files
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -294,7 +297,7 @@ crmPack objects in Markdown and Quarto files
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Render a <code>CohortSizeConst</code> Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/helpers_knitr_Backfill.R" class="external-link"><code>R/helpers_knitr_Backfill.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/helpers_knitr_Design.R" class="external-link"><code>R/helpers_knitr_Design.R</code></a>, and 8 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/helpers_knitr_Backfill.R" class="external-link"><code>R/helpers_knitr_Backfill.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/helpers_knitr_CohortSize.R" class="external-link"><code>R/helpers_knitr_CohortSize.R</code></a>, <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/helpers_knitr_Design.R" class="external-link"><code>R/helpers_knitr_Design.R</code></a>, and 8 more</small>
       <div class="d-none name"><code>knit_print.Rd</code></div>
     </div>
 
@@ -377,6 +380,7 @@ all design classes, not just those that are direct descendants of <code>Design</
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>We provide additional utility functions to allow human-friendly rendition of
 crmPack objects in Markdown and Quarto files</p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
@@ -926,6 +930,9 @@ crmPack objects in Markdown and Quarto files</p>
 <span></span>
 <span><span class="co"># S3 method for class 'StoppingMinCohorts'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'StoppingDoseStabilized'</span></span>
+<span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dose_label <span class="op">=</span> <span class="st">"the next best dose"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'StoppingMinPatients'</span></span>
 <span><span class="fu">knit_print</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, label <span class="op">=</span> <span class="st">"participant"</span>, asis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

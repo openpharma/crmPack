@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -104,7 +105,7 @@ Daniel Sabanés Bové</h4>
             
             <h4 data-toc-skip class="date">02 January 2019</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/vignettes/simulations.Rmd" class="external-link"><code>vignettes/simulations.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/vignettes/simulations.Rmd" class="external-link"><code>vignettes/simulations.Rmd</code></a></small>
       <div class="d-none name"><code>simulations.Rmd</code></div>
     </div>
 
@@ -213,6 +214,76 @@ appropriately (step, samples, nsim).</p>
 <span>  mcmcOptions <span class="op">=</span> <span class="va">options</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively we can also use <code><a href="../reference/examine.html">examine()</a></code> to look at
+possible trial outcomes. Each cohort is reached assuming no additional
+DLTs in earlier cohorts. <code>DLTs</code> is the hypothetical number of
+additional DLTs among the current cohort and patients from earlier
+cohorts whose DLT windows are still open at the next decision. Thus it
+can exceed the cohort size.</p>
+<p><code>DLT_scenario</code> identifies the allocation scenario:
+<code>"no additional DLTs"</code>, <code>"late DLTs"</code>
+(earlier-enrolled eligible patients at their available follow-up times),
+or <code>"early DLTs"</code> (later-enrolled eligible patients with
+early event times). See <code><a href="../reference/examine.html">?examine</a></code> for the timing
+details.</p>
+<p><code>cohort</code> indexes the current cohort, continuing any
+indices already present in the design data. <code>dose</code> is that
+cohort’s dose. <code>DLT_cohorts</code> lists the cohort indices of the
+additional hypothetical DLTs, separated by commas and sorted. For
+example, <code>"1, 2, 2"</code> means one DLT in cohort 1 and two in
+cohort 2; <code>""</code> means no additional DLTs.
+<code>DLT_time</code> lists their corresponding onset times, relative to
+the start of each patient’s cohort, in the same order. Previously
+observed DLTs are excluded from both columns.</p>
+<p>Each hypothetical scenario requires an MCMC fit.
+<code>maxNoIncrement</code> limits the number of consecutive unchanged
+dose recommendations on the zero-DLT path (default: 100); reaching this
+limit produces a warning.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">321</span><span class="op">)</span></span>
+<span><span class="va">examineTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/examine.html">examine</a></span><span class="op">(</span></span>
+<span>  <span class="va">design</span>,</span>
+<span>  mcmcOptions <span class="op">=</span> <span class="va">options</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">examineTable</span></span>
+<span><span class="co">#&gt;    cohort       DLT_scenario dose DLTs   DLT_cohorts           DLT_time</span></span>
+<span><span class="co">#&gt; 1       1 no additional DLTs    8    0                                 </span></span>
+<span><span class="co">#&gt; 2       1          late DLTs    8    1             1                 21</span></span>
+<span><span class="co">#&gt; 3       1         early DLTs    8    1             1                 15</span></span>
+<span><span class="co">#&gt; 4       1          late DLTs    8    2          1, 1             21, 21</span></span>
+<span><span class="co">#&gt; 5       1         early DLTs    8    2          1, 1              8, 15</span></span>
+<span><span class="co">#&gt; 6       1          late DLTs    8    3       1, 1, 1         21, 21, 21</span></span>
+<span><span class="co">#&gt; 7       1         early DLTs    8    3       1, 1, 1           1, 8, 15</span></span>
+<span><span class="co">#&gt; 8       2 no additional DLTs   36    0                                 </span></span>
+<span><span class="co">#&gt; 9       2          late DLTs   36    1             1                 42</span></span>
+<span><span class="co">#&gt; 10      2         early DLTs   36    1             2                 15</span></span>
+<span><span class="co">#&gt; 11      2          late DLTs   36    2          1, 1             42, 42</span></span>
+<span><span class="co">#&gt; 12      2         early DLTs   36    2          2, 2              8, 15</span></span>
+<span><span class="co">#&gt; 13      2          late DLTs   36    3       1, 1, 2         42, 42, 21</span></span>
+<span><span class="co">#&gt; 14      2         early DLTs   36    3       2, 2, 2           1, 8, 15</span></span>
+<span><span class="co">#&gt; 15      2          late DLTs   36    4    1, 1, 2, 2     42, 42, 21, 21</span></span>
+<span><span class="co">#&gt; 16      2         early DLTs   36    4    1, 2, 2, 2       22, 1, 8, 15</span></span>
+<span><span class="co">#&gt; 17      2          late DLTs   36    5 1, 1, 2, 2, 2 42, 42, 21, 21, 21</span></span>
+<span><span class="co">#&gt; 18      2         early DLTs   36    5 1, 1, 2, 2, 2   22, 22, 1, 8, 15</span></span>
+<span><span class="co">#&gt;    nextDose  stop increment</span></span>
+<span><span class="co">#&gt; 1        36 FALSE       350</span></span>
+<span><span class="co">#&gt; 2        48 FALSE       500</span></span>
+<span><span class="co">#&gt; 3        38 FALSE       375</span></span>
+<span><span class="co">#&gt; 4        20 FALSE       150</span></span>
+<span><span class="co">#&gt; 5        14 FALSE        75</span></span>
+<span><span class="co">#&gt; 6        12 FALSE        50</span></span>
+<span><span class="co">#&gt; 7        10 FALSE        25</span></span>
+<span><span class="co">#&gt; 8        50 FALSE        39</span></span>
+<span><span class="co">#&gt; 9        32 FALSE       -11</span></span>
+<span><span class="co">#&gt; 10       24 FALSE       -33</span></span>
+<span><span class="co">#&gt; 11       30 FALSE       -17</span></span>
+<span><span class="co">#&gt; 12       28 FALSE       -22</span></span>
+<span><span class="co">#&gt; 13       16 FALSE       -56</span></span>
+<span><span class="co">#&gt; 14       22 FALSE       -39</span></span>
+<span><span class="co">#&gt; 15       14 FALSE       -61</span></span>
+<span><span class="co">#&gt; 16       26 FALSE       -28</span></span>
+<span><span class="co">#&gt; 17       16 FALSE       -56</span></span>
+<span><span class="co">#&gt; 18       14 FALSE       -61</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

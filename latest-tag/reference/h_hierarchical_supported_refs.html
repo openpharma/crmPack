@@ -12,12 +12,16 @@
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="List Supported Exchangeable Parameter References for an Arm Model — h_hierarchical_supported_refs">
-<meta name="description" content="
+<meta name="description" content='
 Returns the parameter reference syntax that may be used for a model in the
-exchangeable_parameters argument of HierarchicalModel().">
-<meta property="og:description" content="
+exchangeable_parameters argument of HierarchicalModel(). Combination
+models additionally support "eta", which pools the arm-specific interaction
+parameters (or their logarithms when log_normal_eta = TRUE).'>
+<meta property="og:description" content='
 Returns the parameter reference syntax that may be used for a model in the
-exchangeable_parameters argument of HierarchicalModel().">
+exchangeable_parameters argument of HierarchicalModel(). Combination
+models additionally support "eta", which pools the arm-specific interaction
+parameters (or their logarithms when log_normal_eta = TRUE).'>
 <meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
 <body>
@@ -28,7 +32,7 @@ exchangeable_parameters argument of HierarchicalModel().">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +84,7 @@ exchangeable_parameters argument of HierarchicalModel().">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -102,14 +107,16 @@ exchangeable_parameters argument of HierarchicalModel().">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>List Supported Exchangeable Parameter References for an Arm Model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/HierarchicalModel-class.R" class="external-link"><code>R/HierarchicalModel-class.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/HierarchicalModel-class.R" class="external-link"><code>R/HierarchicalModel-class.R</code></a></small>
       <div class="d-none name"><code>h_hierarchical_supported_refs.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>Returns the parameter reference syntax that may be used for a model in the
-<code>exchangeable_parameters</code> argument of <code><a href="HierarchicalModel-class.html">HierarchicalModel()</a></code>.</p>
+<code>exchangeable_parameters</code> argument of <code><a href="HierarchicalModel-class.html">HierarchicalModel()</a></code>. Combination
+models additionally support <code>"eta"</code>, which pools the arm-specific interaction
+parameters (or their logarithms when <code>log_normal_eta = TRUE</code>).</p>
     </div>
 
     <div class="section level2">

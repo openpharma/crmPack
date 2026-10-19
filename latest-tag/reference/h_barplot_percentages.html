@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -98,7 +99,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Convenience function to make barplots of percentages</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/helpers_simulations.R" class="external-link"><code>R/helpers_simulations.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/helpers_simulations.R" class="external-link"><code>R/helpers_simulations.R</code></a></small>
       <div class="d-none name"><code>h_barplot_percentages.Rd</code></div>
     </div>
 
@@ -109,7 +110,14 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">h_barplot_percentages</span><span class="op">(</span><span class="va">x</span>, <span class="va">description</span>, xaxisround <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">h_barplot_percentages</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">description</span>,</span>
+<span>  xaxisround <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  x_is_discrete <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  axis_text_angle <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  discrete_levels <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -132,6 +140,23 @@
 </dt>
 <dd><p>rounding for xaxis labels (default: 0, i.e. integers will
 be used)</p></dd>
+
+
+<dt id="arg-x-is-discrete">x_is_discrete<a class="anchor" aria-label="anchor" href="#arg-x-is-discrete"></a>
+</dt>
+<dd><p>whether the values on the x-axis should be treated as
+discrete categories</p></dd>
+
+
+<dt id="arg-axis-text-angle">axis_text_angle<a class="anchor" aria-label="anchor" href="#arg-axis-text-angle"></a>
+</dt>
+<dd><p>(<code>number</code>) rotation angle for x-axis tick labels.</p></dd>
+
+
+<dt id="arg-discrete-levels">discrete_levels<a class="anchor" aria-label="anchor" href="#arg-discrete-levels"></a>
+</dt>
+<dd><p>(<code>numeric</code> or <code>NULL</code>) complete ordered set of discrete
+x-axis values. Only used when <code>x_is_discrete</code> is <code>TRUE</code>.</p></dd>
 
 </dl>
 </div>

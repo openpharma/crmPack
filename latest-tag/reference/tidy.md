@@ -598,21 +598,22 @@ print(tidied_data)
 #> 7     7      6  10        6 TRUE  FALSE       8    41 <dbl [41]>       NA
 #> 8     8      6  10        6 FALSE FALSE       8    41 <dbl [41]>       NA
 #> # ℹ 4 more variables: Backfilled <lgl>, U <dbl>, T0 <dbl>, TMax <dbl>
+# \donttest{
 .DefaultSimulations() %>% tidy()
 #> $fit
 #> $fit[[1]]
 #>        middle        lower     upper
-#> 1  0.01476845 1.705984e-05 0.1070625
-#> 2  0.03437627 4.393945e-04 0.1706496
-#> 3  0.05328998 1.768856e-03 0.2263321
-#> 4  0.10207582 1.152498e-02 0.2950863
-#> 5  0.15354894 3.140310e-02 0.3511573
-#> 6  0.20645628 5.953361e-02 0.4139102
-#> 7  0.25903994 9.751541e-02 0.4736021
-#> 8  0.40107238 1.827711e-01 0.6564901
-#> 9  0.47675825 2.329125e-01 0.7544777
-#> 10 0.62657493 3.185464e-01 0.9138567
-#> 11 0.68629740 3.454662e-01 0.9481538
+#> 1  0.01761031 8.145119e-05 0.1103993
+#> 2  0.04247524 1.195886e-03 0.1723601
+#> 3  0.06720257 4.990748e-03 0.2233761
+#> 4  0.13116381 2.506959e-02 0.3166062
+#> 5  0.19653321 6.524143e-02 0.4022598
+#> 6  0.26061465 1.109466e-01 0.4664774
+#> 7  0.32127357 1.660913e-01 0.5187322
+#> 8  0.47260622 2.445504e-01 0.6821566
+#> 9  0.54745063 2.859688e-01 0.7543447
+#> 10 0.68735428 3.659317e-01 0.8948697
+#> 11 0.74076921 4.048423e-01 0.9345294
 #> 
 #> 
 #> $stop_report
@@ -623,28 +624,37 @@ print(tidied_data)
 #> # ℹ abbreviated name: ¹​[,"P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5"]
 #> # ℹ 1 more variable: stop_report[5] <lgl>
 #> 
+#> $overdose_prob
+#> # A tibble: 1 × 1
+#>   overdose_prob
+#>           <dbl>
+#> 1         0.191
+#> 
 #> $data
 #> $data[[1]]
-#> # A tibble: 17 × 11
+#> # A tibble: 20 × 11
 #>       ID Cohort  Dose XLevel Tox   Placebo  NObs NGrid DoseGrid   Response
 #>    <int>  <int> <dbl>  <int> <lgl> <lgl>   <int> <int> <list>        <int>
-#>  1     1      1     3      2 FALSE FALSE      17    11 <dbl [11]>        1
-#>  2     2      2     5      3 FALSE FALSE      17    11 <dbl [11]>        1
-#>  3     3      3    10      4 FALSE FALSE      17    11 <dbl [11]>        1
-#>  4     4      4    20      6 FALSE FALSE      17    11 <dbl [11]>        1
-#>  5     5      5    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
-#>  6     6      6    25      7 FALSE FALSE      17    11 <dbl [11]>        1
-#>  7     7      6    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
-#>  8     8      6    25      7 FALSE FALSE      17    11 <dbl [11]>        1
-#>  9     9      7    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
-#> 10    10      7    25      7 TRUE  FALSE      17    11 <dbl [11]>        1
-#> 11    11      7    25      7 FALSE FALSE      17    11 <dbl [11]>        1
-#> 12    12      8    15      5 FALSE FALSE      17    11 <dbl [11]>        1
-#> 13    13      8    15      5 FALSE FALSE      17    11 <dbl [11]>        1
-#> 14    14      8    15      5 FALSE FALSE      17    11 <dbl [11]>        1
-#> 15    15      9    20      6 FALSE FALSE      17    11 <dbl [11]>        1
-#> 16    16      9    20      6 FALSE FALSE      17    11 <dbl [11]>        1
-#> 17    17      9    20      6 FALSE FALSE      17    11 <dbl [11]>        1
+#>  1     1      1     3      2 FALSE FALSE      20    11 <dbl [11]>        1
+#>  2     2      2     5      3 FALSE FALSE      20    11 <dbl [11]>        1
+#>  3     3      3    10      4 FALSE FALSE      20    11 <dbl [11]>        1
+#>  4     4      4    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#>  5     5      5    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#>  6     6      6    25      7 FALSE FALSE      20    11 <dbl [11]>        1
+#>  7     7      7    25      7 FALSE FALSE      20    11 <dbl [11]>        1
+#>  8     8      8    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#>  9     9      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 10    10      9    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 11    11      9    25      7 FALSE FALSE      20    11 <dbl [11]>        1
+#> 12    12     10    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 13    13     10    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 14    14     10    20      6 FALSE FALSE      20    11 <dbl [11]>        1
+#> 15    15     11    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 16    16     11    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 17    17     11    25      7 TRUE  FALSE      20    11 <dbl [11]>        1
+#> 18    18     12    15      5 FALSE FALSE      20    11 <dbl [11]>        1
+#> 19    19     12    15      5 FALSE FALSE      20    11 <dbl [11]>        1
+#> 20    20     12    15      5 FALSE FALSE      20    11 <dbl [11]>        1
 #> # ℹ 1 more variable: Backfilled <lgl>
 #> 
 #> 
@@ -652,7 +662,7 @@ print(tidied_data)
 #> # A tibble: 1 × 1
 #>   doses
 #>   <dbl>
-#> 1    25
+#> 1    20
 #> 
 #> $seed
 #> # A tibble: 1 × 1
@@ -662,6 +672,7 @@ print(tidied_data)
 #> 
 #> attr(,"class")
 #> [1] "tbl_Simulations" "list"           
+# }
 .DefaultLogisticIndepBeta() %>% tidy()
 #> $pseudoData
 #> # A tibble: 2 × 3
@@ -1106,6 +1117,7 @@ NextBestNCRM(
 #> 
 #> attr(,"class")
 #> [1] "tbl_DualDesign" "list"          
+# \donttest{
 options <- McmcOptions(
   burnin = 100,
   step = 1,
@@ -1126,16 +1138,16 @@ samples %>% tidy()
 #> # A tibble: 2,000 × 10
 #>    Iteration Chain alpha0 alpha1 nChains nParameters nIterations nBurnin nThin
 #>        <int> <int>  <dbl>  <dbl>   <int>       <int>       <int>   <int> <int>
-#>  1         1     1 -0.646  1.24        1           1        2100     100     1
-#>  2         2     1 -1.86   1.24        1           1        2100     100     1
-#>  3         3     1  0.313  0.568       1           1        2100     100     1
-#>  4         4     1 -1.79   9.00        1           1        2100     100     1
-#>  5         5     1 -2.19   2.76        1           1        2100     100     1
-#>  6         6     1 -1.23   1.91        1           1        2100     100     1
-#>  7         7     1 -0.995  6.40        1           1        2100     100     1
-#>  8         8     1  0.850  0.826       1           1        2100     100     1
-#>  9         9     1 -2.07  17.5         1           1        2100     100     1
-#> 10        10     1 -1.25   0.582       1           1        2100     100     1
+#>  1         1     1 -2.74   7.67        1           1        2100     100     1
+#>  2         2     1 -0.448  2.01        1           1        2100     100     1
+#>  3         3     1  1.11   2.67        1           1        2100     100     1
+#>  4         4     1 -1.34   2.62        1           1        2100     100     1
+#>  5         5     1  0.376  0.882       1           1        2100     100     1
+#>  6         6     1  0.140  0.634       1           1        2100     100     1
+#>  7         7     1 -0.162  0.782       1           1        2100     100     1
+#>  8         8     1  0.336  2.35        1           1        2100     100     1
+#>  9         9     1 -2.59   8.24        1           1        2100     100     1
+#> 10        10     1 -1.41   2.24        1           1        2100     100     1
 #> # ℹ 1,990 more rows
 #> # ℹ 1 more variable: parallel <lgl>
 #> 
@@ -1147,4 +1159,5 @@ samples %>% tidy()
 #> 
 #> attr(,"class")
 #> [1] "tbl_Samples" "list"       
+# }
 ```

@@ -29,6 +29,7 @@ plot(
   y,
   type = c("nObs", "doseSelected", "propDLTs", "nAboveTarget", "meanFit",
     "meanBiomarkerFit"),
+  axis_text_angle = 45,
   ...
 )
 ```
@@ -49,6 +50,12 @@ plot(
 
   (`character`)\
   the types of plots you want to obtain.
+
+- axis_text_angle:
+
+  (`number`)\
+  rotation angle for the MTD estimate x-axis tick labels. Defaults to 45
+  degrees.
 
 - ...:
 

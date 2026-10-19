@@ -51,23 +51,23 @@ DesignOrdinal(
 
   `next_best`
 
-  :   (`NextBestOrdinal`)\
-      see slot definition.
+  : (`NextBestOrdinal`)\
+    see slot definition.
 
   `cohort_size`
 
-  :   (`CohortSize`)\
-      see slot definition.
+  : (`CohortSize`)\
+    see slot definition.
 
   `data`
 
-  :   (`DataOrdinal`)\
-      see slot definition.
+  : (`DataOrdinal`)\
+    see slot definition.
 
   `starting_dose`
 
-  :   (`number`)\
-      see slot definition.
+  : (`number`)\
+    see slot definition.
 
 ## Details
 

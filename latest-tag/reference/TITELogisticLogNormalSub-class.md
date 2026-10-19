@@ -31,19 +31,19 @@ TITELogisticLogNormalSub(weight_method = "linear", ...)
 
   `mean`
 
-  :   (`numeric`)\
-      the prior mean vector.
+  : (`numeric`)\
+    the prior mean vector.
 
   `cov`
 
-  :   (`matrix`)\
-      the prior covariance matrix. The precision matrix `prec` is
-      internally calculated as an inverse of `cov`.
+  : (`matrix`)\
+    the prior covariance matrix. The precision matrix `prec` is
+    internally calculated as an inverse of `cov`.
 
   `ref_dose`
 
-  :   (`number`)\
-      the reference dose \\x\*\\.
+  : (`number`)\
+    the reference dose \\x\*\\.
 
 ## Details
 

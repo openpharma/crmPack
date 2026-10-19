@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -104,7 +105,7 @@ Wójciak, Oliver Boix</h4>
             
             <h4 data-toc-skip class="date">20 June 2023</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/vignettes/upgrading_from_the_old_crmPack.Rmd" class="external-link"><code>vignettes/upgrading_from_the_old_crmPack.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/vignettes/upgrading_from_the_old_crmPack.Rmd" class="external-link"><code>vignettes/upgrading_from_the_old_crmPack.Rmd</code></a></small>
       <div class="d-none name"><code>upgrading_from_the_old_crmPack.Rmd</code></div>
     </div>
 
@@ -1231,10 +1232,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1]  1.34841076  0.11025416  0.86730537  1.53660845  1.20567406  0.83567002</span></span>
-<span><span class="co">#&gt;  [7]  1.64091143  2.28460821  4.52450730  1.44885220  1.58322190  0.02608328</span></span>
-<span><span class="co">#&gt; [13]  1.21766897  0.39543888  1.28366789  0.73875076 19.61886830  0.60780362</span></span>
-<span><span class="co">#&gt; [19]  0.05915204  1.29433795</span></span>
+<span><span class="co">#&gt;  [1] 5.764816e-01 1.003141e+00 1.090389e+00 1.152964e+00 1.834854e-01</span></span>
+<span><span class="co">#&gt;  [6] 1.892888e+00 6.623943e-03 2.120591e+00 1.107195e+00 7.848503e-05</span></span>
+<span><span class="co">#&gt; [11] 9.280628e-01 2.527625e+01 4.582232e-01 1.494800e+01 1.449023e+00</span></span>
+<span><span class="co">#&gt; [16] 2.533996e-01 3.334492e+00 1.409196e+00 1.488667e-01 5.061865e-01</span></span>
 <span></span>
 <span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1252,10 +1253,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] 0.93817478 0.22611044 0.99172210 0.73879550 0.86176537 0.02110999</span></span>
-<span><span class="co">#&gt;  [7] 0.78785107 0.66024799 0.16678261 0.89131170 0.99387321 0.78392448</span></span>
-<span><span class="co">#&gt; [13] 0.87738055 0.95835853 0.92685442 0.74505590 0.36538941 0.93118090</span></span>
-<span><span class="co">#&gt; [19] 0.83881343 0.98010014</span></span>
+<span><span class="co">#&gt;  [1] 0.7323336 0.9701552 0.9847560 0.9874946 0.8199989 0.9802354 0.3041193</span></span>
+<span><span class="co">#&gt;  [8] 0.8648901 0.9499393 0.6888586 0.9701999 0.4253856 0.7725674 0.3538183</span></span>
+<span><span class="co">#&gt; [15] 0.7739564 0.9489853 0.5819845 0.9890029 0.8117047 0.6546124</span></span>
 <span></span>
 <span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>

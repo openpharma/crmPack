@@ -14,11 +14,13 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Simulations — Simulations-class">
 <meta name="description" content="
 This class captures the trial simulations from model based designs.
-Additional slots fit, stop_reasons, stop_report,additional_stats compared to
+Additional slots fit, stop_reasons, stop_report, additional_stats,
+and overdose_prob compared to
 the general class GeneralSimulations.">
 <meta property="og:description" content="
 This class captures the trial simulations from model based designs.
-Additional slots fit, stop_reasons, stop_report,additional_stats compared to
+Additional slots fit, stop_reasons, stop_report, additional_stats,
+and overdose_prob compared to
 the general class GeneralSimulations.">
 <meta property="og:image" content="https://docs.crmpack.org/logo.png">
 </head>
@@ -30,7 +32,7 @@ the general class GeneralSimulations.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +84,7 @@ the general class GeneralSimulations.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -104,21 +107,29 @@ the general class GeneralSimulations.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1><code>Simulations</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Simulations-class.R" class="external-link"><code>R/Simulations-class.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Simulations-class.R" class="external-link"><code>R/Simulations-class.R</code></a></small>
       <div class="d-none name"><code>Simulations-class.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
 <p>This class captures the trial simulations from model based designs.
-Additional slots <code>fit</code>, <code>stop_reasons</code>, <code>stop_report</code>,<code>additional_stats</code> compared to
+Additional slots <code>fit</code>, <code>stop_reasons</code>, <code>stop_report</code>, <code>additional_stats</code>,
+and <code>overdose_prob</code> compared to
 the general class <code><a href="GeneralSimulations-class.html">GeneralSimulations</a></code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Simulations</span><span class="op">(</span><span class="va">fit</span>, <span class="va">stop_reasons</span>, <span class="va">stop_report</span>, <span class="va">additional_stats</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Simulations</span><span class="op">(</span></span>
+<span>  <span class="va">fit</span>,</span>
+<span>  <span class="va">stop_reasons</span>,</span>
+<span>  <span class="va">stop_report</span>,</span>
+<span>  <span class="va">additional_stats</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  overdose_prob <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">.DefaultSimulations</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -153,6 +164,12 @@ the general class <code><a href="GeneralSimulations-class.html">GeneralSimulatio
 </dt>
 <dd><p>additional parameters from <code><a href="GeneralSimulations-class.html">GeneralSimulations</a></code></p></dd>
 
+
+<dt id="arg-overdose-prob">overdose_prob<a class="anchor" aria-label="anchor" href="#arg-overdose-prob"></a>
+</dt>
+<dd><p>(<code>numeric</code>)<br> see slot definition. If omitted, it is
+initialized to <code>NA</code> for backwards compatibility.</p></dd>
+
 </dl>
 </div>
     <div class="section level2">
@@ -175,6 +192,12 @@ the general class <code><a href="GeneralSimulations-class.html">GeneralSimulatio
 
 <dt><code>additional_stats</code></dt>
 <dd><p>list of additional statistical summary</p></dd>
+
+
+<dt><code>overdose_prob</code></dt>
+<dd><p>(<code>numeric</code>)<br> posterior probability that the toxicity
+probability at the final recommended dose exceeds the upper target bound,
+for each simulation run. This is <code>NA</code> when no dose is recommended.</p></dd>
 
 
 </dl>

@@ -22,7 +22,8 @@ meanFit
 Plot showing the average fitted dose-toxicity curve across
 the trials, together with 95% credible intervals, and comparison with the
 assumed truth (as specified by the truth argument to
-summary,Simulations-method)
+summary,Simulations-method). The target toxicity range is shown as a
+shaded area; a scalar target is shown as a horizontal dotted line.
 
 
 
@@ -38,7 +39,8 @@ meanFit
 Plot showing the average fitted dose-toxicity curve across
 the trials, together with 95% credible intervals, and comparison with the
 assumed truth (as specified by the truth argument to
-summary,Simulations-method)
+summary,Simulations-method). The target toxicity range is shown as a
+shaded area; a scalar target is shown as a horizontal dotted line.
 
 
 
@@ -54,7 +56,7 @@ You can specify any subset of these in the type argument.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +108,7 @@ You can specify any subset of these in the type argument.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -128,7 +131,7 @@ You can specify any subset of these in the type argument.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot Model-Based Design Simulation Summary</h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>plot-SimulationsSummary-missing-method.Rd</code></div>
     </div>
 
@@ -143,7 +146,8 @@ those listed in <code><a href="plot-GeneralSimulationsSummary-missing-method.htm
 <dd><p>Plot showing the average fitted dose-toxicity curve across
 the trials, together with 95% credible intervals, and comparison with the
 assumed truth (as specified by the <code>truth</code> argument to
-<code><a href="summary-Simulations-method.html">summary,Simulations-method</a></code>)</p></dd>
+<code><a href="summary-Simulations-method.html">summary,Simulations-method</a></code>). The target toxicity range is shown as a
+shaded area; a scalar target is shown as a horizontal dotted line.</p></dd>
 
 
 </dl>
@@ -158,6 +162,8 @@ assumed truth (as specified by the <code>truth</code> argument to
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nObs"</span>, <span class="st">"doseSelected"</span>, <span class="st">"propDLTs"</span>, <span class="st">"nAboveTarget"</span>, <span class="st">"meanFit"</span><span class="op">)</span>,</span>
+<span>  axis_text_angle <span class="op">=</span> <span class="fl">45</span>,</span>
+<span>  true_mtd_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -181,6 +187,18 @@ assumed truth (as specified by the <code>truth</code> argument to
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a>
 </dt>
 <dd><p>(<code>character</code>)<br> the types of plots you want to obtain.</p></dd>
+
+
+<dt id="arg-axis-text-angle">axis_text_angle<a class="anchor" aria-label="anchor" href="#arg-axis-text-angle"></a>
+</dt>
+<dd><p>(<code>number</code>)<br> rotation angle for the MTD estimate
+x-axis tick labels. Defaults to 45 degrees.</p></dd>
+
+
+<dt id="arg-true-mtd-legend">true_mtd_legend<a class="anchor" aria-label="anchor" href="#arg-true-mtd-legend"></a>
+</dt>
+<dd><p>(<code>flag</code>)<br> whether to show the legend for true MTD
+triangles. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>

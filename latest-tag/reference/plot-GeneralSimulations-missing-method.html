@@ -46,7 +46,7 @@ You can specify one or both of these in the type argument.">
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,6 +98,7 @@ You can specify one or both of these in the type argument.">
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -121,7 +122,7 @@ You can specify one or both of these in the type argument.">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot <code>GeneralSimulations</code>
 </h1>
-      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/R/Simulations-methods.R" class="external-link"><code>R/Simulations-methods.R</code></a></small>
       <div class="d-none name"><code>plot-GeneralSimulations-missing-method.Rd</code></div>
     </div>
 
@@ -146,7 +147,16 @@ to summarize them graphically. Possible <code>type</code>s of plots at the momen
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'GeneralSimulations,missing'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trajectory"</span>, <span class="st">"dosesTried"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trajectory"</span>, <span class="st">"dosesTried"</span><span class="op">)</span>,</span>
+<span>  prob_plot_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lollipop"</span>, <span class="st">"bar"</span><span class="op">)</span>,</span>
+<span>  dose_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"linear"</span>, <span class="st">"log"</span><span class="op">)</span>,</span>
+<span>  axis_ticks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dosegrid"</span>, <span class="st">"regular"</span><span class="op">)</span>,</span>
+<span>  patient_scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -170,9 +180,39 @@ to summarize them graphically. Possible <code>type</code>s of plots at the momen
 <dd><p>(<code>character</code>)<br> the type of plots you want to obtain.</p></dd>
 
 
+<dt id="arg-prob-plot-type">prob_plot_type<a class="anchor" aria-label="anchor" href="#arg-prob-plot-type"></a>
+</dt>
+<dd><p>(<code>string</code>)<br> for the doses tried plot, use a
+<code>"lollipop"</code> (default) or <code>"bar"</code> geometry.</p></dd>
+
+
+<dt id="arg-dose-scale">dose_scale<a class="anchor" aria-label="anchor" href="#arg-dose-scale"></a>
+</dt>
+<dd><p>(<code>string</code>)<br> for dose axes, use <code>"auto"</code> (default),
+<code>"linear"</code>, or <code>"log"</code>. Automatic scaling is linear except when equal-width
+bars would overlap, in which case the doses tried x-axis uses log10. The
+trajectory y-axis uses log10 only when explicitly requested. Log scaling
+requires all doses to be strictly positive.</p></dd>
+
+
+<dt id="arg-axis-ticks">axis_ticks<a class="anchor" aria-label="anchor" href="#arg-axis-ticks"></a>
+</dt>
+<dd><p>(<code>string</code>)<br> place dose-axis ticks at each dose-grid value
+(<code>"dosegrid"</code>, the default) or at regular positions selected by <code>ggplot2</code>
+(<code>"regular"</code>). This controls the trajectory y-axis and doses tried x-axis.</p></dd>
+
+
+<dt id="arg-patient-scale">patient_scale<a class="anchor" aria-label="anchor" href="#arg-patient-scale"></a>
+</dt>
+<dd><p>(<code>numeric</code> or <code>NULL</code>)<br> patient positions for the
+trajectory x-axis ticks. By default, the unique cumulative active-treatment
+cohort sizes are inferred from the simulation data. A single supplied value
+is used as an equally spaced interval; a vector supplies the exact breaks.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a>
 </dt>
-<dd><p>not used.</p></dd>
+<dd><p>additional arguments without method dispatch.</p></dd>
 
 </dl>
 </div>

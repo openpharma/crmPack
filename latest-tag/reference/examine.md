@@ -44,7 +44,38 @@ examine(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement)
 
 ## Value
 
-The data frame
+A data frame with the current `dose`, hypothetical `DLTs`, recommended
+`nextDose`, `stop` (whether the stopping rule is met), and percentage
+`increment` relative to `dose`.
+
+For `DADesign`, `DLTs` is the number of additional hypothetical DLTs
+assigned among the current cohort and earlier patients still within
+their DLT window at the next cohort-opening time. It is not restricted
+to the current cohort and does not include DLTs already present in
+`object@data`. Each cohort is reached along the path with no additional
+DLTs. The integer column `cohort` identifies the current cohort,
+starting at 1 for empty data or continuing the existing cohort indices
+in `object@data`. The character column `DLT_cohorts` lists one cohort
+index per additional hypothetical DLT, sorted and separated by commas.
+Repeated indices denote multiple DLTs in the same cohort: `"1, 2, 2"`
+means one DLT in cohort 1 and two in cohort 2. It is `""` when `DLTs` is
+zero and excludes previously observed DLTs. The character column
+`DLT_time` gives the corresponding DLT onset times, relative to the
+start of each patient's cohort, in the same order and comma-separated
+format as `DLT_cohorts`. It is `""` when `DLTs` is zero. The `dose`
+column always refers to the current cohort.
+
+The additional column `DLT_scenario` identifies the scenario, not a
+count: `"no additional DLTs"` denotes no additional DLTs; `"late DLTs"`
+assigns DLTs to the earliest-enrolled eligible patients, at their
+available follow-up times; `"early DLTs"` assigns DLTs to the
+latest-enrolled eligible patients, as early as one day after the
+previous cohort-opening decision or one day after enrollment, whichever
+is later. For `"early DLTs"`, if `DLTs` is at least the current cohort
+size, the hypothetical decision occurs one day after its last patient
+enrolls; otherwise it occurs at the usual next cohort-opening time. Both
+scenarios are evaluated for every positive `DLTs` count. They are
+illustrative allocations, not all possible patient-level outcomes.
 
 ## Details
 
@@ -322,7 +353,13 @@ design <- DADesign(
 set.seed(4235)
 # MCMC parameters are set to small values only to show this example. They should be
 # increased for a real case.
-# This procedure will take a while.
+# Each hypothetical scenario requires an MCMC fit, so this can take a while.
+# DLTs counts additional hypothetical events, including earlier patients whose
+# DLT windows are still open. DLT_scenario identifies the scenario:
+# "no additional DLTs", "late DLTs" (earlier-enrolled patients), or
+# "early DLTs" (later-enrolled patients).
+# cohort identifies the current cohort. DLT_cohorts lists one cohort index per
+# additional DLT (e.g. "1, 2, 2"), or "" when there are none.
 options <- McmcOptions(
   burnin = 10,
   step = 1,
@@ -331,10 +368,7 @@ options <- McmcOptions(
   rng_seed = 12
 )
 # \donttest{
-testthat::expect_warning(
-  result <- examine(design, mcmcOptions = options, maxNoIncrement = 2),
-  "Stopping because 2 times no increment"
-)
+result <- examine(design, mcmcOptions = options)
 # }
 
 # nolint end

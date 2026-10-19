@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,6 +74,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdown-versions">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.30">v2.30</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.1">v2.2.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.2.0">v2.2.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://openpharma.github.io/crmPack/v2.1.0">v2.1.0</a>
@@ -96,12 +97,54 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/openpharma/crmPack/blob/v2.2.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/openpharma/crmPack/blob/v2.30/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.3.0" id="version-230">Version 2.3.0<a class="anchor" aria-label="anchor" href="#version-230"></a>
+</h2>
+<p class="text-muted">CRAN release: 2026-10-11</p>
+<div class="section level4">
+<h4 id="new-features-2-3-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-2-3-0"></a>
+</h4>
+<ul>
+<li><p>Added <code>StoppingDoseStabilized</code>, a stopping rule that stops when the current next best dose has been administered to a prespecified number of consecutive cohorts.</p></li>
+<li><p>Additional plotting options for one-dimensional <code>nextBest</code> methods are available, including log and equally spaced factor dose scales, lollipop layers instead of bars, and dose-grid or regularly spaced axis ticks.</p></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="enhancements-2-3-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-2-3-0"></a>
+</h4>
+<ul>
+<li><p><code>HierarchicalModel</code> now compiles exchangeable normal priors in non-centered form for JAGS, including analytic Cholesky transformations for correlated parameter pairs. Non-centered hypermean nodes use a reserved <code>z_mu_</code> prefix so pool names such as <code>"x"</code> and <code>"x_z"</code> cannot generate conflicting JAGS nodes. In the <code>comparison_decider</code> example, this increased the minimum effective sample size across monitored parameters from approximately 450 to 47,000 for 100,000 retained draws, without increasing runtime.</p></li>
+<li><p><code>HierarchicalModel</code> and <code>HierarchicalDesign</code> now support exchangeable <code>"eta"</code> pools for <code>TwoDrugsCombo</code> arms. Each combination arm retains its own interaction parameter while sharing hyperparameters, and singleton interaction pools are supported so that the same hierarchical marginal prior can be used with one combination arm.</p></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="miscellaneous-2-3-0">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-2-3-0"></a>
+</h4>
+<ul>
+<li><p>Next-dose probability plots now identify the increment, safety, and overdose rules and the recommended dose in legends. It is also possible to use a triangle to mark the highest safe dose. Multi-panel plots put overdose information first and align their plotting areas.</p></li>
+<li><p>Extended <code>GeneralSimulationsSummary</code> with a <code>true_mtd</code> slot and enhanced summary plotting accordingly.</p></li>
+<li><p>Extended <code>Simulations</code> and <code>SimulationsSummary</code> classes with overdose probability at the final selected dose.</p></li>
+<li><p>Simulation trajectory plots now use stepped blue ribbons to show the minimum and maximum and interquartile ranges alongside the median, with a legend and patient-axis ticks inferred from cohort boundaries. Patient tick positions can also be supplied with the new <code>patient_scale</code> argument.</p></li>
+<li><p>Minor grid lines are suppressed when dose-grid or factor axes are used, making next-dose and simulation plots easier to read.</p></li>
+<li><p>The dependency <code>ggplot2</code> package now needs to have minimum version 3.2.0 instead of previously 3.0.0. This should not be a practical restriction because version 3.2.0 was already released in 2019.</p></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="bug-fixes-2-3-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-3-0"></a>
+</h4>
+<ul>
+<li>
+<code><a href="../reference/examine.html">examine()</a></code> for <code>DADesign</code> now identifies the current cohort in <code>cohort</code> and lists one cohort index per additional hypothetical DLT in <code>DLT_cohorts</code>. The numeric <code>DLTsearly_1</code> column has been replaced by <code>DLT_scenario</code>, with values <code>"no additional DLTs"</code>, <code>"late DLTs"</code>, and <code>"early DLTs"</code>. <code>DLT_time</code> includes the onset time of each hypothetical DLT relative to its cohort start and is aligned with <code>DLT_cohorts</code>. Documentation now explains the scenario allocations and that <code>DLTs</code> can include patients from earlier cohorts. The method also correctly counts eligible patients, evaluates both timing scenarios without duplicate allocations, and advances using only the current cohort’s zero-DLT recommendation. These fixes remove replacement-length warnings and correct the no-increment stopping logic.</li>
+</ul>
+</div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.2.1" id="version-221">Version 2.2.1<a class="anchor" aria-label="anchor" href="#version-221"></a>
 </h2>
+<p class="text-muted">CRAN release: 2026-07-27</p>
 <div class="section level4">
 <h4 id="miscellaneous-2-2-1">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-2-2-1"></a>
 </h4>
@@ -483,10 +526,7 @@
 </h2>
 <ul>
 <li>Bugfix: The MinimalInformative function previously produced too uninformative prior quantiles, which were not fulfilling the requirements in the function’s documentation. With this bugfix, the correct (as per the Neuenschwander et al
-<ol start="2008" style="list-style-type: decimal">
-<li>publication) prior quantiles are specified and then approximated with logistic (log) normal priors.</li>
-</ol>
-</li>
+(2008) publication) prior quantiles are specified and then approximated with logistic (log) normal priors.</li>
 </ul>
 </div>
     <div class="section level2">
