@@ -49,10 +49,11 @@ testthat::local_mocked_bindings(
 test_that("plot-GeneralSimulations works correctly", {
   mySims <- .DefaultSimulations()
 
-  # Test default plot (includes both trajectory and dosesTried, so returns gtable)
+  # Test default plot (trajectory above survival, doses tried to the right)
   result <- plot(mySims)
   expect_s3_class(result, "gtable")
-  expect_equal(dim(result), c(2, 1)) # Should have 2 rows, 1 column
+  expect_equal(dim(result), c(1, 2))
+  expect_equal(dim(result$grobs[[1L]]), c(2, 1))
   expect_true(all(c("heights", "widths", "grobs") %in% names(result)))
 
   # Test trajectory plot only
@@ -76,7 +77,65 @@ test_that("plot-GeneralSimulations works correctly", {
   # Test both plot types explicitly
   result_both <- plot(mySims, type = c("trajectory", "dosesTried"))
   expect_s3_class(result_both, "gtable")
-  expect_equal(dim(result_both), c(2, 1)) # Should have 2 rows, 1 column
+  expect_equal(dim(result_both), c(1, 2))
+})
+
+test_that("trial survival counts trials reaching each patient", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(1, 1), y = c(0, 0), ID = 1:2, cohort = c(1, 1), doseGrid = 1:2),
+      Data(x = c(1, 1, 2, 2), y = rep(0, 4), ID = 1:4,
+           cohort = c(1, 1, 2, 2), doseGrid = 1:2)
+    ),
+    doses = c(1, 2),
+    seed = 123L
+  )
+  survival <- plot(sims, type = "trialsurvival")
+  expect_s3_class(survival, "ggplot")
+  expect_equal(survival$data$patient, 1:4)
+  expect_equal(survival$data$proportion, c(1, 1, 0.5, 0.5))
+  expect_equal(survival$scales$get_scales("y")$limits, c(0, 1))
+  expect_equal(survival$scales$get_scales("y")$labels(c(0, 0.5, 1)),
+               c("0%", "50%", "100%"))
+  expect_equal(survival$scales$get_scales("x")$breaks, c(2L, 4L))
+  expect_equal(survival$layers[[1L]]$geom_params$direction, "vh")
+
+  single_trial <- GeneralSimulations(
+    data = sims@data[1L], doses = sims@doses[1L], seed = sims@seed
+  )
+  expect_equal(plot(single_trial, type = "trialsurvival")$data$proportion,
+               c(1, 1))
+
+  interval <- plot(sims, type = "trialsurvival", patient_scale = 3L)
+  positions <- plot(sims, type = "trialsurvival", patient_scale = c(4L, 2L, 8L))
+  expect_equal(interval$scales$get_scales("x")$breaks, 3L)
+  expect_equal(positions$scales$get_scales("x")$breaks, c(2L, 4L))
+  expect_error(plot(sims, type = "trialsurvival", patient_scale = 0), "not >= 1",
+               fixed = TRUE)
+
+  stacked <- plot(sims, type = c("trialsurvival", "trajectory"))
+  expect_equal(dim(stacked), c(2, 1))
+  expect_equal(stacked$grobs[[1L]]$widths, stacked$grobs[[2L]]$widths)
+  side_by_side <- plot(sims, type = c("dosesTried", "trialsurvival"))
+  expect_equal(dim(side_by_side), c(1, 2))
+})
+
+test_that("trial survival excludes placebo patients", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(0, 1, 1), y = rep(0, 3), ID = 1:3,
+           cohort = c(1, 1, 1), doseGrid = 0:2, placebo = TRUE),
+      Data(x = c(0, 1, 1, 0, 2, 2), y = rep(0, 6), ID = 1:6,
+           cohort = c(1, 1, 1, 2, 2, 2), doseGrid = 0:2, placebo = TRUE)
+    ),
+    doses = c(1, 2),
+    seed = 123L
+  )
+  survival <- plot(sims, type = "trialsurvival")
+  expect_equal(survival$data$patient, 1:4)
+  expect_equal(survival$data$proportion, c(1, 1, 0.5, 0.5))
+  expect_equal(survival$labels$x, "Patient (placebo were excluded)")
+  expect_equal(survival$scales$get_scales("x")$breaks, c(2L, 4L))
 })
 
 test_that("plot-GeneralSimulations fails gracefully with bad input", {

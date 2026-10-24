@@ -8,7 +8,7 @@
 \S4method{plot}{GeneralSimulations,missing}(
   x,
   y,
-  type = c("trajectory", "dosesTried"),
+  type = c("trajectory", "dosesTried", "trialsurvival"),
   prob_plot_type = c("lollipop", "bar"),
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
@@ -37,8 +37,8 @@ requires all doses to be strictly positive.}
 (\code{"regular"}). This controls the trajectory y-axis and doses tried x-axis.}
 
 \item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for the
-trajectory x-axis ticks. By default, the unique cumulative active-treatment
-cohort sizes are inferred from the simulation data. A single supplied value
+trajectory and trial-survival x-axis ticks. By default, the unique cumulative
+active-treatment cohort sizes are inferred from the simulation data. A single supplied value
 is used as an equally spaced interval; a vector supplies the exact breaks.}
 
 \item{...}{additional arguments without method dispatch.}
@@ -57,8 +57,14 @@ to summarize them graphically. Possible \code{type}s of plots at the moment are:
 \describe{
 \item{trajectory}{Summary of the trajectory of the simulated trials}
 \item{dosesTried}{Average proportions of the doses tested in patients}
+\item{trialsurvival}{Percentage of simulated trials reaching at least each
+patient number, shown as a step curve from 0 to 100 percent}
 }
-You can specify one or both of these in the \code{type} argument.
+All three components are shown by default. Select any subset with \code{type}.
+When both patient-based components are selected, \code{trialsurvival} is placed
+below \code{trajectory}, with aligned patient axes. \code{dosesTried} is placed to the
+right when selected alongside another component. Placebo patients are excluded
+from the patient counts for both \code{trajectory} and \code{trialsurvival}.
 }
 \examples{
 # nolint start
@@ -123,8 +129,12 @@ mySim <- simulate(
 )
 
 
-## plot the simulations
+## Plot all three components: trajectory, trial survival, and doses tried.
 print(plot(mySim))
+
+## Show trial survival alone, or below the trajectory.
+print(plot(mySim, type = "trialsurvival"))
+print(plot(mySim, type = c("trajectory", "trialsurvival")))
 
 
 ## If DLE samples are involved

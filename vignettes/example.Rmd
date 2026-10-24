@@ -1399,7 +1399,7 @@ i.e. we can apply the plot method:
 
 
 ``` r
-print(plot(mySims))
+print(plot(mySims, type = c("trajectory", "dosesTried")))
 ```
 
 <div class="figure">
@@ -1407,11 +1407,14 @@ print(plot(mySims))
 <p class="caption">plot of chunk sim-plot</p>
 </div>
 
-The resulting plot shows on the top panel a summary of the trial trajectories.
-On the bottom, the proportions of doses tried, averaged over the simulated
-trials, are shown. Note that you can select the plots by changing the
-`type` argument of `plot`, which by default is `type =
-  c("trajectory", "dosesTried")`.
+The historical figure above shows on the top panel a summary of the trial trajectories.
+On the bottom, the proportions of doses tried, pooled over the simulated
+patients, are shown. Note that you can select the plots by changing the
+`type` argument of `plot`. The figure shows the explicitly selected
+`c("trajectory", "dosesTried")` components. The default is now
+`type = c("trajectory", "dosesTried", "trialsurvival")`: trial survival shows the
+percentage of simulated trials reaching at least each patient number on a
+0--100% axis, below the aligned trajectory, with doses tried on the right.
 
 Second, we can summarize the simulation results. Here again we have to supply a
 true dose-toxicity function. We take the same (`myTruth`) as above:

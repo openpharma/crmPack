@@ -481,8 +481,14 @@ h_plot_combo_evolution <- function(sim_data) {
 #' \describe{
 #'   \item{trajectory}{Summary of the trajectory of the simulated trials}
 #'   \item{dosesTried}{Average proportions of the doses tested in patients}
+#'   \item{trialsurvival}{Percentage of simulated trials reaching at least each
+#'     patient number, shown as a step curve from 0 to 100 percent}
 #' }
-#' You can specify one or both of these in the `type` argument.
+#' All three components are shown by default. Select any subset with `type`.
+#' When both patient-based components are selected, `trialsurvival` is placed
+#' below `trajectory`, with aligned patient axes. `dosesTried` is placed to the
+#' right when selected alongside another component. Placebo patients are excluded
+#' from the patient counts for both `trajectory` and `trialsurvival`.
 #'
 #' @param x (`GeneralSimulations`)\cr the object we want to plot from.
 #' @param y (`missing`)\cr not used.
@@ -498,8 +504,8 @@ h_plot_combo_evolution <- function(sim_data) {
 #'   (`"dosegrid"`, the default) or at regular positions selected by `ggplot2`
 #'   (`"regular"`). This controls the trajectory y-axis and doses tried x-axis.
 #' @param patient_scale (`numeric` or `NULL`)\cr patient positions for the
-#'   trajectory x-axis ticks. By default, the unique cumulative active-treatment
-#'   cohort sizes are inferred from the simulation data. A single supplied value
+#'   trajectory and trial-survival x-axis ticks. By default, the unique cumulative
+#'   active-treatment cohort sizes are inferred from the simulation data. A single supplied value
 #'   is used as an equally spaced interval; a vector supplies the exact breaks.
 #' @param ... additional arguments without method dispatch.
 #'
@@ -519,7 +525,7 @@ setMethod(
   def = function(
     x,
     y,
-    type = c("trajectory", "dosesTried"),
+    type = c("trajectory", "dosesTried", "trialsurvival"),
     prob_plot_type = c("lollipop", "bar"),
     dose_scale = c("auto", "linear", "log"),
     axis_ticks = c("dosegrid", "regular"),
@@ -538,7 +544,7 @@ setMethod(
     plot_index <- 0L
 
     # Summary of the trajectories.
-    if ("trajectory" %in% type) {
+    if (any(c("trajectory", "trialsurvival") %in% type)) {
       # If design with placebo, then exclude placebo patients.
       if (x@data[[1]]@placebo) {
         pl <- x@data[[1]]@doseGrid[1]
@@ -581,6 +587,28 @@ setMethod(
         x@data[[1]]@doseGrid
       }
 
+      assert_integerish(
+        patient_scale,
+        min.len = 1L,
+        lower = 1,
+        unique = TRUE,
+        any.missing = FALSE
+      )
+      if (length(patient_scale) == 1L) {
+        patient_scale <- if (patient_scale <= max_patients) {
+          seq.int(patient_scale, max_patients, by = patient_scale)
+        } else {
+          max_patients
+        }
+      } else {
+        patient_scale <- sort(patient_scale[patient_scale <= max_patients])
+        if (length(patient_scale) == 0L) {
+          patient_scale <- max_patients
+        }
+      }
+    }
+
+    if ("trajectory" %in% type) {
       # Create trajectory plot.
       plot_list[[plot_index <- plot_index + 1L]] <-
         h_plot_simulation_trajectory(
@@ -592,6 +620,38 @@ setMethod(
           axis_ticks = axis_ticks,
           patient_scale = patient_scale
         )
+    }
+
+    if ("trialsurvival" %in% type) {
+      trial_sizes <- lengths(sim_doses)
+      patients <- seq_len(max_patients)
+      survival_df <- data.frame(
+        patient = patients,
+        proportion = vapply(
+          patients,
+          function(n) mean(trial_sizes >= n),
+          numeric(1)
+        )
+      )
+      plot_list[[plot_index <- plot_index + 1L]] <-
+        ggplot(survival_df, aes(x = .data$patient, y = .data$proportion)) +
+        geom_step(direction = "vh", colour = "#08519C", linewidth = 1.2) +
+        scale_x_continuous(
+          limits = c(1, max_patients),
+          breaks = patient_scale
+        ) +
+        scale_y_continuous(
+          limits = c(0, 1),
+          breaks = seq(0, 1, by = 0.25),
+          labels = function(z) paste0(100 * z, "%")
+        ) +
+        xlab(if (x@data[[1]]@placebo) {
+          "Patient (placebo were excluded)"
+        } else {
+          "Patient"
+        }) +
+        ylab("Simulated trials reaching patient") +
+        theme(panel.grid.minor = element_blank())
     }
 
     # Average distribution of the doses tried.
@@ -619,8 +679,29 @@ setMethod(
       # Just return single plot.
       plot_list[[1L]]
     } else {
-      # Otherwise arrange them.
-      do.call(gridExtra::arrangeGrob, plot_list)
+      # Align patient axes and stack survival below the trajectory.
+      if (all(c("trajectory", "trialsurvival") %in% type)) {
+        patient_axis <- plot_list[[1L]]$scales$get_scales("x")
+        patient_axis$limits <- c(1, max_patients)
+        patient_grobs <- lapply(plot_list[1:2], ggplotGrob)
+        shared_widths <- grid::unit.pmax(
+          patient_grobs[[1L]]$widths,
+          patient_grobs[[2L]]$widths
+        )
+        patient_grobs[[1L]]$widths <- shared_widths
+        patient_grobs[[2L]]$widths <- shared_widths
+        patient_plot <- gridExtra::arrangeGrob(
+          grobs = patient_grobs,
+          ncol = 1
+        )
+        if ("dosesTried" %in% type) {
+          gridExtra::arrangeGrob(patient_plot, plot_list[[3L]], nrow = 1)
+        } else {
+          patient_plot
+        }
+      } else {
+        do.call(gridExtra::arrangeGrob, c(plot_list, list(nrow = 1)))
+      }
     }
   }
 )

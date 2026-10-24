@@ -12,6 +12,12 @@
 
 ### Enhancements
 
+* `plot()` for `GeneralSimulations` now includes a `"trialsurvival"` component
+  showing the percentage of simulated trials reaching each patient number on a
+  0--100% axis. All three components are selected by default, with trial survival
+  below the aligned trajectory and doses tried on the right. Placebo patients
+  are excluded from both patient-based components.
+
 * `HierarchicalModel` now compiles exchangeable normal priors in non-centered
   form for JAGS, including analytic Cholesky transformations for correlated
   parameter pairs. Non-centered hypermean nodes use a reserved `z_mu_` prefix
