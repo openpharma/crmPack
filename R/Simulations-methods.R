@@ -24,7 +24,13 @@ NULL
 #' @param patient_scale (`numeric` or `NULL`)\cr patient positions for x-axis
 #'   ticks. A single value is treated as an equally spaced interval; for example,
 #'   `3` gives ticks at 3, 6, 9, and so on. If `NULL` (the default), tick
-#'   positions are selected by `ggplot2`.
+#'   positions are selected by `ggplot2`. For diagonal ribbons and intervals,
+#'   these positions also select the patient statistics to display.
+#' @param trajectory_style (`string`)\cr trajectory geometry: `"diagonal"`
+#'   (default) joins the selected patient statistics with straight ribbons,
+#'   `"step"` uses stepped ribbons at every patient number, and `"intervals"`
+#'   shows full-range and interquartile-range lines with median points at the
+#'   selected patient positions.
 #'
 #' @return A `ggplot` object.
 #'
@@ -36,8 +42,10 @@ h_plot_simulation_trajectory <- function(
   has_placebo,
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
-  patient_scale = NULL
+  patient_scale = NULL,
+  trajectory_style = c("diagonal", "step", "intervals")
 ) {
+  trajectory_style <- match.arg(trajectory_style)
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
   if (!is.null(patient_scale)) {
@@ -102,11 +110,19 @@ h_plot_simulation_trajectory <- function(
     }
   }
 
-  # Draw straight ribbon segments between the cohort sizes actually used.
+  # Use cohort boundaries (or supplied patient positions) for ribbons and intervals.
   ribbon_df <- if (is.null(patient_breaks)) {
     traj_df
   } else {
     traj_df[patient_breaks, , drop = FALSE]
+  }
+
+  # Steps retain statistics at every patient. Repeated endpoints make both
+  # ribbon edges step together.
+  if (identical(trajectory_style, "step")) {
+    previous <- pmax(1L, seq_len(max_patients) - 1L)
+    ribbon_df <- traj_df[as.vector(rbind(previous, seq_len(max_patients))), ]
+    ribbon_df$patient <- rep(seq_len(max_patients), each = 2L)
   }
 
   # Create plot title.
@@ -117,7 +133,21 @@ h_plot_simulation_trajectory <- function(
   }
 
   # Create and return plot.
-  plot <- ggplot() +
+  plot <- if (identical(trajectory_style, "intervals")) {
+    ggplot(ribbon_df, aes(x = .data$patient)) +
+      geom_linerange(
+        aes(ymin = .data$minimum, ymax = .data$maximum,
+            colour = "Minimum-maximum range"),
+        linewidth = 0.7
+      ) +
+      geom_linerange(
+        aes(ymin = .data$lower_quartile, ymax = .data$upper_quartile,
+            colour = "Interquartile range"),
+        linewidth = 3
+      ) +
+      geom_point(aes(y = .data$median, colour = "Median"), size = 2)
+  } else {
+    ggplot() +
     geom_ribbon(
       aes(
         x = .data$patient,
@@ -144,18 +174,28 @@ h_plot_simulation_trajectory <- function(
       ),
       linewidth = 1.2,
       data = ribbon_df
-    ) +
-    scale_fill_manual(
+    )
+  }
+  plot <- plot +
+    (if (!identical(trajectory_style, "intervals")) scale_fill_manual(
       name = NULL,
       values = c(
         "Minimum-maximum range" = "#C6DBEF",
         "Interquartile range" = "#6BAED6"
       ),
       guide = guide_legend(order = 1L)
-    ) +
+    )) +
     scale_colour_manual(
       name = NULL,
-      values = c("Median" = "#08519C"),
+      values = if (identical(trajectory_style, "intervals")) {
+        c(
+          "Minimum-maximum range" = "#C6DBEF",
+          "Interquartile range" = "#6BAED6",
+          "Median" = "#08519C"
+        )
+      } else {
+        c("Median" = "#08519C")
+      },
       guide = guide_legend(order = 2L)
     ) +
     xlab(my_title) +
@@ -507,6 +547,17 @@ h_plot_combo_evolution <- function(sim_data) {
 #'   trajectory and trial-survival x-axis ticks. By default, the unique cumulative
 #'   active-treatment cohort sizes are inferred from the simulation data. A single supplied value
 #'   is used as an equally spaced interval; a vector supplies the exact breaks.
+#'   These positions also select the statistics displayed by the `"diagonal"`
+#'   and `"intervals"` trajectory styles.
+#' @param trajectory_style (`string`)\cr how to display the trajectory:
+#'   `"diagonal"` (default) draws straight ribbons between the patient positions
+#'   selected by `patient_scale`; `"step"` draws stepped ribbons using statistics
+#'   at every patient number; `"intervals"` draws a thin minimum-to-maximum line,
+#'   a thick interquartile-range line, and a median point at each selected patient
+#'   position. By default, intervals are shown only at observed cumulative
+#'   active-treatment cohort sizes, rather than at every integer patient number.
+#'   All styles summarize doses among trials that reached the corresponding
+#'   patient number.
 #' @param ... additional arguments without method dispatch.
 #'
 #' @return A single `ggplot` object if a single plot is
@@ -530,9 +581,11 @@ setMethod(
     dose_scale = c("auto", "linear", "log"),
     axis_ticks = c("dosegrid", "regular"),
     patient_scale = NULL,
+    trajectory_style = c("diagonal", "step", "intervals"),
     ...
   ) {
     # Validate arguments.
+    trajectory_style <- match.arg(trajectory_style)
     type <- match.arg(type, several.ok = TRUE)
     prob_plot_type <- match.arg(prob_plot_type)
     dose_scale <- match.arg(dose_scale)
@@ -618,7 +671,8 @@ setMethod(
           has_placebo = x@data[[1]]@placebo,
           dose_scale = dose_scale,
           axis_ticks = axis_ticks,
-          patient_scale = patient_scale
+          patient_scale = patient_scale,
+          trajectory_style = trajectory_style
         )
     }
 

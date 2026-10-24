@@ -282,6 +282,83 @@ test_that("simulation trajectory supports patient tick intervals and positions",
   )
 })
 
+test_that("stepped trajectories preserve patient statistics at both ribbon edges", {
+  trajectory <- h_plot_simulation_trajectory(
+    sim_doses = list(c(1, 2, 4), c(3, 6)),
+    dose_grid = 1:6,
+    max_patients = 3L,
+    has_placebo = FALSE,
+    patient_scale = 3L,
+    trajectory_style = "step"
+  )
+  layers <- ggplot_build(trajectory)$data
+  expect_equal(layers[[1L]]$x, c(1, 1, 2, 2, 3, 3))
+  expect_equal(layers[[1L]]$ymin, c(1, 1, 1, 2, 2, 4))
+  expect_equal(layers[[1L]]$ymax, c(3, 3, 3, 6, 6, 4))
+  expect_equal(layers[[2L]]$ymin, c(1.5, 1.5, 1.5, 3, 3, 4))
+  expect_equal(layers[[2L]]$ymax, c(2.5, 2.5, 2.5, 5, 5, 4))
+  expect_equal(layers[[3L]]$y, c(2, 2, 2, 4, 4, 4))
+  expect_equal(trajectory$scales$get_scales("x")$breaks, 3L)
+})
+
+test_that("trajectory intervals use cohort boundaries and correct quantiles", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = rep(c(2, 4), each = 3), y = rep(0, 6), ID = 1:6,
+           cohort = rep(1:2, each = 3), doseGrid = c(1, 2, 4)),
+      Data(x = rep(c(1, 2, 4), each = 3), y = rep(0, 9), ID = 1:9,
+           cohort = rep(1:3, each = 3), doseGrid = c(1, 2, 4))
+    ),
+    doses = c(4, 4),
+    seed = 123L
+  )
+  intervals <- plot(sims, type = "trajectory", trajectory_style = "intervals")
+  layers <- ggplot_build(intervals)$data
+  expect_s3_class(intervals$layers[[1L]]$geom, "GeomLinerange")
+  expect_s3_class(intervals$layers[[2L]]$geom, "GeomLinerange")
+  expect_s3_class(intervals$layers[[3L]]$geom, "GeomPoint")
+  for (layer in layers) {
+    expect_equal(layer$x, c(3, 6, 9))
+  }
+  expect_equal(layers[[1L]]$ymin, c(1, 2, 4))
+  expect_equal(layers[[1L]]$ymax, c(2, 4, 4))
+  expect_equal(layers[[2L]]$ymin, c(1.25, 2.5, 4))
+  expect_equal(layers[[2L]]$ymax, c(1.75, 3.5, 4))
+  expect_equal(layers[[3L]]$y, c(1.5, 3, 4))
+
+  positions <- plot(sims, type = "trajectory", trajectory_style = "intervals",
+                    patient_scale = c(3L, 9L))
+  expect_equal(positions$data$patient, c(3L, 9L))
+  interval <- plot(sims, type = "trajectory", trajectory_style = "intervals",
+                   patient_scale = 6L)
+  expect_equal(interval$data$patient, 6L)
+  expect_error(plot(sims, trajectory_style = "unknown"), "should be one of")
+
+  for (style in c("diagonal", "step", "intervals")) {
+    expect_no_warning(combined <- plot(sims, trajectory_style = style))
+    expect_s3_class(combined, "gtable")
+    expect_equal(dim(combined$grobs[[1L]]), c(2, 1))
+  }
+})
+
+test_that("trajectory intervals use active-treatment cohort boundaries with placebo", {
+  sims <- GeneralSimulations(
+    data = list(Data(
+      x = c(0, 1, 1, 1, 0, 2, 2, 2), y = rep(0, 8), ID = 1:8,
+      cohort = rep(1:2, each = 4), doseGrid = 0:2, placebo = TRUE
+    )),
+    doses = 2,
+    seed = 123L
+  )
+  trajectory <- plot(sims, type = "trajectory", trajectory_style = "intervals")
+  layers <- ggplot_build(trajectory)$data
+  for (layer in layers) {
+    expect_equal(layer$x, c(3, 6))
+  }
+  expect_equal(layers[[2L]]$ymin, c(1, 2))
+  expect_equal(layers[[2L]]$ymax, c(1, 2))
+})
+
 test_that("doses tried uses equal-width bars and automatically logs clashes", {
   dose_grid <- 2^(-2:4)
   sim_doses <- list(

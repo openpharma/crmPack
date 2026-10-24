@@ -1416,6 +1416,18 @@ patients, are shown. Note that you can select the plots by changing the
 percentage of simulated trials reaching at least each patient number on a
 0--100% axis, below the aligned trajectory, with doses tried on the right.
 
+Use `trajectory_style = "diagonal"` (the default) for straight ribbons,
+`"step"` for stepped ribbons, or `"intervals"` for thin full-range lines,
+thick interquartile-range lines, and median points. Intervals appear at the
+observed cumulative active-treatment cohort sizes by default, so cohorts of
+three yield positions 3, 6, 9, and so on. `patient_scale` also controls the
+positions displayed by diagonal ribbons and intervals. The step style uses
+statistics at every patient number regardless of the tick positions.
+
+``` r
+print(plot(mySims, type = "trajectory", trajectory_style = "intervals"))
+```
+
 Second, we can summarize the simulation results. Here again we have to supply a
 true dose-toxicity function. We take the same (`myTruth`) as above:
 

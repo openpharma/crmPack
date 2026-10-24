@@ -67,6 +67,10 @@ print(plot(mySim))
 print(plot(mySim, type = "trialsurvival"))
 print(plot(mySim, type = c("trajectory", "trialsurvival")))
 
+## Compare stepped ribbons and intervals at observed cohort boundaries.
+print(plot(mySim, type = "trajectory", trajectory_style = "step"))
+print(plot(mySim, type = "trajectory", trajectory_style = "intervals"))
+
 
 ## If DLE samples are involved
 ## The escalation rule

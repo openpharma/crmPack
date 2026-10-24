@@ -13,6 +13,7 @@
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
   patient_scale = NULL,
+  trajectory_style = c("diagonal", "step", "intervals"),
   ...
 )
 }
@@ -39,7 +40,19 @@ requires all doses to be strictly positive.}
 \item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for the
 trajectory and trial-survival x-axis ticks. By default, the unique cumulative
 active-treatment cohort sizes are inferred from the simulation data. A single supplied value
-is used as an equally spaced interval; a vector supplies the exact breaks.}
+is used as an equally spaced interval; a vector supplies the exact breaks.
+These positions also select the statistics displayed by the \code{"diagonal"}
+and \code{"intervals"} trajectory styles.}
+
+\item{trajectory_style}{(\code{string})\cr how to display the trajectory:
+\code{"diagonal"} (default) draws straight ribbons between the patient positions
+selected by \code{patient_scale}; \code{"step"} draws stepped ribbons using statistics
+at every patient number; \code{"intervals"} draws a thin minimum-to-maximum line,
+a thick interquartile-range line, and a median point at each selected patient
+position. By default, intervals are shown only at observed cumulative
+active-treatment cohort sizes, rather than at every integer patient number.
+All styles summarize doses among trials that reached the corresponding
+patient number.}
 
 \item{...}{additional arguments without method dispatch.}
 }
@@ -135,6 +148,10 @@ print(plot(mySim))
 ## Show trial survival alone, or below the trajectory.
 print(plot(mySim, type = "trialsurvival"))
 print(plot(mySim, type = c("trajectory", "trialsurvival")))
+
+## Compare stepped ribbons and intervals at observed cohort boundaries.
+print(plot(mySim, type = "trajectory", trajectory_style = "step"))
+print(plot(mySim, type = "trajectory", trajectory_style = "intervals"))
 
 
 ## If DLE samples are involved

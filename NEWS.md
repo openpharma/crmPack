@@ -2,6 +2,12 @@
 
 ### Enhancements
 
+* `plot()` for `GeneralSimulations` gains `trajectory_style`, with diagonal
+  ribbons (the default), stepped ribbons, or intervals showing the full range,
+  interquartile range, and median. Intervals use observed cumulative
+  active-treatment cohort sizes by default; `patient_scale` can override these
+  positions.
+
 * `plot()` for `GeneralSimulations` now includes a `"trialsurvival"` component
   showing the percentage of simulated trials reaching each patient number on a
   0--100% axis. All three components are selected by default, with trial survival
