@@ -21,17 +21,18 @@ NULL
 #' @param axis_ticks (`string`)\cr y-axis tick positions, either at each
 #'   dose-grid value (`"dosegrid"`, the default) or at regular positions selected
 #'   by `ggplot2` (`"regular"`).
-#' @param patient_scale (`numeric` or `NULL`)\cr patient positions for x-axis
-#'   ticks. A single value is treated as an equally spaced interval; for example,
-#'   `3` gives ticks at 3, 6, 9, and so on. If `NULL` (the default), tick
-#'   positions are selected by `ggplot2`. For diagonal ribbons and intervals,
-#'   these positions also select the patient statistics to display.
+#' @param patient_breaks (`numeric` or `NULL`)\cr exact patient positions for
+#'   x-axis ticks and the statistics displayed by diagonal ribbons or intervals.
+#'   A single value selects just that position. If `NULL` (the default), all
+#'   patient positions are summarized and `ggplot2` selects the ticks.
 #' @param trajectory_style (`string`)\cr trajectory geometry: `"diagonal"`
 #'   (default) joins the selected patient statistics with straight ribbons,
 #'   `"step"` uses stepped ribbons at every patient number, and `"intervals"`
 #'   shows full-range and interquartile-range lines with median points at the
 #'   selected patient positions.
 #'
+#' @param sim_positions (`list` or `NULL`)\cr original patient IDs for each
+#'   trial's doses. When supplied, summaries retain these positions.
 #' @return A `ggplot` object.
 #'
 #' @keywords internal
@@ -42,15 +43,16 @@ h_plot_simulation_trajectory <- function(
   has_placebo,
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
-  patient_scale = NULL,
-  trajectory_style = c("diagonal", "step", "intervals")
+  patient_breaks = NULL,
+  trajectory_style = c("diagonal", "step", "intervals"),
+  sim_positions = NULL
 ) {
   trajectory_style <- match.arg(trajectory_style)
   dose_scale <- match.arg(dose_scale)
   axis_ticks <- match.arg(axis_ticks)
-  if (!is.null(patient_scale)) {
+  if (!is.null(patient_breaks)) {
     assert_integerish(
-      patient_scale,
+      patient_breaks,
       min.len = 1L,
       lower = 1,
       unique = TRUE,
@@ -78,7 +80,8 @@ h_plot_simulation_trajectory <- function(
   )
 
   for (i in seq_along(sim_doses)) {
-    sim_doses_mat[i, seq_along(sim_doses[[i]])] <- sim_doses[[i]]
+    positions <- if (is.null(sim_positions)) seq_along(sim_doses[[i]]) else sim_positions[[i]]
+    sim_doses_mat[i, positions] <- sim_doses[[i]]
   }
 
   # Extract statistics.
@@ -94,17 +97,8 @@ h_plot_simulation_trajectory <- function(
     maximum = trajectory_quantiles[, 5L]
   )
 
-  patient_breaks <- NULL
-  if (!is.null(patient_scale)) {
-    patient_breaks <- if (length(patient_scale) == 1L) {
-      if (patient_scale <= max_patients) {
-        seq.int(patient_scale, max_patients, by = patient_scale)
-      } else {
-        max_patients
-      }
-    } else {
-      sort(patient_scale[patient_scale <= max_patients])
-    }
+  if (!is.null(patient_breaks)) {
+    patient_breaks <- sort(patient_breaks[patient_breaks <= max_patients])
     if (length(patient_breaks) == 0L) {
       patient_breaks <- max_patients
     }
@@ -123,6 +117,11 @@ h_plot_simulation_trajectory <- function(
     previous <- pmax(1L, seq_len(max_patients) - 1L)
     ribbon_df <- traj_df[as.vector(rbind(previous, seq_len(max_patients))), ]
     ribbon_df$patient <- rep(seq_len(max_patients), each = 2L)
+  }
+
+  if (!is.null(sim_positions)) {
+    # Missing IDs belong to the other group, rather than to a new patient count.
+    ribbon_df <- ribbon_df[!is.na(ribbon_df$median), , drop = FALSE]
   }
 
   # Create plot title.
@@ -202,7 +201,7 @@ h_plot_simulation_trajectory <- function(
     ylab("Dose Level") +
     theme(panel.grid.minor = element_blank())
 
-  if (!is.null(patient_scale)) {
+  if (!is.null(patient_breaks)) {
     plot <- plot +
       scale_x_continuous(
         breaks = patient_breaks
@@ -508,6 +507,87 @@ h_plot_combo_evolution <- function(sim_data) {
     ggtitle("Combination Evolution Plane")
 }
 
+#' Overlay Simulation Plots by Patient Group
+#'
+#' @param plots (`list`)\cr non-backfill and backfill ggplots with matching layers.
+#' @param doses (`flag`)\cr whether dose geometries should be placed side by side.
+#' @param dashed_backfill (`flag`)\cr whether backfill curves use dashed lines.
+#' @return A `ggplot` with a patient-group legend.
+#' @keywords internal
+h_overlay_backfill_plots <- function(plots, doses = FALSE, dashed_backfill = FALSE) {
+  labels <- c("Non-backfill", "Backfill")
+  label_data <- function(data, group) {
+    data$patient_group <- factor(rep(group, nrow(data)), levels = labels)
+    data
+  }
+  result <- plots[[1L]]
+  if (is.data.frame(result$data)) {
+    result$data <- do.call(rbind, Map(label_data, lapply(plots, `[[`, "data"), labels))
+  }
+  for (i in seq_along(result$layers)) {
+    layer <- result$layers[[i]]
+    if (is.data.frame(layer$data)) {
+      layer$data <- do.call(rbind, Map(label_data,
+        lapply(plots, function(p) p$layers[[i]]$data), labels))
+    }
+    layer$mapping$group <- ggplot2::aes(group = .data$patient_group)$group
+    layer$mapping$colour <- ggplot2::aes(colour = .data$patient_group)$colour
+    layer$aes_params$colour <- NULL
+    if (dashed_backfill && !doses && inherits(layer$geom, "GeomPath")) {
+      layer$mapping$linetype <- ggplot2::aes(linetype = .data$patient_group)$linetype
+      layer$aes_params$linetype <- NULL
+    }
+    if (any(c("fill") %in% layer$geom$aesthetics())) {
+      layer$mapping$fill <- ggplot2::aes(fill = .data$patient_group)$fill
+      layer$aes_params$fill <- NULL
+    }
+    if (inherits(layer$geom, "GeomRibbon")) {
+      layer$aes_params$alpha <- if (i == 1L) 0.12 else 0.3
+      layer$mapping$colour <- NULL
+      layer$aes_params$colour <- NA
+    }
+    # Shift dose marks symmetrically in axis space, keeping log bars valid.
+    if (doses) {
+      scale <- result$scales$get_scales("x")
+      trans <- if (is.null(scale)) list(transform = identity, inverse = identity) else scale$trans
+      data <- layer$data
+      if ("Dose" %in% names(data)) {
+        positions <- sort(unique(trans$transform(data$Dose)))
+        width <- if (length(positions) > 1L) min(diff(positions)) / 4 else 0.25
+        offset <- ifelse(data$patient_group == labels[1L], -width / 2, width / 2)
+        data$Dose <- trans$inverse(trans$transform(data$Dose) + offset)
+        if (!is.null(layer$geom_params$width)) layer$geom_params$width <- width
+      } else if (all(c("xmin", "xmax") %in% names(data))) {
+        mid <- (trans$transform(data$xmin) + trans$transform(data$xmax)) / 2
+        left <- data$patient_group == labels[1L]
+        data$xmax[left] <- trans$inverse(mid[left])
+        data$xmin[!left] <- trans$inverse(mid[!left])
+      }
+      layer$data <- data
+    }
+    result$layers[[i]] <- layer
+  }
+  # Replace the statistical colour scales with a consistent group legend.
+  result$scales$scales <- Filter(function(s) {
+    !any(s$aesthetics %in% c("colour", "fill"))
+  }, result$scales$scales)
+  x_scales <- lapply(plots, function(p) p$scales$get_scales("x"))
+  if (all(vapply(x_scales, function(s) !is.null(s) && is.numeric(s$breaks), logical(1)))) {
+    x_scale <- result$scales$get_scales("x")
+    x_scale$breaks <- sort(unique(unlist(lapply(x_scales, `[[`, "breaks"))))
+    limits <- unlist(lapply(x_scales, `[[`, "limits"))
+    if (length(limits)) x_scale$limits <- range(limits)
+  }
+  colours <- c("Non-backfill" = "#08519C", "Backfill" = "#D95F02")
+  result +
+    ggplot2::scale_colour_manual(name = "Patients", values = colours, drop = FALSE) +
+    ggplot2::scale_fill_manual(name = "Patients", values = colours, drop = FALSE) +
+    (if (dashed_backfill && !doses) ggplot2::scale_linetype_manual(
+      name = "Patients", values = c("Non-backfill" = "solid", "Backfill" = "dashed"),
+      drop = FALSE
+    ))
+}
+
 # plot-GeneralSimulations ----
 
 #' Plot `GeneralSimulations`
@@ -544,11 +624,15 @@ h_plot_combo_evolution <- function(sim_data) {
 #'   (`"dosegrid"`, the default) or at regular positions selected by `ggplot2`
 #'   (`"regular"`). This controls the trajectory y-axis and doses tried x-axis.
 #' @param patient_scale (`numeric` or `NULL`)\cr patient positions for the
-#'   trajectory and trial-survival x-axis ticks. By default, the unique cumulative
-#'   active-treatment cohort sizes are inferred from the simulation data. A single supplied value
-#'   is used as an equally spaced interval; a vector supplies the exact breaks.
-#'   These positions also select the statistics displayed by the `"diagonal"`
-#'   and `"intervals"` trajectory styles.
+#'   trajectory and trial-survival x-axis ticks. By default, observed cumulative
+#'   active-treatment cohort sizes are used. In `include_backfill = "separate"`,
+#'   these are the original IDs at the ends of the selected groups' cohorts.
+#'   A single supplied value is an equally spaced interval (for example, `3`
+#'   selects 3, 6, 9, ...); a vector supplies the exact positions. These positions
+#'   also select statistics for the `"diagonal"` and `"intervals"` trajectory
+#'   styles. The `"step"` style uses every patient position. Survival calculations
+#'   are unaffected by this argument. Positions refer to original IDs in
+#'   `"separate"` and within-group patient numbers in `"separate-number"`.
 #' @param trajectory_style (`string`)\cr how to display the trajectory:
 #'   `"diagonal"` (default) draws straight ribbons between the patient positions
 #'   selected by `patient_scale`; `"step"` draws stepped ribbons using statistics
@@ -556,15 +640,53 @@ h_plot_combo_evolution <- function(sim_data) {
 #'   a thick interquartile-range line, and a median point at each selected patient
 #'   position. By default, intervals are shown only at observed cumulative
 #'   active-treatment cohort sizes, rather than at every integer patient number.
-#'   All styles summarize doses among trials that reached the corresponding
-#'   patient number.
+#'   All styles summarize observed doses at the corresponding patient position;
+#'   trials without a patient in that group at that position do not contribute.
+#' @param include_backfill (`string`)\cr how to handle backfill patients:
+#'   `"pooled"` (default) includes them with non-backfill patients; `"no"`
+#'   excludes them; `"separate"` overlays the two groups using original patient
+#'   IDs; `"separate-number"` overlays them using patient numbers starting at 1
+#'   within each group in each trial. See Details for the group summaries.
 #' @param ... additional arguments without method dispatch.
+#'
+#' @details
+#' Both separate modes use blue for non-backfill patients and orange for backfill
+#' patients, with a patient-group legend. Backfill trajectory and survival curves
+#' are dashed in `"separate-number"`. The dose-proportion panel is identical for
+#' both modes: each group's proportions use its own total patient count across
+#' all trials. Placebo patients are included in dose proportions, but excluded
+#' from trajectories and trial survival.
+#'
+#' In `"separate"`, trajectories retain the original patient IDs, including gaps
+#' from placebo or the other group. IDs must be positive integers and represent
+#' enrollment order for this interpretation. IDs indicate enrollment order, not
+#' elapsed time. In `"separate-number"`, active-treatment patients are numbered
+#' from 1 within each group and trial, in stored observation order. Default
+#' trajectory summaries are drawn at cohort endpoints, so the first displayed
+#' point can be later than the first patient; use `patient_scale = 1` to display
+#' every observed patient position.
+#'
+#' Each separate trial-survival curve conditions on trials enrolling at least one
+#' active-treatment patient in that group. It starts at the group's earliest
+#' observed position and 100 percent, then shows the proportion whose last patient
+#' position in that group is at least the displayed position. For `"separate"`,
+#' trials with later group enrollment are included in this fixed denominator from
+#' the beginning of the curve. For `"separate-number"`, each curve starts at 1.
+#' Trials without patients in a group do not contribute to that group's survival
+#' denominator; an entirely empty group has no trajectory or survival curve.
+#' In `"pooled"` and `"no"`, trial survival uses all trials as its denominator.
+#'
+#' Trajectory ribbons show the full range (lighter) and interquartile range
+#' (darker), with median lines. The `"intervals"` style uses a thin full-range
+#' line, thick interquartile-range line, and median point. Group summaries at a
+#' position use only trials with a patient from that group at that position.
 #'
 #' @return A single `ggplot` object if a single plot is
 #'   asked for, otherwise a `gtable` object.
 #'
 #' @aliases plot-GeneralSimulations-missing
 #' @example examples/Simulations-method-plotSIMsingle.R
+#' @example examples/Simulations-method-plot-backfill.R
 #' @export
 #'
 setMethod(
@@ -582,9 +704,11 @@ setMethod(
     axis_ticks = c("dosegrid", "regular"),
     patient_scale = NULL,
     trajectory_style = c("diagonal", "step", "intervals"),
+    include_backfill = c("pooled", "no", "separate", "separate-number"),
     ...
   ) {
     # Validate arguments.
+    include_backfill <- match.arg(include_backfill)
     trajectory_style <- match.arg(trajectory_style)
     type <- match.arg(type, several.ok = TRUE)
     prob_plot_type <- match.arg(prob_plot_type)
@@ -592,140 +716,216 @@ setMethod(
     axis_ticks <- match.arg(axis_ticks)
     assert_character(type, min.len = 1)
 
-    # Start the plot list.
-    plot_list <- list()
-    plot_index <- 0L
+    separate_groups <- include_backfill %in% c("separate", "separate-number")
+    groups <- if (separate_groups) c("no", "backfill") else include_backfill
+    supplied_patient_scale <- patient_scale
+    grouped_plots <- lapply(groups, function(group) {
+      patient_scale <- supplied_patient_scale
+      selected <- lapply(x@data, function(d) {
+        backfilled <- if (methods::.hasSlot(d, "backfilled")) {
+          d@backfilled
+        } else {
+          rep(FALSE, length(d@x))
+        }
+        switch(group,
+          pooled = rep(TRUE, length(d@x)),
+          no = !backfilled,
+          backfill = backfilled
+        )
+      })
+      # Start the plot list.
+      plot_list <- list()
+      plot_index <- 0L
 
-    # Summary of the trajectories.
+      # Summary of the trajectories.
+      if (any(c("trajectory", "trialsurvival") %in% type)) {
+        # If design with placebo, then exclude placebo patients.
+        if (x@data[[1]]@placebo) {
+          pl <- x@data[[1]]@doseGrid[1]
+          sim_doses <- Map(
+            function(y, keep) {
+              y@x[keep & y@x != pl]
+            }, x@data, selected
+          )
+          sim_cohorts <- Map(
+            function(y, keep) {
+              y@cohort[keep & y@x != pl]
+            }, x@data, selected
+          )
+        } else {
+          sim_doses <- Map(function(d, keep) d@x[keep], x@data, selected)
+          sim_cohorts <- Map(function(d, keep) d@cohort[keep], x@data, selected)
+        }
+
+        sim_positions <- NULL
+        if (include_backfill == "separate") {
+          sim_positions <- Map(function(d, keep) {
+            active <- if (d@placebo) d@x != d@doseGrid[1L] else rep(TRUE, length(d@x))
+            d@ID[keep & active]
+          }, x@data, selected)
+          all_positions <- lapply(x@data, function(d) {
+            active <- if (d@placebo) d@x != d@doseGrid[1L] else rep(TRUE, length(d@x))
+            d@ID[active]
+          })
+          assert_integerish(unlist(all_positions), lower = 1, any.missing = FALSE)
+          if (is.null(patient_scale)) {
+            patient_scale <- sort(unique(unlist(Map(function(ids, cohorts) {
+              ids[cumsum(rle(cohorts)$lengths)]
+            }, sim_positions, sim_cohorts))))
+          }
+        }
+
+        if (include_backfill == "separate-number") {
+          sim_positions <- lapply(sim_doses, seq_along)
+        }
+
+        if (is.null(patient_scale)) {
+          patient_scale <- sort(unique(unlist(lapply(
+            sim_cohorts,
+            function(z) cumsum(rle(z)$lengths)
+          ))))
+        }
+
+        max_patients <- if (include_backfill == "separate") {
+          max(1L, unlist(all_positions))
+        } else {
+          max(1L, lengths(sim_doses))
+        }
+        trajectory_dose_grid <- if (x@data[[1]]@placebo) {
+          x@data[[1]]@doseGrid[-1L]
+        } else {
+          x@data[[1]]@doseGrid
+        }
+
+        if (length(patient_scale) == 0L) patient_scale <- max_patients
+
+        assert_integerish(
+          patient_scale,
+          min.len = 1L,
+          lower = 1,
+          unique = TRUE,
+          any.missing = FALSE
+        )
+        if (length(patient_scale) == 1L) {
+          patient_scale <- if (patient_scale <= max_patients) {
+            seq.int(patient_scale, max_patients, by = patient_scale)
+          } else {
+            max_patients
+          }
+        } else {
+          patient_scale <- sort(patient_scale[patient_scale <= max_patients])
+          if (length(patient_scale) == 0L) {
+            patient_scale <- max_patients
+          }
+        }
+      }
+
+      if ("trajectory" %in% type) {
+        # Create trajectory plot.
+        plot_list[[plot_index <- plot_index + 1L]] <-
+          h_plot_simulation_trajectory(
+            sim_doses = sim_doses,
+            dose_grid = trajectory_dose_grid,
+            max_patients = max_patients,
+            has_placebo = x@data[[1]]@placebo,
+            dose_scale = dose_scale,
+            axis_ticks = axis_ticks,
+            patient_breaks = patient_scale,
+            trajectory_style = trajectory_style,
+            sim_positions = sim_positions
+          )
+      }
+
+      if ("trialsurvival" %in% type) {
+        if (separate_groups) {
+          # Condition on enrollment, using original IDs or group-relative numbers.
+          enrolled_positions <- sim_positions[lengths(sim_positions) > 0L]
+          trial_sizes <- vapply(enrolled_positions, max, numeric(1))
+          patients <- if (length(trial_sizes)) {
+            seq.int(min(unlist(enrolled_positions)), max(trial_sizes))
+          } else {
+            integer()
+          }
+        } else {
+          trial_sizes <- lengths(sim_doses)
+          patients <- seq_len(max_patients)
+        }
+        survival_df <- data.frame(
+          patient = patients,
+          proportion = vapply(
+            patients,
+            function(n) mean(trial_sizes >= n),
+            numeric(1)
+          )
+        )
+        plot_list[[plot_index <- plot_index + 1L]] <-
+          ggplot(survival_df, aes(x = .data$patient, y = .data$proportion)) +
+          geom_step(direction = if (separate_groups) "hv" else "vh",
+                    colour = "#08519C", linewidth = 1.2) +
+          (if (separate_groups) geom_point(
+            data = survival_df[seq_len(nrow(survival_df)) %in% c(1L, nrow(survival_df)), , drop = FALSE],
+            colour = "#08519C", size = 1.8
+          )) +
+          scale_x_continuous(
+            limits = c(1, max_patients),
+            breaks = patient_scale
+          ) +
+          scale_y_continuous(
+            limits = c(0, 1),
+            breaks = seq(0, 1, by = 0.25),
+            labels = function(z) paste0(100 * z, "%")
+          ) +
+          xlab(if (x@data[[1]]@placebo) {
+            "Patient (placebo were excluded)"
+          } else {
+            "Patient"
+          }) +
+          ylab(if (separate_groups) {
+            if (include_backfill == "separate") "Trials enrolling group and reaching patient ID"
+            else "Trials enrolling group and reaching patient number"
+          } else "Simulated trials reaching patient") +
+          theme(panel.grid.minor = element_blank())
+      }
+
+      # Average distribution of the doses tried.
+      if ("dosesTried" %in% type) {
+        # Get the doses tried.
+        sim_doses <- Map(function(d, keep) d@x[keep], x@data, selected)
+
+        # Create doses tried plot.
+        plot_list[[plot_index <- plot_index + 1L]] <-
+          h_plot_doses_tried(
+            sim_doses = sim_doses,
+            dose_grid = x@data[[1]]@doseGrid,
+            prob_plot_type = prob_plot_type,
+            dose_scale = dose_scale,
+            axis_ticks = axis_ticks
+          )
+      }
+
+      attr(plot_list, "max_patients") <- if (any(c("trajectory", "trialsurvival") %in% type)) max_patients else NULL
+      plot_list
+    })
+    plot_list <- grouped_plots[[1L]]
+    if (separate_groups) {
+      plot_list <- lapply(seq_along(plot_list), function(i) {
+        component <- c("trajectory", "trialsurvival", "dosesTried")[
+          c("trajectory", "trialsurvival", "dosesTried") %in% type][i]
+        plot <- h_overlay_backfill_plots(lapply(grouped_plots, `[[`, i),
+          doses = component == "dosesTried",
+          dashed_backfill = include_backfill == "separate-number")
+        if (component != "dosesTried") {
+          plot <- plot + xlab(if (include_backfill == "separate") {
+            "Patient ID"
+          } else {
+            "Patient number within group"
+          })
+        }
+        plot
+      })
+    }
     if (any(c("trajectory", "trialsurvival") %in% type)) {
-      # If design with placebo, then exclude placebo patients.
-      if (x@data[[1]]@placebo) {
-        pl <- x@data[[1]]@doseGrid[1]
-        sim_doses <- lapply(
-          x@data,
-          function(y) {
-            y@x[y@x != pl]
-          }
-        )
-        sim_cohorts <- lapply(
-          x@data,
-          function(y) {
-            y@cohort[y@x != pl]
-          }
-        )
-      } else {
-        sim_doses <- lapply(
-          x@data,
-          slot,
-          "x"
-        )
-        sim_cohorts <- lapply(
-          x@data,
-          slot,
-          "cohort"
-        )
-      }
-
-      if (is.null(patient_scale)) {
-        patient_scale <- sort(unique(unlist(lapply(
-          sim_cohorts,
-          function(z) cumsum(rle(z)$lengths)
-        ))))
-      }
-
-      max_patients <- max(sapply(sim_doses, length))
-      trajectory_dose_grid <- if (x@data[[1]]@placebo) {
-        x@data[[1]]@doseGrid[-1L]
-      } else {
-        x@data[[1]]@doseGrid
-      }
-
-      assert_integerish(
-        patient_scale,
-        min.len = 1L,
-        lower = 1,
-        unique = TRUE,
-        any.missing = FALSE
-      )
-      if (length(patient_scale) == 1L) {
-        patient_scale <- if (patient_scale <= max_patients) {
-          seq.int(patient_scale, max_patients, by = patient_scale)
-        } else {
-          max_patients
-        }
-      } else {
-        patient_scale <- sort(patient_scale[patient_scale <= max_patients])
-        if (length(patient_scale) == 0L) {
-          patient_scale <- max_patients
-        }
-      }
-    }
-
-    if ("trajectory" %in% type) {
-      # Create trajectory plot.
-      plot_list[[plot_index <- plot_index + 1L]] <-
-        h_plot_simulation_trajectory(
-          sim_doses = sim_doses,
-          dose_grid = trajectory_dose_grid,
-          max_patients = max_patients,
-          has_placebo = x@data[[1]]@placebo,
-          dose_scale = dose_scale,
-          axis_ticks = axis_ticks,
-          patient_scale = patient_scale,
-          trajectory_style = trajectory_style
-        )
-    }
-
-    if ("trialsurvival" %in% type) {
-      trial_sizes <- lengths(sim_doses)
-      patients <- seq_len(max_patients)
-      survival_df <- data.frame(
-        patient = patients,
-        proportion = vapply(
-          patients,
-          function(n) mean(trial_sizes >= n),
-          numeric(1)
-        )
-      )
-      plot_list[[plot_index <- plot_index + 1L]] <-
-        ggplot(survival_df, aes(x = .data$patient, y = .data$proportion)) +
-        geom_step(direction = "vh", colour = "#08519C", linewidth = 1.2) +
-        scale_x_continuous(
-          limits = c(1, max_patients),
-          breaks = patient_scale
-        ) +
-        scale_y_continuous(
-          limits = c(0, 1),
-          breaks = seq(0, 1, by = 0.25),
-          labels = function(z) paste0(100 * z, "%")
-        ) +
-        xlab(if (x@data[[1]]@placebo) {
-          "Patient (placebo were excluded)"
-        } else {
-          "Patient"
-        }) +
-        ylab("Simulated trials reaching patient") +
-        theme(panel.grid.minor = element_blank())
-    }
-
-    # Average distribution of the doses tried.
-    if ("dosesTried" %in% type) {
-      # Get the doses tried.
-      sim_doses <- lapply(
-        x@data,
-        slot,
-        "x"
-      )
-
-      # Create doses tried plot.
-      plot_list[[plot_index <- plot_index + 1L]] <-
-        h_plot_doses_tried(
-          sim_doses = sim_doses,
-          dose_grid = x@data[[1]]@doseGrid,
-          prob_plot_type = prob_plot_type,
-          dose_scale = dose_scale,
-          axis_ticks = axis_ticks
-        )
+      max_patients <- max(vapply(grouped_plots, attr, numeric(1), "max_patients"))
     }
 
     # Return plot(s).

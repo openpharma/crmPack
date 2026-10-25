@@ -2,6 +2,13 @@
 
 ### Enhancements
 
+* `plot()` for `GeneralSimulations` gains `include_backfill`: `"pooled"`
+  preserves the default, `"no"` excludes backfill patients, and `"separate"`
+  overlays the two groups in different colours while preserving original
+  patient IDs. `"separate-number"` numbers patients from 1 within each group
+  and uses dashed backfill curves. Both separate modes show group-specific dose
+  proportions and trial-survival curves conditional on enrollment in that group.
+
 * `plot()` for `GeneralSimulations` gains `trajectory_style`, with diagonal
   ribbons (the default), stepped ribbons, or intervals showing the full range,
   interquartile range, and median. Intervals use observed cumulative
@@ -13,6 +20,11 @@
   0--100% axis. All three components are selected by default, with trial survival
   below the aligned trajectory and doses tried on the right. Placebo patients
   are excluded from both patient-based components.
+
+### Bug Fixes
+
+* Simulation trajectory plots now preserve explicit `patient_scale` positions
+  when only one supplied position lies within the plotted patient range.
 
 # Version 2.3.0
 

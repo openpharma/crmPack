@@ -11,8 +11,9 @@ h_plot_simulation_trajectory(
   has_placebo,
   dose_scale = c("auto", "linear", "log"),
   axis_ticks = c("dosegrid", "regular"),
-  patient_scale = NULL,
-  trajectory_style = c("diagonal", "step", "intervals")
+  patient_breaks = NULL,
+  trajectory_style = c("diagonal", "step", "intervals"),
+  sim_positions = NULL
 )
 }
 \arguments{
@@ -32,17 +33,19 @@ requires all doses to be strictly positive.}
 dose-grid value (\code{"dosegrid"}, the default) or at regular positions selected
 by \code{ggplot2} (\code{"regular"}).}
 
-\item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for x-axis
-ticks. A single value is treated as an equally spaced interval; for example,
-\code{3} gives ticks at 3, 6, 9, and so on. If \code{NULL} (the default), tick
-positions are selected by \code{ggplot2}. For diagonal ribbons and intervals,
-these positions also select the patient statistics to display.}
+\item{patient_breaks}{(\code{numeric} or \code{NULL})\cr exact patient positions for
+x-axis ticks and the statistics displayed by diagonal ribbons or intervals.
+A single value selects just that position. If \code{NULL} (the default), all
+patient positions are summarized and \code{ggplot2} selects the ticks.}
 
 \item{trajectory_style}{(\code{string})\cr trajectory geometry: \code{"diagonal"}
 (default) joins the selected patient statistics with straight ribbons,
 \code{"step"} uses stepped ribbons at every patient number, and \code{"intervals"}
 shows full-range and interquartile-range lines with median points at the
 selected patient positions.}
+
+\item{sim_positions}{(\code{list} or \code{NULL})\cr original patient IDs for each
+trial's doses. When supplied, summaries retain these positions.}
 }
 \value{
 A \code{ggplot} object.

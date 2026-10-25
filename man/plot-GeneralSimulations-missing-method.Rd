@@ -14,6 +14,7 @@
   axis_ticks = c("dosegrid", "regular"),
   patient_scale = NULL,
   trajectory_style = c("diagonal", "step", "intervals"),
+  include_backfill = c("pooled", "no", "separate", "separate-number"),
   ...
 )
 }
@@ -38,11 +39,15 @@ requires all doses to be strictly positive.}
 (\code{"regular"}). This controls the trajectory y-axis and doses tried x-axis.}
 
 \item{patient_scale}{(\code{numeric} or \code{NULL})\cr patient positions for the
-trajectory and trial-survival x-axis ticks. By default, the unique cumulative
-active-treatment cohort sizes are inferred from the simulation data. A single supplied value
-is used as an equally spaced interval; a vector supplies the exact breaks.
-These positions also select the statistics displayed by the \code{"diagonal"}
-and \code{"intervals"} trajectory styles.}
+trajectory and trial-survival x-axis ticks. By default, observed cumulative
+active-treatment cohort sizes are used. In \code{include_backfill = "separate"},
+these are the original IDs at the ends of the selected groups' cohorts.
+A single supplied value is an equally spaced interval (for example, \code{3}
+selects 3, 6, 9, ...); a vector supplies the exact positions. These positions
+also select statistics for the \code{"diagonal"} and \code{"intervals"} trajectory
+styles. The \code{"step"} style uses every patient position. Survival calculations
+are unaffected by this argument. Positions refer to original IDs in
+\code{"separate"} and within-group patient numbers in \code{"separate-number"}.}
 
 \item{trajectory_style}{(\code{string})\cr how to display the trajectory:
 \code{"diagonal"} (default) draws straight ribbons between the patient positions
@@ -51,8 +56,14 @@ at every patient number; \code{"intervals"} draws a thin minimum-to-maximum line
 a thick interquartile-range line, and a median point at each selected patient
 position. By default, intervals are shown only at observed cumulative
 active-treatment cohort sizes, rather than at every integer patient number.
-All styles summarize doses among trials that reached the corresponding
-patient number.}
+All styles summarize observed doses at the corresponding patient position;
+trials without a patient in that group at that position do not contribute.}
+
+\item{include_backfill}{(\code{string})\cr how to handle backfill patients:
+\code{"pooled"} (default) includes them with non-backfill patients; \code{"no"}
+excludes them; \code{"separate"} overlays the two groups using original patient
+IDs; \code{"separate-number"} overlays them using patient numbers starting at 1
+within each group in each trial. See Details for the group summaries.}
 
 \item{...}{additional arguments without method dispatch.}
 }
@@ -78,6 +89,38 @@ When both patient-based components are selected, \code{trialsurvival} is placed
 below \code{trajectory}, with aligned patient axes. \code{dosesTried} is placed to the
 right when selected alongside another component. Placebo patients are excluded
 from the patient counts for both \code{trajectory} and \code{trialsurvival}.
+}
+\details{
+Both separate modes use blue for non-backfill patients and orange for backfill
+patients, with a patient-group legend. Backfill trajectory and survival curves
+are dashed in \code{"separate-number"}. The dose-proportion panel is identical for
+both modes: each group's proportions use its own total patient count across
+all trials. Placebo patients are included in dose proportions, but excluded
+from trajectories and trial survival.
+
+In \code{"separate"}, trajectories retain the original patient IDs, including gaps
+from placebo or the other group. IDs must be positive integers and represent
+enrollment order for this interpretation. IDs indicate enrollment order, not
+elapsed time. In \code{"separate-number"}, active-treatment patients are numbered
+from 1 within each group and trial, in stored observation order. Default
+trajectory summaries are drawn at cohort endpoints, so the first displayed
+point can be later than the first patient; use \code{patient_scale = 1} to display
+every observed patient position.
+
+Each separate trial-survival curve conditions on trials enrolling at least one
+active-treatment patient in that group. It starts at the group's earliest
+observed position and 100 percent, then shows the proportion whose last patient
+position in that group is at least the displayed position. For \code{"separate"},
+trials with later group enrollment are included in this fixed denominator from
+the beginning of the curve. For \code{"separate-number"}, each curve starts at 1.
+Trials without patients in a group do not contribute to that group's survival
+denominator; an entirely empty group has no trajectory or survival curve.
+In \code{"pooled"} and \code{"no"}, trial survival uses all trials as its denominator.
+
+Trajectory ribbons show the full range (lighter) and interquartile range
+(darker), with median lines. The \code{"intervals"} style uses a thin full-range
+line, thick interquartile-range line, and median point. Group summaries at a
+position use only trials with a patient from that group at that position.
 }
 \examples{
 # nolint start
@@ -189,4 +232,45 @@ design <- TDsamplesDesign(
 #
 
 # nolint end
+## Illustrative trials with backfill patients; no new simulation is needed.
+backfill_sims <- GeneralSimulations(
+  data = list(
+    Data(
+      x = c(1, 1, 2, 2, 1, 1, 4, 4, 2, 2),
+      y = rep(0, 10), ID = 1:10, cohort = rep(1:5, each = 2),
+      backfilled = rep(c(FALSE, FALSE, TRUE, FALSE, TRUE), each = 2),
+      doseGrid = c(1, 2, 4)
+    ),
+    Data(
+      x = c(1, 1, 2, 2, 1, 1),
+      y = rep(0, 6), ID = 1:6, cohort = rep(1:3, each = 2),
+      backfilled = rep(c(FALSE, FALSE, TRUE), each = 2),
+      doseGrid = c(1, 2, 4)
+    ),
+    Data(
+      x = c(1, 1, 2, 2),
+      y = rep(0, 4), ID = 1:4, cohort = rep(1:2, each = 2),
+      doseGrid = c(1, 2, 4)
+    )
+  ),
+  doses = c(4, 2, 2), seed = 299L
+)
+
+## Pool all patients (the default), or exclude backfill patients.
+print(plot(backfill_sims, include_backfill = "pooled"))
+print(plot(backfill_sims, include_backfill = "no"))
+
+## Preserve original IDs: backfill starts at ID 5, rather than patient 1.
+## Show every observed position, instead of only cohort endpoints.
+print(plot(backfill_sims, include_backfill = "separate", patient_scale = 1))
+
+## Alternatively, count patients from 1 within each group. Backfill curves
+## are dashed so overlapping blue and orange curves remain distinguishable.
+print(plot(backfill_sims, include_backfill = "separate-number", patient_scale = 1))
+
+## Separate survival curves condition on enrollment in each group. Here the
+## backfill denominator is two trials, because the third has no backfill.
+## With original IDs, the orange curve starts at ID 5 and 100\%, dropping to
+## 50\% at ID 7. With group numbering, it starts at 1 and drops to 50\% at 3.
+print(plot(backfill_sims, type = "trialsurvival", include_backfill = "separate"))
 }
