@@ -14,7 +14,10 @@
 and returns the true probability (vector) for toxicity.}
 
 \item{target}{(\code{numeric})\cr the target toxicity interval (default: 20-35\%)
-used for the computations.}
+or a single target toxicity rate. For a single rate, the true MTD is the
+highest dose on the dose grid with true toxicity strictly below the target;
+if no dose qualifies, there is no true MTD. Selection success is the
+proportion of all trials selecting that dose.}
 
 \item{...}{additional arguments can be supplied here for \code{truth}.}
 }

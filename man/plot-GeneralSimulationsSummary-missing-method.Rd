@@ -50,12 +50,13 @@ an active dose are included.}
 \item{\code{"doseSelected"}}{The distribution of the final selected dose (MTD)
 across trials. A selected dose of zero indicates that the trial stopped
 because all doses in the dose grid appeared too toxic. Red triangles mark
-dose-grid levels whose true toxicity is within the target interval.}
+dose-grid levels whose true toxicity is within the target interval, or
+the highest dose with true toxicity strictly below a single target rate.}
 \item{\code{"propDLTs"}}{The distribution of the percentage of patients with
 dose-limiting toxicities (DLTs). For trials with a placebo, this is the
 percentage among patients assigned to an active dose.}
 \item{\code{"nAboveTarget"}}{The distribution of the number of patients treated
-at doses above the target toxicity interval, as determined by the \code{truth}
+at doses above the target toxicity interval or single rate, as determined by the \code{truth}
 and \code{target} arguments supplied to
 \code{\link{summary,GeneralSimulations-method}}.}
 }

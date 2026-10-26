@@ -589,10 +589,12 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' should not be created by users, therefore no initialization
 #' function is provided for this class.
 #'
-#' @slot target (`numeric`)\cr target toxicity interval
+#' @slot target (`numeric`)\cr target toxicity interval or single rate
 #' @slot target_dose_interval (`numeric`)\cr corresponding target dose interval
+#'   or continuous dose at a single target rate (not necessarily on the dose grid)
 #' @slot true_mtd (`numeric`)\cr dose-grid level(s) whose true toxicity lies in
-#'   the target interval, or is closest to a scalar target
+#'   the target interval, or the highest dose with true toxicity strictly below a scalar target
+#'   (empty if no dose qualifies)
 #' @slot nsim (`integer`)\cr number of simulations
 #' @slot prop_dlts (`ANY`)\cr A numeric array (multi-dimensional) or list representing proportions of DLTs in the trials
 #' @slot mean_tox_risk (`numeric`)\cr mean toxicity risks for the patients

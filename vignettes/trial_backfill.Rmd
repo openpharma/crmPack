@@ -282,6 +282,69 @@ sims_complex <- simulate(
 
 We can see that it is still very simple and straightforward to run simulations including backfill cohorts.
 
+### Plotting simulation summaries
+
+For designs with backfill patients, `include_backfill` controls how these patients
+contribute to the plots:
+
+| Value | Display |
+|---|---|
+| `"pooled"` (default) | Includes backfill patients with non-backfill patients. |
+| `"no"` | Excludes backfill patients from all three components. |
+| `"separate"` | Overlays blue non-backfill and orange backfill summaries using original patient IDs. |
+| `"separate-number"` | Uses the same groups, with patient numbers starting at 1 within each group and dashed backfill curves. |
+
+Original IDs preserve the later enrollment of backfill patients; they indicate
+patient order rather than elapsed time. In both separate modes, each survival
+curve conditions on trials enrolling at least one active-treatment patient in
+that group, and starts at 100%. In `"separate"`, later-starting trials are included
+in that fixed denominator from the group's earliest observed ID. Dose proportions
+use each group's own patient total across all trials. Placebo patients are
+excluded from trajectories and survival, but included in dose proportions.
+
+The simple design illustrates the difference between keeping original IDs and
+numbering patients within each group:
+
+
+``` r
+print(plot(sims_simple, include_backfill = "separate"))
+```
+
+<div class="figure">
+<img src="./trial_backfill-figures/backfill-original-ids-1.png" alt="plot of chunk backfill-original-ids" width="100%" />
+<p class="caption">plot of chunk backfill-original-ids</p>
+</div>
+
+
+``` r
+print(plot(sims_simple, include_backfill = "separate-number", patient_scale = 1))
+```
+
+<div class="figure">
+<img src="./trial_backfill-figures/backfill-group-numbers-1.png" alt="plot of chunk backfill-group-numbers" width="100%" />
+<p class="caption">plot of chunk backfill-group-numbers</p>
+</div>
+
+The complex design also illustrates the conditional survival denominator, since
+some simulated trials do not recruit backfill patients:
+
+
+``` r
+print(plot(sims_complex, type = "trialsurvival", include_backfill = "separate"))
+```
+
+<div class="figure">
+<img src="./trial_backfill-figures/backfill-complex-survival-1.png" alt="plot of chunk backfill-complex-survival" width="100%" />
+<p class="caption">plot of chunk backfill-complex-survival</p>
+</div>
+
+Here `patient_scale = 1` displays every observed patient position. A scalar such
+as `3` gives positions 3, 6, 9, and so on; a vector such as `c(1, 3, 9)` selects
+exact positions. These are original IDs in `"separate"` and within-group patient
+numbers in `"separate-number"`. This argument changes survival-axis ticks, but
+not survival calculations. The plot method's help page includes a small example
+with backfill patients that does not require running new simulations.
+
 ### Investigating single trial data
 
 The data for each simulated trial is available in the list in the `data` slot of the returned `Simulations` object, and we can also plot it.
