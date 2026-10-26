@@ -23,6 +23,11 @@
 
 ### Bug Fixes
 
+* Simulation summaries now handle a single target toxicity rate explicitly: the
+  true MTD is the highest grid dose strictly below the target, and overdose counts,
+  selection success, plot markers, and printed labels follow this definition.
+  Reported means exclude missing values consistently with their quantiles.
+
 * Simulation trajectory plots now preserve explicit `patient_scale` positions
   when only one supplied position lies within the plotted patient range.
 

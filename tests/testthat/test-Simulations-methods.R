@@ -577,6 +577,47 @@ test_that("summary-GeneralSimulations produces expected values", {
   expect_equal(length(result@n_above_target), result@nsim)
 })
 
+test_that("scalar targets use the highest dose strictly below the target", {
+  trial <- Data(
+    x = c(1, 2, 3, 4), y = c(0L, 0L, 1L, 1L),
+    doseGrid = c(1, 2, 3, 4), ID = 1L:4L, cohort = 1L:4L
+  )
+  sims <- GeneralSimulations(
+    data = rep(list(trial), 4), doses = c(2, 3, NA, 1), seed = 1L
+  )
+  truth <- approxfun(c(1, 2, 3, 4), c(0.1, 0.2, 0.27, 0.4))
+  result <- summary(sims, truth = truth, target = 0.26)
+
+  expect_equal(result@true_mtd, 2)
+  expect_equal(result@n_above_target, rep(2L, 4))
+  expect_equal(result@prop_at_target, 0.25)
+  expect_equal(result@target_dose_interval, 2 + 0.06 / 0.07, tolerance = 1e-4)
+  expect_equal(result@tox_at_doses_selected, c(0.2, 0.27, NA, 0.1))
+  output <- capture.output(report <- show(result))
+  expect_true(any(grepl("Target toxicity rate was 26 %", output, fixed = TRUE)))
+  expect_true(any(grepl("above target toxicity rate", output, fixed = TRUE)))
+  expect_false(any(grepl("target.*interval", output, ignore.case = TRUE)))
+  expect_equal(report$tox_at_doses_selected, "19 % (12 %, 26 %)")
+  expect_true(any(grepl("True MTD on the dose grid: 2", output, fixed = TRUE)))
+
+  # A dose exactly at the target is neither the true MTD nor above target.
+  exact <- summary(sims, truth = truth, target = 0.27)
+  expect_equal(exact@true_mtd, 2)
+  expect_equal(exact@n_above_target, rep(1L, 4))
+  expect_equal(exact@prop_at_target, 0.25)
+
+  no_mtd <- summary(sims, truth = truth, target = 0.1)
+  expect_length(no_mtd@true_mtd, 0L)
+  expect_equal(no_mtd@prop_at_target, 0)
+  expect_s3_class(plot(no_mtd, type = "doseSelected"), "ggplot")
+
+  all_safe <- summary(sims, truth = truth, target = 0.5)
+  expect_equal(all_safe@true_mtd, 4)
+  expect_equal(all_safe@n_above_target, rep(0L, 4))
+  expect_equal(all_safe@prop_at_target, 0)
+  expect_true(is.na(all_safe@target_dose_interval))
+})
+
 ## summary-Simulations ----
 
 test_that("summary-Simulations works correctly", {

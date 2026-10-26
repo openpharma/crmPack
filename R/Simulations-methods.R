@@ -1215,7 +1215,10 @@ setMethod(
 #' @param truth (`function`)\cr a function which takes as input a dose (vector)
 #'   and returns the true probability (vector) for toxicity.
 #' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
-#'   used for the computations.
+#'   or a single target toxicity rate. For a single rate, the true MTD is the
+#'   highest dose on the dose grid with true toxicity strictly below the target;
+#'   if no dose qualifies, there is no true MTD. Selection success is the
+#'   proportion of all trials selecting that dose.
 #' @param ... additional arguments can be supplied here for `truth`.
 #'
 #' @return An object of class [`GeneralSimulationsSummary`].
@@ -1241,11 +1244,12 @@ setMethod(
     true_tox <- truth(dose_grid, ...)
 
     # Identify the true MTD(s) on the dose grid. An interval can contain several
-    # target doses, whereas a scalar target has one closest grid dose.
+    # target doses, whereas a scalar target uses the highest dose strictly below it.
     true_mtd <- if (length(target) == 2L) {
       dose_grid[true_tox >= target[1L] & true_tox <= target[2L]]
     } else {
-      dose_grid[which.min(abs(true_tox - target))]
+      eligible_doses <- dose_grid[true_tox < target]
+      if (length(eligible_doses)) max(eligible_doses) else numeric()
     }
 
     # Find dose interval corresponding to target tox interval.
@@ -1273,7 +1277,7 @@ setMethod(
     )
 
     # What are the levels above target interval?
-    x_above_target <- which(true_tox > target[2])
+    x_above_target <- which(true_tox > max(target))
 
     # Proportion of DLTs in a trial.
     if (object@data[[1]]@placebo) {
@@ -1385,9 +1389,11 @@ setMethod(
 
     # Proportion of trials selecting target MTD.
     tox_at_doses <- truth(dose_selected, ...)
-    prop_at_target <- mean(
-      (tox_at_doses > target[1]) & (tox_at_doses < target[2])
-    )
+    prop_at_target <- if (length(target) == 1L) {
+      mean(!is.na(object@doses) & object@doses %in% true_mtd)
+    } else {
+      mean((tox_at_doses > target[1]) & (tox_at_doses < target[2]))
+    }
 
     # Any backfilled? First check if the slot is available.
     any_backfilled <- methods::.hasSlot(object@data[[1]], "backfilled")
@@ -1649,7 +1655,10 @@ setMethod(
 #' @param truth (`function`)\cr a function which takes as input a dose (vector)
 #'   and returns the true probability (vector) for toxicity.
 #' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
-#'   used for the computations.
+#'   or a single target toxicity rate. For a single rate, the true MTD is the
+#'   highest dose on the dose grid with true toxicity strictly below the target;
+#'   if no dose qualifies, there is no true MTD. Selection success is the
+#'   proportion of all trials selecting that dose.
 #' @param ... additional arguments can be supplied here for `truth`.
 #'
 #' @return An object of class [`SimulationsSummary`].
@@ -2070,7 +2079,10 @@ Report <-
         }
 
         res <- paste(
-          round(mean(vals), digits),
+          round(
+            if (all(is.na(vals))) NA_real_ else mean(vals, na.rm = TRUE),
+            digits
+          ),
           unit,
           " (",
           paste(
@@ -2365,7 +2377,8 @@ setMethod(
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Display a summary of general simulation results.
+#' Display a summary of general simulation results. Means and quantiles exclude
+#' missing values, such as undefined true toxicity when no dose was selected.
 #'
 #' @param object (`GeneralSimulationsSummary`)\cr the object we want to print.
 #'
@@ -2395,7 +2408,11 @@ setMethod(
     )
 
     cat(
-      "Target toxicity interval was",
+      if (length(object@target) == 1L) {
+        "Target toxicity rate was"
+      } else {
+        "Target toxicity interval was"
+      },
       r$dfSave(
         paste(round(object@target * 100), collapse = ", "),
         "target"
@@ -2403,13 +2420,24 @@ setMethod(
       "%\n"
     )
     cat(
-      "Target dose interval corresponding to this was",
+      if (length(object@target) == 1L) {
+        "Continuous dose corresponding to the target toxicity rate was"
+      } else {
+        "Target dose interval corresponding to this was"
+      },
       r$dfSave(
         paste(round(object@target_dose_interval, 1), collapse = ", "),
         "target_dose_interval"
       ),
       "\n"
     )
+    if (length(object@target) == 1L) {
+      cat(
+        "True MTD on the dose grid:",
+        if (length(object@true_mtd)) object@true_mtd else "none",
+        "\n"
+      )
+    }
     cat(
       "Intervals are corresponding to",
       "10 and 90 % quantiles\n\n"
@@ -2439,7 +2467,11 @@ setMethod(
     }
     r$report(
       "n_above_target",
-      "Number of patients treated above target tox interval",
+      if (length(object@target) == 1L) {
+        "Number of patients treated above target toxicity rate"
+      } else {
+        "Number of patients treated above target tox interval"
+      },
       percent = FALSE
     )
 
@@ -2679,12 +2711,13 @@ setMethod(
 #'   \item{`"doseSelected"`}{The distribution of the final selected dose (MTD)
 #'     across trials. A selected dose of zero indicates that the trial stopped
 #'     because all doses in the dose grid appeared too toxic. Red triangles mark
-#'     dose-grid levels whose true toxicity is within the target interval.}
+#'     dose-grid levels whose true toxicity is within the target interval, or
+#'     the highest dose with true toxicity strictly below a single target rate.}
 #'   \item{`"propDLTs"`}{The distribution of the percentage of patients with
 #'     dose-limiting toxicities (DLTs). For trials with a placebo, this is the
 #'     percentage among patients assigned to an active dose.}
 #'   \item{`"nAboveTarget"`}{The distribution of the number of patients treated
-#'     at doses above the target toxicity interval, as determined by the `truth`
+#'     at doses above the target toxicity interval or single rate, as determined by the `truth`
 #'     and `target` arguments supplied to
 #'     [`summary,GeneralSimulations-method`].}
 #' }
