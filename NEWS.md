@@ -23,6 +23,9 @@
 
 ### Bug Fixes
 
+* Combined plots now start a new graphics page, restoring e.g. plot-history
+  navigation in RStudio instead of drawing over the current plot.
+
 * Simulation summaries now handle a single target toxicity rate explicitly: the
   true MTD is the highest grid dose strictly below the target, and overdose counts,
   selection success, plot markers, and printed labels follow this definition.
