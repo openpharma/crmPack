@@ -1,0 +1,1185 @@
+skip_on_cran_but_not_ci()
+
+# nextBest ----
+
+## NextBestEWOC ----
+
+test_that("suggest-NextBestEWOC returns expected next dose based on overdose control", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1, 0, 0.5, 1), alpha1 = c(0.1, 0.2, 0.3, 0.4))
+  )
+
+  nb_ewoc <- NextBestEWOC(
+    target = 0.30,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  doselimit <- 45
+  expected <- nextBest(
+    nb_ewoc,
+    doselimit,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  actual <- suggest(
+    nb_ewoc,
+    doselimit,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+
+  expect_identical(actual@value, expected$value)
+})
+
+test_that("suggest-NextBestEWOC returns expected next dose when no doselimit", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1, 0, 0.5, 1), alpha1 = c(0.1, 0.2, 0.3, 0.4))
+  )
+
+  nb_ewoc <- NextBestEWOC(
+    target = 0.30,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  expected <- nextBest(nb_ewoc, Inf, samples, model, data)
+  actual <- suggest(nb_ewoc, Inf, samples, model, data)
+
+  expect_identical(actual@value, expected$value)
+})
+
+## NextBestMTD ----
+
+test_that("suggest-NextBestMTD returns correct next dose and plot", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_mtd <- NextBestMTD(
+    target = 0.33,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+  )
+
+  expected <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 90,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  actual <- suggest(
+    nextBest = nb_mtd,
+    doselimit = 90,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expect_identical(actual@value, expected$value)
+})
+
+test_that("suggest-NextBestMTD returns correct next dose and plot (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_mtd <- NextBestMTD(
+    target = 0.33,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+  )
+
+  expected <- nextBest(nb_mtd, Inf, samples, model, data)
+  actual <- suggest(nb_mtd, Inf, samples, model, data)
+  expect_identical(actual@value, expected$value)
+})
+
+test_that("suggest-NextBestMTD returns correct next dose and plot when doselimit=0", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_mtd <- NextBestMTD(
+    target = 0.33,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.25)
+    }
+  )
+
+  expected <- nextBest(
+    nextBest = nb_mtd,
+    doselimit = 0,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  actual <- suggest(
+    nextBest = nb_mtd,
+    doselimit = 0,
+    samples = samples,
+    model = model,
+    data = data
+  )
+  expect_identical(actual@value, expected$value)
+})
+
+
+## NextBestNCRM ----
+
+test_that("suggest-NextBestNCRM returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  expected <- nextBest(
+    nb_ncrm,
+    45,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  actual <- suggest(
+    nb_ncrm,
+    45,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  expect_identical(actual@value, expected$value)
+})
+
+test_that("suggest-NextBestNCRM returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  expected <- nextBest(
+    nb_ncrm,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  actual <- suggest(
+    nb_ncrm,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  expect_identical(expected$value, actual@value)
+})
+
+test_that("suggest-NextBestNCRM can accept additional arguments and pass them to prob inside", {
+  my_data <- h_get_data_grouped()
+  my_model <- .DefaultLogisticLogNormalGrouped()
+  my_samples <- mcmc(
+    my_data,
+    my_model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  result <- suggest(
+    nb_ncrm,
+    Inf,
+    my_samples,
+    my_model,
+    my_data,
+    group = "mono"
+  )
+  expect_identical(result@value, NA_real_)
+})
+
+test_that("suggest-NextBestNCRM-DataCombo works as expected", {
+  set.seed(123)
+  data <- h_get_data_combo()
+  model <- h_get_two_drugs_combo()
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  increments <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(0, 0.5),
+    drug2 = IncrementsRelative(0, 1)
+  )
+  doselimit <- maxDose(increments, data)
+  doselimit[3, 2] <- 20
+  expected <- nextBest(
+    nb_ncrm,
+    doselimit,
+    samples,
+    model,
+    data
+  )
+  actual <- suggest(
+    nb_ncrm,
+    doselimit,
+    samples,
+    model,
+    data
+  )
+  expect_equal(actual@value, expected$value)
+  # expect_named(
+  #   result$probs,
+  #   c("drug1", "drug2", "target_prob", "overdose_prob", "not_eligible")
+  # )
+
+})
+
+test_that("suggest-NextBestNCRM-DataCombo uses configured drug names in probs", {
+  set.seed(123)
+  data <- DataCombo(
+    doseGrid = list(compound_a = c(10, 20, 30), compound_b = c(20, 40)),
+    x = cbind(
+      compound_a = c(10, 10, 10, 20, 20, 20),
+      compound_b = c(20, 20, 20, 20, 20, 20)
+    ),
+    y = c(0L, 0L, 1L, 0L, 0L, 0L),
+    ID = 1L:6L,
+    cohort = c(1L, 1L, 1L, 2L, 2L, 2L)
+  )
+  model <- TwoDrugsCombo(list(
+    compound_a = .DefaultLogisticLogNormal(),
+    compound_b = .DefaultLogisticLogNormal()
+  ))
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- suggest(
+    nb_ncrm,
+    maxDose(
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(0, 0.5),
+        drug2 = IncrementsRelative(0, 1)
+      ),
+      data
+    ),
+    samples,
+    model,
+    data
+  )
+
+  # expect_named(
+  #   result$probs,
+  #   c(
+  #     "compound_a",
+  #     "compound_b",
+  #     "target_prob",
+  #     "overdose_prob",
+  #     "not_eligible"
+  #   )
+  # )
+  # expect_true(all(
+  #   result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1
+  # ))
+  # expect_true(all(
+  #   result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1
+  # ))
+})
+
+## NextBestNCRM-DataParts ----
+
+test_that("suggest-NextBestNCRM-DataParts returns expected values of the objects", {
+  data <- h_get_data_parts(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- suggest(
+    nb_ncrm,
+    45,
+    samples,
+    model,
+    data
+  )
+  expect_identical(result@value, 25)
+})
+
+test_that("suggest-NextBestNCRM-DataParts returns expected values of the objects (no doselimit)", {
+  data <- h_get_data_parts(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- suggest(
+    nb_ncrm,
+    Inf,
+    samples,
+    model,
+    data
+  )
+  expect_identical(result@value, 75)
+})
+
+test_that("suggest-NextBestNCRM-DataParts returns expected value for all parts 1", {
+  data <- h_get_data_parts_1(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- suggest(nb_ncrm, 45, samples, model, data)
+  expect_identical(result@value, 45)
+})
+
+test_that("suggest-NextBestNCRM-DataParts throws the error for all parts 1 and no doselimit", {
+  data <- h_get_data_parts_1(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+
+  expect_error(
+    suggest(nb_ncrm, Inf, samples, model, data),
+    "A finite doselimit needs to be specified for Part I."
+  )
+})
+
+## NextBestNCRMLoss ----
+
+test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm_loss <- NextBestNCRMLoss(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.999,
+    losses = c(1, 0, 2)
+  )
+
+  result <- suggest(
+    nb_ncrm_loss,
+    60,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  expect_identical(result@value, 25)
+})
+
+test_that("suggest-NextBestNCRMLoss returns expected values of the objects (loss function of 4 elements)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm_loss <- NextBestNCRMLoss(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 0.6),
+    unacceptable = c(0.6, 1),
+    max_overdose_prob = 0.25,
+    losses = c(1, 0, 1, 2)
+  )
+
+  result <- suggest(
+    nb_ncrm_loss,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  expect_identical(result@value, 25)
+})
+
+test_that("suggest-NextBestNCRMLoss returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm_loss <- NextBestNCRMLoss(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25,
+    losses = c(1, 0, 2)
+  )
+
+  result <- suggest(
+    nb_ncrm_loss,
+    Inf,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  expect_identical(result@value, 25)
+})
+
+## NextBestThreePlusThree ----
+
+test_that("suggest-NextBestThreePlusThree returns expected values (< 33% and escalated)", {
+  data <- h_get_data(placebo = FALSE)
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, 125)
+  # expect_identical(result$stopHere, setNames(FALSE, 125))
+})
+
+test_that("suggest-NextBestThreePlusThree returns expected values (< 33%, max dose, no escalation)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[data@nGrid], y = c(0L, 1L, 0L, 0L))
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, 300)
+  # expect_identical(result$stopHere, setNames(TRUE, 300))
+})
+
+test_that("suggest-NextBestThreePlusThree returns expected values (< 33% and no escalation)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(
+    data,
+    x = data@doseGrid[tail(data@xLevel, 1) - 1],
+    y = c(0L, 1L, 0L, 0L)
+  )
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, 75)
+  # expect_identical(result$stopHere, setNames(TRUE, 75))
+})
+
+test_that("suggest-NextBestThreePlusThree returns expected values (> 33%)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = 175, y = 1L)
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, 150)
+  # expect_identical(result$stopHere, setNames(FALSE, 150))
+})
+
+test_that("suggest-NextBestThreePlusThree returns expected values (== 33%, 3 patients at last_lev)", {
+  data <- h_get_data()
+  data <- update(data, x = 200, y = c(1L, 0L, 0L))
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, 200)
+  # expect_identical(result$stopHere, setNames(FALSE, 200))
+})
+
+test_that("suggest-NextBestThreePlusThree returns expected values (== 33%, 6 patients at last_lev)", {
+  data <- h_get_data()
+  data <- update(data, x = 200, y = c(0L, 0L, 1L, 0L, 1L, 0L))
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, 175)
+  # expect_identical(result$stopHere, setNames(FALSE, 175))
+})
+
+test_that("suggest-NextBestThreePlusThree returns expected values (next_level == 0)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[1], y = c(1L, 1L))
+
+  result <- suggest(NextBestThreePlusThree(), data = data)
+  expect_identical(result@value, NA_real_)
+  # expect_identical(result$stopHere, TRUE)
+})
+
+## NextBestDualEndpoint ----
+
+test_that("suggest-NextBestDualEndpoint returns expected elements", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_rw()
+  samples <- h_samples_dual_endpoint_rw()
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.45, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- suggest(
+    nb_de,
+    133,
+    samples,
+    model,
+    data
+  )
+  expect_identical(result@value, 25)
+  # expect_snap(result$probs)
+})
+
+test_that("suggest-NextBestDualEndpoint returns expected elements (with Emax param)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_beta(fixed = FALSE)
+  samples <- h_samples_dual_endpoint_beta(fixed = FALSE)
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.45, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- suggest(
+    nb_de,
+    133,
+    samples,
+    model,
+    data,
+    prob_plot_type = "bar"
+  )
+  expect_identical(result@value, 50)
+  # expect_snap(result$probs)
+})
+
+test_that("suggest-NextBestDualEndpoint returns expected elements (absolute target)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_rw()
+  samples <- h_samples_dual_endpoint_rw()
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.65, 1),
+    max_overdose_prob = 0.55,
+    target_relative = FALSE
+  )
+
+  result <- suggest(
+    nb_de,
+    90,
+    samples,
+    model,
+    data
+  )
+  expect_identical(result@value, 75)
+  # expect_snap(result$probs)
+})
+
+test_that("suggest-NextBestDualEndpoint returns expected elements (absolute target, no doselimit)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_rw()
+  samples <- h_samples_dual_endpoint_rw()
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.65, 1),
+    max_overdose_prob = 0.55,
+    target_relative = FALSE
+  )
+
+  result <- suggest(
+    nb_de,
+    Inf,
+    samples,
+    model,
+    data
+  )
+  expect_identical(result@value, 100)
+  # expect_snap(result$probs)
+})
+
+## NextBestMinDist ----
+
+test_that("suggest-NextBestMinDist returns expected values and plot", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_md <- NextBestMinDist(target = 0.3)
+
+  result <- suggest(nb_md, 50, samples, model, data)
+  expect_identical(result@value, 50)
+  # expect_snap(result$probs)
+})
+
+test_that("suggest-NextBestMinDist returns expected values and plot (with placebo)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-0.38, -0.13, 1.43, 2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_md <- NextBestMinDist(target = 0.1)
+
+  result <- suggest(nb_md, 40, samples, model, data)
+  expect_identical(result@value, 25)
+  # expect_snap(result$probs)
+})
+
+test_that("suggest-NextBestMinDist returns expected values and plot (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_md <- NextBestMinDist(target = 0.3)
+
+  result <- suggest(nb_md, Inf, samples, model, data)
+  expect_identical(result@value, 75)
+  # expect_snap(result$probs)
+})
+
+## NextBestInfTheory ----
+
+test_that("suggest-NextBestInfTheory returns correct next dose", {
+  data <- h_get_data(placebo = FALSE)
+  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
+  model <- LogisticLogNormal(
+    mean = c(-4.47, 0.0033),
+    cov = matrix(c(1.06, 0.85, 0.85, 2.72), nrow = 2)
+  )
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+
+  result <- suggest(nb_it, 75, samples, model, data)
+  expect_identical(result@value, 25)
+})
+
+test_that("suggest-NextBestInfTheory returns correct next dose (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
+  model <- LogisticLogNormal(
+    mean = c(-4.47, 0.0033),
+    cov = matrix(c(1.06, 0.85, 0.85, 2.72), nrow = 2)
+  )
+  samples <- h_as_samples(list(
+    alpha0 = c(0, -1, 1, 2),
+    alpha1 = c(0, 2, 1, -1)
+  ))
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+
+  result <- suggest(nb_it, Inf, samples, model, data)
+  # expect_identical(result, list(value = 25))
+  expect_identical(result@value, 25)
+})
+
+## NextBestTDsamples ----
+
+test_that("suggest-NextBestTDsamples returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  samples <- h_as_samples(
+    list(
+      phi1 = c(
+        -6.99,
+        -6.99,
+        -8.58,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.23,
+        -8.71,
+        -8.71
+      ),
+      phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
+    )
+  )
+  nb_tds <- h_next_best_tdsamples()
+
+  result <- suggest(nb_tds, 90, samples, model, data)
+  expect_identical(result@value, 75)
+})
+
+test_that("suggest-NextBestTDsamples returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  samples <- h_as_samples(
+    list(
+      phi1 = c(
+        -6.99,
+        -6.99,
+        -8.58,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.23,
+        -8.71,
+        -8.71
+      ),
+      phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
+    )
+  )
+  nb_tds <- h_next_best_tdsamples()
+
+  result <- suggest(nb_tds, Inf, samples, model, data)
+  expect_identical(result@value, 100)
+})
+
+test_that("suggest-NextBestTDsamples returns expected values of the objects (other targets)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  samples <- h_as_samples(
+    list(
+      phi1 = c(
+        -6.99,
+        -6.99,
+        -8.58,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.62,
+        -8.23,
+        -8.71,
+        -8.71
+      ),
+      phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
+    )
+  )
+  nb_tds <- h_next_best_tdsamples(0.6, 0.55, 0.45)
+
+  result <- suggest(nb_tds, 150, samples, model, data)
+  expect_identical(result@value, 150)
+})
+
+## NextBestTD ----
+
+test_that("suggest-NextBestTD returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
+
+  result <- suggest(nb_td, 70, model = model, data = data)
+  expect_identical(result@value, 50)
+})
+
+test_that("suggest-NextBestTD returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
+
+  result <- suggest(nb_td, Inf, model = model, data = data)
+  # expected <- list(
+  #   next_dose_drt = 75,
+  #   prob_target_drt = 0.45,
+  #   dose_target_drt = 75.82941,
+  #   next_dose_eot = 50,
+  #   prob_target_eot = 0.4,
+  #   dose_target_eot = 63.21009,
+  #   ci_dose_target_eot = c(20.38729, 195.98072),
+  #   ci_ratio_dose_target_eot = 9.612886
+  # )
+  expect_identical(result@value, 75)
+})
+
+test_that("suggest-NextBestTD returns expected values of the objects (other targets)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  nb_td <- NextBestTD(prob_target_drt = 0.25, prob_target_eot = 0.2)
+
+  result <- suggest(nb_td, 70, model = model, data = data)
+  expect_identical(result@value, 25)
+})
+
+## NextBestMaxGain ----
+
+test_that("suggest-NextBestMaxGain returns expected values of the objects", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
+
+  result <- suggest(
+    nb_mg,
+    49,
+    model = model_dlt,
+    data = data,
+    model_eff = model_eff
+  )
+  expect_identical(result@value, 25)
+})
+
+test_that("suggest-NextBestMaxGain returns expected values of the objects (no doselimit)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
+
+  result <- suggest(
+    nb_mg,
+    Inf,
+    model = model_dlt,
+    data = data,
+    model_eff = model_eff
+  )
+
+  expect_identical(result@value, 50)
+})
+
+test_that("suggest-NextBestMaxGain returns expected values of the objects (other targets, placebo)", {
+  data <- h_get_data_dual(placebo = TRUE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.45, prob_target_eot = 0.4)
+
+  result <- suggest(
+    nb_mg,
+    150,
+    model = model_dlt,
+    data = data,
+    model_eff = model_eff
+  )
+  # expected <- list(
+  #   next_dose = 75,
+  #   prob_target_drt = 0.45,
+  #   dose_target_drt = 75.82941,
+  #   next_dose_drt = 75,
+  #   prob_target_eot = 0.4,
+  #   dose_target_eot = 63.21009,
+  #   next_dose_eot = 50,
+  #   dose_max_gain = 83.96469,
+  #   next_dose_max_gain = 75,
+  #   ci_dose_target_eot = c(20.38729, 195.98072),
+  #   ci_ratio_dose_target_eot = 9.612886,
+  #   ci_dose_max_gain = c(26.95037, 293.67744),
+  #   ci_ratio_dose_max_gain = 10.89697
+  # )
+  expect_identical(result@value, 75)
+})
+
+## NextBestMaxGainSamples ----
+
+test_that("suggest-NextBestMaxGainSamples returns expected values of the objects", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  samples_dlt <- h_as_samples(
+    list(phi1 = c(-4.03, -4.48, -4.07, -4.37), phi2 = c(1.45, 0.86, 0.56, 0.42))
+  )
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-2.93, -0.54, 0.01, -2.42),
+      theta2 = c(3.41, 0.61, 0.58, 1.35),
+      nu = c(2.14, 4.63, 0.83, 2.98)
+    )
+  )
+  nb_mgs <- h_next_best_mgsamples()
+
+  result <- suggest(
+    nb_mgs,
+    49,
+    samples_dlt,
+    model_dlt,
+    data,
+    model_eff,
+    samples_eff
+  )
+  # expected <- list(
+  #   next_dose = 25,
+  #   prob_target_drt = 0.45,
+  #   dose_target_drt = 131.8022,
+  #   next_dose_drt = 25,
+  #   prob_target_eot = 0.4,
+  #   dose_target_eot = 103.9855,
+  #   next_dose_eot = 25,
+  #   dose_max_gain = 125,
+  #   next_dose_max_gain = 25,
+  #   ci_dose_target_eot = c(103.9855, 103.9855),
+  #   ci_ratio_dose_target_eot = 1,
+  #   ci_dose_max_gain = c(30.625, 288.750),
+  #   ci_ratio_dose_max_gain = 9.428571
+  # )
+  expect_identical(result@value, 25)
+})
+
+test_that("suggest-NextBestMaxGainSamples returns expected values of the objects (no doselimit)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  samples_dlt <- h_as_samples(
+    list(phi1 = c(-4.03, -4.48, -4.07, -4.37), phi2 = c(1.45, 0.86, 0.56, 0.42))
+  )
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-2.93, -0.54, 0.01, -2.42),
+      theta2 = c(3.41, 0.61, 0.58, 1.35),
+      nu = c(2.14, 4.63, 0.83, 2.98)
+    )
+  )
+  nb_mgs <- h_next_best_mgsamples()
+
+  result <- suggest(
+    nb_mgs,
+    Inf,
+    samples_dlt,
+    model_dlt,
+    data,
+    model_eff,
+    samples_eff
+  )
+  # expected <- list(
+  #   next_dose = 125,
+  #   prob_target_drt = 0.45,
+  #   dose_target_drt = 131.8022,
+  #   next_dose_drt = 125,
+  #   prob_target_eot = 0.4,
+  #   dose_target_eot = 103.9855,
+  #   next_dose_eot = 100,
+  #   dose_max_gain = 125,
+  #   next_dose_max_gain = 125,
+  #   ci_dose_target_eot = c(103.9855, 103.9855),
+  #   ci_ratio_dose_target_eot = 1,
+  #   ci_dose_max_gain = c(30.625, 288.750),
+  #   ci_ratio_dose_max_gain = 9.428571
+  # )
+  expect_identical(result@value, 125)
+})
+
+test_that("suggest-NextBestMaxGainSamples returns expected values of the objects (other targets, placebo)", {
+  data <- h_get_data_dual(placebo = TRUE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  samples_dlt <- h_as_samples(
+    list(
+      phi1 = c(-4.03, -4.48, -4.07, -4.37, -4.5),
+      phi2 = c(1.45, 0.86, 0.56, 0.42, 0.6)
+    )
+  )
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-2.93, -0.54, 0.01, -2.42, -1.5),
+      theta2 = c(3.41, 0.61, 0.58, 1.35, 2),
+      nu = c(2.14, 4.63, 0.83, 2.98, 1.6)
+    )
+  )
+  nb_mgs <- h_next_best_mgsamples(td = 0.5, te = 0.45, p = 0.25, p_gstar = 0.3)
+
+  result <- suggest(
+    nb_mgs,
+    60,
+    samples_dlt,
+    model_dlt,
+    data,
+    model_eff,
+    samples_eff
+  )
+  # expected <- list(
+  #   next_dose = 50,
+  #   prob_target_drt = 0.5,
+  #   dose_target_drt = 182.9664,
+  #   next_dose_drt = 50,
+  #   prob_target_eot = 0.45,
+  #   dose_target_eot = 144.8885,
+  #   next_dose_eot = 50,
+  #   dose_max_gain = 110,
+  #   next_dose_max_gain = 50,
+  #   ci_dose_target_eot = c(144.8885, 144.8885),
+  #   ci_ratio_dose_target_eot = 1,
+  #   ci_dose_max_gain = c(32.5, 300.0),
+  #   ci_ratio_dose_max_gain = 9.230769
+  # )
+  expect_identical(result@value, 50)
+})
+
+## NextBestProbMTDLTE ----
+
+test_that("suggest-NextBestProbMTDLTE returns correct next dose and plot", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
+
+  result <- suggest(nb_prob_mtd, 90, samples, model, data)
+  expect_identical(result@value, 75)
+  # expect_snap(result$allocation)
+})
+
+test_that("suggest-NextBestProbMTDLTE returns correct next dose and plot (with placebo)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-0.38, -0.13, 1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
+
+  result <- suggest(nb_prob_mtd, 40, samples, model, data)
+  expect_identical(result@value, 25)
+  # expect_snap(result$allocation)  expect_doppel("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
+})
+
+test_that("suggest-NextBestProbMTDLTE returns correct next dose and plot (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
+
+  result <- suggest(nb_prob_mtd, Inf, samples, model, data)
+  expect_identical(result@value, 125)
+  # expect_snap(result$allocation)
+})
+
+## NextBestProbMTDMinDist ----
+
+test_that("suggest-NextBestProbMTDMinDist returns correct next dose and plot", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
+
+  result <- suggest(nb_prob_mtd, 90, samples, model, data)
+  expect_identical(result@value, 75)
+  # expect_snap(result$allocation)
+})
+
+test_that("suggest-NextBestProbMTDMinDist returns correct next dose and plot (with placebo)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(-0.38, -0.13, 1.43, 2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
+
+  result <- suggest(nb_prob_mtd, 40, samples, model, data)
+  expect_identical(result@value, 25)
+  # expect_snap(result$allocation)
+})
+
+test_that("suggest-NextBestProbMTDMinDist returns correct next dose and plot (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(
+      alpha0 = c(2.38, -2.13, -1.43, -2.57),
+      alpha1 = c(1.67, 1.3, 1.77, 2.51)
+    )
+  )
+  nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
+
+  result <- suggest(nb_prob_mtd, Inf, samples, model, data)
+  expect_identical(result@value, 25)
+  # expect_snap(result$allocation)
+})
+
+## NextBestOrdinal ----
+test_that("suggest-NextBestOrdinal throws exception when passed a GeneralModel object", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  samples <- mcmc(ordinal_data, ordinal_model, .DefaultMcmcOptions())
+
+  next_best <- .DefaultNextBestOrdinal()
+  bad_data <- .DefaultData()
+  expect_error(
+    suggest(next_best, Inf, samples, ordinal_model, bad_data),
+    paste0(
+      "NextBestOrdinal objects can only be used with LogisticLogNormalOrdinal ",
+      "models and DataOrdinal data objects. In this case, the model is a ",
+      "'LogisticLogNormalOrdinal' object and the data is in a Data object."
+    )
+  )
+})
+
+test_that("suggest-NextBestOrdinal works correctly", {
+  ordinal_data <- .DefaultDataOrdinal()
+  ordinal_model <- .DefaultLogisticLogNormalOrdinal()
+  samples <- mcmc(
+    ordinal_data,
+    ordinal_model,
+    McmcOptions(
+      rng_kind = "Mersenne-Twister",
+      rng_seed = 215614
+    )
+  )
+  next_best <- .DefaultNextBestOrdinal()
+  bad_data <- .DefaultData()
+
+  actual <- suggest(next_best, Inf, samples, ordinal_model, ordinal_data)
+  expect_equal(actual@value, 50)
+})

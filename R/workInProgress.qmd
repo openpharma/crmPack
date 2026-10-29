@@ -1,0 +1,145 @@
+---
+title: " "
+format: html
+editor: visual
+embed-resources: TRUE
+---
+
+This is a temporary document for the illustration and discussion of the new "results of a call to
+`nextBest()`" class. It can be deleted once the development is complete.
+
+## Progress to date
+
+I went down the `suggest` route rather than `recommend` or `estimate`. I avoided `estimate` because
+the noun and the verb are the same, and I thought that might cause confusion. I avoided `recommend`
+because, when I first raised the ambiguity of the term "next best dose", some of us felt that
+"recommend" was too strong a word and that users might feel compelled to follow the result.
+
+So, the new method is currently called `suggest` and the new return class is `NextBestSuggestion`.
+This is easily changed if we want to.
+
+At the moment, the `suggest` methods are essentially simple copies of the existing `nextBest`
+methods, with all references to graphing (in both the arguments and body) removed. They return an
+object of class `NextBestSuggestion` (or a subclass) rather than a `list`. The only subclass I've
+implemented so far is `NextBestSuggestionProbs`, which adds an arbitrary array of probabilities.
+
+Tests exist for all `suggest` methods. As before, they are essentially copies of the existing tests
+for `nextBest` calls. References to plots have been removed and they test that the recommendation
+returned by `nextBest` matches that returned by `suggest`. All tests pass, though one is empty and
+others report a warning because I'm not 100% certain I understand what the corresponding `nextBest`
+call is doing.
+
+I've created custom `knit_print` methods for both new classes, and a `tidy` method for
+`NestBestSuggestionProbs` (`NextBestSuggestion` can use the default `tidy` method).
+
+```{r}
+#| echo: FALSE
+
+devtools::load_all()
+library(knitr)
+```
+
+## Test data
+
+```{r}
+
+# This is a slight variation of the nextBest example file.  The differences being a coarser
+# dose grid so that the output is shorter, and a larger sample count so that probabilties of
+# overdose are more meaningful.
+
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 10))
+)
+
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
+```
+
+### Sample usage
+
+The simplest `NextBest` rules simply return a suggested dose. `NextBestMTD` is one such class.
+
+```{r}
+mtd_next_best <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
+
+suggest_mtd <- suggest(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+```
+
+Here's the raw return object...
+
+```{r}
+normal_print(suggest_mtd)
+```
+
+and the prettified version, with and without units.
+
+```{r}
+suggest_mtd
+knit_print(suggest_mtd, unit = "mg/dL")
+```
+
+Here's the result of tidying the object.
+
+```{r}
+suggest_mtd %>% tidy()
+```
+
+The next simplest classes return `list`s of probabilities. At the moment, I've reproduced this
+behaviour, and converted the `list` to a tibble for presentation, but since this is a major
+refactoring, we could convert the `list` to a tibble at source. I think that would be neater.
+
+```{r}
+# Define the rule which will be used to select the next best dose
+# based on the 'NextBestEWOC' class.
+ewoc_next_best <- NextBestEWOC(
+  target = 0.30,
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Calculate the next best dose.
+dose_recommendation <- suggest(
+  nextBest = ewoc_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+```
+
+```{r}
+normal_print(dose_recommendation)
+knit_print(dose_recommendation, unit = "mg/dL")
+```
