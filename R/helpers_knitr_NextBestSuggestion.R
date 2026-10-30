@@ -57,6 +57,7 @@ registerS3method("knit_print", "NextBestSuggestion", knit_print.NextBestSuggesti
 #' @description `r lifecycle::badge("experimental")`
 #' @param x (`NextBestSuggestionProbs`)\cr The object to knit_print.
 #' @param asis (`flag`)\cr Should the return value be wrapped in a call to `knitr::asis_output`?
+#' @param caption (`character`)\cr The caption for the probs table.
 #' @param unit (`character`)\cr The dose unit.
 #' @param ... Not used at present
 #'
@@ -70,18 +71,22 @@ knit_print.NextBestSuggestionProbs <- function(
     x,
     ...,
     asis = TRUE,
-    unit = ""
+    unit = "",
+    caption = "Probabilities by dose"
 ) {
   assert_flag(asis)
+  assert_character(caption, len = 1, any.missing = FALSE)
+  assert_character(unit, len = 1, any.missing = FALSE)
 
   param <- h_kable_param_default(
     list(...),
-    col_names = c("Dose", "P(overdose)", "Suggested?"),
-    caption = "Estimated probability of overdose, by dose"
+    # col_names = c("Dose", "P(overdose)", "Suggested?"),
+    caption = caption
   )
-  tbl <- x %>% tidy()
   if (stringr::str_length(unit) > 0) {
-    tbl <- tbl %>% dplyr::mutate(Dose = paste0(Dose, " ", unit))
+    tbl <- x@probs %>% dplyr::mutate(Dose = paste0(Dose, " ", unit))
+  } else {
+    tbl <- x@probs
   }
   param[["x"]] <- tbl
   # label <- h_prepare_labels(label)

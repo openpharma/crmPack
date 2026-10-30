@@ -67,11 +67,11 @@ NextBestSuggestion <- function(value) {
   Class = "NextBestSuggestionProbs",
   contains = "NextBestSuggestion",
   slots = c(
-    probs = "list"
+    probs = "tbl_df"
   ),
   prototype = prototype(
     backfilled = logical(),
-    probs = list()
+    probs = tibble::tibble()
   ),
   # validity = v_nextbestsuggestionprobs
 )
@@ -89,12 +89,10 @@ NextBestSuggestion <- function(value) {
 #'
 NextBestSuggestionProbs <- function(
   value = numeric(),
-  probs = list(),
+  probs = tibble::tibble(),
   ...
 ) {
   assert_numeric(value)
-  assert_probabilities(unlist(probs))
-  assert_named(probs, type = "unique")
 
   .NextBestSuggestionProbs(value = value, probs = probs)
 }
@@ -107,6 +105,6 @@ NextBestSuggestionProbs <- function(
 .DefaultNextBestSuggestionProbs <- function() {
   NextBestSuggestionProbs(
     value = 1,
-    probs = list(target = 0.5, overdose = 0.25)
+    probs = tibble::tibble(Dose = 1, target = 0.5, overdose = 0.25)
   )
 }

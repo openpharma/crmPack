@@ -39,14 +39,23 @@ NULL
 #'   slot and a named list of probabilities in the `probs` slot.
 v_nextbestsuggestionprobs <- function(object) {
   v <- Validate()
+  cols <- names(object@probs)
   v$check(
-    test_probabilities(unlist(object@probs)),
-    "probs must be a list of probabilities."
+    test_true("Dose" %in% cols),
+    "probs must contain a column named Dose."
   )
+  unset(cols["Dose"])
+  for (c in cols) {
+    v$check(
+      test_probabilities(object@probs[c]),
+      "every column of probs apart from dose must contain non-missing probabilities."
+    )
+  }
   v$check(
-    test_named(
-      object@probs,
-      type = "unique"
+    test_atomic_vector(
+      object@probs["Dose"],
+      unique = TRUE,
+      any.missing = FALSE
     ),
     "probs must be named and names must be unique."
   )

@@ -5,44 +5,15 @@ editor: visual
 embed-resources: TRUE
 ---
 
-This is a temporary document for the illustration and discussion of the new "results of a call to
-`nextBest()`" class. It can be deleted once the development is complete.
-
-## Progress to date
-
-I went down the `suggest` route rather than `recommend` or `estimate`. I avoided `estimate` because
-the noun and the verb are the same, and I thought that might cause confusion. I avoided `recommend`
-because, when I first raised the ambiguity of the term "next best dose", some of us felt that
-"recommend" was too strong a word and that users might feel compelled to follow the result.
-
-So, the new method is currently called `suggest` and the new return class is `NextBestSuggestion`.
-This is easily changed if we want to.
-
-At the moment, the `suggest` methods are essentially simple copies of the existing `nextBest`
-methods, with all references to graphing (in both the arguments and body) removed. They return an
-object of class `NextBestSuggestion` (or a subclass) rather than a `list`. The only subclass I've
-implemented so far is `NextBestSuggestionProbs`, which adds an arbitrary array of probabilities.
-
-The `suggest` and `tidy` methods are in `Rules-methods1.R`, to minimise the chance of conflicts with
-other changes. (The `plot` methods, when written, will join them.) Once the code is more stable, it
-can be moved to `Rules-methods.R` and the new file deleted. The `knit_print` methods are in
-`helpers_knitr_NextBestSuggestion.R`.
-
-Tests exist for all `suggest` methods. As before, they are essentially copies of the existing tests
-for `nextBest` calls. References to plots have been removed and they test that the recommendation
-returned by `nextBest` matches that returned by `suggest`. All tests pass, though one is empty and
-others report a warning because I'm not 100% certain I understand what the corresponding `nextBest`
-call is doing.
-
-I've created custom `knit_print` methods for both new classes, and a `tidy` method for
-`NestBestSuggestionProbs` (`NextBestSuggestion` can use the default `tidy` method).
-
 ```{r}
 #| echo: FALSE
 
 devtools::load_all()
 library(knitr)
 ```
+
+This is a temporary document for the illustration and discussion of the new "results of a call to
+`nextBest()`" class. It can be deleted once the development is complete.
 
 ## Test data
 
@@ -80,6 +51,35 @@ my_increments <- IncrementsRelative(
 next_max_dose <- maxDose(my_increments, data = my_data)
 ```
 
+## Progress to date
+
+I went down the `suggest` route rather than `recommend` or `estimate`. I avoided `estimate` because
+the noun and the verb are the same, and I thought that might cause confusion. I avoided `recommend`
+because, when I first raised the ambiguity of the term "next best dose", some of us felt that
+"recommend" was too strong a word and that users might feel compelled to follow the result.
+
+So, the new method is currently called `suggest` and the new return class is `NextBestSuggestion`.
+This is easily changed if we want to.
+
+At the moment, the `suggest` methods are essentially simple copies of the existing `nextBest`
+methods, with all references to graphing (in both the arguments and body) removed. They return an
+object of class `NextBestSuggestion` (or a subclass) rather than a `list`. The only subclass I've
+implemented so far is `NextBestSuggestionProbs`, which adds an arbitrary array of probabilities.
+
+The `suggest` and `tidy` methods are in `Rules-methods1.R`, to minimise the chance of conflicts with
+other changes. (The `plot` methods, when written, will join them.) Once the code is more stable, it
+can be moved to `Rules-methods.R` and the new file deleted. The `knit_print` methods are in
+`helpers_knitr_NextBestSuggestion.R`.
+
+Tests exist for all `suggest` methods. As before, they are essentially copies of the existing tests
+for `nextBest` calls. References to plots have been removed and they test that the recommendation
+returned by `nextBest` matches that returned by `suggest`. All tests pass, though one is empty and
+others report a warning because I'm not 100% certain I understand what the corresponding `nextBest`
+call is doing.
+
+I've created custom `knit_print` methods for both new classes, and a `tidy` method for
+`NestBestSuggestionProbs` (`NextBestSuggestion` can use the default `tidy` method).
+
 ### Sample usage
 
 The simplest `NextBest` rules simply return a suggested dose. `NextBestMTD` is one such class.
@@ -99,6 +99,8 @@ suggest_mtd <- suggest(
   model = my_model,
   data = my_data
 )
+
+suggest_mtd
 ```
 
 Here's the raw return object...
@@ -120,9 +122,7 @@ Here's the result of tidying the object.
 suggest_mtd %>% tidy()
 ```
 
-The next simplest classes return `list`s of probabilities. At the moment, I've reproduced this
-behaviour, and converted the `list` to a tibble for presentation, but since this is a major
-refactoring, we could convert the `list` to a tibble at source. I think that would be neater.
+The next simplest classes return matrices of probabilities. As discussed above, this is now a `tibble` in the new methods.
 
 ```{r}
 # Define the rule which will be used to select the next best dose
@@ -182,6 +182,10 @@ dr <- suggest(
   data = my_data
 )
 
-# knit_print currently errors
+knit_print(dr)
 normal_print(dr)
 ```
+
+> We could, for convenience add `Eligible` and/or `Safe` columns to the tibble...
+
+> We could also add slots to the `NextBestSuggestionProbs` class to allow for customisation of the probabilities table without resort to the `knit_print` method.  Obvious choices are `caption` and `col.names`.

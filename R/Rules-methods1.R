@@ -138,11 +138,12 @@ setMethod(
     #   )
     # )
 
-    probs <- as.list(prob_overdose)
-    names(probs) <- data@doseGrid
     NextBestSuggestionProbs(
       value = next_dose,
-      probs = probs
+      probs = tibble::tibble(
+        Dose = data@doseGrid,
+        Overdose = prob_overdose
+      )
     )
   }
 )
@@ -265,23 +266,12 @@ setMethod(
       NA_real_
     }
 
-    # list(
-    #   value = next_dose,
-    #   plot = plot_joint,
-    #   singlePlots = list(plot1 = p2, plot2 = p1),
-    #   probs = cbind(
-    #     dose = data@doseGrid,
-    #     target = prob_target,
-    #     overdose = prob_overdose
-    #   )
-    # )
-    names(prob_target) <- data@doseGrid
-    names(prob_overdose) <- data@doseGrid
     NextBestSuggestionProbs(
       value = next_dose,
-      probs = list(
-            target = prob_target,
-            overdose = prob_overdose
+      probs = tibble::tibble(
+        Dose = data@doseGrid,
+        Target = prob_target,
+        Overdose = prob_overdose
       )
     )
   }
@@ -358,20 +348,14 @@ setMethod(
       NA_real_
     }
 
-    all_target_prob <- rep(NA, nrow(all_dose_matrix))
-    all_target_prob[is_below_limit] <- prob_target
-    all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
-    all_overdose_prob[is_below_limit] <- prob_overdose
-    all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
-    all_not_eligible[is_below_limit] <- !is_dose_eligible
-
-    # list(
-    #   value = next_doses,
-    #   plot = plot_joint,
-    #   singlePlots = list(plot1 = p2, plot2 = p1),
-    #   probs = plot_data
-    # )
-    NextBestSuggestion(value = next_doses)
+    NextBestSuggestionProbs(
+      value = next_dose,
+      probs = tibble::tibble(
+        Dose = data@doseGrid,
+        Target = prob_target,
+        Overdose = prob_overdose
+      )
+    )
   }
 )
 

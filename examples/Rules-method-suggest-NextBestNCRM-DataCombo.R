@@ -34,7 +34,7 @@ my_model <- TwoDrugsCombo(
 )
 
 # Set-up MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the dose increment rules for two-drug combination.
@@ -54,7 +54,7 @@ my_next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose combination.
-dose_recommendation <- nextBest(
+dose_recommendation <- suggest(
   nextBest = my_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
