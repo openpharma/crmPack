@@ -275,7 +275,15 @@ setMethod(
     #     overdose = prob_overdose
     #   )
     # )
-    NextBestSuggestion(value = next_dose)
+    names(prob_target) <- data@doseGrid
+    names(prob_overdose) <- data@doseGrid
+    NextBestSuggestionProbs(
+      value = next_dose,
+      probs = list(
+            target = prob_target,
+            overdose = prob_overdose
+      )
+    )
   }
 )
 

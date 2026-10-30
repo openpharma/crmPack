@@ -23,6 +23,11 @@ methods, with all references to graphing (in both the arguments and body) remove
 object of class `NextBestSuggestion` (or a subclass) rather than a `list`. The only subclass I've
 implemented so far is `NextBestSuggestionProbs`, which adds an arbitrary array of probabilities.
 
+The `suggest` and `tidy` methods are in `Rules-methods1.R`, to minimise the chance of conflicts with
+other changes. (The `plot` methods, when written, will join them.) Once the code is more stable, it
+can be moved to `Rules-methods.R` and the new file deleted. The `knit_print` methods are in
+`helpers_knitr_NextBestSuggestion.R`.
+
 Tests exist for all `suggest` methods. As before, they are essentially copies of the existing tests
 for `nextBest` calls. References to plots have been removed and they test that the recommendation
 returned by `nextBest` matches that returned by `suggest`. All tests pass, though one is empty and
@@ -142,4 +147,41 @@ dose_recommendation <- suggest(
 ```{r}
 normal_print(dose_recommendation)
 knit_print(dose_recommendation, unit = "mg/dL")
+```
+
+And for `NextBestNCRM`...
+
+```{r}
+nrcm_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+dose_recommendation <- nextBest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+dr <- suggest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+# knit_print currently errors
+normal_print(dr)
 ```
