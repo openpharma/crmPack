@@ -38,7 +38,7 @@ nrcm_loss_next_best <- NextBestNCRMLoss(
 )
 
 # Calculate the next best dose.
-dose_recommendation <- nextBest(
+dose_recommendation <- suggest(
   nextBest = nrcm_loss_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -58,7 +58,7 @@ nrcm_loss_next_best_losses_3 <- NextBestNCRMLoss(
 )
 
 # Calculate the next best dose.
-dose_recommendation_losses_3 <- nextBest(
+dose_recommendation_losses_3 <- suggest(
   nextBest = nrcm_loss_next_best_losses_3,
   doselimit = next_max_dose,
   samples = my_samples,

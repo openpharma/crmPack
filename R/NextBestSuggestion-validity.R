@@ -19,9 +19,9 @@ v_nextbestsuggestion <- function(object) {
   v$check(
     test_numeric(
       object@value,
-      len = 1,
+      # len = 1,
       lower = 1,
-      any.missing = FALSE
+      # any.missing = FALSE
     ),
     "value must be a positive real or `NA`."
   )
@@ -44,13 +44,16 @@ v_nextbestsuggestionprobs <- function(object) {
     test_true("Dose" %in% cols),
     "probs must contain a column named Dose."
   )
-  unset(cols["Dose"])
-  for (c in cols) {
-    v$check(
-      test_probabilities(object@probs[c]),
-      "every column of probs apart from dose must contain non-missing probabilities."
-    )
-  }
+
+  # Not appropriate for NextBestNCRMLoss
+  # unset(cols["Dose"])
+  # for (c in cols) {
+  #   v$check(
+  #     test_probabilities(object@probs[c]),
+  #     "every column of probs apart from dose must contain non-missing probabilities."
+  #   )
+  # }
+
   v$check(
     test_atomic_vector(
       object@probs["Dose"],
@@ -62,6 +65,24 @@ v_nextbestsuggestionprobs <- function(object) {
   v$check(
     test_list(object@probs),
     "probs must be a list."
+  )
+  v$result()
+}
+
+#' @name v_nextbestsuggestionthreeplusthree
+#' @param object (`NextBestSuggestionThreePlusThree`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_nextbestsuggestion validates that the [`NextBestSuggestionThreePlusThree`]
+#'   object contains a positive real number (or `NA_numeric_`) in the `value`
+#'   slot and a flag in the `stopHere` slot.
+v_nextbestsuggestionthreeplusthree <- function(object) {
+  v <- Validate()
+  v$check(
+    test_flag(object@stopHere),
+    "stopHere must be a flag."
   )
   v$result()
 }

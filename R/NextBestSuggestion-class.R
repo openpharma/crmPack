@@ -53,10 +53,10 @@ NextBestSuggestion <- function(value) {
 
 #' `NextBestSuggestionProbs`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`NextBestSuggestionProbs`] inherits from [`NextBestSuggestion`] and adds a
-#' in which probabilities associated with the suggestion can be stored.
+#' slot in which probabilities associated with the suggestion can be stored.
 #'
 #' @slot probs (`list`)\cr the probabilities associated with the suggestion.
 #'
@@ -73,7 +73,7 @@ NextBestSuggestion <- function(value) {
     backfilled = logical(),
     probs = tibble::tibble()
   ),
-  # validity = v_nextbestsuggestionprobs
+  validity = v_nextbestsuggestionprobs
 )
 
 ## constructor ----
@@ -106,5 +106,67 @@ NextBestSuggestionProbs <- function(
   NextBestSuggestionProbs(
     value = 1,
     probs = tibble::tibble(Dose = 1, target = 0.5, overdose = 0.25)
+  )
+}
+
+
+# NextBestSuggestionThreePlusThree ----
+
+## class ----
+
+#' `NextBestSuggestionThreePlusThree`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestSuggestionThreePlusThree`] inherits from [`NextBestSuggestion`]
+#' and adds a slot in which the StopGo decision can be recorded.
+#'
+#' @slot stopHere (`flag`)\cr the StopGo flag.
+#'
+#' @aliases NextBestSuggestionThreePlusThree
+#' @export
+#'
+.NextBestSuggestionThreePlusThree <- setClass(
+  Class = "NextBestSuggestionThreePlusThree",
+  contains = "NextBestSuggestion",
+  slots = c(
+    stopHere = "logical"
+  ),
+  prototype = prototype(
+    stopHere = logical()
+  ),
+  validity = v_nextbestsuggestionthreeplusthree
+)
+
+## constructor ----
+
+#' @rdname NextBestSuggestionThreePlusThree-class
+#'
+#' @inheritParams NextBestSuggestion
+#' @param stopHere (`flag`)\cr the StopGo flag.
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/NextBestSuggestionThreePlusThree-class.R
+#'
+NextBestSuggestionThreePlusThree <- function(
+    value = numeric(),
+    stopHere = FALSE,
+    ...
+) {
+  assert_numeric(value)
+
+  .NextBestSuggestionThreePlusThree(value = value, stopHere = stopHere)
+}
+
+## default constructor ----
+
+#' @rdname NextBestSuggestionThreePlusThree-class
+#' @note Typically, end users will not use the `.DefaultNextBestSuggestionThreePlusThree()` function.
+#' @export
+.DefaultNextBestSuggestionProbs <- function() {
+  NextBestSuggestionProbs(
+    value = 1,
+    stopHere = FALSE
   )
 }

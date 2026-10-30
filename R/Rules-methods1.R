@@ -266,12 +266,21 @@ setMethod(
       NA_real_
     }
 
+    all_target_prob <- rep(NA, nrow(all_dose_matrix))
+    all_target_prob[is_below_limit] <- prob_target
+    all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
+    all_overdose_prob[is_below_limit] <- prob_overdose
+    all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
+    all_not_eligible[is_below_limit] <- !is_dose_eligible
+
     NextBestSuggestionProbs(
       value = next_dose,
       probs = tibble::tibble(
-        Dose = data@doseGrid,
-        Target = prob_target,
-        Overdose = prob_overdose
+        Dose1 = all_dose_matrix[, 1L],
+        Dose2 = all_dose_matrix[, 2L],
+        Target = all_target_prob,
+        Overdose = all_overdose_prob,
+        NotEligible = all_not_eligible
       )
     )
   }
@@ -348,13 +357,113 @@ setMethod(
       NA_real_
     }
 
-    NextBestSuggestionProbs(
-      value = next_dose,
-      probs = tibble::tibble(
-        Dose = data@doseGrid,
-        Target = prob_target,
-        Overdose = prob_overdose
+    # Build plots, first for the target probability.
+
+    # Show target probability as tiles, and doses that were above
+    # the dose limit should stay black.
+    all_target_prob <- rep(NA, nrow(all_dose_matrix))
+    all_target_prob[is_below_limit] <- prob_target
+    all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
+    all_overdose_prob[is_below_limit] <- prob_overdose
+    all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
+    all_not_eligible[is_below_limit] <- !is_dose_eligible
+
+    plot_data <- setNames(
+      data.frame(
+        all_dose_matrix[, 1L],
+        all_dose_matrix[, 2L],
+        all_target_prob,
+        all_overdose_prob,
+        all_not_eligible
+      ),
+      c(
+        drug_names,
+        "target_prob",
+        "overdose_prob",
+        "not_eligible"
       )
+    )
+    p1 <- ggplot() +
+      geom_tile(
+        data = plot_data,
+        aes(
+          x = .data[[drug_names[1L]]],
+          y = .data[[drug_names[2L]]],
+          fill = .data$target_prob
+        )
+      ) +
+      scale_fill_gradient(
+        low = "white",
+        high = "darkgreen",
+        na.value = "black",
+        limits = c(0, 1),
+        name = "Target probability"
+      ) +
+      xlab(names(data@doseGrid)[1]) +
+      ylab(names(data@doseGrid)[2]) +
+      geom_point(
+        data = plot_data[plot_data$not_eligible, , drop = FALSE],
+        aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
+        shape = 4,
+        size = 10,
+        colour = "red"
+      )
+
+    if (any(is_dose_eligible)) {
+      p1 <- p1 +
+        # And a blue circle on the next best dose.
+        geom_point(
+          data = data.frame(
+            setNames(as.list(next_doses[1:2]), drug_names)
+          ),
+          aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
+          size = 10,
+          shape = 19,
+          colour = "blue",
+          fill = "blue"
+        )
+    }
+
+    # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_tile(
+        data = plot_data,
+        aes(
+          x = .data[[drug_names[1L]]],
+          y = .data[[drug_names[2L]]],
+          fill = .data$overdose_prob
+        )
+      ) +
+      scale_fill_gradient(
+        low = "white",
+        high = "red",
+        na.value = "black",
+        limits = c(0, 1),
+        name = "Overdose probability"
+      ) +
+      xlab(names(data@doseGrid)[1]) +
+      ylab(names(data@doseGrid)[2]) +
+      geom_point(
+        data = plot_data[plot_data$not_eligible, , drop = FALSE],
+        aes(x = .data[[drug_names[1L]]], y = .data[[drug_names[2L]]]),
+        shape = 4,
+        size = 10,
+        colour = "red"
+      )
+
+    # Place them below each other.
+    plot_joint <- h_arrange_plots_aligned(p2, p1, nrow = 2)
+
+    # list(
+    #   value = next_doses,
+    #   plot = plot_joint,
+    #   singlePlots = list(plot1 = p2, plot2 = p1),
+    #   probs = plot_data
+    # )
+
+    NextBestSuggestionProbs(
+      value = next_doses,
+      probs = tibble::as_tibble(plot_data)
     )
   }
 )
@@ -484,14 +593,6 @@ setMethod(
     posterior_loss <- as.vector(nextBest@losses %*% t(prob_mat))
     names(posterior_loss) <- data@doseGrid
 
-    probs <- cbind(
-      dose = data@doseGrid,
-      prob_mat = prob_mat,
-      mean = prob_mean,
-      std_dev = prob_sd,
-      posterior_loss = posterior_loss
-    )
-
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- h_next_best_eligible_doses(
       data@doseGrid,
@@ -509,8 +610,38 @@ setMethod(
       NA_real_
     }
 
+    probs <- tibble::tibble(
+      Dose = data@doseGrid,
+      Underdosing = prob_mat[, "underdosing"],
+      Target = prob_mat[, "target"],
+      Mean = prob_mean,
+      StdDev = prob_sd,
+      PosteriorLoss = posterior_loss
+    )
+
+    if (is_unacceptable_specified) {
+      probs <- probs %>%
+        add_column(
+          Excessive = prob_mat[, "excessive"],
+          .before = 4
+        )%>%
+        add_column(
+          Unacceptable = prob_mat[, "unacceptable"],
+          .before = 5
+        )
+    } else {
+      probs <- probs %>%
+        add_column(
+          Overdose = prob_mat[, "overdose"],
+          .before = 4
+        )
+    }
+
     # c(list(value = next_dose, probs = probs), p)
-    NextBestSuggestion(value = next_dose)
+    NextBestSuggestionProbs(
+      value = next_dose,
+      probs = probs
+    )
   }
 )
 
@@ -569,8 +700,7 @@ setMethod(
       stop_here <- nPatients[next_dose_level] > 3L
     }
 
-    # list(value = next_dose, stopHere = stop_here)
-    NextBestSuggestion(value = next_dose)
+    NextBestSuggestionThreePlusThree(value = next_dose, stopHere = stop_here)
   }
 )
 
@@ -677,17 +807,14 @@ setMethod(
       NA_real_
     }
 
-    # list(
-    #   value = next_dose,
-    #   plot = plot_joint,
-    #   singlePlots = list(plot1 = p2, plot2 = p1),
-    #   probs = cbind(
-    #     dose = data@doseGrid,
-    #     target = prob_target,
-    #     overdose = prob_overdose
-    #   )
-    # )
-    NextBestSuggestion(value = next_dose)
+    NextBestSuggestionProbs(
+      value = next_dose,
+      tibble::tibble(
+        Dose = data@doseGrid,
+        Target = prob_target,
+        Overdose = prob_overdose
+      )
+    )
   }
 )
 
@@ -732,12 +859,13 @@ setMethod(
     next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
     next_dose <- doses_eligible[next_dose_level_eligible]
 
-    # list(
-    #   value = next_dose,
-    #   probs = cbind(dose = data@doseGrid, dlt_prob = dlt_prob),
-    #   plot = p
-    # )
-    NextBestSuggestion(value = next_dose)
+    NextBestSuggestionProbs(
+      value = next_dose,
+      probs = tibble::tibble(
+        Dose = data@doseGrid,
+        DLT = dlt_prob
+      )
+    )
   }
 )
 

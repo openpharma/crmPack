@@ -49,7 +49,6 @@ knit_print.NextBestSuggestion <- function(
 # Delete after running devtools::document()
 registerS3method("knit_print", "NextBestSuggestion", knit_print.NextBestSuggestion)
 
-
 # NextBestSuggestionProbs ----
 
 #' Render a `NextBestSuggestionProbs` Object
@@ -108,3 +107,59 @@ knit_print.NextBestSuggestionProbs <- function(
 
 # Delete after running devtools::document()
 registerS3method("knit_print", "NextBestSuggestionProbs", knit_print.NextBestSuggestionProbs)
+
+# NextBestSuggestionThreePlusThree ----
+
+#' Render a `NextBestSuggestionThreePlusThree` Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' @param x (`NextBestSuggestionThrePlusThree`)\cr The object to knit_print.
+#' @param asis (`flag`)\cr Should the return value be wrapped in a call to `knitr::asis_output`?
+#' @param unit (`character`)\cr The dose unit.
+#' @param ... Not used at present
+#'
+#' @return The markdown representation of the object, as a character string
+#' @seealso [`knit_print`] for more details.
+#'
+#' @export
+#' @method knit_print NextBestSuggestionProbs
+#' @rdname knit_print
+knit_print.NextBestSuggestionThreePlusThree <- function(
+    x,
+    ...,
+    asis = TRUE,
+    unit = ""
+) {
+  assert_flag(asis)
+  assert_character(unit, len = 1, any.missing = FALSE)
+
+  if (x@stopHere) {
+    rv <- paste0(
+      "The estimated MTD is ",
+      x@value,
+      ifelse(stringr::str_length(unit) > 0, " ", ""),
+      unit,
+      " and the recommendation is that the trial should stop.\n\n"
+    )
+  } else {
+    rv <- paste0(
+      "The suggested dose for the next cohort is ",
+      x@value,
+      ifelse(stringr::str_length(unit) > 0, " ", ""),
+      unit,
+      " and the recommendation is that the trial should continue.\n\n"
+    )
+  }
+
+  if (asis) {
+    rv <- knitr::asis_output(rv)
+  }
+  rv
+}
+
+# Delete after running devtools::document()
+registerS3method(
+  "knit_print",
+  "NextBestSuggestionThreePlusThree",
+  knit_print.NextBestSuggestionThreePlusThree
+)
