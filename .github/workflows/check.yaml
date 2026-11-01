@@ -10,6 +10,7 @@ on:
       - ready_for_review
     branches:
       - main
+      - 967-restructure-plots-for-nextbest-classes
   push:
     branches:
       - main
