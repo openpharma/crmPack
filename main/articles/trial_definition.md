@@ -85,7 +85,6 @@ parameters to the `LogisticLogNormal` call. So the code above defines
 the prior joint distribution of $`\alpha`$ and $`log(\beta)`$ to be
 
 ``` math
- 
 N\begin{pmatrix}
 \begin{bmatrix}
 -0.85\\0

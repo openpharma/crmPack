@@ -11,19 +11,20 @@ object.
 
 Based on the proposal by Neuenschwander et al. (2008) , a minimally
 informative prior distribution is constructed. The required key input is
-the minimum (\\d\_{1}\\ in the notation of the Appendix A.1 of that
-paper) and the maximum value (\\d\_{J}\\) of the dose grid supplied to
-this function. Then `threshmin` is the probability threshold \\q\_{1}\\,
-such that any probability of DLT larger than \\q\_{1}\\ has only 5%
-probability. Therefore \\q\_{1}\\ is the 95% quantile of the beta
-distribution and hence \\p\_{1} = 0.95\\. Likewise, `threshmax` is the
-probability threshold \\q\_{J}\\, such that any probability of DLT
-smaller than \\q\_{J}\\ has only 5% probability (\\p\_{J} = 0.05\\). The
-probabilities \\1 - p\_{1}\\ and \\p\_{J}\\ can be controlled with the
-arguments `probmin` and `probmax`, respectively. Subsequently, for all
-doses supplied in the `dosegrid` argument, beta distributions are set up
-from the assumption that the prior medians are linear in log-dose (or
-dose if `useLogDose = FALSE`) on the logit scale, and
+the minimum (\\(d\_{1}\\) in the notation of the Appendix A.1 of that
+paper) and the maximum value (\\(d\_{J}\\)) of the dose grid supplied to
+this function. Then `threshmin` is the probability threshold
+\\(q\_{1}\\), such that any probability of DLT larger than \\(q\_{1}\\)
+has only 5% probability. Therefore \\(q\_{1}\\) is the 95% quantile of
+the beta distribution and hence \\(p\_{1} = 0.95\\). Likewise,
+`threshmax` is the probability threshold \\(q\_{J}\\), such that any
+probability of DLT smaller than \\(q\_{J}\\) has only 5% probability
+(\\(p\_{J} = 0.05\\)). The probabilities \\(1 - p\_{1}\\) and
+\\(p\_{J}\\) can be controlled with the arguments `probmin` and
+`probmax`, respectively. Subsequently, for all doses supplied in the
+`dosegrid` argument, beta distributions are set up from the assumption
+that the prior medians are linear in log-dose (or dose if
+`useLogDose = FALSE`) on the logit scale, and
 [`Quantiles2LogisticNormal()`](https://docs.crmpack.org/reference/Quantiles2LogisticNormal.md)
 is used to transform the resulting quantiles into an approximating
 [`LogisticNormal`](https://docs.crmpack.org/reference/LogisticNormal-class.md)
@@ -125,13 +126,13 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   threshmax=0.3,
                                   control=## for real case: leave out control 
                                     list(max.time=0.1)) 
-#> It: 1, obj value (lsEnd): 0.6727662311 indTrace: 1
-#> timeSpan = 2.988592 maxTime = 0.1
-#> Emini is: 0.6727662311
+#> It: 1, obj value (lsEnd): 0.6732911061 indTrace: 1
+#> timeSpan = 4.599704 maxTime = 0.1
+#> Emini is: 0.6732911061
 #> xmini are:
-#> 3.446289216 9.080650618 4.30874806 0.7251654219 -0.7565382708 
-#> Totally it used 2.988638 secs
-#> No. of function call is: 980
+#> 3.436837973 9.074768474 4.306636605 0.7253533934 -0.7572128108 
+#> Totally it used 4.599739 secs
+#> No. of function call is: 991
 
 # Plotting the result
 matplot(x=coarseGrid,

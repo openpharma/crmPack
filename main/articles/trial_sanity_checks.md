@@ -366,7 +366,7 @@ attempt.
 
 The prior for θ is given by
 ``` math
- \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.98 \\  1.35\end{bmatrix} , \begin{bmatrix} 1.92 &  0.05 \\ 0.05 &  0.00\end{bmatrix} \right) 
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.98 \\  1.35\end{bmatrix} , \begin{bmatrix} 1.92 &  0.05 \\ 0.05 &  0.00\end{bmatrix} \right)
 ```
 
 The minimally informative model has a prior distribution of

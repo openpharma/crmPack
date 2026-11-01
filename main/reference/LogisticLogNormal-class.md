@@ -29,15 +29,15 @@ LogisticLogNormal(mean, cov, ref_dose = 1)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 ## Details
 
-The covariate is the natural logarithm of the dose \\x\\ divided by the
-reference dose \\x\*\\, i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1 \*
-log(x/x\*),\$\$ where \\p(x)\\ is the probability of observing a DLT for
-a given dose \\x\\. The prior \$\$(alpha0, log(alpha1)) ~ Normal(mean,
-cov).\$\$
+The covariate is the natural logarithm of the dose \\(x\\) divided by
+the reference dose \\(x\*\\), i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1
+\* log(x/x\*),\$\$ where \\(p(x)\\) is the probability of observing a
+DLT for a given dose \\(x\\). The prior \$\$(alpha0, log(alpha1)) ~
+Normal(mean, cov).\$\$
 
 ## Note
 
@@ -91,8 +91,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x556cd9136680>
-#> <environment: 0x556cdcd03d30>
+#> <bytecode: 0x55d9dcf2b828>
+#> <environment: 0x55d9e2a19fa8>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -100,8 +100,8 @@ my_model
 #>       alpha0 <- theta[1]
 #>       alpha1 <- exp(theta[2])
 #>     }
-#> <bytecode: 0x556cd9521a18>
-#> <environment: 0x556cdcd03b00>
+#> <bytecode: 0x55d9dd33a328>
+#> <environment: 0x55d9e2a19d78>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -111,15 +111,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x556cd9d588a8>
-#> <environment: 0x556cdcd03b00>
+#> <bytecode: 0x55d9ddbb0300>
+#> <environment: 0x55d9e2a19d78>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1))
 #>     }
-#> <bytecode: 0x556cd9f04c88>
-#> <environment: 0x556cdcd03b00>
+#> <bytecode: 0x55d9ddd01f90>
+#> <environment: 0x55d9e2a19d78>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

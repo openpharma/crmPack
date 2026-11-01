@@ -31,10 +31,10 @@ IncrementsRelative(intervals, increments)
 
   (`numeric`)\
   a vector with the left bounds of the relevant intervals. For example,
-  `intervals = c(0, 50, 100)` specifies three intervals: \\(0, 50)\\,
-  \\\[50, 100)\\ and \\\[100, +Inf)\\. That means, the right bound of
-  the intervals are exclusive to the interval and the last interval goes
-  from the last value to infinity.
+  `intervals = c(0, 50, 100)` specifies three intervals: \\((0, 50)\\),
+  \\(\[50, 100)\\) and \\(\[100, +Inf)\\). That means, the right bound
+  of the intervals are exclusive to the interval and the last interval
+  goes from the last value to infinity.
 
 - `increments`:
 

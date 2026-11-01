@@ -34,8 +34,8 @@ LogisticKadane(theta, xmin, xmax)
 
 Let `rho0 = p(xmin)` be the probability of a DLT at the minimum dose
 `xmin`, and let `gamma` be the dose with target toxicity probability
-`theta`, i.e. \\p(gamma) = theta\\. Then it can easily be shown that the
-logistic regression model has intercept \$\$\[gamma \* logit(rho0) -
+`theta`, i.e. \\(p(gamma) = theta\\). Then it can easily be shown that
+the logistic regression model has intercept \$\$\[gamma \* logit(rho0) -
 xmin \* logit(theta)\] / \[gamma - xmin\]\$\$ and slope
 \$\$\[logit(theta) - logit(rho0)\] / \[gamma - xmin\].\$\$
 

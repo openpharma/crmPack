@@ -38,7 +38,7 @@ ModelLogNormal(mean, cov, ref_dose = 1)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 ## Slots
 

@@ -138,8 +138,8 @@ drugs in a combination trial. After giving treatment $`x`$ to a patient,
 the outcome $`y`$ is observed, typically a safety endpoint as e.g., the
 binary DLT $`y \in \{0,
 1\}`$. Grouping together $`n_{j}`$ patients in cohort $`j`$, generating
-the cohort $`j`$ data \${\cal C}\_{j} = \\(x\_{j}, y\_{j,1}), \dotsc,
-(x\_{j}, y\_{j,n\_{j}})\\\$, we can denote the data generated from the
+the cohort $`j`$ data \${\cal C}\_{j} = \\{(x\_{j}, y\_{j,1}), \dotsc,
+(x\_{j}, y\_{j,n\_{j}})\\}\$, we can denote the data generated from the
 first $`N`$ cohorts as \${\cal D}\_{N}= {\cal C}\_{1} \cup \dotsb \cup
 {\cal C}\_{N}\$.
 
@@ -151,18 +151,18 @@ underlying statistical model. Taking a Bayesian approach to inference,
 the model in `crmPack` consists of firstly the likelihood, which is
 either a probability density function
 ``` math
- f(y | x,
+f(y | x,
 \theta)
 ```
 or a probability mass function
 ``` math
- Prob(Y=y | x, \theta)
+Prob(Y=y | x, \theta)
 ```
 of $`y`$ for a patient who receives treatment $`x`$ assuming the
 parameter (vector) $`\theta`$, (this is the likelihood of $`\theta`$)
 and secondly the prior
 ``` math
- p(\theta | \xi)
+p(\theta | \xi)
 ```
 for $`\theta`$ given fixed hyperparameters $`\xi`$.
 
@@ -199,7 +199,7 @@ notation, the function $`\alpha`$ is mapping the currently accumulated
 data $`\mathcal{D}_{N}`$ to the dose space $`\mathcal{X}`$ (or to dose
 $`0`$, meaning to stop the trial because all doses are too toxic):
 \$\$\begin{equation} \alpha: {\cal D}\_{N} \rightarrow \mathcal{X} \cup
-\\0\\ \end{equation}\$\$ This mapping is commonly specified via the
+\\{0\\} \end{equation}\$\$ This mapping is commonly specified via the
 combination of two elements: The first element is a function $`\tau`$
 for the maximum increments between dose levels, which can calculate from
 the current data $`\mathcal{D}_{N}`$ (including the current dose

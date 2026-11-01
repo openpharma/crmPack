@@ -36,16 +36,17 @@ TwoDrugsCombo(single_models, gamma = 0, tau = 1, log_normal_eta = FALSE)
 
 ## Details
 
-Let \\p(x_1, x_2)\\ be the probability of DLT at the dose combination
-\\(x_1, x_2)\\. The model combines two single-agent models with an
+Let \\(p(x_1, x_2)\\) be the probability of DLT at the dose combination
+\\((x_1, x_2)\\). The model combines two single-agent models with an
 interaction term: \$\$\textrm{odds}(p(x_1, x_2)) =
 \textrm{odds}(p_0(x_1, x_2)) \* \exp\left(\eta \* I(x_1,
-x_2)\right),\$\$ where \\p_0(x_1, x_2) = 1 - (1 - p_1(x_1))(1 -
-p_2(x_2))\\ and each single-agent probability follows a model
-\\p_j(x_j)\\. The normalized dose \\\tilde{x}\_j\\ is extracted from the
-single-agent model's dose covariate, e.g. \\x_j / x_j^{\*}\\, \\x_j -
-x_j^{\*}\\, or \\x_j\\. The interaction parameter \\\eta\\ has either a
-normal prior or, if `log_normal_eta = TRUE`, a log-normal prior.
+x_2)\right),\$\$ where \\(p_0(x_1, x_2) = 1 - (1 - p_1(x_1))(1 -
+p_2(x_2))\\) and each single-agent probability follows a model
+\\(p_j(x_j)\\). The normalized dose \\(\tilde{x}\_j\\) is extracted from
+the single-agent model's dose covariate, e.g. \\(x_j / x_j^{\*}\\),
+\\(x_j - x_j^{\*}\\), or \\(x_j\\). The interaction parameter \\(\eta\\)
+has either a normal prior or, if `log_normal_eta = TRUE`, a log-normal
+prior.
 
 ## Slots
 
@@ -140,8 +141,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x556cd9136680>
-#> <environment: 0x556ce05b4be8>
+#> <bytecode: 0x55d9dcf2b828>
+#> <environment: 0x55d9e010e190>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -149,8 +150,8 @@ my_model
 #>       alpha0 <- theta[1]
 #>       alpha1 <- exp(theta[2])
 #>     }
-#> <bytecode: 0x556cd9521a18>
-#> <environment: 0x556ce05b4e18>
+#> <bytecode: 0x55d9dd33a328>
+#> <environment: 0x55d9e010e660>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -160,15 +161,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x556cd9d588a8>
-#> <environment: 0x556ce05b4e18>
+#> <bytecode: 0x55d9ddbb0300>
+#> <environment: 0x55d9e010e660>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1))
 #>     }
-#> <bytecode: 0x556cd9f04c88>
-#> <environment: 0x556ce05b4e18>
+#> <bytecode: 0x55d9ddd01f90>
+#> <environment: 0x55d9e010e660>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   
@@ -209,8 +210,8 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>       }
 #>     }
-#> <bytecode: 0x556cd9136680>
-#> <environment: 0x556cdcd08e78>
+#> <bytecode: 0x55d9dcf2b828>
+#> <environment: 0x55d9e4bfa2d0>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -218,8 +219,8 @@ my_model
 #>       alpha0 <- theta[1]
 #>       alpha1 <- exp(theta[2])
 #>     }
-#> <bytecode: 0x556cd9521a18>
-#> <environment: 0x556cdcd090a8>
+#> <bytecode: 0x55d9dd33a328>
+#> <environment: 0x55d9e4bfa500>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -229,15 +230,15 @@ my_model
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x556cd9d588a8>
-#> <environment: 0x556cdcd090a8>
+#> <bytecode: 0x55d9ddbb0300>
+#> <environment: 0x55d9e4bfa500>
 #> 
 #> Slot "init":
 #> function() {
 #>       list(theta = c(0, 1))
 #>     }
-#> <bytecode: 0x556cd9f04c88>
-#> <environment: 0x556cdcd090a8>
+#> <bytecode: 0x55d9ddd01f90>
+#> <environment: 0x55d9e4bfa500>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   
@@ -293,7 +294,7 @@ my_model
 #>         y[i] ~ dbern(p[i])
 #>     }
 #> }
-#> <environment: 0x556cdcfdb1a8>
+#> <environment: 0x55d9da64d2d8>
 #> 
 #> Slot "priormodel":
 #> function () 
@@ -310,7 +311,7 @@ my_model
 #>     alpha1[2L] <- alpha1_drug2
 #>     eta ~ dnorm(eta_gamma, eta_tau)
 #> }
-#> <environment: 0x556ce05b4e18>
+#> <environment: 0x55d9e010e660>
 #> 
 #> Slot "modelspecs":
 #> function(from_prior) {
@@ -321,8 +322,8 @@ my_model
 #>       )
 #>       ms
 #>     }
-#> <bytecode: 0x556cdbf97d68>
-#> <environment: 0x556ce08ef2e0>
+#> <bytecode: 0x55d9dfc33d08>
+#> <environment: 0x55d9e0110b68>
 #> 
 #> Slot "init":
 #> function() {
@@ -331,8 +332,8 @@ my_model
 #>           list(eta = gamma)
 #>         )
 #>       }
-#> <bytecode: 0x556cdbbb2af0>
-#> <environment: 0x556ce08ef2e0>
+#> <bytecode: 0x55d9df796af0>
+#> <environment: 0x55d9e0110b68>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "y"    "x"   

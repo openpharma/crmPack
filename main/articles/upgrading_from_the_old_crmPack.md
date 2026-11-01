@@ -139,13 +139,13 @@ If all of the following rules are `TRUE`:
 A logistic log normal model will describe the relationship between dose
 and toxicity:
 ``` math
- p(Tox | d) = f(X = 1 | \theta, d) = \frac{e^{\alpha + \beta \cdot d/d^*}}{1 + e^{\alpha + \beta \cdot d/d^*}} 
+p(Tox | d) = f(X = 1 | \theta, d) = \frac{e^{\alpha + \beta \cdot d/d^*}}{1 + e^{\alpha + \beta \cdot d/d^*}}
 ```
 where d\* denotes a reference dose.
 
 The prior for θ is given by
 ``` math
- \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 & -0.50 \\ -0.50 &  1.00\end{bmatrix} \right) 
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 & -0.50 \\ -0.50 &  1.00\end{bmatrix} \right)
 ```
 
 The reference dose will be 1.00.

@@ -149,26 +149,26 @@ biomarker will be modelled simultaneously.
 A probit log normal model will describe the relationship between dose
 and toxicity:
 ``` math
- \Phi^{-1}(Tox | d) = f(X = 1 | \theta, d) = \alpha + \beta \cdot log(d/d^*) 
+\Phi^{-1}(Tox | d) = f(X = 1 | \theta, d) = \alpha + \beta \cdot log(d/d^*)
 ```
 where d\* denotes a reference dose.
 
 The prior for θ is given by
 ``` math
- \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 &  0.00 \\ 0.00 &  1.00\end{bmatrix} \right) 
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 &  0.00 \\ 0.00 &  1.00\end{bmatrix} \right)
 ```
 
 The reference dose will be 1.00.
 
 The PD biomarker response `w` at dose `d` is modelled as
 ``` math
- w(d) \sim N(f(d), \sigma_w^2) 
+w(d) \sim N(f(d), \sigma_w^2)
 ```
 
 where f(d) is a first order random walk such that
 
 ``` math
- f(d) = \beta_{W_i} - \beta_{W_{i - 1}}\sim N(0, 0.01 \times (d_i - d_{i - 1})) 
+f(d) = \beta_{W_i} - \beta_{W_{i - 1}}\sim N(0, 0.01 \times (d_i - d_{i - 1}))
 ```
 
 \
@@ -181,26 +181,26 @@ biomarker will be modelled simultaneously.
 A probit log normal model will describe the relationship between dose
 and toxicity:
 ``` math
- \Phi^{-1}(Tox | d) = f(X = 1 | \theta, d) = \alpha + \beta \cdot log(d/d^*) 
+\Phi^{-1}(Tox | d) = f(X = 1 | \theta, d) = \alpha + \beta \cdot log(d/d^*)
 ```
 where d\* denotes a reference dose.
 
 The prior for θ is given by
 ``` math
- \boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 &  0.00 \\ 0.00 &  1.00\end{bmatrix} \right) 
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ \beta\end{bmatrix}\sim N \left(\begin{bmatrix} 0.00 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 &  0.00 \\ 0.00 &  1.00\end{bmatrix} \right)
 ```
 
 The reference dose will be 1.00.
 
 The PD biomarker response `w` at dose `d` is modelled as
 ``` math
- w(d) \sim N(f(d), \sigma_w^2) 
+w(d) \sim N(f(d), \sigma_w^2)
 ```
 
 where f(d) is a first order random walk such that
 
 ``` math
- f(d) = \beta_{W_i} - \beta_{W_{i - 1}}\sim N(0, 0.01 \times (d_i - d_{i - 1})) 
+f(d) = \beta_{W_i} - \beta_{W_{i - 1}}\sim N(0, 0.01 \times (d_i - d_{i - 1}))
 ```
 
 ## Rendering complex classes
@@ -242,13 +242,13 @@ to slot-specific `knit_print` methods using `...`.
 A logistic log normal model will describe the relationship between dose
 and toxicity:
 ``` math
- p(Tox | d) = f(X = 1 | \theta, d) = \frac{e^{\alpha + \beta \cdot log(d/d_{ref})}}{1 + e^{\alpha + \beta \cdot log(d/d_{ref})}} 
+p(Tox | d) = f(X = 1 | \theta, d) = \frac{e^{\alpha + \beta \cdot log(d/d_{ref})}}{1 + e^{\alpha + \beta \cdot log(d/d_{ref})}}
 ```
 where d_(ref) denotes a reference dose.
 
 The prior for θ is given by
 ``` math
- \boldsymbol\theta = \begin{bmatrix}\alpha \\ log(\beta)\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 & -0.50 \\ -0.50 &  1.00\end{bmatrix} \right) 
+\boldsymbol\theta = \begin{bmatrix}\alpha \\ log(\beta)\end{bmatrix}\sim N \left(\begin{bmatrix}-0.85 \\  1.00\end{bmatrix} , \begin{bmatrix} 1.00 & -0.50 \\ -0.50 &  1.00\end{bmatrix} \right)
 ```
 
 The reference dose will be 56.00.

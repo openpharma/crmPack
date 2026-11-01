@@ -86,7 +86,7 @@ at dose d is in category k or higher, k=0, …, K; d=1, …, D.
 Then
 
 ``` math
- \log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)  
+\log \left( \frac{p}{1-p}\right) = \alpha_k + \beta \cdot \log \left( \frac{d}{d_{ref}} \right)
 ```
 for k=1, …, K \[p₀(d) = 1 by definition\] where d_(ref) is a reference
 dose.
@@ -96,13 +96,13 @@ The αs are constrained such that α₁ \> α₂ \> … \> α_(K).
 The priors for the model’s parameters are:
 
 ``` math
- \alpha_k \sim N(\mu_{\alpha_k}, \sigma_{\alpha_k}^2) 
+\alpha_k \sim N(\mu_{\alpha_k}, \sigma_{\alpha_k}^2)
 ```
 
 and
 
 ``` math
- \log(\beta) \sim N(\mu_\beta, \sigma_\beta^2) 
+\log(\beta) \sim N(\mu_\beta, \sigma_\beta^2)
 ```
 
 A `LogisticLogOrdinal` is initialised in exactly the same way as a

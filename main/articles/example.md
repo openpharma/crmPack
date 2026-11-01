@@ -1166,7 +1166,7 @@ Stopping rules are often quite complex, because they are built from
 implementation mirrors this, and multiple atomic stopping rules can be
 combined easily. For example, let’s assume we would like to stop the
 trial if there are at least 3 cohorts and at least 50% probability in
-the target toxicity interval $`(20%, 35%)`$, or the maximum sample size
+the target toxicity interval \$(20%, 35%)\$, or the maximum sample size
 of 20 patients has been reached.
 
 Then we start by creating the three pieces the rule is composed of:

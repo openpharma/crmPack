@@ -29,15 +29,15 @@ ProbitLogNormal(mean, cov, ref_dose = 1)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 ## Details
 
-The covariate is the natural logarithm of dose \\x\\ divided by a
-reference dose \\x\*\\, i.e.: \$\$probit\[p(x)\] = alpha0 + alpha1 \*
-log(x/x\*),\$\$ where \\p(x)\\ is the probability of observing a DLT for
-a given dose \\x\\. The prior \$\$(alpha0, log(alpha1)) ~ Normal(mean,
-cov).\$\$
+The covariate is the natural logarithm of dose \\(x\\) divided by a
+reference dose \\(x\*\\), i.e.: \$\$probit\[p(x)\] = alpha0 + alpha1 \*
+log(x/x\*),\$\$ where \\(p(x)\\) is the probability of observing a DLT
+for a given dose \\(x\\). The prior \$\$(alpha0, log(alpha1)) ~
+Normal(mean, cov).\$\$
 
 ## Note
 

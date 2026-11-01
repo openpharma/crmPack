@@ -43,7 +43,7 @@ TITELogisticLogNormalSub(weight_method = "linear", ...)
   `ref_dose`
 
   : (`number`)\
-    the reference dose \\x\*\\.
+    the reference dose \\(x\*\\).
 
 ## Details
 

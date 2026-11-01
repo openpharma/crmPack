@@ -40,16 +40,16 @@ LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 ## Details
 
-The covariate is the natural logarithm of the dose \\x\\ divided by the
-reference dose \\x\*\\, i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1 \*
-log(x/x\*),\$\$ where \\p(x)\\ is the probability of observing a DLT for
-a given dose \\x\\. The prior \$\$(alpha0, alpha1) ~ w \* Normal(mean1,
-cov1) + (1 - w) \* Normal(mean2, cov2).\$\$ The weight w for the first
-component is assigned a beta prior `B(a, b)`.
+The covariate is the natural logarithm of the dose \\(x\\) divided by
+the reference dose \\(x\*\\), i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1
+\* log(x/x\*),\$\$ where \\(p(x)\\) is the probability of observing a
+DLT for a given dose \\(x\\). The prior \$\$(alpha0, alpha1) ~ w \*
+Normal(mean1, cov1) + (1 - w) \* Normal(mean2, cov2).\$\$ The weight w
+for the first component is assigned a beta prior `B(a, b)`.
 
 ## Slots
 

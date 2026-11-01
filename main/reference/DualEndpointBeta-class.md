@@ -40,8 +40,8 @@ DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
 - ref_dose_beta:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number). Note that this
-  is different from the `ref_dose` in the inherited
+  the reference dose \\(x\*\\) (strictly positive number). Note that
+  this is different from the `ref_dose` in the inherited
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
   model).
 
@@ -54,16 +54,16 @@ DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
 
 This class extends the
 [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
-class so that the dose-biomarker relationship \\f(x)\\ is modelled by a
-parametric, rescaled beta density function: \$\$f(x) = E0 + (Emax - E0)
-\* Beta(delta1, delta2) \* (x/x\*)^{delta1} \* (1 - x/x\*)^{delta2},\$\$
-where \\x\*\\ is the maximum dose (end of the dose range to be
-considered), \\delta1\\ and \\delta2\\ are the two beta function
-parameters, and \\E0\\, \\Emax\\ are the minimum and maximum levels,
-respectively. For ease of interpretation, we use the parametrization
-based on \\delta1\\ and the mode, where \$\$mode = delta1 / (delta1 +
-delta2),\$\$ so that multiplying this by \\x\*\\ gives the mode on the
-dose grid.
+class so that the dose-biomarker relationship \\(f(x)\\) is modelled by
+a parametric, rescaled beta density function: \$\$f(x) = E0 + (Emax -
+E0) \* Beta(delta1, delta2) \* (x/x\*)^{delta1} \* (1 -
+x/x\*)^{delta2},\$\$ where \\(x\*\\) is the maximum dose (end of the
+dose range to be considered), \\(delta1\\) and \\(delta2\\) are the two
+beta function parameters, and \\(E0\\), \\(Emax\\) are the minimum and
+maximum levels, respectively. For ease of interpretation, we use the
+parametrization based on \\(delta1\\) and the mode, where \$\$mode =
+delta1 / (delta1 + delta2),\$\$ so that multiplying this by \\(x\*\\)
+gives the mode on the dose grid.
 
 All parameters can currently be assigned uniform distributions or be
 fixed in advance. Note that `E0` and `Emax` can have negative values or
@@ -98,7 +98,7 @@ range.
 - `ref_dose_beta`:
 
   (`positive_number`)\
-  the reference dose \\x\*\\ (note that this is different from the
+  the reference dose \\(x\*\\) (note that this is different from the
   `ref_dose` in the inherited
   [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
   model).

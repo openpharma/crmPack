@@ -38,19 +38,19 @@ DualEndpointRW(sigma2betaW, rw1 = TRUE, ...)
 
 This class extends the
 [`DualEndpoint`](https://docs.crmpack.org/reference/DualEndpoint-class.md)
-class so that the dose-biomarker relationship \\f(x)\\ is modelled by a
-non-parametric random walk of first or second order. That means, for the
-first order random walk we assume \$\$betaW_i - betaW_i-1 ~ Normal(0,
-(x_i - x_i-1) \* sigma2betaW),\$\$ where \\betaW_i = f(x_i)\\ is the
-biomarker mean at the \\i\\-th dose gridpoint \\x_i\\. For the second
-order random walk, the second-order differences instead of the
-first-order differences of the biomarker means follow the normal
-distribution with \\0\\ mean and \\2 \* (x_i - x_i-2) \* sigma2betaW\\
-variance.
+class so that the dose-biomarker relationship \\(f(x)\\) is modelled by
+a non-parametric random walk of first or second order. That means, for
+the first order random walk we assume \$\$betaW_i - betaW_i-1 ~
+Normal(0, (x_i - x_i-1) \* sigma2betaW),\$\$ where \\(betaW_i =
+f(x_i)\\) is the biomarker mean at the \\(i\\)-th dose gridpoint
+\\(x_i\\). For the second order random walk, the second-order
+differences instead of the first-order differences of the biomarker
+means follow the normal distribution with \\(0\\) mean and \\(2 \*
+(x_i - x_i-2) \* sigma2betaW\\) variance.
 
-The variance parameter \\sigma2betaW\\ is important because it steers
-the smoothness of the function \\f(x)\\, i.e.: if it is large, then
-\\f(x)\\ will be very wiggly; if it is small, then \\f(x)\\ will be
+The variance parameter \\(sigma2betaW\\) is important because it steers
+the smoothness of the function \\(f(x)\\), i.e.: if it is large, then
+\\(f(x)\\) will be very wiggly; if it is small, then \\(f(x)\\) will be
 smooth. This parameter can either be a fixed value or assigned an
 inverse gamma prior distribution.
 
@@ -73,7 +73,7 @@ inverse gamma prior distribution.
 ## Note
 
 Non-equidistant dose grids can be used now, because the difference
-\\x_i - x_i-1\\ is included in the modelling assumption above. Please
+\\(x_i - x_i-1\\) is included in the modelling assumption above. Please
 note that due to impropriety of the random walk prior distributions, it
 is not possible to produce MCMC samples with empty data objects (i.e.,
 sample from the prior). This is not a bug, but a theoretical feature of

@@ -58,7 +58,7 @@ DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
   `ref_dose`
 
   : (`number`)\
-    the reference dose \\x\*\\ (strictly positive number).
+    the reference dose \\(x\*\\) (strictly positive number).
 
 ## Slots
 

@@ -57,7 +57,7 @@ Software*, **89**(10), 1–22.
 
 @Article{,\
   title = {Model-Based Dose Escalation Designs in {R} with {crmPack}},\
-  author = {Daniel {Saban\\es Bov\\e} and Wai Yin Yeung and Giuseppe Palermo and Thomas Jaki},\
+  author = {Daniel {Saban\\'es Bov\\'e} and Wai Yin Yeung and Giuseppe Palermo and Thomas Jaki},\
   journal = {Journal of Statistical Software},\
   year = {2019},\
   volume = {89},\

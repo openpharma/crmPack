@@ -9,10 +9,10 @@ DLE responses and the dose levels. More specifically, it represents the
 relationship of the probabilities of the occurrence of a DLE for
 corresponding dose levels in log scale. This model is specified as
 \$\$p(x) = exp(phi1 + phi2 \* log(x)) / (1 + exp(phi1 + phi2 \*
-log(x)))\$\$ where \\p(x)\\ is the probability of the occurrence of a
-DLE at dose \\x\\. The two parameters of this model are the intercept
-\\phi1\\ and the slope \\phi2\\. The `LogisticIndepBeta` inherits all
-slots from
+log(x)))\$\$ where \\(p(x)\\) is the probability of the occurrence of a
+DLE at dose \\(x\\). The two parameters of this model are the intercept
+\\(phi1\\) and the slope \\(phi2\\). The `LogisticIndepBeta` inherits
+all slots from
 [`ModelTox`](https://docs.crmpack.org/reference/ModelTox-class.md)
 class.
 
@@ -128,11 +128,11 @@ Williamson (1998) .
 - `Pcov`:
 
   (`matrix`)\
-  refers to the 2x2 covariance matrix of the intercept (\\phi1\\) and
-  the slope parameters (\\phi2\\) of the model. This is used in output
+  refers to the 2x2 covariance matrix of the intercept (\\(phi1\\)) and
+  the slope parameters (\\(phi2\\)) of the model. This is used in output
   to display the resulting prior and posterior covariance matrix of
-  \\phi1\\ and \\phi2\\ obtained, based on the pseudo data and (if any)
-  the observed data and responses. This slot is needed for internal
+  \\(phi1\\) and \\(phi2\\) obtained, based on the pseudo data and (if
+  any) the observed data and responses. This slot is needed for internal
   purposes.
 
 ## Note

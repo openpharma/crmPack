@@ -67,10 +67,10 @@ can be used as a target.
 
   (`numeric`)\
   the biomarker target range that needs to be reached. For example, the
-  target range \\(0.8, 1.0)\\ and `target_relative = TRUE` means that we
-  target a dose with at least \\80\\\\ of maximum biomarker level. As an
-  other example, \\(0.5, 0.8)\\ would mean that we target a dose between
-  \\50\\\\ and \\80\\\\ of the maximum biomarker level.
+  target range \\((0.8, 1.0)\\) and `target_relative = TRUE` means that
+  we target a dose with at least \\(80\\%\\) of maximum biomarker level.
+  As an other example, \\((0.5, 0.8)\\) would mean that we target a dose
+  between \\(50\\%\\) and \\(80\\%\\) of the maximum biomarker level.
 
 - `overdose`:
 

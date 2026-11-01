@@ -6,7 +6,7 @@ A simple wrapper of
 [`base::findInterval()`](https://rdrr.io/r/base/findInterval.html)
 function that invokes
 [`base::findInterval()`](https://rdrr.io/r/base/findInterval.html),
-takes its output and replaces all the elements with \\0\\ value to a
+takes its output and replaces all the elements with \\(0\\) value to a
 custom number as specified in `replacement` argument.
 
 ## Usage
@@ -26,7 +26,7 @@ h_find_interval(..., replacement = -Inf)
 - replacement:
 
   (`number`)\
-  a custom number to be used as a replacement for \\0\\. Default to
+  a custom number to be used as a replacement for \\(0\\). Default to
   `-Inf`.
 
 ## Examples

@@ -29,7 +29,7 @@ LogisticLogNormalMixture(mean, cov, ref_dose, share_weight)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 - share_weight:
 
@@ -41,16 +41,17 @@ LogisticLogNormalMixture(mean, cov, ref_dose, share_weight)
 This model can be used when data is arising online from the informative
 component of the prior, at the same time with the data of the trial of
 main interest. Formally, this is achieved by assuming that the
-probability of a DLT at dose \\x\\ is given by \$\$p(x) = \pi \* p1(x) +
-(1 - \pi) \* p2(x)\$\$ where \\\pi\\ is the probability for the model
-\\p(x)\\ being the same as the model \\p1(x)\\, which is the informative
-component of the prior. From this model data arises in parallel: at
-doses `xshare`, DLT information `yshare` is observed, in total
-`nObsshare` data points (see
+probability of a DLT at dose \\(x\\) is given by \$\$p(x) = \pi \*
+p1(x) + (1 - \pi) \* p2(x)\$\$ where \\(\pi\\) is the probability for
+the model \\(p(x)\\) being the same as the model \\(p1(x)\\), which is
+the informative component of the prior. From this model data arises in
+parallel: at doses `xshare`, DLT information `yshare` is observed, in
+total `nObsshare` data points (see
 [`DataMixture`](https://docs.crmpack.org/reference/DataMixture-class.md)).
-On the other hand, \\1 - \pi\\, is the probability of a separate model
-\\p2(x)\\. Both components have the same log normal prior distribution,
-which can be specified by the user, and which is inherited from the
+On the other hand, \\(1 - \pi\\), is the probability of a separate model
+\\(p2(x)\\). Both components have the same log normal prior
+distribution, which can be specified by the user, and which is inherited
+from the
 [`LogisticLogNormal`](https://docs.crmpack.org/reference/LogisticLogNormal-class.md)
 class.
 
@@ -59,7 +60,7 @@ class.
 - `share_weight`:
 
   (`proportion`)\
-  the prior weight for the share component \\p\_{1}(x)\\.
+  the prior weight for the share component \\(p\_{1}(x)\\).
 
 ## Note
 

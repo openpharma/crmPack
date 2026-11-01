@@ -29,14 +29,14 @@ LogisticLogNormalSub(mean, cov, ref_dose = 0)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\.
+  the reference dose \\(x\*\\).
 
 ## Details
 
-The covariate is the dose \\x\\ minus the reference dose \\x\*\\, i.e.:
-\$\$logit\[p(x)\] = alpha0 + alpha1 \* (x - x\*),\$\$ where \\p(x)\\ is
-the probability of observing a DLT for a given dose \\x\\. The prior
-\$\$(alpha0, log(alpha1)) ~ Normal(mean, cov).\$\$
+The covariate is the dose \\(x\\) minus the reference dose \\(x\*\\),
+i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1 \* (x - x\*),\$\$ where
+\\(p(x)\\) is the probability of observing a DLT for a given dose
+\\(x\\). The prior \$\$(alpha0, log(alpha1)) ~ Normal(mean, cov).\$\$
 
 ## Slots
 
@@ -48,7 +48,7 @@ the probability of observing a DLT for a given dose \\x\\. The prior
 - `ref_dose`:
 
   (`number`)\
-  the reference dose \\x\*\\.
+  the reference dose \\(x\*\\).
 
 ## Note
 

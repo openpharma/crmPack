@@ -35,7 +35,7 @@ LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 - log_normal:
 
@@ -45,14 +45,15 @@ LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
 
 ## Details
 
-The covariate is the natural logarithm of the dose \\x\\ divided by the
-reference dose \\x\*\\, i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1 \*
-log(x/x\*),\$\$ where \\p(x)\\ is the probability of observing a DLT for
-a given dose \\x\\. The prior \$\$(alpha0, alpha1) ~ w1 \* Normal(mean1,
-cov1) + ... + wK \* Normal(meanK, covK),\$\$ if a normal prior is used
-and \$\$(alpha0, log(alpha1)) ~ w1 \* Normal(mean1, cov1) + ... + wK \*
-Normal(meanK, covK),\$\$ if a log normal prior is used. The weights
-\\w1, ..., wK\\ of the components are fixed and sum to 1.
+The covariate is the natural logarithm of the dose \\(x\\) divided by
+the reference dose \\(x\*\\), i.e.: \$\$logit\[p(x)\] = alpha0 + alpha1
+\* log(x/x\*),\$\$ where \\(p(x)\\) is the probability of observing a
+DLT for a given dose \\(x\\). The prior \$\$(alpha0, alpha1) ~ w1 \*
+Normal(mean1, cov1) + ... + wK \* Normal(meanK, covK),\$\$ if a normal
+prior is used and \$\$(alpha0, log(alpha1)) ~ w1 \* Normal(mean1,
+cov1) + ... + wK \* Normal(meanK, covK),\$\$ if a log normal prior is
+used. The weights \\(w1, ..., wK\\) of the components are fixed and sum
+to 1.
 
 The slots of this class comprise a list with components parameters.
 Every single component contains the mean vector and the covariance

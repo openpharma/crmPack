@@ -6,11 +6,11 @@
 expressed in form of pseudo data. In this class, a flexible form is used
 to describe the relationship between the efficacy responses and the dose
 levels and it is specified as \$\$(W \| betaW, sigma2W) ~ Normal(X \*
-betaW, sigma2W \* I),\$\$ where \\W\\ is a vector of the efficacy
-responses, \\betaW\\ is a column vector of the mean efficacy responses
-for all dose levels, and \\X\\ is the design matrix with entries
-\\I_i,j\\ that are equal to 1 if subject \\i\\ is allocated to dose
-\\j\\, and \\0\\ otherwise. The \\sigma2W\\ is the variance of the
+betaW, sigma2W \* I),\$\$ where \\(W\\) is a vector of the efficacy
+responses, \\(betaW\\) is a column vector of the mean efficacy responses
+for all dose levels, and \\(X\\) is the design matrix with entries
+\\(I_i,j\\) that are equal to 1 if subject \\(i\\) is allocated to dose
+\\(j\\), and \\(0\\) otherwise. The \\(sigma2W\\) is the variance of the
 efficacy responses which can be either a fixed number or a number from
 an inverse gamma distribution. This flexible form aims to capture
 different shapes of the dose-efficacy curve. In addition, the first
@@ -21,8 +21,8 @@ neighboring dose levels of their mean efficacy responses.
 
 The RW1 model is given as \$\$betaW_j - betaW_j-1) ~ Normal(0,
 sigma2betaW),\$\$ and for RW2 as \$\$betaW_j-2 - 2 \* betaW_j-1 + beta_j
-~ Normal(0, sigma2betaW),\$\$ where \\betaW_j\\ is the vector of mean
-efficacy responses at dose j, and the \\sigma2betaW\\ is the prior
+~ Normal(0, sigma2betaW),\$\$ where \\(betaW_j\\) is the vector of mean
+efficacy responses at dose j, and the \\(sigma2betaW\\) is the prior
 variance which can be either a fixed number or a number from an inverse
 gamma distribution.
 
@@ -83,8 +83,8 @@ EffFlexi(eff, eff_dose, sigma2W, sigma2betaW, rw1 = TRUE, data)
 ## Details
 
 This model will output the updated value or the updated values of the
-parameters of the inverse gamma distributions for \\sigma2W\\ and
-\\sigma2betaW\\. The `EffFlexi` inherits all slots from
+parameters of the inverse gamma distributions for \\(sigma2W\\) and
+\\(sigma2betaW\\). The `EffFlexi` inherits all slots from
 [`ModelEff`](https://docs.crmpack.org/reference/ModelEff-class.md)
 class.
 

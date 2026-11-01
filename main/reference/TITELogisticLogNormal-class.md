@@ -43,7 +43,7 @@ TITELogisticLogNormal(weight_method = "linear", ...)
   `ref_dose`
 
   : (`number`)\
-    the reference dose \\x\*\\ (strictly positive number).
+    the reference dose \\(x\*\\) (strictly positive number).
 
 ## Details
 

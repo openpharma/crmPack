@@ -29,7 +29,7 @@ LogisticLogNormalOrdinal(mean, cov, ref_dose)
 - ref_dose:
 
   (`number`)\
-  the reference dose \\x\*\\ (strictly positive number).
+  the reference dose \\(x\*\\) (strictly positive number).
 
 ## Note
 
@@ -78,8 +78,8 @@ LogisticLogNormalOrdinal(
 #>         }
 #>       }
 #>     }
-#> <bytecode: 0x556ce2d80f18>
-#> <environment: 0x556ce372d730>
+#> <bytecode: 0x55d9e74d8e88>
+#> <environment: 0x55d9e78942e0>
 #> 
 #> Slot "priormodel":
 #> function() {
@@ -90,8 +90,8 @@ LogisticLogNormalOrdinal(
 #>       gamma ~ dnorm(mean[k], prec[k, k])
 #>       beta <- exp(gamma)
 #>     }
-#> <bytecode: 0x556ce58f80a8>
-#> <environment: 0x556ce372d730>
+#> <bytecode: 0x55d9e4a96a28>
+#> <environment: 0x55d9e78942e0>
 #> 
 #> Slot "modelspecs":
 #> function(y, from_prior) {
@@ -111,8 +111,8 @@ LogisticLogNormalOrdinal(
 #>       }
 #>       ms
 #>     }
-#> <bytecode: 0x556ce30e84b0>
-#> <environment: 0x556ce372d730>
+#> <bytecode: 0x55d9e78387a0>
+#> <environment: 0x55d9e78942e0>
 #> 
 #> Slot "init":
 #> function() {
@@ -121,8 +121,8 @@ LogisticLogNormalOrdinal(
 #>         gamma = 1
 #>       )
 #>     }
-#> <bytecode: 0x556ce4782d18>
-#> <environment: 0x556ce372d730>
+#> <bytecode: 0x55d9e9260918>
+#> <environment: 0x55d9e78942e0>
 #> 
 #> Slot "datanames":
 #> [1] "nObs" "x"   

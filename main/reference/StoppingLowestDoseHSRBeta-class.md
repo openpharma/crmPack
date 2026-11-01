@@ -68,12 +68,12 @@ StoppingLowestDoseHSRBeta(
 - `a`:
 
   (`number`)\
-  shape parameter \\a \> 0\\ of probability distribution Beta (a,b).
+  shape parameter \\(a \> 0\\) of probability distribution Beta (a,b).
 
 - `b`:
 
   (`number`)\
-  shape parameter \\b \> 0\\ of probability distribution Beta (a,b).
+  shape parameter \\(b \> 0\\) of probability distribution Beta (a,b).
 
 ## Note
 

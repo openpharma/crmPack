@@ -136,18 +136,18 @@ summary(mySims, truth = myTruth)
 #> 
 #> Number of patients overall : mean 17 (17, 17) 
 #> Number of patients treated above target tox interval : mean 7 (7, 7) 
-#> Proportions of DLTs in the trials : mean 35 % (35 %, 35 %) 
-#> Mean toxicity risks for the patients on active : mean 35 % (35 %, 35 %) 
-#> Doses selected as MTD : mean 15 (15, 15) 
-#> True toxicity at doses selected : mean 3 % (3 %, 3 %) 
+#> Proportions of DLTs in the trials : mean 24 % (24 %, 24 %) 
+#> Mean toxicity risks for the patients on active : mean 32 % (32 %, 32 %) 
+#> Doses selected as MTD : mean 25 (25, 25) 
+#> True toxicity at doses selected : mean 63 % (63 %, 63 %) 
 #> Proportion of trials selecting target MTD: 0 %
-#> Dose most often selected as MTD: 15 
-#> Observed toxicity rate at dose most often selected: NaN %
-#> Fitted toxicity rate at dose most often selected : mean 25 % (25 %, 25 %) 
-#> Overdose probability at selected dose : mean 15 % (15 %, 15 %) 
-#> max_mtd : 99.48 
-#> mean_mtd : 18.99 
-#> median_mtd : 17.81 
+#> Dose most often selected as MTD: 25 
+#> Observed toxicity rate at dose most often selected: 57 %
+#> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
+#> Overdose probability at selected dose : mean 20 % (20 %, 20 %) 
+#> max_mtd : 485.63 
+#> mean_mtd : 30.76 
+#> median_mtd : 25.94 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %

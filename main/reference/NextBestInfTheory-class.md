@@ -37,7 +37,7 @@ NextBestInfTheory(target, asymmetry)
   (`number`)\
   value of the asymmetry exponent in the divergence function that
   describes the rate of penalization for overly toxic does. It must be a
-  value from \\(0, 2)\\ interval.
+  value from \\((0, 2)\\) interval.
 
 ## Note
 

@@ -57,10 +57,10 @@ expect_probabilities(
 
   (`logical`)\
   should bounds be closed? This can be a scalar or vector of length two.
-  If it is a scalar, then its value applies equally to lower bound \\0\\
-  and upper bound \\1\\. If this is a vector with two flags, the first
-  flag corresponds to the lower bound \\0\\ only, and the second to the
-  upper bound \\1\\ only.
+  If it is a scalar, then its value applies equally to lower bound
+  \\(0\\) and upper bound \\(1\\). If this is a vector with two flags,
+  the first flag corresponds to the lower bound \\(0\\) only, and the
+  second to the upper bound \\(1\\) only.
 
 - len:
 

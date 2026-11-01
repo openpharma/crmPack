@@ -18,13 +18,12 @@ irrelevant to the operation of the CRM.
 The trial uses a logistic log Normal dose toxicity model
 
 ``` math
- log(\frac{p_i}{1 - p_i}) = \alpha + \beta log(d_i / d^*) 
+log(\frac{p_i}{1 - p_i}) = \alpha + \beta log(d_i / d^*)
 ```
 
 where the prior joint distribution of $`\alpha`$ and $`\beta`$ is
 
 ``` math
- 
 \begin{bmatrix}
 \alpha \\
 log(\beta)
