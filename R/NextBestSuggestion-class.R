@@ -73,7 +73,7 @@ NextBestSuggestion <- function(value) {
     backfilled = logical(),
     probs = tibble::tibble()
   ),
-  validity = v_nextbestsuggestionprobs
+  # validity = v_nextbestsuggestionprobs
 )
 
 ## constructor ----

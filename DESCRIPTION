@@ -131,6 +131,7 @@ Collate:
     'HierarchicalDesign-methods.R'
     'NextBestSuggestion-validity.R'
     'NextBestSuggestion-class.R'
+    'NextBestSuggestion-methods.R'
     'Rules-methods1.R'
     'helpers_knitr_NextBestSuggestion.R'
     'fromQuantiles.R'

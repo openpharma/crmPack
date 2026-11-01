@@ -122,7 +122,8 @@ Here's the result of tidying the object.
 suggest_mtd %>% tidy()
 ```
 
-The next simplest classes return matrices of probabilities. As discussed above, this is now a `tibble` in the new methods.
+The next simplest classes return matrices of probabilities. As discussed above, this is now a
+`tibble` in the new methods.
 
 ```{r}
 # Define the rule which will be used to select the next best dose
@@ -186,6 +187,90 @@ knit_print(dr)
 normal_print(dr)
 ```
 
-> We could, for convenience add `Eligible` and/or `Safe` columns to the tibble...
+> the We could, for convenience add `Eligible` and/or `Safe` columns to the tibble...
 
-> We could also add slots to the `NextBestSuggestionProbs` class to allow for customisation of the probabilities table without resort to the `knit_print` method.  Obvious choices are `caption` and `col.names`.
+> We could also add slots to the `NextBestSuggestionProbs` class to allow for customisation of the
+> probabilities table without resort to the `knit_print` method. Obvious choices are `caption` and
+> `col.names`.
+
+## Plots
+
+The `plot` methods assume the new `NextBestSuggestion` object is passed in the `x` parameter to the
+method. The `NextBest` object is passed in the `y` parameter, to permit different behaviours for
+`NextBest` classes that share a common `NextBestSuggestion` return value.
+
+Here's the simplest example, for a combination of `NextBestSuggestion` and `NextBestMTD`.
+
+```{r}
+#| echo: FALSE
+
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 10))
+)
+
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
+
+mtd_next_best <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
+```
+
+```{r}
+dr <- suggest(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+plot(
+  dr, 
+  mtd_next_best, 
+  doselimit = next_max_dose, 
+  samples = my_samples,
+  model = my_model, 
+  data = my_data
+)
+```
+
+Compared to
+
+```{r}
+dr1 <- nextBest(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+dr1$plot
+```
+
+> There is much duplication of arguments passed to different methods as the analysis proceeds. There
+> may be some mileage in creating slots in `NextBestSolution` to store the inputs on which it was
+> based. (For example, `N extBestSolution` could have a slot for the `NextBest` rule on which it was
+> based. This would remove the need to pass both objects to subsequent `plot` calls. And potentially
+> reduce the risk of error.) This would allow simplification of future calls, but would be a
+> departure from current practice.
