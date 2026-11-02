@@ -9,12 +9,12 @@
 #' @name knit_print
 NULL
 
-# NextBestSuggestion ----
+# NextBestRecommendation ----
 
-#' Render a `NextBestSuggestion` Object
+#' Render a `NextBestRecommendation` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
-#' @param x (`NextBestSuggestion`)\cr The object to knit_print.
+#' @param x (`NextBestRecommendation`)\cr The object to knit_print.
 #' @param asis (`flag`)\cr Should the return value be wrapped in a call to `knitr::asis_output`?
 #' @param unit (`character`)\cr The dose unit.
 #' @param ... Not used at present
@@ -23,9 +23,9 @@ NULL
 #' @seealso [`knit_print`] for more details.
 #'
 #' @export
-#' @method knit_print NextBestSuggestion
+#' @method knit_print NextBestRecommendation
 #' @rdname knit_print
-knit_print.NextBestSuggestion <- function(
+knit_print.NextBestRecommendation <- function(
     x,
     ...,
     asis = TRUE,
@@ -47,14 +47,14 @@ knit_print.NextBestSuggestion <- function(
 }
 
 # Delete after running devtools::document()
-registerS3method("knit_print", "NextBestSuggestion", knit_print.NextBestSuggestion)
+registerS3method("knit_print", "NextBestRecommendation", knit_print.NextBestRecommendation)
 
-# NextBestSuggestionProbs ----
+# NextBestRecommendationProbs ----
 
-#' Render a `NextBestSuggestionProbs` Object
+#' Render a `NextBestRecommendationProbs` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
-#' @param x (`NextBestSuggestionProbs`)\cr The object to knit_print.
+#' @param x (`NextBestRecommendationProbs`)\cr The object to knit_print.
 #' @param asis (`flag`)\cr Should the return value be wrapped in a call to `knitr::asis_output`?
 #' @param caption (`character`)\cr The caption for the probs table.
 #' @param unit (`character`)\cr The dose unit.
@@ -64,9 +64,9 @@ registerS3method("knit_print", "NextBestSuggestion", knit_print.NextBestSuggesti
 #' @seealso [`knit_print`] for more details.
 #'
 #' @export
-#' @method knit_print NextBestSuggestionProbs
+#' @method knit_print NextBestRecommendationProbs
 #' @rdname knit_print
-knit_print.NextBestSuggestionProbs <- function(
+knit_print.NextBestRecommendationProbs <- function(
     x,
     ...,
     asis = TRUE,
@@ -106,14 +106,14 @@ knit_print.NextBestSuggestionProbs <- function(
 }
 
 # Delete after running devtools::document()
-registerS3method("knit_print", "NextBestSuggestionProbs", knit_print.NextBestSuggestionProbs)
+registerS3method("knit_print", "NextBestRecommendationProbs", knit_print.NextBestRecommendationProbs)
 
-# NextBestSuggestionThreePlusThree ----
+# NextBestRecommendationThreePlusThree ----
 
-#' Render a `NextBestSuggestionThreePlusThree` Object
+#' Render a `NextBestRecommendationThreePlusThree` Object
 #'
 #' @description `r lifecycle::badge("experimental")`
-#' @param x (`NextBestSuggestionThrePlusThree`)\cr The object to knit_print.
+#' @param x (`NextBestRecommendationThrePlusThree`)\cr The object to knit_print.
 #' @param asis (`flag`)\cr Should the return value be wrapped in a call to `knitr::asis_output`?
 #' @param unit (`character`)\cr The dose unit.
 #' @param ... Not used at present
@@ -122,9 +122,9 @@ registerS3method("knit_print", "NextBestSuggestionProbs", knit_print.NextBestSug
 #' @seealso [`knit_print`] for more details.
 #'
 #' @export
-#' @method knit_print NextBestSuggestionProbs
+#' @method knit_print NextBestRecommendationProbs
 #' @rdname knit_print
-knit_print.NextBestSuggestionThreePlusThree <- function(
+knit_print.NextBestRecommendationThreePlusThree <- function(
     x,
     ...,
     asis = TRUE,
@@ -160,6 +160,6 @@ knit_print.NextBestSuggestionThreePlusThree <- function(
 # Delete after running devtools::document()
 registerS3method(
   "knit_print",
-  "NextBestSuggestionThreePlusThree",
-  knit_print.NextBestSuggestionThreePlusThree
+  "NextBestRecommendationThreePlusThree",
+  knit_print.NextBestRecommendationThreePlusThree
 )

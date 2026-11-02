@@ -1,16 +1,16 @@
 # plot ----
 
-## NextBestSuggestion-NextBestMTD ----
+## NextBestRecommendation-NextBestMTD ----
 
-#' Plot Method for the [`NextBestSuggestion`] Class
+#' Plot Method for the [`NextBestRecommendation`] Class
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A method that creates a combined plot for a [`NextBestSuggestion`] object
+#' A method that creates a combined plot for a [`NextBestRecommendation`] object
 #' using a NextBestMTD rule
 #'
 #' @inheritParams nextBest
-#' @param x (`NextBestSolution`)\cr object we want to plot.
+#' @param x (`NextBestRecommendation`)\cr object we want to plot.
 #' @param y (`NextBest`)\cr missing object, for compatibility with the generic
 #'   function.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
@@ -25,7 +25,7 @@
 setMethod(
   f = "plot",
   signature = signature(
-    x = "NextBestSuggestion",
+    x = "NextBestRecommendation",
     y = "NextBestMTD"
   ),
   definition = function(x, y, doselimit, data, model, samples, ...) {
@@ -62,13 +62,13 @@ setMethod(
   }
 )
 
-## NextBestSuggestion-NextBestEWOC ----
+## NextBestRecommendation-NextBestEWOC ----
 
-#' Plot Method for the [`NextBestSuggestion`] Class
+#' Plot Method for the [`NextBestRecommendation`] Class
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A method that creates a plot for a [`NextBestSuggestion`] object
+#' A method that creates a plot for a [`NextBestRecommendation`] object
 #' using a NextBestEWOC rule
 #'
 #' @inheritParams nextBest
@@ -87,7 +87,7 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(
-    x = "NextBestSuggestion",
+    x = "NextBestRecommendation",
     y = "NextBestEWOC"
   ),
   definition = function(x, y, doselimit, data, model, samples, ...) {
