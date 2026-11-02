@@ -53,32 +53,24 @@ next_max_dose <- maxDose(my_increments, data = my_data)
 
 ## Progress to date
 
-I went down the `suggest` route rather than `recommend` or `estimate`. I avoided `estimate` because
-the noun and the verb are the same, and I thought that might cause confusion. I avoided `recommend`
-because, when I first raised the ambiguity of the term "next best dose", some of us felt that
-"recommend" was too strong a word and that users might feel compelled to follow the result.
-
-So, the new method is currently called `suggest` and the new return class is `NextBestSuggestion`.
-This is easily changed if we want to.
-
-At the moment, the `suggest` methods are essentially simple copies of the existing `nextBest`
+At the moment, the `recommend` methods are essentially simple copies of the existing `nextBest`
 methods, with all references to graphing (in both the arguments and body) removed. They return an
-object of class `NextBestSuggestion` (or a subclass) rather than a `list`. The only subclass I've
-implemented so far is `NextBestSuggestionProbs`, which adds an arbitrary array of probabilities.
+object of class `Recommendion` (or a subclass) rather than a `list`. The only subclass I've
+implemented so far is `RecommendationProbs`, which adds an arbitrary array of probabilities.
 
-The `suggest` and `tidy` methods are in `Rules-methods1.R`, to minimise the chance of conflicts with
-other changes. (The `plot` methods, when written, will join them.) Once the code is more stable, it
-can be moved to `Rules-methods.R` and the new file deleted. The `knit_print` methods are in
-`helpers_knitr_NextBestSuggestion.R`.
+The `recommend` and `tidy` methods are in `Rules-methods1.R`, to minimise the chance of conflicts
+with other changes. (The `plot` methods, when written, will join them.) Once the code is more
+stable, it can be moved to `Rules-methods.R` and the new file deleted. The `knit_print` methods are
+in `helpers_knitr_Recommendation.R`.
 
-Tests exist for all `suggest` methods. As before, they are essentially copies of the existing tests
-for `nextBest` calls. References to plots have been removed and they test that the recommendation
-returned by `nextBest` matches that returned by `suggest`. All tests pass, though one is empty and
-others report a warning because I'm not 100% certain I understand what the corresponding `nextBest`
-call is doing.
+Tests exist for all `recommend` methods. As before, they are essentially copies of the existing
+tests for `nextBest` calls. References to plots have been removed and they test that the
+recommendation returned by `nextBest` matches that returned by `recommend`. All tests pass, though
+one is empty and others report a warning because I'm not 100% certain I understand what the
+corresponding `nextBest` call is doing.
 
 I've created custom `knit_print` methods for both new classes, and a `tidy` method for
-`NestBestSuggestionProbs` (`NextBestSuggestion` can use the default `tidy` method).
+`RecommendationProbs` (`Recommendation` can use the default `tidy` method).
 
 ### Sample usage
 
@@ -92,7 +84,7 @@ mtd_next_best <- NextBestMTD(
   }
 )
 
-suggest_mtd <- suggest(
+recommend_mtd <- recommend(
   nextBest = mtd_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -100,26 +92,26 @@ suggest_mtd <- suggest(
   data = my_data
 )
 
-suggest_mtd
+recommend_mtd
 ```
 
 Here's the raw return object...
 
 ```{r}
-normal_print(suggest_mtd)
+normal_print(recommend_mtd)
 ```
 
 and the prettified version, with and without units.
 
 ```{r}
-suggest_mtd
-knit_print(suggest_mtd, unit = "mg/dL")
+recommend_mtd
+knit_print(recommend_mtd, unit = "mg/dL")
 ```
 
 Here's the result of tidying the object.
 
 ```{r}
-suggest_mtd %>% tidy()
+recommend_mtd %>% tidy()
 ```
 
 The next simplest classes return matrices of probabilities. As discussed above, this is now a
@@ -135,7 +127,7 @@ ewoc_next_best <- NextBestEWOC(
 )
 
 # Calculate the next best dose.
-dose_recommendation <- suggest(
+dose_recommendation <- recommend(
   nextBest = ewoc_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -175,7 +167,7 @@ dose_recommendation <- nextBest(
   data = my_data
 )
 
-dr <- suggest(
+dr <- recommend(
   nextBest = nrcm_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -187,19 +179,19 @@ knit_print(dr)
 normal_print(dr)
 ```
 
-> the We could, for convenience add `Eligible` and/or `Safe` columns to the tibble...
+> then we could, for convenience, add `Eligible` and/or `Safe` columns to the tibble...
 
-> We could also add slots to the `NextBestSuggestionProbs` class to allow for customisation of the
+> We could also add slots to the `RecommendationProbs` class to allow for customisation of the
 > probabilities table without resort to the `knit_print` method. Obvious choices are `caption` and
 > `col.names`.
 
 ## Plots
 
-The `plot` methods assume the new `NextBestSuggestion` object is passed in the `x` parameter to the
+The `plot` methods assume the new `Recommendation` object is passed in the `x` parameter to the
 method. The `NextBest` object is passed in the `y` parameter, to permit different behaviours for
-`NextBest` classes that share a common `NextBestSuggestion` return value.
+`NextBest` classes that share a common `Recommendation` return value.
 
-Here's the simplest example, for a combination of `NextBestSuggestion` and `NextBestMTD`.
+Here's the simplest example, for a combination of `Recommendation` and `NextBestMTD`.
 
 ```{r}
 #| echo: FALSE
@@ -236,7 +228,7 @@ mtd_next_best <- NextBestMTD(
 ```
 
 ```{r}
-dr <- suggest(
+dr <- recommend(
   nextBest = mtd_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -269,8 +261,8 @@ dr1$plot
 ```
 
 > There is much duplication of arguments passed to different methods as the analysis proceeds. There
-> may be some mileage in creating slots in `NextBestSolution` to store the inputs on which it was
-> based. (For example, `N extBestSolution` could have a slot for the `NextBest` rule on which it was
+> may be some mileage in creating slots in `Recommendation` to store the inputs on which it was
+> based. (For example, `Recommendation` could have a slot for the `NextBest` rule on which it was
 > based. This would remove the need to pass both objects to subsequent `plot` calls. And potentially
 > reduce the risk of error.) This would allow simplification of future calls, but would be a
 > departure from current practice.
