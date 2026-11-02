@@ -39,11 +39,6 @@ NULL
 #'   slot and a named list of probabilities in the `probs` slot.
 v_nextbestrecommendationprobs <- function(object) {
   v <- Validate()
-  cols <- names(object@probs)
-  v$check(
-    test_true("Dose" %in% cols),
-    "probs must contain a column named Dose."
-  )
 
   # Not appropriate for NextBestNCRMLoss
   # unset(cols["Dose"])
@@ -55,17 +50,17 @@ v_nextbestrecommendationprobs <- function(object) {
   # }
 
   v$check(
-    test_atomic_vector(
-      object@probs["Dose"],
-      unique = TRUE,
-      any.missing = FALSE
-    ),
-    "probs must be named and names must be unique."
+    test_tibble(object@probs),
+    "probs must be a tibble."
   )
+  #         Default                            DataCombo
   v$check(
-    test_list(object@probs),
-    "probs must be a list."
+    test_true("Dose" %in% names(object@probs) | all(c("Dose1", "Dose2") %in% names(object@probs))),
+    "probs must contain a column named `Dose` (or `Dose1` and `Dose2`)."
   )
+  print(class(object))
+  print(object@probs)
+  print(v$result())
   v$result()
 }
 

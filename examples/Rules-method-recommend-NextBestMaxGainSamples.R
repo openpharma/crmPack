@@ -76,7 +76,7 @@ my_model_effflexi <- EffFlexi(
 \donttest{
 my_samples_effflexi <- mcmc(my_data, my_model_effflexi, my_options)
 
-dose_recommendation <- suggest(
+dr <- recommend(
   nextBest = mgs_next_best,
   doselimit = max(my_data@doseGrid),
   samples = my_samples_dlt,
@@ -86,5 +86,5 @@ dose_recommendation <- suggest(
   samples_eff = my_samples_effflexi
 )
 
-dose_recommendation
+dr
 }

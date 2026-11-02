@@ -35,7 +35,7 @@ next_max_dose <- maxDose(my_increments, data = my_data)
 next_best_min_dist <- NextBestMinDist(target = 0.3)
 
 # Calculate the next best dose.
-dose_recommendation <- suggest(
+dr <- recommend(
   nextBest = next_best_min_dist,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -43,4 +43,4 @@ dose_recommendation <- suggest(
   data = my_data
 )
 
-dose_recommendation
+dr

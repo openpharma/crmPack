@@ -36,7 +36,7 @@ ewoc_next_best <- NextBestEWOC(
 )
 
 # Calculate the next best dose.
-dose_recommendation <- suggest(
+dr <- recommend(
   nextBest = ewoc_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -44,4 +44,4 @@ dose_recommendation <- suggest(
   data = my_data
 )
 
-dose_recommendation
+dr
