@@ -19,12 +19,12 @@ my_model <- LogisticIndepBeta(
 td_next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
 # doselimit is the maximum allowable dose level to be given to subjects.
-dose_recommendation <- suggest(
+dr <- recommend(
   nextBest = td_next_best,
   doselimit = max(my_data@doseGrid),
   model = my_model,
   data = my_data
 )
 
-dose_recommendation
+dr
 

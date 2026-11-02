@@ -1,4 +1,4 @@
-# Example of usage for `NextBestProbMTDLTE` NextBest class.
+# Example of usage for `NextBestMTD` NextBest class.
 
 # Create the data.
 my_data <- Data(
@@ -28,16 +28,21 @@ my_increments <- IncrementsRelative(
 next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose
-# based on the 'NextBestProbMTDLTE' class.
-nb_mtd_lte <- NextBestProbMTDLTE(target = 0.33)
+# based on the 'NextBestMTD' class.
+mtd_next_best <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
 
-# Calculate the suggested next dose.
-dose_recommendation <- suggest(
-  nextBest = nb_mtd_lte,
+# Calculate the next best dose.
+dr <- recommend(
+  nextBest = mtd_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
   model = my_model,
   data = my_data
 )
 
-dose_recommendation
+dr

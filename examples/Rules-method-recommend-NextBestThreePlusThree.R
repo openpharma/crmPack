@@ -13,4 +13,6 @@ my_data <- Data(
 my_next_best <- NextBestThreePlusThree()
 
 # Calculate the next best dose.
-dose_recommendation <- suggest(my_next_best, data = my_data)
+dr <- recommend(my_next_best, data = my_data)
+
+dr

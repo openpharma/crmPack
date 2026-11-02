@@ -5,7 +5,7 @@ options <- .DefaultMcmcOptions()
 \donttest{
 ordinal_samples <- mcmc(ordinal_data, ordinal_model, options)
 
-suggest(
+recommend(
   nextBest = NextBestOrdinal(2L, .DefaultNextBestNCRM()),
   samples = ordinal_samples,
   doselimit = Inf,

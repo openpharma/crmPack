@@ -31,7 +31,7 @@ tds_next_best <- NextBestTDsamples(
 )
 
 # doselimit is the maximum allowable dose level to be given to subjects.
-dose_recommendation <- suggest(
+dr <- recommend(
   nextBest = tds_next_best,
   doselimit = max(my_data@doseGrid),
   samples = my_samples,
@@ -39,5 +39,5 @@ dose_recommendation <- suggest(
   data = my_data
 )
 
-dose_recommendation
+dr
 

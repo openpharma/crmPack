@@ -54,7 +54,7 @@ my_next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose combination.
-dose_recommendation <- suggest(
+dr <- recommend(
   nextBest = my_next_best,
   doselimit = next_max_dose,
   samples = my_samples,
@@ -63,4 +63,4 @@ dose_recommendation <- suggest(
 )
 
 # See the next best dose combination.
-dose_recommendation
+dr

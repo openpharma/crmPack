@@ -1,4 +1,4 @@
-# Example of usage for `NextBestNCRMLoss` NextBest class.
+# Example of usage for `NextBestProbMTDLTE` NextBest class.
 
 # Create the data.
 my_data <- Data(
@@ -28,42 +28,16 @@ my_increments <- IncrementsRelative(
 next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose
-# based on the class `NextBestNCRMLoss`.
-nrcm_loss_next_best <- NextBestNCRMLoss(
-  target = c(0.2, 0.35),
-  overdose = c(0.35, 0.6),
-  unacceptable = c(0.6, 1),
-  max_overdose_prob = 0.999,
-  losses = c(1, 0, 1, 2)
-)
+# based on the 'NextBestProbMTDLTE' class.
+nb_mtd_lte <- NextBestProbMTDLTE(target = 0.33)
 
-# Calculate the next best dose.
-dose_recommendation <- suggest(
-  nextBest = nrcm_loss_next_best,
+# Calculate the suggested next dose.
+dr <- recommend(
+  nextBest = nb_mtd_lte,
   doselimit = next_max_dose,
   samples = my_samples,
   model = my_model,
   data = my_data
 )
 
-# Next best dose.
-dose_recommendation
-
-# Define another rule (loss function of 3 elements).
-nrcm_loss_next_best_losses_3 <- NextBestNCRMLoss(
-  target = c(0.2, 0.35),
-  overdose = c(0.35, 1),
-  max_overdose_prob = 0.30,
-  losses = c(1, 0, 2)
-)
-
-# Calculate the next best dose.
-dose_recommendation_losses_3 <- suggest(
-  nextBest = nrcm_loss_next_best_losses_3,
-  doselimit = next_max_dose,
-  samples = my_samples,
-  model = my_model,
-  data = my_data
-)
-
-dose_recommendation_losses_3
+dr
