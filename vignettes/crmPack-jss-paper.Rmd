@@ -534,7 +534,7 @@ mySims@data[[3]]@nObs
 mySims@doses[3]
 #> [1] 50
 ```
-Furthermore, we can plot the `Simulations` object by calling the `plot` method on it, see Figure \@ref(fig:sim-plot). You can select the plots by changing the `type` argument of `plot`, which by default is `type = c("trajectory", "dosesTried")`.
+Furthermore, we can plot the `Simulations` object by calling the `plot` method on it, see Figure \@ref(fig:sim-plot). You can select the plots by changing the `type` argument of `plot`, using `type = c("trajectory", "dosesTried")` for the components in this figure.
 <div class="figure" style="text-align: center">
 <img src="./jss-figures/sim-plot-1.png" alt="A graphical representation of the simulation results." width=".5\linewidth" />
 <p class="caption">Simulation plot</p>
