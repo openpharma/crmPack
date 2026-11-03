@@ -128,15 +128,42 @@ v_recommendationtd <- function(object) {
 NULL
 
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
-#' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
+#' has columns named `EstimateType`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
 #' the last three of which have `NULL`s in the first row and psitive values in
 #' the second.  The tibble should contain only two rows.
 v_recommendationmaxgain <- function(object) {
   v <- Validate()
 
   v$check(
+    test_set_equal(names(object@details), c("EstimateType", "TargetDose", "LowerCI", "UpperCI", "CIRatio")),
+    "details must be a tibble with columns EstimateType, TargetDose, LowerCI, UpperCI and CIRatio"
+  )
+  v$check(
+    test_true(object@details %>% nrow() == 3),
+    "details must be a tibble with three rows"
+  )
+  v$check(
+    test_numeric(object@value, lower = 0, len = 3, null.ok = FALSE),
+    "value must be a vector of positive reals or NA and of length 3"
+  )
+  v$result()
+}
+
+#' @name v_recommendationtd
+#' @param object (`RecommendationTD`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+#' @describeIn v_recommendation validates that the tibble in the `details` slot
+#' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
+#' the last three of which have `NULL`s in the first row and pOsitive values in
+#' the second.  The tibble should contain only two rows.
+v_recommendationtd <- function(object) {
+  v <- Validate()
+
+  v$check(
     test_set_equal(names(object@details), c("Time", "TargetDose", "LowerCI", "UpperCI", "CIRatio")),
-    "details must be a tibble with columns Time, TargetDose, LowerCi, UpperCi and CIRatio"
+    "details must be a tibble with columns Time, TargetDose, LowerCI, UpperCI and CIRatio"
   )
   v$check(
     test_true(object@details %>% nrow() == 2),
@@ -149,24 +176,50 @@ v_recommendationmaxgain <- function(object) {
   v$result()
 }
 
-#' @describeIn v_recommendation validates that the tibble in the `details` slot
-#' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
-#' the last three of which have `NULL`s in the first row and psitive values in
+#' @describeIn v_recommendationallocation validates that the tibble in the `details` slot
+#' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
+#' the last three of which have `NULL`s in the first row and positive values in
 #' the second.  The tibble should contain only two rows.
-v_recommendationtd <- function(object) {
+v_recommendationallocation <- function(object) {
   v <- Validate()
 
   v$check(
-    test_set_equal(names(object@details), c("Time", "TargetDose", "LowerCI", "UpperCI", "CIRatio")),
-    "details must be a tibble with columns Time, TargetDose, LowerCi, UpperCi and CIRatio"
+    test_set_equal(names(object@details), c("Dose", "Allocation")),
+    "details must be a tibble with columns Dose and Allocation"
   )
+  if ("Allocation" %in% names(object@details)) {
+    v$check(
+      test_probabilities(object@details %>% dplyr::pull(Allocation)),
+      "The Allocation column in the details tibble must contain non-missing probabilities"
+    )
+    v$check(
+      test_true(sum(object@details %>% dplyr::pull(Allocation)) == 1),
+      "The probabilities in the Allocation column in the details tibble must sum to 1"
+    )
+  }
+  v$result()
+}
+
+
+#' @name v_recommendationncrmloss
+#' @param object (`RecommendationNCRMLoss`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+#' @describeIn v_recommendation validates that the tibble in the `details` slot
+#' has columns named `Dose`, `Mean`, `StdDev` and `PosteriorLoss`, and that row
+#' sums of the remaining (probability) columns are equal to 1.
+v_recommendationncrmloss <- function(object) {
+  v <- Validate()
+
   v$check(
-    test_true(object@details %>% nrow() == 2),
-    "details must be a tibble with two rows"
+    test_subset(c("Dose", "Mean", "StdDev", "PosteriorLoss"), names(object@details)),
+    "details must be a tibble with columns including Dose, Mean, StdDev and PosteriorLoss"
   )
+
   v$check(
-    test_numeric(object@value, lower = 0, len = 2, null.ok = FALSE),
-    "value must be a vector of positive reals or NA and of length 2"
+    test_true(all(round(object@details %>% dplyr::select(-c("Dose", "Mean", "StdDev", "PosteriorLoss")) %>% rowSums(), 3) == 1)),
+    "probabilities in every row of probs must sum to one."
   )
   v$result()
 }

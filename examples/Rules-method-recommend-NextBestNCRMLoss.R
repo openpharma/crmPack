@@ -6,7 +6,7 @@ my_data <- Data(
   y = c(0, 0, 0, 0, 0, 0, 1, 0),
   ID = 1:8,
   cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
-  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 10))
 )
 
 # Initialize the CRM model used to model the data.
@@ -17,7 +17,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -46,8 +46,6 @@ dose_recommendation <- recommend(
   data = my_data
 )
 
-# Next best dose.
-dr
 
 # Define another rule (loss function of 3 elements).
 nrcm_loss_next_best_losses_3 <- NextBestNCRMLoss(

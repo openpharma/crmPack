@@ -270,11 +270,6 @@ test_that("recommend-NextBestNCRM-DataCombo works as expected", {
     data
   )
   expect_equal(actual@value, expected$value)
-  # expect_named(
-  #   result$probs,
-  #   c("drug1", "drug2", "target_prob", "overdose_prob", "not_eligible")
-  # )
-
 })
 
 test_that("recommend-NextBestNCRM-DataCombo uses configured drug names in probs", {
@@ -461,8 +456,7 @@ test_that("recommend-NextBestNCRMLoss returns expected values of the objects (lo
     Inf,
     samples,
     model,
-    data,
-    prob_plot_type = "bar"
+    data
   )
   expect_identical(result@value, 25)
 })
@@ -754,7 +748,7 @@ test_that("recommend-NextBestTDsamples returns expected values of the objects", 
   nb_tds <- h_next_best_tdsamples()
 
   result <- recommend(nb_tds, 90, samples, model, data)
-  expect_identical(result@value, 75)
+  expect_identical(result@value, c(75, 75))
 })
 
 test_that("recommend-NextBestTDsamples returns expected values of the objects (no doselimit)", {
@@ -780,7 +774,7 @@ test_that("recommend-NextBestTDsamples returns expected values of the objects (n
   nb_tds <- h_next_best_tdsamples()
 
   result <- recommend(nb_tds, Inf, samples, model, data)
-  expect_identical(result@value, 100)
+  expect_identical(result@value, c(100, 100))
 })
 
 test_that("recommend-NextBestTDsamples returns expected values of the objects (other targets)", {
@@ -806,7 +800,7 @@ test_that("recommend-NextBestTDsamples returns expected values of the objects (o
   nb_tds <- h_next_best_tdsamples(0.6, 0.55, 0.45)
 
   result <- recommend(nb_tds, 150, samples, model, data)
-  expect_identical(result@value, 150)
+  expect_identical(result@value, c(150, 150))
 })
 
 ## NextBestTD ----
@@ -817,7 +811,7 @@ test_that("recommend-NextBestTD returns expected values of the objects", {
   nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- recommend(nb_td, 70, model = model, data = data)
-  expect_identical(result@value, 50)
+  expect_identical(result@value, c(50, 50))
 })
 
 test_that("recommend-NextBestTD returns expected values of the objects (no doselimit)", {
@@ -836,7 +830,7 @@ test_that("recommend-NextBestTD returns expected values of the objects (no dosel
   #   ci_dose_target_eot = c(20.38729, 195.98072),
   #   ci_ratio_dose_target_eot = 9.612886
   # )
-  expect_identical(result@value, 75)
+  expect_identical(result@value, c(75, 50))
 })
 
 test_that("recommend-NextBestTD returns expected values of the objects (other targets)", {
@@ -845,7 +839,7 @@ test_that("recommend-NextBestTD returns expected values of the objects (other ta
   nb_td <- NextBestTD(prob_target_drt = 0.25, prob_target_eot = 0.2)
 
   result <- recommend(nb_td, 70, model = model, data = data)
-  expect_identical(result@value, 25)
+  expect_identical(result@value, c(25, 25))
 })
 
 ## NextBestMaxGain ----
@@ -863,7 +857,7 @@ test_that("recommend-NextBestMaxGain returns expected values of the objects", {
     data = data,
     model_eff = model_eff
   )
-  expect_identical(result@value, 25)
+  expect_identical(result@value, c(25, 25, 83.964693), tolerance = 1e-06)
 })
 
 test_that("recommend-NextBestMaxGain returns expected values of the objects (no doselimit)", {
@@ -880,7 +874,7 @@ test_that("recommend-NextBestMaxGain returns expected values of the objects (no 
     model_eff = model_eff
   )
 
-  expect_identical(result@value, 50)
+  expect_identical(result@value, c(50, 25, 83.964693), tolerance = 1e-06)
 })
 
 test_that("recommend-NextBestMaxGain returns expected values of the objects (other targets, placebo)", {
@@ -911,7 +905,7 @@ test_that("recommend-NextBestMaxGain returns expected values of the objects (oth
   #   ci_dose_max_gain = c(26.95037, 293.67744),
   #   ci_ratio_dose_max_gain = 10.89697
   # )
-  expect_identical(result@value, 75)
+  expect_identical(result@value, c(75, 50, 83.964693), tolerance = 1e-06)
 })
 
 ## NextBestMaxGainSamples ----
@@ -956,7 +950,7 @@ test_that("recommend-NextBestMaxGainSamples returns expected values of the objec
   #   ci_dose_max_gain = c(30.625, 288.750),
   #   ci_ratio_dose_max_gain = 9.428571
   # )
-  expect_identical(result@value, 25)
+  expect_identical(result@value, c(25, 25, 125))
 })
 
 test_that("recommend-NextBestMaxGainSamples returns expected values of the objects (no doselimit)", {
@@ -999,7 +993,7 @@ test_that("recommend-NextBestMaxGainSamples returns expected values of the objec
   #   ci_dose_max_gain = c(30.625, 288.750),
   #   ci_ratio_dose_max_gain = 9.428571
   # )
-  expect_identical(result@value, 125)
+  expect_identical(result@value, c(125, 100, 125))
 })
 
 test_that("recommend-NextBestMaxGainSamples returns expected values of the objects (other targets, placebo)", {
@@ -1045,7 +1039,7 @@ test_that("recommend-NextBestMaxGainSamples returns expected values of the objec
   #   ci_dose_max_gain = c(32.5, 300.0),
   #   ci_ratio_dose_max_gain = 9.230769
   # )
-  expect_identical(result@value, 50)
+  expect_identical(result@value, c(50, 50, 110), tolerance = 1e-06)
 })
 
 ## NextBestProbMTDLTE ----

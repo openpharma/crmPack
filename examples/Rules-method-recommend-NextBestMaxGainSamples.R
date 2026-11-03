@@ -49,7 +49,7 @@ mgs_next_best <- NextBestMaxGainSamples(
   }
 )
 
-dose_recommendation <- nextBest(
+dose_recommendation <- recommend(
   nextBest = mgs_next_best,
   doselimit = max(my_data@doseGrid),
   samples = my_samples_dlt,
