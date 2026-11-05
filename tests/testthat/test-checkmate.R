@@ -36,7 +36,7 @@ test_that("assert_equal works correctly", {
 
 test_that("check_probabilities returns TRUE as expected", {
   expect_equal(
-    c("x", "bounds_closed", "len", "unique", "sorted"),
+    c("x", "bounds_closed", "len", "unique", "sorted", "any.missing"),
     formalArgs(check_probabilities)
   )
   expect_true(check_probabilities(c(0.2, 0.1, 0.3)))
