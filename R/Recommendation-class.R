@@ -9,10 +9,10 @@ NULL
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`Recommendation`] is a class for defining the suggested dose for the next
+#' [`Recommendation`] is a class for defining the recommended dose for the next
 #' cohort to be treated.
 #'
-#' @slot value (`real`)\cr The suggested dose.
+#' @slot value (`real`)\cr The recommended dose.
 #'
 #' @aliases Recommendation
 #' @export
@@ -32,7 +32,7 @@ NULL
 ## constructor ----
 
 #' @rdname Recommendation-class
-#' @param value (`number`)\crthe suggested dose for the next cohort
+#' @param value (`number`)\cr The recommended dose for the next cohort
 #' @export
 Recommendation <- function(value) {
   .Recommendation(value = value)
@@ -46,70 +46,6 @@ Recommendation <- function(value) {
 .DefaultRecommendation <- function() {
   .Recommendation(value = 1)
 }
-
-# RecommendationProbs ----
-
-## class ----
-
-#' `RecommendationProbs`
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' [`RecommendationProbs`] inherits from [`Recommendation`] and adds a
-#' slot in which probabilities associated with the suggestion can be stored.
-#'
-#' @slot probs (`list`)\cr the probabilities associated with the suggestion.
-#'
-#' @aliases RecommendationProbs
-#' @export
-#'
-.RecommendationProbs <- setClass(
-  Class = "RecommendationProbs",
-  contains = "Recommendation",
-  slots = c(
-    probs = "tbl_df"
-  ),
-  prototype = prototype(
-    backfilled = logical(),
-    probs = tibble::tibble()
-  ),
-  validity = v_recommendationprobs
-)
-
-## constructor ----
-
-#' @rdname RecommendationProbs-class
-#'
-#' @inheritParams Recommendation
-#' @param probs (`tbl_df`)\cr a tibble containing columns for dose and probabilties
-#' of toxicity.  The toxicity grade name is given by the column name.
-#' @param ... not used.
-#'
-#' @export
-#' @example examples/RecommendationProbs-class.R
-#'
-RecommendationProbs <- function(
-  value = numeric(),
-  probs = tibble::tibble(),
-  ...
-) {
-  assert_numeric(value)
-
-  .RecommendationProbs(value = value, probs = probs)
-}
-
-## default constructor ----
-
-#' @rdname RecommendationProbs-class
-#' @note Typically, end users will not use the `.DefaultRecommendationProbs()` function.
-#' @export
-.DefaultRecommendationProbs <- function() {
-  RecommendationProbs(
-    value = 1,
-    probs = tibble::tibble(Dose = 1, target = 0.5, overdose = 0.25)
-  )
-}
-
 
 # RecommendationThreePlusThree ----
 
@@ -166,7 +102,7 @@ RecommendationThreePlusThree <- function(
 #' @note Typically, end users will not use the `.DefaultRecommendationThreePlusThree()` function.
 #' @export
 .DefaultRecommendationThreePlusThree <- function() {
-  RecommendationProbs(
+  RecommendationThreePlusThree(
     value = 1,
     stopHere = FALSE
   )
@@ -447,5 +383,122 @@ RecommendationNCRMLoss <- function(
       StdDev        = c( 0.0182, 0.0327, 0.0505, 0.0671, 0.0892, 0.109, 0.139, 0.154, 0.161, 0.164, 0.166, 0.167, 0.168),
       PosteriorLoss = c( 1.0000,  0.995,  0.974,  0.943,  0.913, 0.796, 0.734, 0.662, 0.740, 0.867, 1.060, 1.170, 1.280)
     )
+  )
+}
+
+# RecommendationProbs ----
+
+## class ----
+
+#' `RecommendationProbs`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RecommendationProbs`] inherits from [`RecommendationDetails`]
+#'
+#' @slot details (`tibble`)\cr the probabilities associated with the suggestion.
+#'
+#' @aliases RecommendationProbs
+#' @export
+#'
+.RecommendationProbs <- setClass(
+  Class = "RecommendationProbs",
+  contains = "RecommendationDetails",
+  prototype = prototype(
+    backfilled = logical(),
+    details = tibble::tibble()
+  ),
+  validity = v_recommendationprobs
+)
+
+## constructor ----
+
+#' @rdname RecommendationProbs-class
+#'
+#' @inheritParams Recommendation
+#' @param probs (`tbl_df`)\cr a tibble containing columns for dose and probabilties
+#' of toxicity.  The toxicity grade name is given by the column name.
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/RecommendationProbs-class.R
+#'
+RecommendationProbs <- function(
+    value = numeric(),
+    details = tibble::tibble(),
+    ...
+) {
+  assert_numeric(value)
+
+  .RecommendationProbs(value = value, details = details)
+}
+
+## default constructor ----
+
+#' @rdname RecommendationProbs-class
+#' @note Typically, end users will not use the `.DefaultRecommendationProbs()` function.
+#' @export
+.DefaultRecommendationProbs <- function() {
+  RecommendationProbs(
+    value = 1,
+    details = tibble::tibble(Dose = 1, Target = 0.5, Overdose = 0.25)
+  )
+}
+
+## class ----
+
+#' `RecommendationProbsDataCombo`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RecommendationProbsDataCombo`] inherits from [`RecommendationProbs`].
+#' It differs from [`RecommendationProbs`] because of the need to validate
+#' differently.
+#'
+#'
+#' @aliases RecommendationProbsDualEndpoint
+#' @export
+#'
+.RecommendationProbsDualEndpoint <- setClass(
+  Class = "RecommendationProbsDualEndpoint",
+  contains = "RecommendationDetails",
+  prototype = prototype(
+    backfilled = logical(),
+    detail = tibble::tibble()
+  ),
+  validity = v_recommendationprobsdualendpoint
+)
+
+## constructor ----
+
+#' @rdname RecommendationProbsDualEndpoint-class
+#'
+#' @inheritParams Recommendation
+#' @param details (`tbl_df`)\cr a tibble containing columns for dose and probabilties
+#' of toxicity and target efficacy.
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/RecommendationProbs-class.R
+#'
+RecommendationProbsDualEndpoint <- function(
+    value = numeric(),
+    details = tibble::tibble(),
+    ...
+) {
+  assert_numeric(value)
+
+  .RecommendationProbsDualEndpoint(value = value, details = details)
+}
+
+## default constructor ----
+
+#' @rdname RecommendationProbsDualEndpoint-class
+#' @note Typically, end users will not use the `.DefaultRecommendationProbsDualEndpoint()` function.
+#' @export
+.DefaultRecommendationProbsDualEndpoint <- function() {
+  RecommendationProbsDualEndpoint(
+    value = 1,
+    details = tibble::tibble(Dose = 1, Target = 0.5, Overdose = 0.75)
   )
 }

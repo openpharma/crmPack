@@ -2,7 +2,7 @@
 title: "Test"
 output: html_document
 params:
-  class_name: "CohortSizeConst"
+  class_name: "Recommendation"
 ---
 
 ```{r, echo=FALSE}

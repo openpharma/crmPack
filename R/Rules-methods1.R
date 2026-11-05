@@ -11,7 +11,7 @@ NULL
 
 ## generic ----
 
-#' Finding the Next Best Dose
+#' Finding the Recommended Dose
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -128,19 +128,9 @@ setMethod(
       NA_real_
     }
 
-    # list(
-    #   value = next_dose,
-    #   plot = p,
-    #   singlePlots = list(overdose = p),
-    #   probs = cbind(
-    #     dose = data@doseGrid,
-    #     overdose = prob_overdose
-    #   )
-    # )
-
     RecommendationProbs(
       value = next_dose,
-      probs = tibble::tibble(
+      details = tibble::tibble(
         Dose = data@doseGrid,
         Overdose = prob_overdose
       )
@@ -188,7 +178,7 @@ setMethod(
 ## NextBestNCRM ----
 
 #' @describeIn recommend find the next best dose based on the NCRM method. The
-#'   additional element `probs` in the output's list contains the target and
+#'   additional element `details` in the output's list contains the target and
 #'   overdosing probabilities (across all doses in the dose grid) used in the
 #'   derivation of the next best dose.
 #'
@@ -267,7 +257,7 @@ setMethod(
 
     RecommendationProbs(
       value = next_dose,
-      probs = tibble::tibble(
+      details = tibble::tibble(
         Dose = data@doseGrid,
         Target = prob_target,
         Overdose = prob_overdose
@@ -356,12 +346,12 @@ setMethod(
 
     RecommendationProbs(
       value = next_doses,
-      probs = tibble::tibble(
+      details = tibble::tibble(
         Dose1 = all_dose_matrix[, 1L],
         Dose2 = all_dose_matrix[, 2L],
         Target = all_target_prob,
         Overdose = all_overdose_prob,
-        NotEligible = all_not_eligible
+        Eligible = !all_not_eligible
       )
     )
   }
@@ -535,10 +525,9 @@ setMethod(
         )
     }
 
-    # c(list(value = next_dose, probs = probs), p)
-    RecommendationProbs(
+    RecommendationNCRMLoss(
       value = next_dose,
-      probs = probs
+      details = probs
     )
   }
 )
@@ -602,119 +591,6 @@ setMethod(
   }
 )
 
-## NextBestDualEndpoint ----
-
-#' @describeIn recommend find the next best dose based on the dual endpoint
-#'   model. The additional list element `probs` contains the target and
-#'   overdosing probabilities (across all doses in the dose grid) used in the
-#'   derivation of the next best dose.
-#'
-#' @aliases recommend-NextBestDualEndpoint
-#'
-#' @export
-#' @example examples/Rules-method-recommend-NextBestDualEndpoint.R
-#'
-setMethod(
-  f = "recommend",
-  signature = signature(
-    nextBest = "NextBestDualEndpoint",
-    doselimit = "numeric",
-    samples = "Samples",
-    model = "DualEndpoint",
-    data = "Data"
-  ),
-  definition = function(
-    nextBest,
-    doselimit = Inf,
-    samples,
-    model,
-    data,
-    ...
-  ) {
-    # Biomarker samples at the dose grid points.
-    biom_samples <- samples@data$betaW
-
-    prob_target <- if (nextBest@target_relative) {
-      # If 'Emax' parameter available, target biomarker level will be relative to 'Emax',
-      # otherwise, it will be relative to the maximum biomarker level achieved
-      # in dose range for a given sample.
-      if ("Emax" %in% names(samples)) {
-        lwr <- nextBest@target[1] * samples@data$Emax
-        upr <- nextBest@target[2] * samples@data$Emax
-        colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
-      } else {
-        target_levels <- apply(biom_samples, 1L, function(x) {
-          rng <- range(x)
-          min(which(h_in_range(
-            x,
-            nextBest@target * diff(rng) + rng[1] + c(0, 1e-10),
-            bounds_closed = c(FALSE, TRUE)
-          )))
-        })
-        prob_target <- as.vector(table(factor(
-          target_levels,
-          levels = 1:data@nGrid
-        )))
-        prob_target / nrow(biom_samples)
-      }
-    } else {
-      colMeans(h_in_range(biom_samples, nextBest@target))
-    }
-
-    # Now, compute probabilities to be in overdose tox interval, then flag
-    # eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    prob_samples <- sapply(
-      data@doseGrid,
-      prob,
-      model = model,
-      samples = samples
-    )
-    prob_overdose <- colMeans(h_in_range(
-      prob_samples,
-      nextBest@overdose,
-      bounds_closed = c(FALSE, TRUE)
-    ))
-
-    is_dose_eligible <- h_next_best_eligible_doses(
-      data@doseGrid,
-      doselimit,
-      data@placebo,
-      levels = TRUE
-    ) &
-      (prob_overdose < nextBest@max_overdose_prob)
-
-    next_dose <- if (any(is_dose_eligible)) {
-      # If maximum target probability is higher the threshold, then take that
-      # level, otherwise stick to the maximum level that is eligible.
-      # next_dose_level is relative to eligible doses.
-      next_dose_level <- ifelse(
-        test = any(prob_target[is_dose_eligible] > nextBest@target_thresh),
-        yes = which.max(prob_target[is_dose_eligible]),
-        no = sum(is_dose_eligible)
-      )
-      data@doseGrid[is_dose_eligible][next_dose_level]
-    } else {
-      NA_real_
-    }
-
-    # Build plots, first for the target probability. Reference lines are added
-    # before the probability geometry so it remains visible where layers overlap.
-    safe_dose <- if (any(is_dose_eligible)) {
-      data@doseGrid[sum(is_dose_eligible)]
-    } else {
-      NA_real_
-    }
-
-    RecommendationProbs(
-      value = next_dose,
-      tibble::tibble(
-        Dose = data@doseGrid,
-        Target = prob_target,
-        Overdose = prob_overdose
-      )
-    )
-  }
-)
 
 ## NextBestMinDist ----
 
@@ -759,7 +635,7 @@ setMethod(
 
     RecommendationProbs(
       value = next_dose,
-      probs = tibble::tibble(
+      details = tibble::tibble(
         Dose = data@doseGrid,
         DLT = dlt_prob
       )
@@ -924,19 +800,16 @@ setMethod(
       ))
     }
 
-    # list(
-    #   next_dose_drt = next_dose_drt,
-    #   prob_target_drt = prob_target_drt,
-    #   dose_target_drt = dose_target_drt,
-    #   next_dose_eot = next_dose_eot,
-    #   prob_target_eot = prob_target_eot,
-    #   dose_target_eot = dose_target_eot,
-    #   ci_dose_target_eot = ci_dose_target_eot,
-    #   ci_ratio_dose_target_eot = cir_dose_target_eot,
-    #   plot = p
-    # )
-    warning("Check return value of recommend-NextBestTD")
-    Recommendation(value = next_dose_drt)
+    RecommendationTD(
+      value = c(next_dose_drt, next_dose_eot),
+      details = tibble::tibble(
+        Time = c("During trial", "End of trial"),
+        TargetDose = c(dose_target_drt, dose_target_eot),
+        LowerCI = c(NA, ci_dose_target_eot[1]),
+        UpperCI = c(NA, ci_dose_target_eot[2]),
+        CIRatio = c(NA, cir_dose_target_eot)
+      )
+    )
   }
 )
 
@@ -1010,20 +883,16 @@ setMethod(
     ))
     cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
-    # list(
-    #   next_dose_drt = next_dose_drt,
-    #   prob_target_drt = nextBest@prob_target_drt,
-    #   dose_target_drt = dose_target_drt,
-    #   next_dose_eot = next_dose_eot,
-    #   prob_target_eot = nextBest@prob_target_eot,
-    #   dose_target_eot = dose_target_eot,
-    #   ci_dose_target_eot = ci_dose_target_eot,
-    #   ci_ratio_dose_target_eot = cir_dose_target_eot,
-    #   plot = p
-    # )
-    warning("Check return value of recommend-NextBestTDSamples")
-    Recommendation(value = next_dose_drt)
-  }
+    RecommendationTD(
+      value = c(next_dose_drt, next_dose_eot),
+      details = tibble::tibble(
+        Time = c("During trial", "End of trial"),
+        TargetDose = c(dose_target_drt, dose_target_eot),
+        LowerCI = c(NA, ci_dose_target_eot[1]),
+        UpperCI = c(NA, ci_dose_target_eot[2]),
+        CIRatio = c(NA, cir_dose_target_eot)
+      )
+    )  }
 )
 
 ## NextBestMaxGain ----
@@ -1128,7 +997,7 @@ setMethod(
       ) &&
         !in_sim
     ) {
-      print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
+      warning(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
     # Get closest grid doses for a given target doses.
@@ -1151,23 +1020,20 @@ setMethod(
       model_eff = model_eff
     )
 
-    # list(
-    #   next_dose = nb_doses_at_grid$next_dose,
-    #   prob_target_drt = prob_target_drt,
-    #   dose_target_drt = dose_target_drt,
-    #   next_dose_drt = nb_doses_at_grid$next_dose_drt,
-    #   prob_target_eot = prob_target_eot,
-    #   dose_target_eot = dose_target_eot,
-    #   next_dose_eot = nb_doses_at_grid$next_dose_eot,
-    #   dose_max_gain = dose_mg,
-    #   next_dose_max_gain = nb_doses_at_grid$next_dose_mg,
-    #   ci_dose_target_eot = ci$ci_dose_target,
-    #   ci_ratio_dose_target_eot = ci$ci_ratio_dose_target,
-    #   ci_dose_max_gain = ci$ci_dose_mg,
-    #   ci_ratio_dose_max_gain = ci$ci_ratio_dose_mg,
-    #   plot = p
-    # )
-    Recommendation(value = nb_doses_at_grid$next_dose)
+    RecommendationMaxGain(
+      value = c(
+        nb_doses_at_grid$next_dose_drt,
+        nb_doses_at_grid$next_dose_eot,
+        dose_mg
+      ),
+      details = tibble::tibble(
+        EstimateType = c("During trial", "End of trial", "Max gain"),
+        TargetDose = c(dose_target_drt, dose_target_eot, dose_mg),
+        LowerCI = c(NA, ci$ci_dose_target[1], ci$ci_dose_mg[1]),
+        UpperCI = c(NA, ci$ci_dose_target[2], ci$ci_dose_mg[2]),
+        CIRatio = c(NA, ci$ci_ratio_dose_target, ci$ci_ratio_dose_mg)
+      )
+    )
   }
 )
 
@@ -1294,7 +1160,7 @@ setMethod(
       !h_in_range(dose_mg, range = dosegrid_range, bounds_closed = FALSE) &&
         !in_sim
     ) {
-      print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
+      warning(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
     # Get closest grid doses for a given target doses.
@@ -1317,24 +1183,20 @@ setMethod(
     ))
     cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
-    # list(
-    #   next_dose = nb_doses_at_grid$next_dose,
-    #   prob_target_drt = prob_target_drt,
-    #   dose_target_drt = dose_target_drt,
-    #   next_dose_drt = nb_doses_at_grid$next_dose_drt,
-    #   prob_target_eot = prob_target_eot,
-    #   dose_target_eot = dose_target_eot,
-    #   next_dose_eot = nb_doses_at_grid$next_dose_eot,
-    #   dose_max_gain = dose_mg,
-    #   next_dose_max_gain = nb_doses_at_grid$next_dose_mg,
-    #   ci_dose_target_eot = ci_dose_target_eot,
-    #   ci_ratio_dose_target_eot = cir_dose_target_eot,
-    #   ci_dose_max_gain = ci_dose_mg,
-    #   ci_ratio_dose_max_gain = cir_dose_mg,
-    #   plot = p
-    # )
-    Recommendation(value = nb_doses_at_grid$next_dose)
-  }
+    RecommendationMaxGain(
+      value = c(
+        nb_doses_at_grid$next_dose_drt,
+        nb_doses_at_grid$next_dose_eot,
+        dose_mg
+      ),
+      details = tibble::tibble(
+        EstimateType = c("During trial", "End of trial", "Max gain"),
+        TargetDose = c(dose_target_drt, dose_target_eot, dose_mg),
+        LowerCI = c(NA, ci_dose_target_eot[1], ci_dose_mg[1]),
+        UpperCI = c(NA, ci_dose_target_eot[2], ci_dose_mg[2]),
+        CIRatio = c(NA, cir_dose_target_eot, cir_dose_mg)
+      )
+    )    }
 )
 
 ## NextBestProbMTDLTE ----
@@ -1422,15 +1284,10 @@ setMethod(
       )
     }
 
-    # list(
-    #   value = next_dose,
-    #   allocation = cbind(
-    #     dose = allocation_crit_dose,
-    #     allocation = allocation_crit
-    #   ),
-    #   plot = p
-    # )
-    Recommendation(value = next_dose)
+    RecommendationDetails(
+      value = next_dose,
+      details = tibble::as_tibble(allocation_crit)
+    )
   }
 )
 
@@ -1496,15 +1353,10 @@ setMethod(
     next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
     next_dose <- doses_eligible[next_dose_level_eligible]
 
-    # list(
-    #   value = next_dose,
-    #   allocation = cbind(
-    #     dose = allocation_crit_dose,
-    #     allocation = allocation_crit
-    #   ),
-    #   plot = p
-    # )
-    Recommendation(value = next_dose)
+    RecommendationDetails(
+      value = next_dose,
+      details = tibble::as_tibble(allocation_crit)
+    )
   }
 )
 
@@ -1539,6 +1391,125 @@ setMethod(
     )
   }
 )
+
+## NextBestDualEndpoint ----
+
+#' @describeIn recommend find the recommended dose based on the dual endpoint
+#'   model. The additional list element `details` contains the target and
+#'   overdosing probabilities (across all doses in the dose grid) used in the
+#'   derivation of the next best dose.
+#'
+#' @aliases recommend-NextBestDualEndpoint
+#'
+#' @export
+#' @example examples/Rules-method-recommend-NextBestDualEndpoint.R
+#'
+setMethod(
+  f = "recommend",
+  signature = signature(
+    nextBest = "NextBestDualEndpoint",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "DualEndpoint",
+    data = "Data"
+  ),
+  definition = function(
+    nextBest,
+    doselimit = Inf,
+    samples,
+    model,
+    data,
+    ...
+  ) {
+    # Biomarker samples at the dose grid points.
+    biom_samples <- samples@data$betaW
+
+    prob_target <- if (nextBest@target_relative) {
+      # If 'Emax' parameter available, target biomarker level will be relative to 'Emax',
+      # otherwise, it will be relative to the maximum biomarker level achieved
+      # in dose range for a given sample.
+      if ("Emax" %in% names(samples)) {
+        lwr <- nextBest@target[1] * samples@data$Emax
+        upr <- nextBest@target[2] * samples@data$Emax
+        colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
+      } else {
+        target_levels <- apply(biom_samples, 1L, function(x) {
+          rng <- range(x)
+          min(which(h_in_range(
+            x,
+            nextBest@target * diff(rng) + rng[1] + c(0, 1e-10),
+            bounds_closed = c(FALSE, TRUE)
+          )))
+        })
+        prob_target <- as.vector(table(factor(
+          target_levels,
+          levels = 1:data@nGrid
+        )))
+        prob_target / nrow(biom_samples)
+      }
+    } else {
+      colMeans(h_in_range(biom_samples, nextBest@target))
+    }
+
+    # Now, compute probabilities to be in overdose tox interval, then flag
+    # eligible grid doses after accounting for maximum possible dose and discarding overdoses.
+    prob_samples <- sapply(
+      data@doseGrid,
+      prob,
+      model = model,
+      samples = samples
+    )
+    prob_overdose <- colMeans(h_in_range(
+      prob_samples,
+      nextBest@overdose,
+      bounds_closed = c(FALSE, TRUE)
+    ))
+
+    is_dose_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo,
+      levels = TRUE
+    ) &
+      (prob_overdose < nextBest@max_overdose_prob)
+
+    next_dose <- if (any(is_dose_eligible)) {
+      # If maximum target probability is higher the threshold, then take that
+      # level, otherwise stick to the maximum level that is eligible.
+      # next_dose_level is relative to eligible doses.
+      next_dose_level <- ifelse(
+        test = any(prob_target[is_dose_eligible] > nextBest@target_thresh),
+        yes = which.max(prob_target[is_dose_eligible]),
+        no = sum(is_dose_eligible)
+      )
+      data@doseGrid[is_dose_eligible][next_dose_level]
+    } else {
+      NA_real_
+    }
+
+    probs <- tibble::tibble(
+      Dose = data@doseGrid,
+      Target = prob_target,
+      Overdose = prob_overdose
+    )
+
+    RecommendationProbsDualEndpoint(
+      value = next_dose,
+      details = probs
+    )
+  }
+)
+
+
+
+
+
+
+
+
+
+
+
 
 #' @describeIn recommend find the next best dose for ordinal CRM models.
 #'
@@ -1594,8 +1565,8 @@ setMethod(
   signature = signature(x = "RecommendationProbs"),
   definition = function(x, ...) {
     tibble(
-      Dose = names(x@probs),
-      Prob = unlist(x@probs),
+      Dose = names(x@details),
+      Prob = unlist(x@details),
       Suggested = x@value == Dose
     ) %>%
     h_tidy_class(x)

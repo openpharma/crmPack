@@ -13,27 +13,27 @@ test_that("RecommendationProbs works as expected", {
   result <- expect_silent(
     RecommendationProbs(
       value = 44,
-      probs = tibble::tibble(Dose = 1, Target = 0.3, Overdose = 0.1)
+      details = tibble::tibble(Dose = 1, Target = 0.3, Overdose = 0.1)
     )
   )
   expect_valid(result, "RecommendationProbs")
 
   testthat::expect_error(
-    RecommendationProbs(value = 1, probs = list()),
-    "invalid object for slot \"probs\" in class \"RecommendationProbs\": got class \"list\""
+    RecommendationProbs(value = 1, details = list()),
+    "invalid object for slot \"details\" in class \"RecommendationProbs\": got class \"list\""
   )
   testthat::expect_error(
-    RecommendationProbs(value = 1, probs = tibble::tibble(Target = -0.3, Overdose = 0.1)),
+    RecommendationProbs(value = 1, details = tibble::tibble(Target = -0.3, Overdose = 0.1)),
     "must contain a column named `Dose`"
   )
   testthat::expect_error(
-    RecommendationProbs(value = 1, probs = tibble::tibble(Dose = 1, Target = 4,  Overdose = 0.1)),
-    "every column of probs apart from dose must contain non-missing probabilities"
+    RecommendationProbs(value = 1, details = tibble::tibble(Dose = 1, Target = 4,  Overdose = 0.1)),
+    "every column of details apart from dose must contain non-missing probabilities"
   )
 
   testthat::expect_error(
-    RecommendationProbs(value = 1, probs = tibble::tibble(Dose = 1, Target = 0.5,  Overdose = 0.9)),
-    "probabilities in every row of probs must sum to less than one"
+    RecommendationProbs(value = 1, details = tibble::tibble(Dose = 1, Target = 0.5,  Overdose = 0.9)),
+    "probabilities in every row of details must sum to less than one"
   )
 })
 

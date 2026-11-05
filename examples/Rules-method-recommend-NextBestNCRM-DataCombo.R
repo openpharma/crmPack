@@ -6,7 +6,7 @@ my_data <- DataCombo(
     drug1 = c(10, 10, 10, 20, 20, 20),
     drug2 = c(20, 20, 20, 20, 20, 20)
   ),
-  y = c(0L, 0L, 0L, 0L, 1L, 0L),
+  y = c(0L, 0L, 0L, 0L, 0L, 0L),
   ID = 1L:6L,
   cohort = c(1L, 1L, 1L, 2L, 2L, 2L),
   doseGrid = list(
@@ -34,7 +34,7 @@ my_model <- TwoDrugsCombo(
 )
 
 # Set-up MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
+my_options <- McmcOptions(burnin = 100, step = 1, samples = 1000)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the dose increment rules for two-drug combination.
@@ -62,5 +62,4 @@ dr <- recommend(
   data = my_data
 )
 
-# See the next best dose combination.
 dr

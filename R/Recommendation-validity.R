@@ -38,22 +38,34 @@ NULL
 v_recommendationprobs <- function(object) {
   v <- Validate()
 
-  cols <- names(object@probs)
-  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
+  cols <- names(object@details)
+  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2", "Eligible"))]) {
     v$check(
-      test_probabilities(object@probs %>% dplyr::pull(c)),
-      "every column of probs apart from dose must contain non-missing probabilities."
+      test_probabilities(
+        object@details %>% dplyr::pull(c),
+        any.missing = TRUE
+      ),
+      "every column of details apart from dose must contain non-missing probabilities."
     )
   }
   #         Default                            DataCombo
   v$check(
-    test_true("Dose" %in% names(object@probs) | all(c("Dose1", "Dose2") %in% names(object@probs))),
-    "probs must contain a column named `Dose` (or `Dose1` and `Dose2`)."
+    test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
+    "details must contain a column named `Dose` (or `Dose1` and `Dose2`)."
   )
 
   v$check(
-    test_true(all(object@probs %>% dplyr::select(-1) %>% rowSums() <= 1)),
-    "probabilities in every row of probs must sum to less than one."
+    test_true(
+      all(
+        object@details %>%
+          dplyr::select(
+            -tidyselect::starts_with("Dose"),
+            -tidyselect::starts_with("Eligible")
+          ) %>%
+          rowSums(na.rm = all(c("Dose1", "Dose2") %in% names(object@details))) <= 1
+      )
+    ),
+    "probabilities in every row of details must sum to less than one."
   )
   v$result()
 }
@@ -219,8 +231,34 @@ v_recommendationncrmloss <- function(object) {
 
   v$check(
     test_true(all(round(object@details %>% dplyr::select(-c("Dose", "Mean", "StdDev", "PosteriorLoss")) %>% rowSums(), 3) == 1)),
-    "probabilities in every row of probs must sum to one."
+    "probabilities in every row of details must sum to one."
   )
   v$result()
 }
 
+#' @name v_recommendationprobsdualendpoint
+#' @param object (`RecommendationProbsDualEndpoint`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_recommendation validates that the [`RecommendationProbsDualEndpoint`]
+#'   object contains a positive real number (or `NA_numeric_`) in the `value`
+#'   slot and a tibble in the `probs` slot.
+v_recommendationprobsdualendpoint <- function(object) {
+  v <- Validate()
+
+  cols <- names(object@details)
+  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
+    v$check(
+      test_probabilities(object@details %>% dplyr::pull(c)),
+      "every column of details apart from dose must contain non-missing probabilities."
+    )
+  }
+  #         Default                            DataCombo
+  v$check(
+    test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
+    "details must contain a column named `Dose` (or `Dose1` and `Dose2`)."
+  )
+  v$result()
+}

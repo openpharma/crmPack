@@ -104,6 +104,7 @@ exclusions <- c(
   "PseudoDualFlexiSimulations",
   "PseudoFlexiSimulations",
   "PseudoSimulationsSummary",
+  "RecommendationDetails",
   "Recruitment",
   "SimulationsSummary",
   "Report",
