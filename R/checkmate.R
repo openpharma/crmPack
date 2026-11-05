@@ -181,9 +181,15 @@ check_probabilities <- function(
     sorted = sorted
   )
 
+  if(any.missing) {
+    y <- x[which(!is.na(x))]
+  } else {
+    y <- x
+  }
+
   if (isTRUE(result)) {
     in_bounds <- all(h_in_range(
-      x,
+      y,
       range = c(0L, 1L),
       bounds_closed = bounds_closed
     ))

@@ -51,6 +51,12 @@ test_that("check_probabilities returns TRUE as expected", {
   expect_true(check_probabilities(c(0.1, 0.2, 0.3), FALSE, 3, TRUE, TRUE))
 })
 
+# Issue 982
+test_that("check_probabilities works correctly with any.missing", {
+  expect_equal(check_probabilities(c(0.1, NA)), 'Contains missing values (element 2)')
+  expect_true(check_probabilities(c(0.1, NA), any.missing = TRUE))
+})
+
 test_that("check_probabilities returns error message as expected", {
   expect_identical(
     check_probabilities(c(-0.1, 0.2, 0.1)),
