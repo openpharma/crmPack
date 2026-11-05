@@ -53,7 +53,7 @@ test_that("check_probabilities returns TRUE as expected", {
 
 # Issue 982
 test_that("check_probabilities works correctly with any.missing", {
-  expect_equal(check_probabilities(c(0.1, NA)), 'Contains missing values (element 2)')
+  expect_equal(check_probabilities(c(0.1, NA)), "Contains missing values (element 2)") # nolint
   expect_true(check_probabilities(c(0.1, NA), any.missing = TRUE))
 })
 

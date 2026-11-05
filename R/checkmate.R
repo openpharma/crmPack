@@ -181,7 +181,7 @@ check_probabilities <- function(
     sorted = sorted
   )
 
-  if(any.missing) {
+  if (any.missing) {
     y <- x[which(!is.na(x))]
   } else {
     y <- x
