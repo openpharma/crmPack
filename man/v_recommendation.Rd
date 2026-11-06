@@ -59,7 +59,7 @@ slot and a flag in the \code{stopHere} slot.
 \item \code{v_recommendationdetails()}: validates that the \code{\link{RecommendationDetails}}
 object contains a positive real number (or \code{NA_numeric_}) in the \code{value}
 slot and a tibble in the \code{details} slot.  Subclasses provide additional
-validation of the \code{detaiuls} slot
+validation of the \code{details} slot
 
 \item \code{v_recommendationtd()}: validates that the tibble in the \code{details} slot
 has columns named \code{Time}, \code{TargetDose}, \code{LowerCI}, \code{UpperCi} and \code{CIRatio},
@@ -67,13 +67,13 @@ the last three of which have \code{NULL}s in the first row and positive values i
 the second.  The tibble should contain only two rows.
 
 \item \code{v_recommendationmaxgain()}: validates that the tibble in the \code{details} slot
-has columns named \code{EstimateType}, \code{TargetDose}, \code{LowerCI}, \code{UpperCi} and \code{CIRatio},
-the last three of which have \code{NULL}s in the first row and psitive values in
+has columns named \code{EstimateType}, \code{TargetDose}, \code{LowerCI}, \code{UpperCI} and \code{CIRatio},
+the last three of which have \code{NULL}s in the first row and positive values in
 the second.  The tibble should contain only two rows.
 
 \item \code{v_recommendationtd()}: validates that the tibble in the \code{details} slot
 has columns named \code{Time}, \code{TargetDose}, \code{LowerCI}, \code{UpperCI} and \code{CIRatio},
-the last three of which have \code{NULL}s in the first row and pOsitive values in
+the last three of which have \code{NULL}s in the first row and positive values in
 the second.  The tibble should contain only two rows.
 
 \item \code{v_recommendationncrmloss()}: validates that the tibble in the \code{details} slot

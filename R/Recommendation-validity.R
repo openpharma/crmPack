@@ -87,7 +87,7 @@ v_recommendationthreeplusthree <- function(object) {
 #' @describeIn v_recommendation validates that the [`RecommendationDetails`]
 #'   object contains a positive real number (or `NA_numeric_`) in the `value`
 #'   slot and a tibble in the `details` slot.  Subclasses provide additional
-#'   validation of the `detaiuls` slot
+#'   validation of the `details` slot
 v_recommendationdetails <- function(object) {
   v <- Validate()
   v$check(
@@ -120,8 +120,8 @@ v_recommendationtd <- function(object) {
 #' Validation Helpers for Recommendation Objects
 #'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
-#' has columns named `EstimateType`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
-#' the last three of which have `NULL`s in the first row and psitive values in
+#' has columns named `EstimateType`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
+#' the last three of which have `NULL`s in the first row and positive values in
 #' the second.  The tibble should contain only two rows.
 v_recommendationmaxgain <- function(object) {
   v <- Validate()
@@ -145,7 +145,7 @@ v_recommendationmaxgain <- function(object) {
 #'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
-#' the last three of which have `NULL`s in the first row and pOsitive values in
+#' the last three of which have `NULL`s in the first row and positive values in
 #' the second.  The tibble should contain only two rows.
 v_recommendationtd <- function(object) {
   v <- Validate()
