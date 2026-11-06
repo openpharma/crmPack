@@ -17,7 +17,7 @@ RecommendationProbs(value = numeric(), details = tibble::tibble(), ...)
 
 \item{...}{not used.}
 
-\item{probs}{(\code{tbl_df})\cr a tibble containing columns for dose and probabilties
+\item{probs}{(\code{tbl_df})\cr a tibble containing columns for dose and probabilities
 of toxicity.  The toxicity grade name is given by the column name.}
 }
 \description{

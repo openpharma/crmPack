@@ -20,7 +20,7 @@ RecommendationProbsDataCombo(
 \item{value}{(\code{number})\cr The recommended dose for the next cohort}
 
 \item{details}{(\code{tbl_df})\cr a tibble containing columns for dose combination,
-probabilties of toxicity & target efficacy and combination eligibility.}
+probabilities of toxicity & target efficacy and combination eligibility.}
 
 \item{...}{not used.}
 }
