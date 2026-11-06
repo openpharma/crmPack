@@ -12,7 +12,8 @@ check_probabilities(
   bounds_closed = TRUE,
   len = NULL,
   unique = FALSE,
-  sorted = FALSE
+  sorted = FALSE,
+  any.missing = FALSE
 )
 
 assert_probabilities(
@@ -21,6 +22,7 @@ assert_probabilities(
   len = NULL,
   unique = FALSE,
   sorted = FALSE,
+  any.missing = FALSE,
   .var.name = checkmate::vname(x),
   add = NULL
 )
@@ -30,7 +32,8 @@ test_probabilities(
   bounds_closed = TRUE,
   len = NULL,
   unique = FALSE,
-  sorted = FALSE
+  sorted = FALSE,
+  any.missing = FALSE
 )
 
 expect_probabilities(
@@ -39,6 +42,7 @@ expect_probabilities(
   len = NULL,
   unique = FALSE,
   sorted = FALSE,
+  any.missing = FALSE,
   info = NULL,
   label = vname(x)
 )
@@ -60,6 +64,9 @@ Must all values be unique? Default is \code{FALSE}.}
 
 \item{sorted}{[\code{logical(1)}]\cr
 Elements must be sorted in ascending order. Missing values are ignored.}
+
+\item{any.missing}{[\code{logical(1)}]\cr
+Are vectors with missing values allowed? Default is \code{TRUE}.}
 
 \item{.var.name}{[\code{character(1)}]\cr
 Name of the checked object to print in assertions. Defaults to
