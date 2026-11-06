@@ -949,7 +949,7 @@ mg_next_best <- NextBestMaxGain(
 )
 
 # doselimit is the maximum allowable dose level to be given to subjects.
-dose_recommendation <- nextBest(
+dose_recommendation <- recommend(
   nextBest = mg_next_best,
   doselimit = 300,
   model = my_model_dlt,
@@ -957,8 +957,7 @@ dose_recommendation <- nextBest(
   data = my_data
 )
 
-dose_recommendation$next_dose
-dose_recommendation$plot
+dose_recommendation
 # Example of usage for `NextBestMaxGainSamples` NextBest class.
 
 # Create the data.
