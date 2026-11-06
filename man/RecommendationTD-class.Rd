@@ -24,12 +24,14 @@ RecommendationTD(value = numeric(), details = tibble::tibble(), ...)
 Typically, end users will not use the \code{.DefaultRecommendationTD()} function.
 }
 \examples{
-RecommendationProbs(
-  value = 1,
+RecommendationTD(
+  value = c(75.0, 75.0),
   details = tibble::tibble(
-    Dose = 1:3,
-    Target = c(0.5, 0.4, 0.1),
-    Overdose = c(0.1, 0.25, 0.5)
+    Time  = c("During trial", "End of Trial"),
+    TargetDose = c(99.8, 81.5),
+    LowerCI = c(NA, 24.3),
+    UpperCI = c(NA, 273.0),
+    CIRatio = c(NA, 11.2)
   )
 )
 }

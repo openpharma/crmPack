@@ -63,7 +63,7 @@ validation of the \code{detaiuls} slot
 
 \item \code{v_recommendationtd()}: validates that the tibble in the \code{details} slot
 has columns named \code{Time}, \code{TargetDose}, \code{LowerCI}, \code{UpperCi} and \code{CIRatio},
-the last three of which have \code{NULL}s in the first row and psitive values in
+the last three of which have \code{NULL}s in the first row and positive values in
 the second.  The tibble should contain only two rows.
 
 \item \code{v_recommendationmaxgain()}: validates that the tibble in the \code{details} slot
