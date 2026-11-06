@@ -36,8 +36,8 @@ setMethod(
     colours <- c("Estimate" = "black", "Next" = "blue",     "Max" = "red")
     refData <- tibble(
       X =      c(dose_target, x@value, doselimit),
-      Label =  c( "Estimate",  "Next",     "Max"),
-      Nudge =  c(          0, -0.005,    0.005) * (range[2] - range[1])
+      Label =  c("Estimate",  "Next",     "Max"),
+      Nudge =  c(0, -0.005,    0.005) * (range[2] - range[1])
     )
     p <- ggplot(
       data = data.frame(x = dose_target_samples),
@@ -91,12 +91,6 @@ setMethod(
     y = "NextBestEWOC"
   ),
   definition = function(x, y, doselimit, data, model, samples, ...) {
-    # prob_plot_type <- match.arg(prob_plot_type)
-    # dose_scale <- match.arg(dose_scale)
-    # axis_ticks <- match.arg(axis_ticks)
-    # safe_dose_marker <- match.arg(safe_dose_marker)
-    # assert_number(axis_text_angle, finite = TRUE)
-    # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(
       data@doseGrid,
       prob,
@@ -135,36 +129,12 @@ setMethod(
     } else {
       NA_real_
     }
-    # overdose_base <- h_next_best_reference_lines(
-    #   ggplot(),
-    #   data@doseGrid,
-    #   dose_scale,
-    #   safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
-    #   overdose_threshold = nextBest@max_overdose_prob * 100
-    # )
 
-    # Build plot for the overdosing probability.
-    # p <- h_next_best_probability_plot(
-    #   dose_grid = data@doseGrid,
-    #   probability = prob_overdose,
-    #   description = "Overdose probability [%]",
-    #   colour = "red",
-    #   prob_plot_type = prob_plot_type,
-    #   dose_scale = dose_scale,
-    #   axis_ticks = axis_ticks,
-    #   axis_text_angle = axis_text_angle,
-    #   base_plot = overdose_base
-    # )
     p <- ggplot() +
            geom_linerange(
              aes(x = data@doseGrid, ymin = 0, ymax = prob_overdose),
              colour = "blue"
           )
-    # if (identical(safe_dose_marker, "triangle")) {
-    #   p <- h_next_best_safety_marker(
-    #     p, safe_dose, prob_overdose, data@doseGrid, dose_scale
-    #   )
-    # }
     p
   }
 )

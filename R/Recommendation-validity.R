@@ -101,7 +101,7 @@ v_recommendationdetails <- function(object) {
 #'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
-#' the last three of which have `NULL`s in the first row and psitive values in
+#' the last three of which have `NULL`s in the first row and positive values in
 #' the second.  The tibble should contain only two rows.
 v_recommendationtd <- function(object) {
   v <- Validate()
@@ -205,7 +205,16 @@ v_recommendationncrmloss <- function(object) {
   )
 
   v$check(
-    test_true(all(round(object@details %>% dplyr::select(-c("Dose", "Mean", "StdDev", "PosteriorLoss")) %>% rowSums(), 3) == 1)),
+    test_true(
+      all(
+        round(
+          object@details %>%
+            dplyr::select(-c("Dose", "Mean", "StdDev", "PosteriorLoss")) %>%
+            rowSums(),
+          3
+        ) == 1
+      )
+    ),
     "probabilities in every row of details must sum to one."
   )
   v$result()
@@ -219,17 +228,17 @@ v_recommendationncrmloss <- function(object) {
 v_recommendationprobsdatacombo <- function(object) {
   v <- Validate()
 
-  # cols <- names(object@details)
-  # for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
-  #   v$check(
-  #     test_probabilities(object@details %>% dplyr::pull(c)),
-  #     "every column of details apart from dose must contain non-missing probabilities."
-  #   )
-  # }
-  # #         Default                            DataCombo
-  # v$check(
-  #   test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
-  #   "details must contain a column named `Dose` (or `Dose1` and `Dose2`)."
-  # )
+  cols <- names(object@details)
+  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
+    v$check(
+      test_probabilities(object@details %>% dplyr::pull(c)),
+      "every column of details apart from dose must contain non-missing probabilities."
+    )
+  }
+  #         Default                            DataCombo
+  v$check(
+    test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
+    "details must contain a column named `Dose` (or `Dose1` and `Dose2`)."
+  )
   v$result()
 }

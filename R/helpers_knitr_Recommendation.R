@@ -79,7 +79,6 @@ knit_print.RecommendationProbs <- function(
 
   param <- h_kable_param_default(
     list(...),
-    # col_names = c("Dose", "P(overdose)", "Recommended?"),
     caption = caption
   )
   if (stringr::str_length(unit) > 0) {
@@ -88,7 +87,6 @@ knit_print.RecommendationProbs <- function(
     tbl <- x@details
   }
   param[["x"]] <- tbl
-  # label <- h_prepare_labels(label)
   rv <- paste0(
     h_get_recommendation_text(x, unit),
     h_get_table_intro(x),
