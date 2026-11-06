@@ -26,12 +26,8 @@ v_recommendation <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationprobs
-#' @param object (`RecommendationProbs`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the [`RecommendationProbs`]
 #'   object contains a positive real number (or `NA_numeric_`) in the `value`
 #'   slot and a tibble in the `probs` slot.
@@ -70,12 +66,8 @@ v_recommendationprobs <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationthreeplusthree
-#' @param object (`RecommendationThreePlusThree`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the [`RecommendationThreePlusThree`]
 #'   object contains a positive real number (or `NA_numeric_`) in the `value`
 #'   slot and a flag in the `stopHere` slot.
@@ -90,12 +82,8 @@ v_recommendationthreeplusthree <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationdetails
-#' @param object (`RecommendationDetails`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the [`RecommendationDetails`]
 #'   object contains a positive real number (or `NA_numeric_`) in the `value`
 #'   slot and a tibble in the `details` slot.  Subclasses provide additional
@@ -109,12 +97,8 @@ v_recommendationdetails <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationtd
-#' @param object (`RecommendationTD`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
 #' the last three of which have `NULL`s in the first row and psitive values in
@@ -133,12 +117,8 @@ v_recommendationtd <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationmaxgain
-#' @param object (`RecommendationMaxGain`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `EstimateType`, `TargetDose`, `LowerCI`, `UpperCi` and `CIRatio`,
 #' the last three of which have `NULL`s in the first row and psitive values in
@@ -161,11 +141,8 @@ v_recommendationmaxgain <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationtd
-#' @param object (`RecommendationTD`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
 #' the last three of which have `NULL`s in the first row and pOsitive values in
@@ -188,6 +165,8 @@ v_recommendationtd <- function(object) {
   v$result()
 }
 
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendationallocation validates that the tibble in the `details` slot
 #' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
 #' the last three of which have `NULL`s in the first row and positive values in
@@ -212,12 +191,8 @@ v_recommendationallocation <- function(object) {
   v$result()
 }
 
-
-#' @name v_recommendationncrmloss
-#' @param object (`RecommendationNCRMLoss`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `Dose`, `Mean`, `StdDev` and `PosteriorLoss`, and that row
 #' sums of the remaining (probability) columns are equal to 1.
@@ -236,29 +211,25 @@ v_recommendationncrmloss <- function(object) {
   v$result()
 }
 
-#' @name v_recommendationprobsdualendpoint
-#' @param object (`RecommendationProbsDualEndpoint`)\cr object to validate.
-#' @return A `character` vector with the validation failure messages,
-#'   or `TRUE` in case validation passes.
-NULL
-
-#' @describeIn v_recommendation validates that the [`RecommendationProbsDualEndpoint`]
+#' Validation Helpers for Recommendation Objects
+#'
+#' @describeIn v_recommendation validates that the [`RecommendationProbsDataCombo`]
 #'   object contains a positive real number (or `NA_numeric_`) in the `value`
 #'   slot and a tibble in the `probs` slot.
-v_recommendationprobsdualendpoint <- function(object) {
+v_recommendationprobsdatacombo <- function(object) {
   v <- Validate()
 
-  cols <- names(object@details)
-  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
-    v$check(
-      test_probabilities(object@details %>% dplyr::pull(c)),
-      "every column of details apart from dose must contain non-missing probabilities."
-    )
-  }
-  #         Default                            DataCombo
-  v$check(
-    test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
-    "details must contain a column named `Dose` (or `Dose1` and `Dose2`)."
-  )
+  # cols <- names(object@details)
+  # for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
+  #   v$check(
+  #     test_probabilities(object@details %>% dplyr::pull(c)),
+  #     "every column of details apart from dose must contain non-missing probabilities."
+  #   )
+  # }
+  # #         Default                            DataCombo
+  # v$check(
+  #   test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
+  #   "details must contain a column named `Dose` (or `Dose1` and `Dose2`)."
+  # )
   v$result()
 }

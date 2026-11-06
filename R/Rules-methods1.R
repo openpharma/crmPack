@@ -344,7 +344,7 @@ setMethod(
     all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
     all_not_eligible[is_below_limit] <- !is_dose_eligible
 
-    RecommendationProbs(
+    RecommendationProbsDataCombo(
       value = next_doses,
       details = tibble::tibble(
         Dose1 = all_dose_matrix[, 1L],
@@ -1567,7 +1567,7 @@ setMethod(
     tibble(
       Dose = names(x@details),
       Prob = unlist(x@details),
-      Suggested = x@value == Dose
+      Recommended = x@value == Dose
     ) %>%
     h_tidy_class(x)
   }

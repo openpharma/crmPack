@@ -133,7 +133,6 @@ Collate:
     'Recommendation-class.R'
     'Recommendation-methods.R'
     'Rules-methods1.R'
-    'helpers_knitr_Recommendation.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
@@ -149,6 +148,7 @@ Collate:
     'helpers_knitr_Increments.R'
     'helpers_knitr_NextBest.R'
     'helpers_knitr_Opening.R'
+    'helpers_knitr_Recommendation.R'
     'helpers_knitr_Recruitment.R'
     'helpers_knitr_SafetyWindow.R'
     'helpers_knitr_Stopping.R'
@@ -157,4 +157,4 @@ Collate:
     'helpers_simulations.R'
     'utils-pipe.R'
     'utils.R'
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

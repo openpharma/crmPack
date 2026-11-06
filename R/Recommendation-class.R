@@ -5,7 +5,7 @@ NULL
 
 # Recommendation-class ----
 
-#' `Recommendation`
+#' The Results of a Call to `recommend`
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -44,7 +44,7 @@ Recommendation <- function(value) {
 #' @note Typically, end users will not use the `.DefaultRecommendation()` function.
 #' @export
 .DefaultRecommendation <- function() {
-  .Recommendation(value = 1)
+  Recommendation(value = 1)
 }
 
 # RecommendationThreePlusThree ----
@@ -84,7 +84,7 @@ Recommendation <- function(value) {
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationThreePlusThree-class.R
+#' @example examples/Rules-class-RecommendationThreePlusThree.R
 #'
 RecommendationThreePlusThree <- function(
     value = numeric(),
@@ -141,7 +141,7 @@ RecommendationThreePlusThree <- function(
 
 ## constructor ----
 
-#' @rdname RecommendationTD-class
+#' @rdname RecommendationDetails-class
 #'
 #' @inheritParams RecommendationDetails
 #' @param ... not used.
@@ -185,7 +185,7 @@ RecommendationDetails <- function(
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationProbs-class.R
+#' @example examples/Rules-class-RecommendationProbs.R
 #'
 RecommendationTD <- function(
     value = numeric(),
@@ -242,7 +242,7 @@ RecommendationTD <- function(
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationMaxGain-class.R
+#' @example examples/Rules-class-RecommendationMaxGain.R
 #'
 RecommendationMaxGain <- function(
     value = numeric(),
@@ -299,7 +299,7 @@ RecommendationMaxGain <- function(
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationAllocation-class.R
+#' @example examples/Rules-class-RecommendationAllocation.R
 #'
 RecommendationAllocation <- function(
     value = numeric(),
@@ -353,7 +353,7 @@ RecommendationAllocation <- function(
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationNCRMLoss-class.R
+#' @example examples/Rules-class-RecommendationNCRMLoss.R
 #'
 RecommendationNCRMLoss <- function(
     value = numeric(),
@@ -421,7 +421,7 @@ RecommendationNCRMLoss <- function(
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationProbs-class.R
+#' @example examples/Rules-class-RecommendationProbs.R
 #'
 RecommendationProbs <- function(
     value = numeric(),
@@ -453,52 +453,54 @@ RecommendationProbs <- function(
 #'
 #' [`RecommendationProbsDataCombo`] inherits from [`RecommendationProbs`].
 #' It differs from [`RecommendationProbs`] because of the need to validate
-#' differently.
+#' and report differently.
 #'
 #'
-#' @aliases RecommendationProbsDualEndpoint
+#' @aliases RecommendationProbsDataCombo
 #' @export
 #'
-.RecommendationProbsDualEndpoint <- setClass(
-  Class = "RecommendationProbsDualEndpoint",
+.RecommendationProbsDataCombo <- setClass(
+  Class = "RecommendationProbsDataCombo",
   contains = "RecommendationDetails",
-  prototype = prototype(
-    backfilled = logical(),
-    detail = tibble::tibble()
-  ),
-  validity = v_recommendationprobsdualendpoint
+  validity = v_recommendationprobsdatacombo
 )
 
 ## constructor ----
 
-#' @rdname RecommendationProbsDualEndpoint-class
+#' @rdname RecommendationProbsDataCombo-class
 #'
 #' @inheritParams Recommendation
-#' @param details (`tbl_df`)\cr a tibble containing columns for dose and probabilties
-#' of toxicity and target efficacy.
+#' @param details (`tbl_df`)\cr a tibble containing columns for dose combination,
+#' probabilties of toxicity & target efficacy and combination eligibility.
 #' @param ... not used.
 #'
 #' @export
-#' @example examples/RecommendationProbs-class.R
+#' @example examples/Rules-class-RecommendationProbsDataCombo.R
 #'
-RecommendationProbsDualEndpoint <- function(
+RecommendationProbsDataCombo <- function(
     value = numeric(),
     details = tibble::tibble(),
     ...
 ) {
   assert_numeric(value)
 
-  .RecommendationProbsDualEndpoint(value = value, details = details)
+  .RecommendationProbsDataCombo(value = value, details = details)
 }
 
 ## default constructor ----
 
-#' @rdname RecommendationProbsDualEndpoint-class
-#' @note Typically, end users will not use the `.DefaultRecommendationProbsDualEndpoint()` function.
+#' @rdname RecommendationProbsDataCombo-class
+#' @note Typically, end users will not use the `.DefaultRecommendationProbsDataCombo` function.
 #' @export
-.DefaultRecommendationProbsDualEndpoint <- function() {
-  RecommendationProbsDualEndpoint(
+.DefaultRecommendationProbsDataCombo <- function() {
+  RecommendationProbsDataCombo(
     value = 1,
-    details = tibble::tibble(Dose = 1, Target = 0.5, Overdose = 0.75)
+    details = tibble::tibble(
+      Dose1 = c(10, 20, 30, 10, 20, 30, 10, 20, 30),
+      Dose2 = c(20, 20, 20, 40, 40, 40, 60, 60, 60),
+      Target =   c(0.276, 0.186, 0.116, 0.161, 0.076, NA, NA, NA, NA),
+      Overdose = c(0.082, 0.131, 0.140, 0.343, 0.188, NA, NA, NA, NA),
+      Eligible = c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE)
+    )
   )
 }

@@ -90,11 +90,9 @@ knit_print.RecommendationProbs <- function(
   param[["x"]] <- tbl
   # label <- h_prepare_labels(label)
   rv <- paste0(
-    "The recommended dose for the next cohort is ",
-    x@value,
-    ifelse(stringr::str_length(unit) > 0, " ", ""),
-    unit,
-    ".\n\nThe overdose probabilities at each dose in the dose grid are given in the table below.\n\n",
+    h_get_recommendation_text(x, unit),
+    h_get_table_intro(x),
+    "\n\n",
     paste0(do.call(knitr::kable, param), collapse = "\n"),
     "\n\n"
   )
@@ -122,7 +120,7 @@ registerS3method("knit_print", "RecommendationProbs", knit_print.RecommendationP
 #' @seealso [`knit_print`] for more details.
 #'
 #' @export
-#' @method knit_print RecommendationProbs
+#' @method knit_print RecommendationThreePlusThree
 #' @rdname knit_print
 knit_print.RecommendationThreePlusThree <- function(
     x,
@@ -185,9 +183,9 @@ h_get_recommendation_text <- function(x, ...) {
 #' @returns a character scalar containing a representation of the current dose
 #' recommendation
 #' @keywords internal
-
+#' @export
 h_get_recommendation_text.Recommendation <- function(x, unit) {
-  if (length(x) == 1) {
+  if (length(x@value) == 1) {
     paste0(
       "The recommended dose for the next cohort is ",
       x@value,
@@ -205,7 +203,7 @@ h_get_recommendation_text.Recommendation <- function(x, unit) {
       x@value[2],
       ifelse(stringr::str_length(unit) > 0, " ", ""),
       unit,
-      " for Drug 2",
+      " for Drug 2.",
       "\n\n"
     )
   }
@@ -220,7 +218,7 @@ h_get_recommendation_text.Recommendation <- function(x, unit) {
 #' @returns a character scalar containing a representation of the current dose
 #' recommendation
 #' @keywords internal
-
+#' @export
 h_get_recommendation_text.RecommendationTD <- function(x, unit) {
   paste0(
     "The recommended dose for the next cohort is ",
@@ -244,9 +242,8 @@ h_get_recommendation_text.RecommendationTD <- function(x, unit) {
 #' @returns a character scalar containing a representation of the current dose
 #' recommendation
 #' @keywords internal
-
+#' @export
 h_get_recommendation_text.RecommendationMaxGain <- function(x, unit) {
-  print("Here!")
   paste0(
     "The recommended dose for the next cohort is ",
     x@value[1],
@@ -271,7 +268,6 @@ h_get_recommendation_text.RecommendationMaxGain <- function(x, unit) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
-
 h_get_table_intro <- function(x, ...) {
   UseMethod("h_get_table_intro")
 }
@@ -298,6 +294,18 @@ h_get_table_intro.RecommendationDetails <- function(x, ...) {
   "Default introduction text.\n\n"
 }
 
+#' Obtain the Introductory Text for a Details Table in a `RecommendationDetails` Object
+#'
+#' @param x (`RecommendationDetails`) The `RecommendationDetails` object
+#' @param ... Not used at present
+#'
+#' @returns a character scalar containing the introductory Markdown
+#' @keywords internal
+#' @export
+h_get_table_intro.RecommendationDetails <- function(x, ...) {
+  "Default introduction text.\n\n"
+}
+
 #' Obtain the Introductory Text for a Details Table in a `RecommendationAllocation` Object
 #'
 #' @param x (`RecommendationAllocation`) The `RecommendationAllocation` object
@@ -305,6 +313,7 @@ h_get_table_intro.RecommendationDetails <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_intro.RecommendationAllocation <- function(x, ...) {
   "The allocation probabilities at each dose in the dose grid are given in the table below.\n\n"
 }
@@ -316,6 +325,7 @@ h_get_table_intro.RecommendationAllocation <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_intro.RecommendationNCRMLoss <- function(x, ...) {
   paste0(
     "For each dose in the dose grid, the table below gives:\n\n",
@@ -334,6 +344,7 @@ h_get_table_intro.RecommendationNCRMLoss <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_intro.RecommendationTD <- function(x, ...) {
   paste0(
     "The table below shows the dose currently expected to provide the target ",
@@ -351,6 +362,7 @@ h_get_table_intro.RecommendationTD <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_intro.RecommendationMaxGain <- function(x, ...) {
   paste0(
     "The table below shows the dose currently expected to provide the target ",
@@ -370,11 +382,29 @@ h_get_table_intro.RecommendationMaxGain <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_intro.RecommendationProbsDualEndpoint <- function(x, ...) {
   paste0(
     "The table below shows the current estimated probabilities of target efficacy ",
     "(based on the biomarker) and overdose (based on predicted incidence of ",
     "toxicities for each dose",
+    "\n\n"
+  )
+}
+
+#' Obtain the Introductory Text for a Details Table in a `RecommendationProbsDataCombot` Object
+#'
+#' @param x (`RecommendationProbsDataCombo`) The `RecommendationProbsDuataCombo` object
+#' @param ... Not used at present
+#'
+#' @returns a character scalar containing the introductory Markdown
+#' @keywords internal
+#' @export
+h_get_table_intro.RecommendationProbsDataCombo <- function(x, ...) {
+  paste0(
+    "The table below shows the current estimated probability of toxicity of ",
+    "each grade for each dose combination, together with a flag indicating ",
+    "whether the combination is eligible for adminsitration to the next cohort.",
     "\n\n"
   )
 }
@@ -386,7 +416,6 @@ h_get_table_intro.RecommendationProbsDualEndpoint <- function(x, ...) {
 #'
 #' @returns a character scalar containing the caption
 #' @keywords internal
-
 h_get_table_caption <- function(x, ...) {
   UseMethod("h_get_table_caption")
 }
@@ -398,6 +427,7 @@ h_get_table_caption <- function(x, ...) {
 #'
 #' @returns a character scalar containing the caption
 #' @keywords internal
+#' @export
 h_get_table_caption.RecommendationAllocation <- function(x, ...) {
   "Allocation Probabilities by Dose"
 }
@@ -409,8 +439,21 @@ h_get_table_caption.RecommendationAllocation <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_caption.RecommendationDetails <- function(x, ...) {
   "Details by Dose"
+}
+
+#' Obtain the Caption for a Details Table in a `RecommendationProbsDataCombo` Object
+#'
+#' @param x (`RecommendationProbsDataCombo`) The `RecommendationProbsDataCombo` object
+#' @param ... Not used at present
+#'
+#' @returns a character scalar containing the introductory Markdown
+#' @keywords internal
+#' @export
+h_get_table_caption.RecommendationProbsDataCombo <- function(x, ...) {
+  "Eligibility and Probabilty of Toxicity by Dose Combination"
 }
 
 #' Obtain the Caption for a Details Table in a `RecommendationNCRMLoss` Object
@@ -420,6 +463,7 @@ h_get_table_caption.RecommendationDetails <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_caption.RecommendationNCRMLoss <- function(x, ...) {
   "Probabilities, Toxicity Estimates and Posterior Losses by Dose"
 }
@@ -431,6 +475,7 @@ h_get_table_caption.RecommendationNCRMLoss <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_caption.RecommendationTD <- function(x, ...) {
   "Summary by Estimation Time"
 }
@@ -442,6 +487,7 @@ h_get_table_caption.RecommendationTD <- function(x, ...) {
 #'
 #' @returns a character scalar containing the introductory Markdown
 #' @keywords internal
+#' @export
 h_get_table_caption.RecommendationDualEndpoint <- function(x, ...) {
   "Efficacy and Toxicity Probabilities by Dose"
 }
