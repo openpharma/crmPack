@@ -229,12 +229,16 @@ v_recommendationprobsdatacombo <- function(object) {
   v <- Validate()
 
   cols <- names(object@details)
-  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2"))]) {
+  for (c in cols[!(cols %in% c("Dose", "Dose1", "Dose2", "Eligible"))]) {
     v$check(
-      test_probabilities(object@details %>% dplyr::pull(c)),
-      "every column of details apart from dose must contain non-missing probabilities."
+      test_probabilities(object@details %>% dplyr::pull(c), any.missing = TRUE),
+      "every column of details apart from Dose and Eligible must contain probabilities, which may be missing."
     )
   }
+  v$check(
+    test_logical(object@details %>% dplyr::pull(Eligible), any.missing = FALSE),
+    "column Eligible of details must contain non-missing logicals."
+  )
   #         Default                            DataCombo
   v$check(
     test_true("Dose" %in% names(object@details) | all(c("Dose1", "Dose2") %in% names(object@details))),
