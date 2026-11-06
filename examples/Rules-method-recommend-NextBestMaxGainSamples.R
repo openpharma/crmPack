@@ -59,8 +59,7 @@ dose_recommendation <- recommend(
   samples_eff = my_samples_effll
 )
 
-dose_recommendation$next_dose
-dose_recommendation$plot
+dose_recommendation
 
 # Now using the 'EffFlexi' class efficacy model:
 
