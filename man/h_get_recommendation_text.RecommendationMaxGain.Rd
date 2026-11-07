@@ -4,7 +4,7 @@
 \alias{h_get_recommendation_text.RecommendationMaxGain}
 \title{Describe a dose recommendation from a \code{RecommendationMaxGain} Object}
 \usage{
-\method{h_get_recommendation_text}{RecommendationMaxGain}(x, unit)
+\method{h_get_recommendation_text}{RecommendationMaxGain}(x, unit, ...)
 }
 \arguments{
 \item{x}{(\code{RecommendationMaxGain}) The \code{RecommendationMaxGain} object}

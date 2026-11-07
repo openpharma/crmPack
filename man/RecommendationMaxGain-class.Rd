@@ -13,6 +13,11 @@ RecommendationMaxGain(value = numeric(), details = tibble::tibble(), ...)
 .DefaultRecommendationMaxGain()
 }
 \arguments{
+\item{value}{(\code{numeric})\cr the dose(s) recommended for the next cohort}
+
+\item{details}{(\code{tbl_df})\cr a tibble containing class-specific details
+associated with the recommendation}
+
 \item{...}{not used.}
 }
 \description{

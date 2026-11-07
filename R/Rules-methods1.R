@@ -1495,7 +1495,7 @@ setMethod(
       Overdose = prob_overdose
     )
 
-    RecommendationProbsDualEndpoint(
+    RecommendationDualEndpoint(
       value = next_dose,
       details = probs
     )

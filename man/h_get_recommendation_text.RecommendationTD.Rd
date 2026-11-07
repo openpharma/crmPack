@@ -4,7 +4,7 @@
 \alias{h_get_recommendation_text.RecommendationTD}
 \title{Describe a dose recommendation from a \code{RecommendationTD} Object}
 \usage{
-\method{h_get_recommendation_text}{RecommendationTD}(x, unit)
+\method{h_get_recommendation_text}{RecommendationTD}(x, unit, ...)
 }
 \arguments{
 \item{x}{(\code{RecommendationTD}) The \code{RecommendationTD} object}

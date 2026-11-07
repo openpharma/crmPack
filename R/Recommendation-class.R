@@ -143,7 +143,9 @@ RecommendationThreePlusThree <- function(
 
 #' @rdname RecommendationDetails-class
 #'
-#' @inheritParams RecommendationDetails
+#' @param value (`numeric`)\cr the dose(s) recommended for the next cohort
+#' @param details (`tbl_df`)\cr a tibble containing class-specific details
+#' associated with the recommendation
 #' @param ... not used.
 #'
 #' A mock function that does nothing
@@ -295,7 +297,7 @@ RecommendationMaxGain <- function(
 
 #' @rdname RecommendationAllocation-class
 #'
-#' @inheritParams Recommendation
+#' @inheritParams RecommendationDetails
 #' @param ... not used.
 #'
 #' @export
@@ -374,17 +376,38 @@ RecommendationNCRMLoss <- function(
   RecommendationNCRMLoss(
     value = 3,
     details = tibble::tibble(
-      Dose =          c(0.1, 0.5, 1.5, 3, 6, 10, 20, 30, 40, 50, 60, 70, 80),
-      Underdosing =   c(1.000, 0.995, 0.973, 0.942, 0.888, 0.730, 0.505, 0.240, 0.108, 0.049, 0.012, 0.008, 0.005),
-      Target =        c(0.000, 0.005, 0.026, 0.057, 0.087, 0.205, 0.290, 0.409, 0.384, 0.291, 0.179, 0.136, 0.105),
-      Excesive =      c(0.000, 0.000, 0.001, 0.001, 0.025, 0.064, 0.181, 0.280, 0.384, 0.502, 0.573, 0.548, 0.507),
-      Unacceptable  = c(0.000, 0.000, 0.000, 0.000, 0.000, 0.001, 0.024, 0.071, 0.124, 0.158, 0.236, 0.308, 0.383),
-      Mean          = c(
-        0.00756, 0.0187, 0.0373, 0.0598, 0.0982, 0.143, 0.238,
-        0.317, 0.383, 0.439, 0.486, 0.525, 0.559
+      Dose = c(
+        0.1, 0.5, 1.5, 3, 6, 10,
+        20, 30, 40, 50, 60, 70, 80
       ),
-      StdDev        = c(0.0182, 0.0327, 0.0505, 0.0671, 0.0892, 0.109, 0.139, 0.154, 0.161, 0.164, 0.166, 0.167, 0.168),
-      PosteriorLoss = c(1.0000, 0.995, 0.974,  0.943,  0.913, 0.796, 0.734, 0.662, 0.740, 0.867, 1.060, 1.170, 1.280)
+      Underdosing = c(
+        1.000, 0.995, 0.973, 0.942, 0.888, 0.730, 0.505,
+        0.240, 0.108, 0.049, 0.012, 0.008, 0.005
+      ),
+      Target = c(
+        0.000, 0.005, 0.026, 0.057, 0.087, 0.205, 0.290,
+        0.409, 0.384, 0.291, 0.179, 0.136, 0.105
+      ),
+      Excessive = c(
+        0.000, 0.000, 0.001, 0.001, 0.025, 0.064, 0.181,
+        0.280, 0.384, 0.502, 0.573, 0.548, 0.507
+      ),
+      Unacceptable  = c(
+        0.000, 0.000, 0.000, 0.000, 0.000, 0.001, 0.024,
+        0.071, 0.124, 0.158, 0.236, 0.308, 0.383
+      ),
+      Mean = c(
+        0.0076, 0.0187, 0.0373, 0.0598, 0.0982, 0.143,
+        0.238, 0.317, 0.383, 0.439, 0.486, 0.525, 0.559
+      ),
+      StdDev = c(
+        0.0182, 0.0327, 0.0505, 0.0671, 0.0892, 0.109,
+        0.139, 0.154, 0.161, 0.164, 0.166, 0.167, 0.168
+      ),
+      PosteriorLoss = c(
+        1.0000, 0.995, 0.974,  0.943,  0.913, 0.796,
+        0.734, 0.662, 0.740, 0.867, 1.060, 1.170, 1.280
+      )
     )
   )
 }
@@ -418,9 +441,7 @@ RecommendationNCRMLoss <- function(
 
 #' @rdname RecommendationProbs-class
 #'
-#' @inheritParams Recommendation
-#' @param probs (`tbl_df`)\cr a tibble containing columns for dose and probabilities
-#' of toxicity.  The toxicity grade name is given by the column name.
+#' @inheritParams RecommendationDetails
 #' @param ... not used.
 #'
 #' @export
@@ -443,6 +464,63 @@ RecommendationProbs <- function(
 #' @export
 .DefaultRecommendationProbs <- function() {
   RecommendationProbs(
+    value = 2,
+    details = tibble::tibble(
+      Dose = 1:4,
+      Target = c(0.3, 0.5, 0.25, 0.1),
+      Overdose = c(0.05, 0.2, 0.5, 0.7)
+    )
+  )
+}
+
+# RecommendationDualEndpoint ----
+
+## class ----
+
+#' `RecommendationDualEndpoint`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`RecommendationDualEndpoint`] inherits from [`RecommendationDetails`]
+#'
+#' @slot details (`tibble`)\cr the probabilities associated with the suggestion.
+#'
+#' @aliases RecommendationDualEndpoint
+#' @export
+#'
+.RecommendationDualEndpoint <- setClass(
+  Class = "RecommendationDualEndpoint",
+  contains = "RecommendationDetails",
+  validity = v_recommendationdualendpoint
+)
+
+## constructor ----
+
+#' @rdname RecommendationDualEndpoint-class
+#'
+#' @inheritParams RecommendationDetails
+#' @param ... not used.
+#'
+#' @export
+#' @example examples/Rules-class-RecommendationDualEndpoint.R
+#'
+RecommendationDualEndpoint <- function(
+    value = numeric(),
+    details = tibble::tibble(),
+    ...
+) {
+  assert_numeric(value)
+
+  .RecommendationDualEndpoint(value = value, details = details)
+}
+
+## default constructor ----
+
+#' @rdname RecommendationDualEndpoint-class
+#' @note Typically, end users will not use the `.DefaultRecommendationDualEndpoint()` function.
+#' @export
+.DefaultRecommendationDualEndpoint <- function() {
+  RecommendationDualEndpoint(
     value = 2,
     details = tibble::tibble(
       Dose = 1:4,
@@ -476,7 +554,7 @@ RecommendationProbs <- function(
 
 #' @rdname RecommendationProbsDataCombo-class
 #'
-#' @inheritParams Recommendation
+#' @inheritParams RecommendationDetails
 #' @param details (`tbl_df`)\cr a tibble containing columns for dose combination,
 #' probabilities of toxicity & target efficacy and combination eligibility.
 #' @param ... not used.

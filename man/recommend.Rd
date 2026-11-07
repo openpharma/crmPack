@@ -1006,7 +1006,7 @@ my_data <- DataDual(
     0.38,
     0.21
   ),
-  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 10))
 )
 
 # Initialize the Dual-Endpoint model (in this case RW1).
@@ -1020,7 +1020,7 @@ my_model <- DualEndpointRW(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
 
 \donttest{
 my_samples <- mcmc(my_data, my_model, my_options)

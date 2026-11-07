@@ -48,8 +48,8 @@ setMethod(
       geom_vline(
         data = refData,
         aes(
-          xintercept = X + Nudge,
-          colour = Label
+          xintercept = X + .data$Nudge,
+          colour = .data$Label
         )
       ) +
       scale_colour_manual(name = " ", values = colours) +

@@ -3,10 +3,12 @@
 \name{v_recommendation}
 \alias{v_recommendation}
 \alias{v_recommendationprobs}
+\alias{v_recommendationdualendpoint}
 \alias{v_recommendationthreeplusthree}
 \alias{v_recommendationdetails}
 \alias{v_recommendationtd}
 \alias{v_recommendationmaxgain}
+\alias{v_recommendationallocation}
 \alias{v_recommendationncrmloss}
 \alias{v_recommendationprobsdatacombo}
 \title{Internal Helper Functions for Validation of \code{\link{Recommendation}} Objects}
@@ -14,6 +16,8 @@
 v_recommendation(object)
 
 v_recommendationprobs(object)
+
+v_recommendationdualendpoint(object)
 
 v_recommendationthreeplusthree(object)
 
@@ -24,6 +28,8 @@ v_recommendationtd(object)
 v_recommendationmaxgain(object)
 
 v_recommendationtd(object)
+
+v_recommendationallocation(object)
 
 v_recommendationncrmloss(object)
 
@@ -52,6 +58,10 @@ slot.
 object contains a positive real number (or \code{NA_numeric_}) in the \code{value}
 slot and a tibble in the \code{probs} slot.
 
+\item \code{v_recommendationdualendpoint()}: validates that the \code{\link{RecommendationDualEndpoint}}
+object contains a positive real number (or \code{NA_numeric_}) in the \code{value}
+slot and a tibble in the \code{probs} slot.
+
 \item \code{v_recommendationthreeplusthree()}: validates that the \code{\link{RecommendationThreePlusThree}}
 object contains a positive real number (or \code{NA_numeric_}) in the \code{value}
 slot and a flag in the \code{stopHere} slot.
@@ -72,6 +82,11 @@ the last three of which have \code{NULL}s in the first row and positive values i
 the second.  The tibble should contain only two rows.
 
 \item \code{v_recommendationtd()}: validates that the tibble in the \code{details} slot
+has columns named \code{Time}, \code{TargetDose}, \code{LowerCI}, \code{UpperCI} and \code{CIRatio},
+the last three of which have \code{NULL}s in the first row and positive values in
+the second.  The tibble should contain only two rows.
+
+\item \code{v_recommendationallocation()}: validates that the tibble in the \code{details} slot
 has columns named \code{Time}, \code{TargetDose}, \code{LowerCI}, \code{UpperCI} and \code{CIRatio},
 the last three of which have \code{NULL}s in the first row and positive values in
 the second.  The tibble should contain only two rows.

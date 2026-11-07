@@ -182,7 +182,7 @@ h_get_recommendation_text <- function(x, ...) {
 #' recommendation
 #' @keywords internal
 #' @export
-h_get_recommendation_text.Recommendation <- function(x, unit) {
+h_get_recommendation_text.Recommendation <- function(x, unit, ...) {
   if (length(x@value) == 1) {
     paste0(
       "The recommended dose for the next cohort is ",
@@ -217,7 +217,7 @@ h_get_recommendation_text.Recommendation <- function(x, unit) {
 #' recommendation
 #' @keywords internal
 #' @export
-h_get_recommendation_text.RecommendationTD <- function(x, unit) {
+h_get_recommendation_text.RecommendationTD <- function(x, unit, ...) {
   paste0(
     "The recommended dose for the next cohort is ",
     x@value[1],
@@ -241,7 +241,7 @@ h_get_recommendation_text.RecommendationTD <- function(x, unit) {
 #' recommendation
 #' @keywords internal
 #' @export
-h_get_recommendation_text.RecommendationMaxGain <- function(x, unit) {
+h_get_recommendation_text.RecommendationMaxGain <- function(x, unit, ...) {
   paste0(
     "The recommended dose for the next cohort is ",
     x@value[1],

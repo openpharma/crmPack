@@ -13,12 +13,12 @@ RecommendationProbs(value = numeric(), details = tibble::tibble(), ...)
 .DefaultRecommendationProbs()
 }
 \arguments{
-\item{value}{(\code{number})\cr The recommended dose for the next cohort}
+\item{value}{(\code{numeric})\cr the dose(s) recommended for the next cohort}
+
+\item{details}{(\code{tbl_df})\cr a tibble containing class-specific details
+associated with the recommendation}
 
 \item{...}{not used.}
-
-\item{probs}{(\code{tbl_df})\cr a tibble containing columns for dose and probabilities
-of toxicity.  The toxicity grade name is given by the column name.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -68,6 +68,32 @@ v_recommendationprobs <- function(object) {
 
 #' Validation Helpers for Recommendation Objects
 #'
+#' @describeIn v_recommendation validates that the [`RecommendationDualEndpoint`]
+#'   object contains a positive real number (or `NA_numeric_`) in the `value`
+#'   slot and a tibble in the `probs` slot.
+v_recommendationdualendpoint <- function(object) {
+  v <- Validate()
+
+  cols <- names(object@details)
+  for (c in cols[!(cols %in% c("Dose"))]) {
+    v$check(
+      test_probabilities(
+        object@details %>% dplyr::pull(c),
+        any.missing = TRUE
+      ),
+      "every column of details apart from Dose must contain non-missing probabilities."
+    )
+  }
+  #         Default                            DataCombo
+  v$check(
+    test_true("Dose" %in% names(object@details)),
+    "details must contain a column named `Dose`."
+  )
+  v$result()
+}
+
+#' Validation Helpers for Recommendation Objects
+#'
 #' @describeIn v_recommendation validates that the [`RecommendationThreePlusThree`]
 #'   object contains a positive real number (or `NA_numeric_`) in the `value`
 #'   slot and a flag in the `stopHere` slot.
@@ -167,7 +193,7 @@ v_recommendationtd <- function(object) {
 
 #' Validation Helpers for Recommendation Objects
 #'
-#' @describeIn v_recommendationallocation validates that the tibble in the `details` slot
+#' @describeIn v_recommendation validates that the tibble in the `details` slot
 #' has columns named `Time`, `TargetDose`, `LowerCI`, `UpperCI` and `CIRatio`,
 #' the last three of which have `NULL`s in the first row and positive values in
 #' the second.  The tibble should contain only two rows.
@@ -180,7 +206,7 @@ v_recommendationallocation <- function(object) {
   )
   if ("Allocation" %in% names(object@details)) {
     v$check(
-      test_probabilities(object@details %>% dplyr::pull(Allocation)),
+      test_probabilities(object@details %>% dplyr::pull(.data$Allocation)),
       "The Allocation column in the details tibble must contain non-missing probabilities"
     )
     v$check(
@@ -236,7 +262,7 @@ v_recommendationprobsdatacombo <- function(object) {
     )
   }
   v$check(
-    test_logical(object@details %>% dplyr::pull(Eligible), any.missing = FALSE),
+    test_logical(object@details %>% dplyr::pull(.data$Eligible), any.missing = FALSE),
     "column Eligible of details must contain non-missing logicals."
   )
   #         Default                            DataCombo

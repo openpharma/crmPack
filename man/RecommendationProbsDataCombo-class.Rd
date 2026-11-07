@@ -17,7 +17,7 @@ RecommendationProbsDataCombo(
 .DefaultRecommendationProbsDataCombo()
 }
 \arguments{
-\item{value}{(\code{number})\cr The recommended dose for the next cohort}
+\item{value}{(\code{numeric})\cr the dose(s) recommended for the next cohort}
 
 \item{details}{(\code{tbl_df})\cr a tibble containing columns for dose combination,
 probabilities of toxicity & target efficacy and combination eligibility.}
