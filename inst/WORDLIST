@@ -225,6 +225,7 @@ modelling
 monotherapy
 nObs
 namespaced
+NextBestMTD
 nd
 neighbouring
 nextBest
@@ -258,6 +259,7 @@ setkeys
 showLegend
 singlePlots
 smallmatrix
+StopGo
 stopTrial
 subfolder
 subtractive

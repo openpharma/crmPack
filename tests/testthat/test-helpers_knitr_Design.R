@@ -1,6 +1,6 @@
 # Generic testing for existence of methods, return type and stability of output
 # takes place in test-crmPackClass-methods.R.  Correctness of output for
-# idividual slots is tested in class-specific tests elsewhere. This file tests
+# individual slots is tested in class-specific tests elsewhere. This file tests
 # only the correct action of method-specific arguments.  For simplicity,
 # use asis = FALSE throughout.
 

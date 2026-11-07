@@ -949,7 +949,7 @@ mg_next_best <- NextBestMaxGain(
 )
 
 # doselimit is the maximum allowable dose level to be given to subjects.
-dose_recommendation <- nextBest(
+dose_recommendation <- recommend(
   nextBest = mg_next_best,
   doselimit = 300,
   model = my_model_dlt,
@@ -957,8 +957,7 @@ dose_recommendation <- nextBest(
   data = my_data
 )
 
-dose_recommendation$next_dose
-dose_recommendation$plot
+dose_recommendation
 # Example of usage for `NextBestMaxGainSamples` NextBest class.
 
 # Create the data.
@@ -1103,7 +1102,7 @@ my_data <- Data(
 )
 
 # Initialize the CRM model used to model the data.
-my_model <- my_model <- LogisticKadaneBetaGamma(
+my_model <- LogisticKadaneBetaGamma(
   theta = 0.3,
   xmin = 1.5,
   xmax = 7,
@@ -1114,7 +1113,7 @@ my_model <- my_model <- LogisticKadaneBetaGamma(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 5, step = 1, samples = 10)
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -1127,13 +1126,14 @@ next_max_dose <- maxDose(my_increments, data = my_data)
 nb_mtd_min_dist <- NextBestProbMTDMinDist(target = 0.3)
 
 # Calculate the next best dose.
-dose_recommendation <- nextBest(
+dose_recommendation <- recommend(
   nextBest = nb_mtd_min_dist,
   doselimit = next_max_dose,
   samples = my_samples,
   model = my_model,
   data = my_data
 )
+dose_recommendation
 ordinal_data <- .DefaultDataOrdinal()
 ordinal_model <- .DefaultLogisticLogNormalOrdinal()
 options <- .DefaultMcmcOptions()

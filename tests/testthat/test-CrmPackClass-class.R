@@ -57,6 +57,7 @@ test_that("CrmPackClass correctly identifies crmPack classes", {
     "PseudoDualFlexiSimulations",
     "PseudoFlexiSimulations",
     "PseudoSimulationsSummary",
+    "RecommendationDetails",
     "Recruitment",
     "SimulationsSummary",
     "Report",
