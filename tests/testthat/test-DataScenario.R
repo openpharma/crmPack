@@ -191,3 +191,59 @@ test_that("placebo does not determine current active dose", {
   expect_equal(d$current_dose[[1]], c(dose = 2))
   expect_equal(sum(d$n_patients), 4L)
 })
+
+
+test_that("data scenario pages keep observations and stopped decisions aligned", {
+  active <- local_data_scenario()
+  stopped <- active
+  stopped@stop$overall <- TRUE
+  stopped@stop_reason$overall <- "Safety"
+  x <- report_data_scenarios(list(Active = active, Stopped = stopped))
+  original <- x
+  pages <- report_paginate(x, max_cols = 4)
+  expect_identical(x, original)
+  expect_length(pages, 4)
+  expect_equal(
+    lapply(pages, attr, "report_columns"),
+    list(
+      c("scenario", "observed_dose", "n_patients", "n_dlts"),
+      c("scenario", "observed_dose", "current_dose", "current_overdose_prob"),
+      c("scenario", "observed_dose", "next_action", "target"),
+      c("scenario", "observed_dose", "overdose")
+    )
+  )
+  text <- paste(report_table(pages[[3]]), collapse = "\n")
+  expect_match(text, "Stop: Safety")
+  expect_match(text, "3 (n = 3)", fixed = TRUE)
+  expect_match(text, "0.300")
+  lines <- strsplit(text, "\n")[[1]]
+  expect_false(any(grepl("0.300", lines[grepl("Stopped", lines)])))
+  expect_equal(pages[[3]]$target, x$target)
+  expect_equal(
+    attr(report_paginate(pages[[3]], max_cols = 3)[[1]], "report_columns"),
+    c("scenario", "observed_dose", "next_action")
+  )
+  hierarchical <- x
+  attr(hierarchical, "hierarchical") <- TRUE
+  arm_pages <- report_paginate(hierarchical, max_cols = 4)
+  expect_equal(
+    attr(arm_pages[[1]], "report_columns"),
+    c("scenario", "arm", "observed_dose", "n_patients")
+  )
+  expect_match(paste(report_table(arm_pages[[1]]), collapse = "\n"), "Arm")
+  single <- report_paginate(active, max_cols = 4)
+  expect_s3_class(single[[1]], "tbl_DataScenario")
+  expect_match(paste(report_table(single[[3]]), collapse = "\n"), "Next action")
+  if (requireNamespace("gt", quietly = TRUE)) {
+    withr::local_options(sass.cache = FALSE)
+    tables <- report_table(pages, "gt")
+    expect_length(tables, 4)
+    expect_equal(
+      names(tables[[4]][["_data"]]),
+      c("scenario", "observed_dose", "overdose")
+    )
+    html <- gt::as_raw_html(tables[[3]])
+    expect_match(html, "Stop: Safety")
+    expect_match(html, "Interval probabilities")
+  }
+})

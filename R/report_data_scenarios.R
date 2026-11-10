@@ -164,6 +164,10 @@ report_table.tbl_DataScenarios <- function(
       labels[names(custom)] <- custom
     }
   }
+  selected <- attr(x, "report_columns")
+  if (!is.null(selected)) {
+    display <- display[intersect(selected, names(display))]
+  }
   if (format == "kable") {
     names(display) <- unname(labels[names(display)])
     return(knitr::kable(display, format = "pipe", row.names = FALSE, ...))
@@ -176,11 +180,16 @@ report_table.tbl_DataScenarios <- function(
     table,
     .list = as.list(labels[setdiff(names(display), "scenario")])
   )
+  observed <- intersect(
+    c("observed_dose", "n_patients", "n_dlts"),
+    names(display)
+  )
   table <- gt::tab_spanner(
     table,
     label = "Observed data",
-    columns = c("observed_dose", "n_patients", "n_dlts")
+    columns = observed
   )
+  probs <- intersect(probs, names(display))
   if (length(probs)) {
     table <- gt::tab_spanner(
       table,
@@ -211,10 +220,7 @@ report_table.DataScenario <- function(x, format = c("kable", "gt"), ...) {
 #' @return Markdown as asis_output.
 #' @export
 knit_print.DataScenario <- function(x, ..., options = NULL) {
-  knitr::asis_output(paste(
-    report_table(x, format = "kable", ...),
-    collapse = "\n"
-  ))
+  h_knit_report_table(x, ...)
 }
 
 #' @rdname knit_print.DataScenario

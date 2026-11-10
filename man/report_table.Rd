@@ -4,6 +4,7 @@
 \alias{report_table}
 \alias{report_table.ToxicityScenarios}
 \alias{report_table.tbl_ToxicityScenarios}
+\alias{report_table.list}
 \title{Render a Reporting Table}
 \usage{
 report_table(x, format = c("kable", "gt"), ...)
@@ -11,9 +12,12 @@ report_table(x, format = c("kable", "gt"), ...)
 \method{report_table}{ToxicityScenarios}(x, format = c("kable", "gt"), ...)
 
 \method{report_table}{tbl_ToxicityScenarios}(x, format = c("kable", "gt"), ..., digits = 3L)
+
+\method{report_table}{list}(x, format = c("kable", "gt"), ...)
 }
 \arguments{
-\item{x}{A reporting object or classed reporting tibble.}
+\item{x}{A reporting object, classed reporting tibble, or nonempty list
+of these.}
 
 \item{format}{Renderer: \code{"kable"} (pipe markdown, the default) or \code{"gt"}
 (requires the suggested package \code{gt}).}
@@ -23,10 +27,22 @@ report_table(x, format = c("kable", "gt"), ...)
 \item{digits}{Non-negative integer number of decimal places for probabilities.}
 }
 \value{
-A \code{knitr_kable} or \code{gt_tbl} object.
+A \code{knitr_kable} or \code{gt_tbl} object. For a nonempty list of reporting
+tables, a \code{report_tables} list of rendered tables, displayed consecutively
+by knitr. See \code{\link[=report_paginate]{report_paginate()}} to split wide tables.
 }
 \description{
 Render reporting objects or their classed tidy tibbles. Toxicity scenario
 tables have scenarios as rows and doses as columns. Numeric probabilities
 are rounded only for display. Use \code{\link[=tidy]{tidy()}} to obtain unrounded long data.
+}
+\details{
+Bare reporting objects in R Markdown or Quarto use pipe markdown,
+including for Word output. For a styled standalone Word table, use
+\code{report_table(x, format = "gt") |> gt::gtsave("table.docx")}. This
+requires \code{gt}, \code{rmarkdown}, and Pandoc. Save each rendered part separately
+when exporting a paginated table.
+}
+\seealso{
+\code{\link[=report_paginate]{report_paginate()}}, \code{\link[gt:gtsave]{gt::gtsave()}}
 }

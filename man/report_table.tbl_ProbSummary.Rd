@@ -7,7 +7,8 @@
 \method{report_table}{tbl_ProbSummary}(x, format = c("kable", "gt"), ..., digits = 3L)
 }
 \arguments{
-\item{x}{A reporting object or classed reporting tibble.}
+\item{x}{A reporting object, classed reporting tibble, or nonempty list
+of these.}
 
 \item{format}{Renderer: \code{"kable"} (pipe markdown, the default) or \code{"gt"}
 (requires the suggested package \code{gt}).}

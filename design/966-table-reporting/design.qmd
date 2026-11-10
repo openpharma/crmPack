@@ -869,10 +869,33 @@ report_table(x, format = c("gt", "kable"), ...)
 - **Markdown**: `format = "kable"` emits pipe-table markdown using only
   existing Imports.
 - **Pagination**: a helper `report_paginate(x, max_cols = 6, keep = "label")`
-  splits a wide table into a list of tables repeating the row-label column(s);
-  `report_table()` accepts the list and emits the parts in sequence. This
+  splits a wide table into a list of tables repeating the identifier column(s).
+  `max_cols` counts all rendered columns, including identifiers; `keep` can
+  repeat extra columns by their original keys. `report_table()` accepts the
+  list and knitr emits the parts in sequence. Physical page breaks depend on
+  the document layout. This
   covers "automatic page/table breaks if there are too many columns" for both
   many-scenario overview tables and many-dose detail tables.
+
+### Implemented rendering and export usage
+
+All current reporting table classes support `report_paginate()`, including
+probability summaries and hypothetical data scenarios. It returns a
+`report_tables` list of classed skeletons with stored values and layout metadata.
+Both the skeleton list and `report_table(pages)` render consecutively in knitr.
+For gt output, `report_table(pages, format = "gt")` returns a list of gt tables;
+export each part separately with `gt::gtsave()`. Word export needs `rmarkdown`
+and Pandoc in addition to gt. Bare reporting objects use portable pipe markdown
+in Word reports. The existing "Describing crmPack Objects" vignette documents
+these paths; the end-to-end simulation-reporting vignette remains step 10.
+
+```{r}
+#| eval: false
+pages <- report_paginate(overview, max_cols = 4)
+report_table(pages)
+report_table(report_paginate(detail, max_cols = 6, keep = c("label", "SUM")))
+report_table(overview, format = "gt") |> gt::gtsave("overview.docx")
+```
 
 # Dependencies
 
@@ -910,7 +933,7 @@ Sliced so that each step is an independently reviewable PR with tests
 7. Done: **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
    spanner/title).
 8. Done: **`report_oc_detail()`** + scenario-faceted summary plots.
-9. **Rendering/export polish**: `report_table()` generic, `knit_print`
+9. Done: **Rendering/export polish**: `report_table()` generic, `knit_print`
    methods, `report_paginate()`, Word-export documentation.
 10. **Vignette** "Reporting simulation results" reproducing the hypothetical
     data-scenario, Bayer, BI, Merck, and PMDA example tables end-to-end.

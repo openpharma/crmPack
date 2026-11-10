@@ -2,6 +2,11 @@
 
 ### New Features
 
+* Added `report_paginate()` to split wide reporting tables while repeating
+  identifier columns and preserving stored values and display metadata.
+  `report_table()` now accepts lists, with consecutive knitr rendering.
+  The object-description vignette documents pagination and Word export.
+
 * Added `report_oc_detail()` for per-dose operating-characteristics tables,
   with tibble, markdown, and `gt` formats; scenario row groups; optional mean/SD
   count summaries. `plot()` on `SimulationsSummaryList` now provides scenario-faceted dose selection and mean patient-count plots.

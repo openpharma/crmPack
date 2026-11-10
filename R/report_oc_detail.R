@@ -382,8 +382,5 @@ h_oc_present_order <- function(configured, present) {
 #' @return Markdown wrapped in `knitr::asis_output()`.
 #' @export
 knit_print.tbl_OCDetail <- function(x, ..., options = NULL) {
-  knitr::asis_output(paste(
-    report_table(x, format = "kable", ...),
-    collapse = "\n"
-  ))
+  h_knit_report_table(x, ...)
 }

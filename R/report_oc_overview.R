@@ -356,8 +356,5 @@ report_table.tbl_OCOverview <- function(
 #' @return Markdown wrapped in `knitr::asis_output()`.
 #' @export
 knit_print.tbl_OCOverview <- function(x, ..., options = NULL) {
-  knitr::asis_output(paste(
-    report_table(x, format = "kable", ...),
-    collapse = "\n"
-  ))
+  h_knit_report_table(x, ...)
 }
