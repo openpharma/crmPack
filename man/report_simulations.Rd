@@ -34,7 +34,14 @@ with a matrix \code{stop_report} slot.}
 \item{stop_categories}{Optional named list mapping category names to stopping
 rule report labels. Categories count trials where any mapped rule fired,
 rather than adding percentages. Unmapped labels remain as individual rows.
-With \code{NULL}, report each rule separately; default categories are deferred.
+With \code{NULL}, use class-based PMDA-style defaults: \code{Toxicity} for
+\code{StoppingLowestDoseHSRBeta}, \verb{Max patients} for \code{StoppingMinPatients} and
+\code{StoppingMinCohorts}, and \code{Other} for other bundled rules. Missing-dose,
+composite and wrapper rules are \code{Other}: their class alone does not prove
+toxicity. Unknown classes and legacy reports without metadata retain their
+labels. \code{list()} requests individual rules. These are rule activations,
+not mutually exclusive causes of termination; minimum-size rules may also
+be gates inside composite rules.
 Set stopping rules' \code{report_label}s to obtain readable output.}
 }
 \value{

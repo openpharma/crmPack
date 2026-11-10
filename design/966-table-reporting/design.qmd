@@ -386,8 +386,10 @@ result@next_dose$overall
 tidy(result)
 report_data_scenarios(list("Snapshot 1" = result))
 report_data_scenarios(result, format = "kable", dose_digits = 1)
-report_table(tidy(result), format = "gt",
-             probability_labels = c(overdose = "P(ODS)"))
+report_table(tidy(result),
+    format = "gt",
+    probability_labels = c(overdose = "P(ODS)")
+)
 ```
 
 Dose list-columns have paired `*_display` columns. Supply `drug_names`, `units`,
@@ -512,8 +514,10 @@ prior_summary <- report_prob_summary(
 )
 report_table(prior_summary, format = "kable", digits = 3)
 report_table(prior_summary, format = "gt")
-plot(samples, model, empty_data, statistic = "median", level = 0.9,
-     target = c(0.2, 0.35))
+plot(samples, model, empty_data,
+    statistic = "median", level = 0.9,
+    target = c(0.2, 0.35)
+)
 plot_prior_draws(samples, model, empty_data, n = 100, seed = 42)
 ```
 
@@ -600,6 +604,61 @@ are expressed as distinct registry entries or via options, e.g.:
 Users mix built-in names and custom `OCStat` objects in one `stats = list(...)`
 argument, and can relabel any row (`label` override), which fulfils the
 "add/remove statistics" and "programmatic headers/labels" requirements.
+
+### Implemented registry and summary collection
+
+`SimulationsSummaryList()` accepts named simulation arguments or one named list.
+It retains the simulations and caches `summary()` once per scenario, with the
+shared target and each simulation's stored truth. The initial implementation
+supports single-agent binary-toxicity `GeneralSimulations`, `Simulations`, and
+`DASimulations`; combination, hierarchical, pseudo and dual results are deferred.
+
+```{r}
+#| eval: false
+oc_summary <- SimulationsSummaryList(
+    "Scenario 1" = sims1, "Scenario 2" = sims2,
+    target = c(0.2, 0.35)
+)
+registry <- oc_stat_registry(oc_summary, sd = TRUE, quantiles = c(0.1, 0.9))
+names(registry)
+registry$n_pat_mean_sd$label <- "Total patients, mean (SD)"
+stat <- registry$n_pat_mean_sd
+values <- stat$fun(
+    oc_summary@simulations[[1]], oc_summary@summaries[[1]],
+    "Scenario 1"
+)
+# The later assembly layer applies stat$format to these numeric components.
+```
+
+`OCStat` is an S3 list with `label`, `fun`, and `format`. Its function returns a
+numeric vector for one cell (for example, mean and SD), or a uniquely named list
+of numeric vectors for multiple rows (for example, per-dose counts). A format
+string consumes the vector components as successive `sprintf()` arguments; a
+format function consumes the vector and returns one string. Raw numeric values
+remain available independently of display formatting. Scalar numeric derived
+statistics become registry candidates named `additional:<name>`; missing values
+propagate, and a candidate unavailable in a scenario yields `NA`.
+
+Default stopping categories now apply to `report_stop_reasons()` too:
+`StoppingLowestDoseHSRBeta` maps to **Toxicity**, `StoppingMinPatients` and
+`StoppingMinCohorts` to **Max patients**, and other bundled rules to **Other**.
+A missing dose alone does not establish toxicity; wrappers and composite rules
+also remain **Other**. Unknown classes and reports without class metadata keep
+their individual labels. Supply explicit `stop_categories` to override defaults,
+or `list()` for individual rules, and give rules readable `report_label`s.
+Categories count the union of rule activations in each trial. These may overlap
+and may include minimum-size gates within composite rules, so they do not
+establish mutually exclusive causes of termination. In particular, the maximum
+patients percentage does not itself mean that no MTD was recommended; use the
+MTD classification separately. Missing class metadata yields `NA` for default
+category statistics when the category cannot be identified.
+
+Per-dose selection includes all grid doses and no recommendation. A selection
+at the highest dose is not automatically called "highest dose safe"; a separate
+rule-based definition is needed before adding that special column. Duration
+uses recorded `DASimulations@trial_duration` values in their original units;
+other simulations yield unavailable duration rather than a cohort-based proxy.
+Overview/detail assembly and rendering remain steps 7 and 8.
 
 ## Overview table (PMDA-style, scenarios as columns)
 
@@ -725,7 +784,7 @@ Sliced so that each step is an independently reviewable PR with tests
    including single-agent, combination, and hierarchical result flattening.
 5. Done: **`report_prob_summary()`** + prior plot extensions (`target` overlay,
    `statistic`/`level` options) + `plot_prior_draws()`.
-6. **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
+6. Done: **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
    registry, PMDA-style default `stop_categories`).
 7. **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
    spanner/title).

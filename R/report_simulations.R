@@ -14,7 +14,14 @@
 #' @param stop_categories Optional named list mapping category names to stopping
 #'   rule report labels. Categories count trials where any mapped rule fired,
 #'   rather than adding percentages. Unmapped labels remain as individual rows.
-#'   With `NULL`, report each rule separately; default categories are deferred.
+#'   With `NULL`, use class-based PMDA-style defaults: `Toxicity` for
+#'   `StoppingLowestDoseHSRBeta`, `Max patients` for `StoppingMinPatients` and
+#'   `StoppingMinCohorts`, and `Other` for other bundled rules. Missing-dose,
+#'   composite and wrapper rules are `Other`: their class alone does not prove
+#'   toxicity. Unknown classes and legacy reports without metadata retain their
+#'   labels. `list()` requests individual rules. These are rule activations,
+#'   not mutually exclusive causes of termination; minimum-size rules may also
+#'   be gates inside composite rules.
 #'   Set stopping rules' `report_label`s to obtain readable output.
 #'
 #' @return A tibble, depending on the accessor called:
@@ -210,7 +217,14 @@ report_stop_reasons <- function(sims, stop_categories = NULL) {
   ) {
     stop("sims must have a matrix stop_report slot.")
   }
-  h_report_stop_reasons(sims@stop_report, stop_categories)
+  h_report_stop_reasons(
+    sims@stop_report,
+    if (is.null(stop_categories)) {
+      h_default_stop_categories(sims@stop_report)
+    } else {
+      stop_categories
+    }
+  )
 }
 
 #' Summarize Stopping Outcomes
@@ -266,4 +280,45 @@ h_report_stop_reasons <- function(report, categories = NULL) {
     n = unname(n),
     percent = unname(n) / nrow(report) * 100
   )
+}
+
+#' Resolve Default Stopping Categories from Rule Classes
+#' @param report Logical stop report matrix with optional class metadata.
+#' @return Named list mapping default categories to report labels.
+#' @keywords internal
+#' @noRd
+h_default_stop_categories <- function(report) {
+  classes <- attr(report, "stopping_classes")
+  labels <- colnames(report)
+  classes <- classes[labels]
+  # Explicitly enumerate bundled classes; unknown/custom classes stay unmapped.
+  other <- c(
+    "StoppingMissingDose",
+    "StoppingCohortsNearDose",
+    "StoppingDoseStabilized",
+    "StoppingPatientsNearDose",
+    "StoppingTargetProb",
+    "StoppingMTDdistribution",
+    "StoppingMTDCV",
+    "StoppingTargetBiomarker",
+    "StoppingSpecificDose",
+    "StoppingHighestDose",
+    "StoppingTDCIRatio",
+    "StoppingMaxGainCIRatio",
+    "StoppingList",
+    "StoppingAll",
+    "StoppingAny",
+    "StoppingOrdinal",
+    "StoppingExternal"
+  )
+  groups <- list(
+    Toxicity = labels[!is.na(classes) & classes == "StoppingLowestDoseHSRBeta"],
+    `Max patients` = labels[
+      !is.na(classes) &
+        classes %in% c("StoppingMinPatients", "StoppingMinCohorts")
+    ],
+    Other = labels[!is.na(classes) & classes %in% other]
+  )
+  groups <- lapply(groups, function(x) x[!is.na(x)])
+  groups[lengths(groups) > 0L]
 }

@@ -2,6 +2,12 @@
 
 ### New Features
 
+* Added `SimulationsSummaryList()` to cache summaries across named simulation
+  scenarios, and `OCStat()` / `oc_stat_registry()` for configurable operating
+  characteristics, per-dose rows, and scalar derived statistics. Stop reporting
+  now supports class-based default categories; `stop_categories = list()`
+  retains individual rule labels.
+
 * Added `report_prob_summary()` to summarize prior or posterior toxicity
   probabilities by dose, with optional means, standard deviations, quantiles,
   and interval probabilities. Results support automatic knitr tables and
