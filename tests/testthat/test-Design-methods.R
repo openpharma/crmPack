@@ -401,32 +401,19 @@ test_that("scenario-Design returns the expected shortcut results", {
 
   result <- scenario(design, data, mcmc_options)
 
-  expect_named(
-    result,
-    c(
-      "data",
-      "samples",
-      "fit",
-      "dose_limit",
-      "next_best",
-      "next_dose",
-      "cohort_size",
-      "placebo_cohort_size",
-      "stop",
-      "stop_report",
-      "stop_reason"
-    )
-  )
-  expect_s4_class(result$data, "Data")
-  expect_s4_class(result$samples, "Samples")
-  expect_data_frame(result$fit)
-  expect_list(result$next_best)
-  expect_number(result$next_dose, lower = 0, na.ok = TRUE)
-  expect_count(result$cohort_size, positive = TRUE, na.ok = TRUE)
-  expect_null(result$placebo_cohort_size)
-  expect_logical(result$stop, len = 1)
-  expect_logical(result$stop_report)
-  expect_list(result$stop_reason)
+  expect_s4_class(result, "DataScenario")
+  expect_true(validObject(result))
+  expect_s3_class(tidy(result), "tbl_DataScenario")
+  expect_s4_class(result@data, "Data")
+  expect_s4_class(result@samples, "Samples")
+  expect_data_frame(result@fit$overall)
+  expect_list(result@next_best$overall)
+  expect_number(result@next_dose$overall, lower = 0, na.ok = TRUE)
+  expect_count(result@cohort_size$overall, positive = TRUE, na.ok = TRUE)
+  expect_null(result@placebo_cohort_size$overall)
+  expect_logical(result@stop$overall, len = 1)
+  expect_logical(result@stop_report$overall)
+  expect_list(result@stop_reason$overall)
 })
 
 test_that("scenario-DesignCombo returns the expected shortcut results", {
@@ -480,34 +467,21 @@ test_that("scenario-DesignCombo returns the expected shortcut results", {
 
   result <- scenario(design, data, mcmc_options)
 
-  expect_named(
-    result,
-    c(
-      "data",
-      "samples",
-      "fit",
-      "dose_limit",
-      "next_best",
-      "next_dose",
-      "cohort_size",
-      "placebo_cohort_size",
-      "stop",
-      "stop_report",
-      "stop_reason"
-    )
-  )
-  expect_s4_class(result$data, "DataCombo")
-  expect_s4_class(result$samples, "Samples")
-  expect_data_frame(result$fit)
-  expect_list(result$next_best)
-  expect_matrix(result$dose_limit, ncols = 2)
-  expect_named(result$next_dose, data@drugNames)
-  expect_numeric(result$next_dose, len = 2, any.missing = TRUE)
-  expect_count(result$cohort_size, positive = TRUE, na.ok = TRUE)
-  expect_null(result$placebo_cohort_size)
-  expect_logical(result$stop, len = 1)
-  expect_logical(result$stop_report)
-  expect_character(result$stop_reason, len = 1)
+  expect_s4_class(result, "DataScenario")
+  expect_true(validObject(result))
+  expect_s3_class(tidy(result), "tbl_DataScenario")
+  expect_s4_class(result@data, "DataCombo")
+  expect_s4_class(result@samples, "Samples")
+  expect_data_frame(result@fit$overall)
+  expect_list(result@next_best$overall)
+  expect_matrix(result@dose_limit$overall, ncols = 2)
+  expect_named(result@next_dose$overall, data@drugNames)
+  expect_numeric(result@next_dose$overall, len = 2, any.missing = TRUE)
+  expect_count(result@cohort_size$overall, positive = TRUE, na.ok = TRUE)
+  expect_null(result@placebo_cohort_size$overall)
+  expect_logical(result@stop$overall, len = 1)
+  expect_logical(result@stop_report$overall)
+  expect_character(result@stop_reason$overall, len = 1)
 })
 
 test_that("scenario-DADesign returns the expected shortcut results", {
@@ -526,33 +500,20 @@ test_that("scenario-DADesign returns the expected shortcut results", {
 
   result <- scenario(design, data, mcmc_options)
 
-  expect_named(
-    result,
-    c(
-      "data",
-      "samples",
-      "fit",
-      "dose_limit",
-      "next_best",
-      "next_dose",
-      "cohort_size",
-      "placebo_cohort_size",
-      "stop",
-      "stop_report",
-      "stop_reason"
-    )
-  )
-  expect_s4_class(result$data, "DataDA")
-  expect_s4_class(result$samples, "Samples")
-  expect_data_frame(result$fit)
-  expect_list(result$next_best)
-  expect_number(result$dose_limit, lower = 0, finite = FALSE)
-  expect_number(result$next_dose, lower = 0, na.ok = TRUE)
-  expect_count(result$cohort_size, positive = TRUE, na.ok = TRUE)
-  expect_null(result$placebo_cohort_size)
-  expect_logical(result$stop, len = 1)
-  expect_logical(result$stop_report)
-  expect_list(result$stop_reason)
+  expect_s4_class(result, "DataScenario")
+  expect_true(validObject(result))
+  expect_s3_class(tidy(result), "tbl_DataScenario")
+  expect_s4_class(result@data, "DataDA")
+  expect_s4_class(result@samples, "Samples")
+  expect_data_frame(result@fit$overall)
+  expect_list(result@next_best$overall)
+  expect_number(result@dose_limit$overall, lower = 0, finite = FALSE)
+  expect_number(result@next_dose$overall, lower = 0, na.ok = TRUE)
+  expect_count(result@cohort_size$overall, positive = TRUE, na.ok = TRUE)
+  expect_null(result@placebo_cohort_size$overall)
+  expect_logical(result@stop$overall, len = 1)
+  expect_logical(result@stop_report$overall)
+  expect_list(result@stop_reason$overall)
 })
 
 ## RuleDesign ----
@@ -2021,7 +1982,17 @@ test_that("examine for DADesign works as expected", {
   expect_data_frame(result)
   expect_named(
     result,
-    c("cohort", "DLT_scenario", "dose", "DLTs", "DLT_cohorts", "DLT_time", "nextDose", "stop", "increment")
+    c(
+      "cohort",
+      "DLT_scenario",
+      "dose",
+      "DLTs",
+      "DLT_cohorts",
+      "DLT_time",
+      "nextDose",
+      "stop",
+      "increment"
+    )
   )
 })
 

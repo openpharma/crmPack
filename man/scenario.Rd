@@ -35,7 +35,8 @@ hypothetical data scenario to evaluate.}
 \item{...}{additional arguments without method dispatch.}
 }
 \value{
-A named list containing:
+A \link[=DataScenario-class]{DataScenario} object. Decision slots are named lists with
+one entry per arm (\code{"overall"} for non-hierarchical designs):
 \itemize{
 \item \code{data}: the evaluated data scenario.
 \item \code{samples}: posterior samples from \code{mcmc()}.
@@ -131,10 +132,10 @@ options <- McmcOptions(
 
 \donttest{
 result <- scenario(design, data, options)
-result$fit
-result$next_dose
-result$cohort_size
-result$stop
+result@fit$overall
+result@next_dose$overall
+result@cohort_size$overall
+result@stop$overall
 }
 
 # nolint end
@@ -201,10 +202,10 @@ options <- McmcOptions(
 
 \donttest{
 result <- scenario(design, data, options)
-result$fit
-result$next_dose
-result$cohort_size
-result$stop
+result@fit$overall
+result@next_dose$overall
+result@cohort_size$overall
+result@stop$overall
 }
 
 # nolint end
@@ -277,10 +278,10 @@ options <- McmcOptions(
 
 \donttest{
 result <- scenario(design, data, options)
-result$fit
-result$next_dose
-result$cohort_size
-result$stop
+result@fit$overall
+result@next_dose$overall
+result@cohort_size$overall
+result@stop$overall
 }
 
 # nolint end
@@ -376,10 +377,10 @@ options <- McmcOptions(
 
 \donttest{
 result <- scenario(design, data, options)
-result$fit
-result$next_dose
-result$cohort_size
-result$stop
+result@fit
+result@next_dose
+result@cohort_size
+result@stop
 }
 
 # nolint end

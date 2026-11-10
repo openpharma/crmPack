@@ -3971,7 +3971,10 @@ setMethod(
               current$combo$data,
               group = "combo"
             )
-          current$combo$results <- h_unpack_stopit(current$combo$stop, object@combo@stopping)
+          current$combo$results <- h_unpack_stopit(
+            current$combo$stop,
+            object@combo@stopping
+          )
         }
         if (!current$mono$stop) {
           current$mono$stop <- object@mono@stopping %>%
@@ -3983,7 +3986,10 @@ setMethod(
               group = "mono",
               external = current$combo$stop
             )
-          current$mono$results <- h_unpack_stopit(current$mono$stop, object@mono@stopping)
+          current$mono$results <- h_unpack_stopit(
+            current$mono$stop,
+            object@mono@stopping
+          )
         }
         if (
           object@same_dose_for_all && !current$mono$stop && !current$combo$stop
@@ -4056,29 +4062,32 @@ setMethod(
       combo = lapply(result_list, "[[", "combo")
     )
     # Put everything in a list with both mono and combo Simulations:
-    setNames(lapply(names(result_list), function(arm_name) {
-      this_list <- result_list[[arm_name]]
-      data_list <- lapply(this_list, "[[", "data")
-      recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
-      fit_list <- lapply(this_list, "[[", "fit")
-      stop_reasons <- lapply(this_list, "[[", "stop")
-      report_results <- lapply(this_list, "[[", "results")
-      stop_report <- h_bind_stop_reports(report_results)
-      additional_stats <- lapply(this_list, "[[", "additional_stats")
-      overdose_prob <- as.numeric(sapply(this_list, "[[", "overdose_prob"))
+    setNames(
+      lapply(names(result_list), function(arm_name) {
+        this_list <- result_list[[arm_name]]
+        data_list <- lapply(this_list, "[[", "data")
+        recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
+        fit_list <- lapply(this_list, "[[", "fit")
+        stop_reasons <- lapply(this_list, "[[", "stop")
+        report_results <- lapply(this_list, "[[", "results")
+        stop_report <- h_bind_stop_reports(report_results)
+        additional_stats <- lapply(this_list, "[[", "additional_stats")
+        overdose_prob <- as.numeric(sapply(this_list, "[[", "overdose_prob"))
 
-      Simulations(
-        data = data_list,
-        doses = recommended_doses,
-        fit = fit_list,
-        stop_reasons = stop_reasons,
-        stop_report = stop_report,
-        additional_stats = additional_stats,
-        overdose_prob = overdose_prob,
-        seed = rng_state,
-        truth = if (arm_name == "mono") truth else combo_truth
-      )
-    }), names(result_list))
+        Simulations(
+          data = data_list,
+          doses = recommended_doses,
+          fit = fit_list,
+          stop_reasons = stop_reasons,
+          stop_report = stop_report,
+          additional_stats = additional_stats,
+          overdose_prob = overdose_prob,
+          seed = rng_state,
+          truth = if (arm_name == "mono") truth else combo_truth
+        )
+      }),
+      names(result_list)
+    )
   }
 )
 
@@ -4711,7 +4720,9 @@ setMethod(
               function(cohort) min(observed_t0[base_data@cohort == cohort]),
               numeric(1)
             )
-            dlt_times <- observed_t0[dlt_indices] + curr_surv[dlt_indices] - cohort_start
+            dlt_times <- observed_t0[dlt_indices] +
+              curr_surv[dlt_indices] -
+              cohort_start
 
             ret <- rbind(
               ret,
@@ -4826,7 +4837,8 @@ setMethod(
 #' @param mcmcOptions (`McmcOptions`)\cr MCMC options for the model fit.
 #' @param ... additional arguments without method dispatch.
 #'
-#' @return A named list containing:
+#' @return A [DataScenario-class] object. Decision slots are named lists with
+#'   one entry per arm (`"overall"` for non-hierarchical designs):
 #'
 #' - `data`: the evaluated data scenario.
 #' - `samples`: posterior samples from `mcmc()`.
@@ -4846,7 +4858,7 @@ setGeneric(
   def = function(object, data, mcmcOptions, ...) {
     standardGeneric("scenario")
   },
-  valueClass = "list"
+  valueClass = "DataScenario"
 )
 
 #' @describeIn scenario Evaluate a hypothetical scenario for a CRM design.
@@ -4897,7 +4909,7 @@ setMethod(
       NULL
     }
 
-    list(
+    h_data_scenario(
       data = data,
       samples = samples,
       fit = fit(object = samples, model = object@model, data = data, ...),
@@ -4940,21 +4952,7 @@ setMethod(
       ...
     )
 
-    next_dose <- if (is.matrix(next_best$value)) {
-      dose_value <- as.numeric(next_best$value[1L, ])
-      names(dose_value) <- colnames(next_best$value)
-      dose_value
-    } else if (length(next_best$value) == 1L && is.na(next_best$value)) {
-      dose_value <- rep(NA_real_, length(data@drugNames))
-      names(dose_value) <- data@drugNames
-      dose_value
-    } else {
-      dose_value <- as.numeric(next_best$value)
-      if (length(dose_value) == length(data@drugNames)) {
-        names(dose_value) <- data@drugNames
-      }
-      dose_value
-    }
+    next_dose <- h_scenario_next_dose(next_best$value, data)
 
     should_stop <- stopTrial(
       object@stopping,
@@ -4971,7 +4969,7 @@ setMethod(
       size(object@cohort_size, dose = next_dose, data = data)
     }
 
-    list(
+    h_data_scenario(
       data = data,
       samples = samples,
       fit = fit(object = samples, model = object@model, data = data, ...),
@@ -5036,7 +5034,7 @@ setMethod(
       NULL
     }
 
-    list(
+    h_data_scenario(
       data = data,
       samples = samples,
       fit = fit(object = samples, model = object@model, data = data, ...),

@@ -524,11 +524,13 @@ setMethod(
 
         for (arm_name in arm_names[!opened & !stopped]) {
           arm <- object@arms[[arm_name]]
-          if (openArm(
-            condition = arm@open_when,
-            data = data,
-            finished_arms = stopped
-          )) {
+          if (
+            openArm(
+              condition = arm@open_when,
+              data = data,
+              finished_arms = stopped
+            )
+          ) {
             opened[[arm_name]] <- TRUE
           }
         }
@@ -569,7 +571,10 @@ setMethod(
             model = arm_design@model,
             data = arm_data
           )
-          stop_report[[arm_name]] <- h_unpack_stopit(should_stop, arm_design@stopping)
+          stop_report[[arm_name]] <- h_unpack_stopit(
+            should_stop,
+            arm_design@stopping
+          )
           stop_reason <- attr(should_stop, "message")
 
           if (anyNA(next_dose) && !isTRUE(should_stop)) {
@@ -819,28 +824,6 @@ setMethod(
 
 ## HierarchicalDesign ----
 
-h_hierarchical_scenario_next_dose <- function(next_dose, arm_data) {
-  if (is(arm_data, "DataCombo")) {
-    if (is.matrix(next_dose)) {
-      dose_value <- as.numeric(next_dose[1L, ])
-      names(dose_value) <- colnames(next_dose)
-      return(dose_value)
-    }
-    if (length(next_dose) == 1L && is.na(next_dose)) {
-      dose_value <- rep(NA_real_, length(arm_data@drugNames))
-      names(dose_value) <- arm_data@drugNames
-      return(dose_value)
-    }
-    dose_value <- as.numeric(next_dose)
-    if (length(dose_value) == length(arm_data@drugNames)) {
-      names(dose_value) <- arm_data@drugNames
-    }
-    return(dose_value)
-  }
-
-  next_dose
-}
-
 #' @describeIn scenario Evaluate a hypothetical scenario for a hierarchical CRM
 #'   design.
 #'
@@ -892,11 +875,13 @@ setMethod(
     repeat {
       for (arm_name in arm_names[!opened & !stopped]) {
         arm <- object@arms[[arm_name]]
-        if (openArm(
-          condition = arm@open_when,
-          data = data,
-          finished_arms = stopped
-        )) {
+        if (
+          openArm(
+            condition = arm@open_when,
+            data = data,
+            finished_arms = stopped
+          )
+        ) {
           opened[[arm_name]] <- TRUE
         }
       }
@@ -918,7 +903,10 @@ setMethod(
           mcmcOptions = mcmcOptions
         )
 
-        dose_limit[[arm_name]] <- maxDose(arm_design@increments, data = arm_data)
+        dose_limit[[arm_name]] <- maxDose(
+          arm_design@increments,
+          data = arm_data
+        )
         next_best[[arm_name]] <- nextBest(
           arm_design@nextBest,
           doselimit = dose_limit[[arm_name]],
@@ -927,7 +915,7 @@ setMethod(
           data = arm_data,
           ...
         )
-        next_dose[[arm_name]] <- h_hierarchical_scenario_next_dose(
+        next_dose[[arm_name]] <- h_scenario_next_dose(
           next_best[[arm_name]]$value,
           arm_data
         )
@@ -942,7 +930,7 @@ setMethod(
         )
         stop[[arm_name]] <- should_stop
         stop_report[[arm_name]] <- h_unpack_stopit(should_stop)
-        stop_reason[[arm_name]] <- attr(should_stop, "message")
+        stop_reason[arm_name] <- list(attr(should_stop, "message"))
 
         if (anyNA(next_dose[[arm_name]]) && !isTRUE(should_stop)) {
           stop_reason[[arm_name]] <- paste(
@@ -965,19 +953,21 @@ setMethod(
           )
         }
 
-        placebo_cohort_size[arm_name] <- list(if (
-          is(arm_data, "Data") &&
-            arm_data@placebo &&
-            !anyNA(next_dose[[arm_name]])
-        ) {
-          size(
-            arm_design@pl_cohort_size,
-            dose = next_dose[[arm_name]],
-            data = arm_data
-          )
-        } else {
-          NULL
-        })
+        placebo_cohort_size[arm_name] <- list(
+          if (
+            is(arm_data, "Data") &&
+              arm_data@placebo &&
+              !anyNA(next_dose[[arm_name]])
+          ) {
+            size(
+              arm_design@pl_cohort_size,
+              dose = next_dose[[arm_name]],
+              data = arm_data
+            )
+          } else {
+            NULL
+          }
+        )
 
         evaluated[[arm_name]] <- TRUE
       }
@@ -1007,7 +997,7 @@ setMethod(
       )
     }
 
-    list(
+    h_data_scenario(
       data = data,
       samples = samples,
       fit = fit_result,

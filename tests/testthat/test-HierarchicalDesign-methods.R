@@ -21,48 +21,35 @@ test_that("scenario-HierarchicalDesign returns the expected shortcut results", {
 
   result <- scenario(design, data, mcmc_options)
 
-  expect_named(
-    result,
-    c(
-      "data",
-      "samples",
-      "fit",
-      "dose_limit",
-      "next_best",
-      "next_dose",
-      "cohort_size",
-      "placebo_cohort_size",
-      "stop",
-      "stop_report",
-      "stop_reason"
-    )
-  )
-  expect_s4_class(result$data, "HierarchicalData")
-  expect_s4_class(result$samples, "HierarchicalSamples")
+  expect_s4_class(result, "DataScenario")
+  expect_true(validObject(result))
+  expect_s3_class(tidy(result), "tbl_DataScenario")
+  expect_s4_class(result@data, "HierarchicalData")
+  expect_s4_class(result@samples, "HierarchicalSamples")
 
   arm_names <- names(data@arms)
-  expect_named(result$fit, arm_names)
-  expect_named(result$dose_limit, arm_names)
-  expect_named(result$next_best, arm_names)
-  expect_named(result$next_dose, arm_names)
-  expect_named(result$cohort_size, arm_names)
-  expect_named(result$placebo_cohort_size, arm_names)
-  expect_named(result$stop, arm_names)
-  expect_named(result$stop_report, arm_names)
-  expect_named(result$stop_reason, arm_names)
+  expect_named(result@fit, arm_names)
+  expect_named(result@dose_limit, arm_names)
+  expect_named(result@next_best, arm_names)
+  expect_named(result@next_dose, arm_names)
+  expect_named(result@cohort_size, arm_names)
+  expect_named(result@placebo_cohort_size, arm_names)
+  expect_named(result@stop, arm_names)
+  expect_named(result@stop_report, arm_names)
+  expect_named(result@stop_reason, arm_names)
 
-  expect_true(all(vapply(result$fit, is.data.frame, logical(1L))))
-  expect_list(result$next_best$my_mono)
-  expect_list(result$next_best$my_combo)
-  expect_number(result$next_dose$my_mono, lower = 0, na.ok = TRUE)
-  expect_named(result$next_dose$my_combo, data@arms$my_combo@drugNames)
-  expect_numeric(result$next_dose$my_combo, len = 2, any.missing = TRUE)
-  expect_count(result$cohort_size$my_mono, positive = TRUE, na.ok = TRUE)
-  expect_count(result$cohort_size$my_combo, positive = TRUE, na.ok = TRUE)
-  expect_null(result$placebo_cohort_size$my_mono)
-  expect_null(result$placebo_cohort_size$my_combo)
-  expect_true(all(vapply(result$stop, is.logical, logical(1L))))
-  expect_true(all(vapply(result$stop_reason, is.character, logical(1L))))
+  expect_true(all(vapply(result@fit, is.data.frame, logical(1L))))
+  expect_list(result@next_best$my_mono)
+  expect_list(result@next_best$my_combo)
+  expect_number(result@next_dose$my_mono, lower = 0, na.ok = TRUE)
+  expect_named(result@next_dose$my_combo, data@arms$my_combo@drugNames)
+  expect_numeric(result@next_dose$my_combo, len = 2, any.missing = TRUE)
+  expect_count(result@cohort_size$my_mono, positive = TRUE, na.ok = TRUE)
+  expect_count(result@cohort_size$my_combo, positive = TRUE, na.ok = TRUE)
+  expect_null(result@placebo_cohort_size$my_mono)
+  expect_null(result@placebo_cohort_size$my_combo)
+  expect_true(all(vapply(result@stop, is.logical, logical(1L))))
+  expect_true(all(vapply(result@stop_reason, is.character, logical(1L))))
 })
 
 test_that("scenario-HierarchicalDesign handles historical arms", {
@@ -106,14 +93,15 @@ test_that("scenario-HierarchicalDesign handles historical arms", {
 
   result <- scenario(design, data, h_get_mcmc_options(samples = 5))
 
-  expect_true(result$stop$historical)
+  expect_s3_class(tidy(result), "tbl_DataScenario")
+  expect_true(result@stop$historical)
   expect_identical(
-    result$stop_reason$historical,
+    result@stop_reason$historical,
     "Historical arm: not enrolling."
   )
-  expect_null(result$next_best$historical)
-  expect_null(result$next_dose$historical)
-  expect_data_frame(result$fit$historical)
+  expect_null(result@next_best$historical)
+  expect_null(result@next_dose$historical)
+  expect_data_frame(result@fit$historical)
 })
 
 test_that("scenario-HierarchicalDesign handles arms that are not yet open", {
@@ -153,12 +141,13 @@ test_that("scenario-HierarchicalDesign handles arms that are not yet open", {
 
   result <- scenario(design, data, h_get_mcmc_options(samples = 5))
 
-  expect_null(result$next_best$pending)
-  expect_null(result$next_dose$pending)
-  expect_null(result$cohort_size$pending)
-  expect_true(is.na(result$stop$pending))
-  expect_identical(result$stop_reason$pending, "Arm is not currently open.")
-  expect_data_frame(result$fit$pending)
+  expect_s3_class(tidy(result), "tbl_DataScenario")
+  expect_null(result@next_best$pending)
+  expect_null(result@next_dose$pending)
+  expect_null(result@cohort_size$pending)
+  expect_true(is.na(result@stop$pending))
+  expect_identical(result@stop_reason$pending, "Arm is not currently open.")
+  expect_data_frame(result@fit$pending)
 })
 
 test_that("scenario-HierarchicalDesign returns next_best probabilities for empty combo arms", {
@@ -179,15 +168,15 @@ test_that("scenario-HierarchicalDesign returns next_best probabilities for empty
   )
 
   expect_named(
-    result$next_best$B,
+    result@next_best$B,
     c("value", "plot", "singlePlots", "probs")
   )
-  expect_data_frame(result$next_best$B$probs)
+  expect_data_frame(result@next_best$B$probs)
   expect_named(
-    result$next_best$B$probs,
+    result@next_best$B$probs,
     c("compound1", "compound2", "target_prob", "overdose_prob", "not_eligible")
   )
-  expect_equal(result$next_dose$B, result$next_best$B$value)
+  expect_equal(result@next_dose$B, result@next_best$B$value)
   expect_match(
     prior_text,
     "eta_B<-mu_eta\\+tau_eta\\*eta_B_z"

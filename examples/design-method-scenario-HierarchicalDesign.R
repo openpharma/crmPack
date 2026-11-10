@@ -90,10 +90,10 @@ options <- McmcOptions(
 
 \donttest{
 result <- scenario(design, data, options)
-result$fit
-result$next_dose
-result$cohort_size
-result$stop
+result@fit
+result@next_dose
+result@cohort_size
+result@stop
 }
 
 # nolint end

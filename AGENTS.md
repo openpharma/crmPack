@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Style guidelines
+
+- Please always run the Air formatter after creating or editing R, Rmd or Quarto files.
+
 ## Review guidelines
 
 ### What to ignore

@@ -377,6 +377,25 @@ results, historical and not-yet-open arms are retained and their state is taken
 from `result@stop` and `result@stop_reason` rather than inferred from missing
 dose values.
 
+### Implemented reporting example
+
+```{r}
+#| eval: false
+result <- scenario(design, data_scenario_1, options)
+result@next_dose$overall
+tidy(result)
+report_data_scenarios(list("Snapshot 1" = result))
+report_data_scenarios(result, format = "kable", dose_digits = 1)
+report_table(tidy(result), format = "gt",
+             probability_labels = c(overdose = "P(ODS)"))
+```
+
+Dose list-columns have paired `*_display` columns. Supply `drug_names`, `units`,
+`dose_digits`, and `separator` through `tidy()` or `report_data_scenarios()` to
+control those labels; `column_labels` and `probability_labels` customize the
+rendered column headers. For hierarchical results, replace `$overall` in the
+slot accessor with the arm name.
+
 ## Decision probabilities and stopping
 
 For each arm, the reporting function extracts probabilities from
@@ -406,7 +425,8 @@ The `gt` renderer uses the screenshot's structure: row groups for scenarios,
 arm rows within scenarios, an **Observed data** spanner over dose/patient/DLT
 counts, and an **Interval probabilities of proposed next dose** spanner. When
 an arm contains observations at more than one dose, the decision cells are
-row-spanned in `gt` and displayed only on the first arm row in `kable`. The
+displayed only on the first arm row in both renderers. Native vertical cell
+spanning is deferred to rendering/export polish (step 9). The
 classed tibble has a `knit_print()` method delegating to `report_table()`, so
 the default tibble result can be placed directly in a Quarto chunk. Calling
 `report_data_scenarios(..., format = "gt")` or `"kable"` renders immediately.
@@ -677,7 +697,7 @@ Sliced so that each step is an independently reviewable PR with tests
    `report_*` functions returning tibbles. Refactor `show`/`plot` to use them
    (no behavior change).
 3. Done: **`ToxicityScenarios`** class + `tidy`/`plot`/table methods.
-4. **`DataScenario`** return class for `scenario()`, plus
+4. Done: **`DataScenario`** return class for `scenario()`, plus
    `report_data_scenarios()` and `tbl_DataScenario`/`tbl_DataScenarios` methods,
    including single-agent, combination, and hierarchical result flattening.
 5. **`report_prob_summary()`** + prior plot extensions (`target` overlay,

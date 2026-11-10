@@ -833,7 +833,7 @@ scenario_result <- scenario(
   mcmcOptions = McmcOptions(rng_kind = "Mersenne-Twister", rng_seed = 123)
 )
 
-scenario_result$next_dose
+scenario_result@next_dose
 #> $mono_drug1
 #> [1] 20
 #> 
@@ -847,23 +847,13 @@ scenario_result$next_dose
 
 So here the next cohorts would open with dose 20 for the monotherapy arm of drug 1, dose 15 for the monotherapy arm of drug 2, and doses 10, 15 for the combination arm.
 
-Additional information is available, e.g. we can see the fitted values etc. Always one list element contains the arm specific information in a list:
+The result is a `DataScenario` object. Decision slots contain one list element
+per arm. Use `tidy()` for numeric results or `report_data_scenarios()` for a
+reporting table:
 
 
 ``` r
-str(scenario_result, 1)
-#> List of 11
-#>  $ data               :Formal class 'HierarchicalData' [package "crmPack"] with 1 slot
-#>  $ samples            :Formal class 'HierarchicalSamples' [package "crmPack"] with 3 slots
-#>  $ fit                :List of 3
-#>  $ dose_limit         :List of 3
-#>  $ next_best          :List of 3
-#>  $ next_dose          :List of 3
-#>  $ cohort_size        :List of 3
-#>  $ placebo_cohort_size:List of 3
-#>  $ stop               :List of 3
-#>  $ stop_report        :List of 3
-#>  $ stop_reason        :List of 3
+report_data_scenarios(scenario_result, format = "kable")
 ```
 
 ## References

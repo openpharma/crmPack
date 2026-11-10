@@ -711,7 +711,7 @@ We can look at the fit results:
 
 
 ``` r
-result1CrmPack$fit
+result1CrmPack@fit
 #> $A
 #>   dose    middle       lower     upper
 #> 1  0.1 0.1145638 0.003242997 0.4039016
@@ -767,7 +767,7 @@ We can also check the probabilities to be in target and overdosing intervals:
 
 
 ``` r
-result1CrmPack$next_best$A$probs
+result1CrmPack@next_best$A$probs
 #>       dose  target overdose
 #>  [1,]  0.1 0.20034  0.05460
 #>  [2,]  0.2 0.27280  0.10590
@@ -778,7 +778,7 @@ result1CrmPack$next_best$A$probs
 #>  [7,]  3.6 0.22161  0.63034
 #>  [8,]  5.0 0.19782  0.67646
 #>  [9,]  6.0 0.18614  0.69891
-result1CrmPack$next_best$B$probs
+result1CrmPack@next_best$B$probs
 #>    compound1 compound2 target_prob overdose_prob not_eligible
 #> 1        0.1         0     0.19051       0.07283        FALSE
 #> 2        0.2         0     0.24700       0.12309        FALSE
@@ -819,9 +819,9 @@ stores the exponentiated slopes.
 
 
 ``` r
-crm_samples_A <- armSamples(result1CrmPack$samples, "A")
-crm_samples_B <- armSamples(result1CrmPack$samples, "B")
-crm_samples_C <- armSamples(result1CrmPack$samples, "C")
+crm_samples_A <- armSamples(result1CrmPack@samples, "A")
+crm_samples_B <- armSamples(result1CrmPack@samples, "B")
+crm_samples_C <- armSamples(result1CrmPack@samples, "C")
 
 # Thin only for plotting; all retained draws are still used in the tables.
 n_plot_draws <- 5000L
@@ -1186,8 +1186,8 @@ Let's look at the results for Arm A:
 
 ``` r
 fitTrialADecider <- result1$`trial-A` |> as.data.frame()
-fitTrialACrmPack <- result1CrmPack$fit$A
-probsTrialACrmPack <- result1CrmPack$next_best$A$probs |> as.data.frame()
+fitTrialACrmPack <- result1CrmPack@fit$A
+probsTrialACrmPack <- result1CrmPack@next_best$A$probs |> as.data.frame()
 diffTrialA <- data.frame(
   dose = fitTrialACrmPack$dose,
   center = fitTrialADecider$mean - fitTrialACrmPack$middle,
@@ -1242,8 +1242,8 @@ And then the results for Arm B:
 
 ``` r
 fitTrialBDecider <- result1$`trial-B` |> as.data.frame()
-fitTrialBCrmPack <- result1CrmPack$fit$B |> dplyr::filter(compound2 > 0)
-probsTrialBCrmPack <- result1CrmPack$next_best$B$probs |>
+fitTrialBCrmPack <- result1CrmPack@fit$B |> dplyr::filter(compound2 > 0)
+probsTrialBCrmPack <- result1CrmPack@next_best$B$probs |>
   as.data.frame() |>
   dplyr::filter(compound2 > 0)
 diffTrialB <- data.frame(
