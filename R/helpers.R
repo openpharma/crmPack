@@ -231,6 +231,7 @@ crmPackHelp <- function() {
 #'
 #' @export
 plot.gtable <- function(x, ...) {
+  grid::grid.newpage()
   grid::grid.draw(x, ...)
 }
 

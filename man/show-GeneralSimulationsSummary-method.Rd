@@ -17,5 +17,6 @@ appropriate column names.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Display a summary of general simulation results.
+Display a summary of general simulation results. Means and quantiles exclude
+missing values, such as undefined true toxicity when no dose was selected.
 }

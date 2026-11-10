@@ -49,10 +49,11 @@ testthat::local_mocked_bindings(
 test_that("plot-GeneralSimulations works correctly", {
   mySims <- .DefaultSimulations()
 
-  # Test default plot (includes both trajectory and dosesTried, so returns gtable)
+  # Test default plot (trajectory above survival, doses tried to the right)
   result <- plot(mySims)
   expect_s3_class(result, "gtable")
-  expect_equal(dim(result), c(2, 1)) # Should have 2 rows, 1 column
+  expect_equal(dim(result), c(1, 2))
+  expect_equal(dim(result$grobs[[1L]]), c(2, 1))
   expect_true(all(c("heights", "widths", "grobs") %in% names(result)))
 
   # Test trajectory plot only
@@ -76,7 +77,65 @@ test_that("plot-GeneralSimulations works correctly", {
   # Test both plot types explicitly
   result_both <- plot(mySims, type = c("trajectory", "dosesTried"))
   expect_s3_class(result_both, "gtable")
-  expect_equal(dim(result_both), c(2, 1)) # Should have 2 rows, 1 column
+  expect_equal(dim(result_both), c(1, 2))
+})
+
+test_that("trial survival counts trials reaching each patient", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(1, 1), y = c(0, 0), ID = 1:2, cohort = c(1, 1), doseGrid = 1:2),
+      Data(x = c(1, 1, 2, 2), y = rep(0, 4), ID = 1:4,
+           cohort = c(1, 1, 2, 2), doseGrid = 1:2)
+    ),
+    doses = c(1, 2),
+    seed = 123L
+  )
+  survival <- plot(sims, type = "trialsurvival")
+  expect_s3_class(survival, "ggplot")
+  expect_equal(survival$data$patient, 1:4)
+  expect_equal(survival$data$proportion, c(1, 1, 0.5, 0.5))
+  expect_equal(survival$scales$get_scales("y")$limits, c(0, 1))
+  expect_equal(survival$scales$get_scales("y")$labels(c(0, 0.5, 1)),
+               c("0%", "50%", "100%"))
+  expect_equal(survival$scales$get_scales("x")$breaks, c(2L, 4L))
+  expect_equal(survival$layers[[1L]]$geom_params$direction, "vh")
+
+  single_trial <- GeneralSimulations(
+    data = sims@data[1L], doses = sims@doses[1L], seed = sims@seed
+  )
+  expect_equal(plot(single_trial, type = "trialsurvival")$data$proportion,
+               c(1, 1))
+
+  interval <- plot(sims, type = "trialsurvival", patient_scale = 3L)
+  positions <- plot(sims, type = "trialsurvival", patient_scale = c(4L, 2L, 8L))
+  expect_equal(interval$scales$get_scales("x")$breaks, 3L)
+  expect_equal(positions$scales$get_scales("x")$breaks, c(2L, 4L))
+  expect_error(plot(sims, type = "trialsurvival", patient_scale = 0), "not >= 1",
+               fixed = TRUE)
+
+  stacked <- plot(sims, type = c("trialsurvival", "trajectory"))
+  expect_equal(dim(stacked), c(2, 1))
+  expect_equal(stacked$grobs[[1L]]$widths, stacked$grobs[[2L]]$widths)
+  side_by_side <- plot(sims, type = c("dosesTried", "trialsurvival"))
+  expect_equal(dim(side_by_side), c(1, 2))
+})
+
+test_that("trial survival excludes placebo patients", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(0, 1, 1), y = rep(0, 3), ID = 1:3,
+           cohort = c(1, 1, 1), doseGrid = 0:2, placebo = TRUE),
+      Data(x = c(0, 1, 1, 0, 2, 2), y = rep(0, 6), ID = 1:6,
+           cohort = c(1, 1, 1, 2, 2, 2), doseGrid = 0:2, placebo = TRUE)
+    ),
+    doses = c(1, 2),
+    seed = 123L
+  )
+  survival <- plot(sims, type = "trialsurvival")
+  expect_equal(survival$data$patient, 1:4)
+  expect_equal(survival$data$proportion, c(1, 1, 0.5, 0.5))
+  expect_equal(survival$labels$x, "Patient (placebo were excluded)")
+  expect_equal(survival$scales$get_scales("x")$breaks, c(2L, 4L))
 })
 
 test_that("plot-GeneralSimulations fails gracefully with bad input", {
@@ -193,7 +252,7 @@ test_that("simulation trajectory uses nested blue ranges and a median line", {
   expect_equal(plot_data[[3L]]$y, c(2, 3, 4))
 })
 
-test_that("simulation trajectory supports patient tick intervals and positions", {
+test_that("trajectory helper uses exact patient breaks, including a single position", {
   args <- list(
     sim_doses = list(1:6, 2:7),
     dose_grid = 1:7,
@@ -201,26 +260,103 @@ test_that("simulation trajectory supports patient tick intervals and positions",
     has_placebo = FALSE
   )
 
-  interval_plot <- do.call(
+  single_plot <- do.call(
     h_plot_simulation_trajectory,
-    c(args, list(patient_scale = 2L))
+    c(args, list(patient_breaks = 2L))
   )
   position_plot <- do.call(
     h_plot_simulation_trajectory,
-    c(args, list(patient_scale = c(1L, 3L, 8L)))
+    c(args, list(patient_breaks = c(1L, 3L, 8L)))
   )
 
-  expect_equal(interval_plot$scales$get_scales("x")$breaks, c(2L, 4L, 6L))
+  expect_equal(single_plot$scales$get_scales("x")$breaks, 2L)
   expect_equal(position_plot$scales$get_scales("x")$breaks, c(1L, 3L))
-  expect_equal(ggplot_build(interval_plot)$data[[1L]]$x, c(2, 4, 6))
+  expect_equal(ggplot_build(single_plot)$data[[1L]]$x, 2)
   expect_equal(ggplot_build(position_plot)$data[[1L]]$x, c(1, 3))
-  expect_equal(ggplot_build(interval_plot)$data[[3L]]$x, c(2, 4, 6))
+  expect_equal(ggplot_build(single_plot)$data[[3L]]$x, 2)
   expect_equal(ggplot_build(position_plot)$data[[3L]]$x, c(1, 3))
   expect_error(
-    do.call(h_plot_simulation_trajectory, c(args, list(patient_scale = 0))),
+    do.call(h_plot_simulation_trajectory, c(args, list(patient_breaks = 0))),
     "not >= 1",
     fixed = TRUE
   )
+})
+
+test_that("stepped trajectories preserve patient statistics at both ribbon edges", {
+  trajectory <- h_plot_simulation_trajectory(
+    sim_doses = list(c(1, 2, 4), c(3, 6)),
+    dose_grid = 1:6,
+    max_patients = 3L,
+    has_placebo = FALSE,
+    patient_breaks = 3L,
+    trajectory_style = "step"
+  )
+  layers <- ggplot_build(trajectory)$data
+  expect_equal(layers[[1L]]$x, c(1, 1, 2, 2, 3, 3))
+  expect_equal(layers[[1L]]$ymin, c(1, 1, 1, 2, 2, 4))
+  expect_equal(layers[[1L]]$ymax, c(3, 3, 3, 6, 6, 4))
+  expect_equal(layers[[2L]]$ymin, c(1.5, 1.5, 1.5, 3, 3, 4))
+  expect_equal(layers[[2L]]$ymax, c(2.5, 2.5, 2.5, 5, 5, 4))
+  expect_equal(layers[[3L]]$y, c(2, 2, 2, 4, 4, 4))
+  expect_equal(trajectory$scales$get_scales("x")$breaks, 3L)
+})
+
+test_that("trajectory intervals use cohort boundaries and correct quantiles", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = rep(c(2, 4), each = 3), y = rep(0, 6), ID = 1:6,
+           cohort = rep(1:2, each = 3), doseGrid = c(1, 2, 4)),
+      Data(x = rep(c(1, 2, 4), each = 3), y = rep(0, 9), ID = 1:9,
+           cohort = rep(1:3, each = 3), doseGrid = c(1, 2, 4))
+    ),
+    doses = c(4, 4),
+    seed = 123L
+  )
+  intervals <- plot(sims, type = "trajectory", trajectory_style = "intervals")
+  layers <- ggplot_build(intervals)$data
+  expect_s3_class(intervals$layers[[1L]]$geom, "GeomLinerange")
+  expect_s3_class(intervals$layers[[2L]]$geom, "GeomLinerange")
+  expect_s3_class(intervals$layers[[3L]]$geom, "GeomPoint")
+  for (layer in layers) {
+    expect_equal(layer$x, c(3, 6, 9))
+  }
+  expect_equal(layers[[1L]]$ymin, c(1, 2, 4))
+  expect_equal(layers[[1L]]$ymax, c(2, 4, 4))
+  expect_equal(layers[[2L]]$ymin, c(1.25, 2.5, 4))
+  expect_equal(layers[[2L]]$ymax, c(1.75, 3.5, 4))
+  expect_equal(layers[[3L]]$y, c(1.5, 3, 4))
+
+  positions <- plot(sims, type = "trajectory", trajectory_style = "intervals",
+                    patient_scale = c(3L, 9L))
+  expect_equal(positions$data$patient, c(3L, 9L))
+  interval <- plot(sims, type = "trajectory", trajectory_style = "intervals",
+                   patient_scale = 6L)
+  expect_equal(interval$data$patient, 6L)
+  expect_error(plot(sims, trajectory_style = "unknown"), "should be one of")
+
+  for (style in c("diagonal", "step", "intervals")) {
+    expect_no_warning(combined <- plot(sims, trajectory_style = style))
+    expect_s3_class(combined, "gtable")
+    expect_equal(dim(combined$grobs[[1L]]), c(2, 1))
+  }
+})
+
+test_that("trajectory intervals use active-treatment cohort boundaries with placebo", {
+  sims <- GeneralSimulations(
+    data = list(Data(
+      x = c(0, 1, 1, 1, 0, 2, 2, 2), y = rep(0, 8), ID = 1:8,
+      cohort = rep(1:2, each = 4), doseGrid = 0:2, placebo = TRUE
+    )),
+    doses = 2,
+    seed = 123L
+  )
+  trajectory <- plot(sims, type = "trajectory", trajectory_style = "intervals")
+  layers <- ggplot_build(trajectory)$data
+  for (layer in layers) {
+    expect_equal(layer$x, c(3, 6))
+  }
+  expect_equal(layers[[2L]]$ymin, c(1, 2))
+  expect_equal(layers[[2L]]$ymax, c(1, 2))
 })
 
 test_that("doses tried uses equal-width bars and automatically logs clashes", {
@@ -439,6 +575,47 @@ test_that("summary-GeneralSimulations produces expected values", {
   expect_equal(length(result@dose_selected), result@nsim)
   expect_equal(length(result@tox_at_doses_selected), result@nsim)
   expect_equal(length(result@n_above_target), result@nsim)
+})
+
+test_that("scalar targets use the highest dose strictly below the target", {
+  trial <- Data(
+    x = c(1, 2, 3, 4), y = c(0L, 0L, 1L, 1L),
+    doseGrid = c(1, 2, 3, 4), ID = 1L:4L, cohort = 1L:4L
+  )
+  sims <- GeneralSimulations(
+    data = rep(list(trial), 4), doses = c(2, 3, NA, 1), seed = 1L
+  )
+  truth <- approxfun(c(1, 2, 3, 4), c(0.1, 0.2, 0.27, 0.4))
+  result <- summary(sims, truth = truth, target = 0.26)
+
+  expect_equal(result@true_mtd, 2)
+  expect_equal(result@n_above_target, rep(2L, 4))
+  expect_equal(result@prop_at_target, 0.25)
+  expect_equal(result@target_dose_interval, 2 + 0.06 / 0.07, tolerance = 1e-4)
+  expect_equal(result@tox_at_doses_selected, c(0.2, 0.27, NA, 0.1))
+  output <- capture.output(report <- show(result))
+  expect_true(any(grepl("Target toxicity rate was 26 %", output, fixed = TRUE)))
+  expect_true(any(grepl("above target toxicity rate", output, fixed = TRUE)))
+  expect_false(any(grepl("target.*interval", output, ignore.case = TRUE)))
+  expect_equal(report$tox_at_doses_selected, "19 % (12 %, 26 %)")
+  expect_true(any(grepl("True MTD on the dose grid: 2", output, fixed = TRUE)))
+
+  # A dose exactly at the target is neither the true MTD nor above target.
+  exact <- summary(sims, truth = truth, target = 0.27)
+  expect_equal(exact@true_mtd, 2)
+  expect_equal(exact@n_above_target, rep(1L, 4))
+  expect_equal(exact@prop_at_target, 0.25)
+
+  no_mtd <- summary(sims, truth = truth, target = 0.1)
+  expect_length(no_mtd@true_mtd, 0L)
+  expect_equal(no_mtd@prop_at_target, 0)
+  expect_s3_class(plot(no_mtd, type = "doseSelected"), "ggplot")
+
+  all_safe <- summary(sims, truth = truth, target = 0.5)
+  expect_equal(all_safe@true_mtd, 4)
+  expect_equal(all_safe@n_above_target, rep(0L, 4))
+  expect_equal(all_safe@prop_at_target, 0)
+  expect_true(is.na(all_safe@target_dose_interval))
 })
 
 ## summary-Simulations ----
@@ -1830,4 +2007,193 @@ test_that("plot-PseudoDualSimulationsSummary handles edge cases", {
   result_single <- plot(pseudo_dual_summary, type = "meanEffFit")
   expect_s3_class(result_single, "ggplot")
   expect_doppel("plot_pseudoDualSimsSummary_meanEffFit_single", result_single)
+})
+
+test_that("backfill overlays preserve IDs and use conditional group survival", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(1, 2, 1), y = rep(0, 3), ID = c(1L, 3L, 7L), cohort = 1:3,
+           backfilled = c(FALSE, FALSE, TRUE), doseGrid = 1:2),
+      Data(x = 1, y = 0, ID = 1L, cohort = 1L, doseGrid = 1:2)
+    ), doses = c(2, 1), seed = 1L
+  )
+  pooled <- plot(sims, type = "trialsurvival", include_backfill = "pooled")
+  expect_equal(pooled$data$proportion, c(1, 0.5, 0.5))
+  excluded <- plot(sims, type = "trialsurvival", include_backfill = "no")
+  expect_equal(excluded$data$proportion, c(1, 0.5))
+  separate <- plot(sims, type = "trialsurvival", include_backfill = "separate")
+  expect_equal(separate$data$patient, c(1L, 2L, 3L, 7L))
+  expect_equal(separate$data$proportion, c(1, 0.5, 0.5, 1))
+  expect_equal(as.character(separate$data$patient_group),
+               c(rep("Non-backfill", 3), "Backfill"))
+  expect_equal(nrow(ggplot2::ggplot_build(separate)$layout$layout), 1L)
+  trajectory <- plot(sims, type = "trajectory", include_backfill = "separate",
+                     trajectory_style = "intervals", patient_scale = 1)
+  expect_equal(trajectory$data$patient, c(1L, 3L, 7L))
+  expect_equal(as.character(trajectory$data$patient_group),
+               c("Non-backfill", "Non-backfill", "Backfill"))
+  expect_equal(trajectory$data$median, c(1, 2, 1))
+  doses <- plot(sims, type = "dosesTried", include_backfill = "separate")
+  expect_equal(nrow(ggplot2::ggplot_build(doses)$layout$layout), 1L)
+  expect_equal(doses$layers[[1L]]$data$y, c(200 / 3, 100 / 3, 100, 0))
+  # Plotting must not mutate the original trial data.
+  expect_equal(sims@data[[1L]]@ID, c(1L, 3L, 7L))
+  expect_equal(lengths(lapply(sims@data, slot, "x")), c(3L, 1L))
+})
+
+test_that("backfill overlays retain placebo ID gaps and handle empty groups", {
+  sims <- GeneralSimulations(
+    data = list(Data(x = c(0, 1, 2), y = c(0, 0, 0), ID = 1:3,
+                     cohort = 1:3, backfilled = c(FALSE, FALSE, TRUE),
+                     placebo = TRUE, doseGrid = 0:2)),
+    doses = 2, seed = 1L
+  )
+  p <- plot(sims, type = "trajectory", include_backfill = "separate",
+            trajectory_style = "intervals", patient_scale = 1)
+  expect_equal(p$data$patient, c(2L, 3L))
+  for (backfill in c(FALSE, TRUE)) {
+    sims@data[[1L]]@backfilled[] <- backfill
+    p <- plot(sims, type = "trajectory", include_backfill = "separate",
+              trajectory_style = "intervals", patient_scale = 1)
+    expect_equal(p$data$patient, c(2L, 3L))
+    expect_equal(length(unique(p$data$patient_group)), 1L)
+    expect_s3_class(ggplot2::ggplotGrob(p), "gtable")
+  }
+})
+
+test_that("group survival starts at 100 percent and conditions on enrollment", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(1, 1, 1), y = rep(0, 3), ID = c(1L, 5L, 6L),
+           cohort = 1:3, backfilled = c(FALSE, TRUE, TRUE), doseGrid = 1:2),
+      Data(x = c(1, 1, 1), y = rep(0, 3), ID = c(1L, 9L, 10L),
+           cohort = 1:3, backfilled = c(FALSE, TRUE, TRUE), doseGrid = 1:2),
+      Data(x = 1, y = 0, ID = 1L, cohort = 1L, doseGrid = 1:2)
+    ), doses = rep(1, 3), seed = 1L
+  )
+  p <- plot(sims, type = "trialsurvival", include_backfill = "separate")
+  backfill <- p$data[p$data$patient_group == "Backfill", ]
+  expect_equal(p$layers[[1L]]$geom_params$direction, "hv")
+  expect_equal(backfill$patient, 5:10)
+  expect_equal(backfill$proportion, c(1, 1, rep(0.5, 4)))
+  # A group that never enrolled has no curve (rather than NaNs or a zero line).
+  sims@data <- lapply(sims@data, function(d) { d@backfilled[] <- FALSE; d })
+  p <- plot(sims, type = "trialsurvival", include_backfill = "separate")
+  expect_false(any(p$data$patient_group == "Backfill"))
+  expect_s3_class(ggplot2::ggplotGrob(p), "gtable")
+})
+
+test_that("separate-number counts patients within each group", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(0, 1, 2, 2, 2), y = rep(0, 5), ID = c(1L, 3L, 7L, 9L, 11L),
+           cohort = 1:5, backfilled = c(FALSE, FALSE, TRUE, TRUE, TRUE),
+           placebo = TRUE, doseGrid = 0:2),
+      Data(x = c(0, 1, 2), y = c(0, 0, 0), ID = c(1L, 2L, 12L), cohort = 1:3,
+           backfilled = c(FALSE, FALSE, TRUE), placebo = TRUE, doseGrid = 0:2)
+    ), doses = c(2, 1), seed = 1L
+  )
+  trajectory <- plot(sims, type = "trajectory", include_backfill = "separate-number",
+                     trajectory_style = "intervals", patient_scale = 1)
+  expect_equal(trajectory$data$patient, c(1L, 1L, 2L, 3L))
+  expect_equal(trajectory$data$median, c(1, 2, 2, 2))
+  expect_equal(as.character(trajectory$data$patient_group),
+               c("Non-backfill", rep("Backfill", 3)))
+  survival <- plot(sims, type = "trialsurvival", include_backfill = "separate-number")
+  expect_equal(survival$data$patient, c(1L, 1L, 2L, 3L))
+  expect_equal(survival$data$proportion, c(1, 1, 0.5, 0.5))
+  # A larger backfill group must not be clipped by the non-backfill group's limit.
+  expect_equal(survival$scales$get_scales("x")$limits, c(1, 3))
+  expect_s3_class(ggplot2::ggplotGrob(survival), "gtable")
+  dose_plots <- lapply(c("separate", "separate-number"), function(mode) {
+    plot(sims, type = "dosesTried", include_backfill = mode)
+  })
+  expect_equal(dose_plots[[1L]]$layers[[1L]]$data, dose_plots[[2L]]$layers[[1L]]$data)
+  expect_equal(sims@data[[1L]]@ID, c(1L, 3L, 7L, 9L, 11L))
+  sims@data <- lapply(sims@data, function(d) { d@backfilled[] <- FALSE; d })
+  survival <- plot(sims, type = "trialsurvival", include_backfill = "separate-number")
+  expect_false(any(survival$data$patient_group == "Backfill"))
+})
+
+test_that("backfill options preserve defaults and reject invalid values", {
+  sims <- .DefaultSimulations()
+  for (component in c("trajectory", "trialsurvival", "dosesTried")) {
+    default <- ggplot_build(plot(sims, type = component))$data
+    pooled <- ggplot_build(plot(sims, type = component, include_backfill = "pooled"))$data
+    excluded <- ggplot_build(plot(sims, type = component, include_backfill = "no"))$data
+    expect_equal(default, pooled)
+    expect_equal(default, excluded)
+  }
+  expect_error(plot(sims, include_backfill = "invalid"), "should be one of")
+})
+
+test_that("group trajectory quantiles use only matching patient positions", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(1, 2, 4, 2), y = rep(0, 4), ID = c(1L, 3L, 5L, 7L),
+           cohort = 1:4, backfilled = c(FALSE, FALSE, TRUE, TRUE), doseGrid = 1:4),
+      Data(x = c(1, 3, 2, 4), y = rep(0, 4), ID = c(1L, 3L, 5L, 7L),
+           cohort = 1:4, backfilled = c(FALSE, FALSE, TRUE, TRUE), doseGrid = 1:4)
+    ), doses = c(2, 4), seed = 1L
+  )
+  for (mode in c("separate", "separate-number")) {
+    p <- plot(sims, type = "trajectory", include_backfill = mode,
+              trajectory_style = "intervals", patient_scale = 1)
+    backfill <- p$data[p$data$patient_group == "Backfill", ]
+    expect_equal(backfill$patient, if (mode == "separate") c(5L, 7L) else 1:2)
+    expect_equal(backfill$minimum, c(2, 2))
+    expect_equal(backfill$lower_quartile, c(2.5, 2.5))
+    expect_equal(backfill$median, c(3, 3))
+    expect_equal(backfill$upper_quartile, c(3.5, 3.5))
+    expect_equal(backfill$maximum, c(4, 4))
+    subset <- plot(sims, type = "trajectory", include_backfill = mode,
+                   trajectory_style = "intervals", patient_scale = c(1, 5))
+    expect_true(all(subset$data$patient %in% c(1, 5)))
+    # Tick selection must not change the underlying trial-survival values.
+    survival <- plot(sims, type = "trialsurvival", include_backfill = mode)
+    ticks <- plot(sims, type = "trialsurvival", include_backfill = mode, patient_scale = 3)
+    expect_equal(survival$data, ticks$data)
+    for (style in c("diagonal", "step")) {
+      p <- plot(sims, type = "trajectory", include_backfill = mode,
+                trajectory_style = style, patient_scale = 1)
+      built <- ggplot_build(p)$data[[3L]]
+      expect_equal(unique(built$linetype[built$group == 1]),
+                   if (mode == "separate-number") "solid" else 1)
+      expect_equal(unique(built$linetype[built$group == 2]),
+                   if (mode == "separate-number") "dashed" else 1)
+    }
+    p <- plot(sims, type = "trialsurvival", include_backfill = mode)
+    built <- ggplot_build(p)$data[[1L]]
+    expect_equal(unique(built$linetype[built$group == 2]),
+                 if (mode == "separate-number") "dashed" else 1)
+  }
+})
+
+test_that("backfill filtering and grouped dose plots use patient proportions", {
+  sims <- GeneralSimulations(
+    data = list(
+      Data(x = c(1, 2, 2, 2), y = rep(0, 4), ID = 1:4, cohort = 1:4,
+           backfilled = c(FALSE, TRUE, TRUE, TRUE), doseGrid = 1:2),
+      Data(x = c(1, 1), y = c(0, 0), ID = 1:2, cohort = 1:2, doseGrid = 1:2)
+    ), doses = c(2, 1), seed = 1L
+  )
+  pooled <- plot(sims, type = "dosesTried", include_backfill = "pooled")
+  excluded <- plot(sims, type = "dosesTried", include_backfill = "no")
+  expect_equal(pooled$layers[[1L]]$data$y, c(50, 50))
+  expect_equal(excluded$layers[[1L]]$data$y, c(100, 0))
+  for (mode in c("separate", "separate-number")) {
+    for (geometry in c("lollipop", "bar")) {
+      for (scale in c("linear", "log")) {
+        for (ticks in c("dosegrid", "regular")) {
+          p <- plot(sims, type = "dosesTried", include_backfill = mode,
+                    prob_plot_type = geometry, dose_scale = scale, axis_ticks = ticks)
+          built <- ggplot_build(p)$data[[1L]]
+          proportions <- if (geometry == "lollipop") built$yend else if ("y" %in% names(built)) built$y else built$ymax
+          expect_equal(proportions, c(100, 0, 0, 100))
+          expect_equal(length(unique(built$colour)), 2L)
+        }
+      }
+    }
+    expect_s3_class(plot(sims, include_backfill = mode), "gtable")
+  }
 })
