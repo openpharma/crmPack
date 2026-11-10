@@ -639,7 +639,10 @@ setMethod(
 #' @param xlab the x axis label
 #' @param ylab the y axis label
 #' @param showLegend should the legend be shown? (default)
-#' @param \dots not used
+#' @param statistic Central estimate: mean (default) or median.
+#' @param level Credible interval probability, strictly between zero and one.
+#' @param target Optional target probability or increasing pair of probabilities.
+#' @param \dots Arguments passed to [fit()].
 #' @return This returns the \code{\link[ggplot2]{ggplot}}
 #' object for the dose-toxicity model fit
 #'
@@ -658,18 +661,43 @@ setMethod(
     ...,
     xlab = "Dose level",
     ylab = "Probability of DLT [%]",
-    showLegend = TRUE
+    showLegend = TRUE,
+    statistic = c("mean", "median"),
+    level = 0.95,
+    target = NULL
   ) {
     ## check args
     assert_logical(showLegend)
+    statistic <- match.arg(statistic)
+    assert_number(level, lower = 0, upper = 1)
+    if (level <= 0 || level >= 1) {
+      stop("'level' must be strictly between zero and one.")
+    }
+    if (!is.null(target)) {
+      assert_numeric(
+        target,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE,
+        min.len = 1,
+        max.len = 2
+      )
+      if (length(target) == 2 && target[1] >= target[2]) {
+        stop("'target' must be increasing.")
+      }
+    }
+    interval_label <- paste0(
+      format(100 * level, trim = TRUE),
+      "% Credible Interval"
+    )
 
     ## get the fit
     plotData <- fit(
       x,
       model = y,
       data = data,
-      quantiles = c(0.025, 0.975),
-      middle = mean,
+      quantiles = c((1 - level) / 2, (1 + level) / 2),
+      middle = match.fun(statistic),
       ...
     )
 
@@ -688,13 +716,13 @@ setMethod(
                 nrow(plotData)
               ),
               rep(
-                "95% Credible Interval",
+                interval_label,
                 nrow(plotData) * 2
               )
             ),
             levels = c(
               "Estimate",
-              "95% Credible Interval"
+              interval_label
             )
           )
         )
@@ -717,15 +745,31 @@ setMethod(
         y = ylab,
       )
 
-    ret +
+    ret <- ret +
       scale_linetype_manual(
         breaks = c(
           "Estimate",
-          "95% Credible Interval"
+          interval_label
         ),
         values = c(1, 2),
         guide = ifelse(showLegend, "legend", "none")
       )
+    if (length(target) == 1L) {
+      ret <- ret + geom_hline(yintercept = target * 100, colour = "blue")
+    }
+    if (length(target) == 2L) {
+      ret <- ret +
+        annotate(
+          "rect",
+          xmin = -Inf,
+          xmax = Inf,
+          ymin = target[1] * 100,
+          ymax = target[2] * 100,
+          fill = "blue",
+          alpha = 0.1
+        )
+    }
+    ret
   }
 )
 

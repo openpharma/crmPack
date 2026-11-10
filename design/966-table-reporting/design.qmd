@@ -502,6 +502,29 @@ A separate function (rather than a `type = "draws"` option on
 `plot(samples, model, data)`) keeps the existing plot signature untouched and
 the new functionality easy to discover.
 
+### Implemented usage
+
+```{r}
+#| eval: false
+prior_summary <- report_prob_summary(
+    samples, model, empty_data,
+    intervals = c(0, 0.16, 0.33, 1)
+)
+report_table(prior_summary, format = "kable", digits = 3)
+report_table(prior_summary, format = "gt")
+plot(samples, model, empty_data, statistic = "median", level = 0.9,
+     target = c(0.2, 0.35))
+plot_prior_draws(samples, model, empty_data, n = 100, seed = 42)
+```
+
+These functions support single-agent models returning one toxicity probability
+per sample and dose. For hierarchical models, supply an arm's samples, model,
+and data. Draws are sampled without replacement, so `n` must not exceed the
+available sample count. A supplied seed preserves the caller's RNG state.
+The fit plot retains its existing central curve and dashed credible limits by
+default. The `gt` summary groups quantiles and interval probabilities under
+spanners; the kable renderer produces a plain pipe table.
+
 # Topic 4: Operating characteristics
 
 This is the largest part and the one needing the most flexibility.
@@ -700,7 +723,7 @@ Sliced so that each step is an independently reviewable PR with tests
 4. Done: **`DataScenario`** return class for `scenario()`, plus
    `report_data_scenarios()` and `tbl_DataScenario`/`tbl_DataScenarios` methods,
    including single-agent, combination, and hierarchical result flattening.
-5. **`report_prob_summary()`** + prior plot extensions (`target` overlay,
+5. Done: **`report_prob_summary()`** + prior plot extensions (`target` overlay,
    `statistic`/`level` options) + `plot_prior_draws()`.
 6. **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
    registry, PMDA-style default `stop_categories`).

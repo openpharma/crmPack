@@ -11,7 +11,10 @@
   ...,
   xlab = "Dose level",
   ylab = "Probability of DLT [\%]",
-  showLegend = TRUE
+  showLegend = TRUE,
+  statistic = c("mean", "median"),
+  level = 0.95,
+  target = NULL
 )
 }
 \arguments{
@@ -21,13 +24,19 @@
 
 \item{data}{the \link{Data} object}
 
-\item{\dots}{not used}
+\item{\dots}{Arguments passed to \code{\link[=fit]{fit()}}.}
 
 \item{xlab}{the x axis label}
 
 \item{ylab}{the y axis label}
 
 \item{showLegend}{should the legend be shown? (default)}
+
+\item{statistic}{Central estimate: mean (default) or median.}
+
+\item{level}{Credible interval probability, strictly between zero and one.}
+
+\item{target}{Optional target probability or increasing pair of probabilities.}
 }
 \value{
 This returns the \code{\link[ggplot2]{ggplot}}

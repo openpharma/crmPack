@@ -156,6 +156,7 @@ Collate:
     'helpers_samples.R'
     'helpers_simulations.R'
     'report_data_scenarios.R'
+    'report_prob_summary.R'
     'report_simulations.R'
     'report_table.R'
     'utils-pipe.R'

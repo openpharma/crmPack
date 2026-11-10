@@ -2,6 +2,14 @@
 
 ### New Features
 
+* Added `report_prob_summary()` to summarize prior or posterior toxicity
+  probabilities by dose, with optional means, standard deviations, quantiles,
+  and interval probabilities. Results support automatic knitr tables and
+  `report_table()` rendering as markdown or rich `gt` tables.
+
+* Added `plot_prior_draws()` to plot random prior or posterior dose-toxicity
+  curves, with an optional seed for reproducible draw selection.
+
 * Added `ToxicityScenarios` for named true dose-toxicity curves, with `tidy()`,
   `plot()`, and automatic knitr tables. `report_table()` renders the object or
   its tidy tibble as markdown or, with the suggested `gt` package, a rich table.
@@ -20,6 +28,10 @@
   layers instead of bars, and dose-grid or regularly spaced axis ticks.
 
 ### Enhancements
+
+* Dose-toxicity fit plots for `Samples` and `GeneralModel` now support
+  `statistic` (mean or median), `level` for the credible interval, and `target`
+  for a horizontal target line or shaded target interval.
 
 * `HierarchicalModel` now compiles exchangeable normal priors in non-centered
   form for JAGS, including analytic Cholesky transformations for correlated
