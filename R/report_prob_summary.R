@@ -177,16 +177,34 @@ plot_prior_draws <- function(samples, model, data, n = 100, seed = NULL) {
 #'
 #' @inheritParams report_table
 #' @param digits Number of decimal places for display.
-#' @return A `knitr_kable` or `gt_tbl` object.
+#' @return A `knitr_kable`, `gt_tbl`, or formatted data frame.
 #' @export
 report_table.tbl_ProbSummary <- function(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   digits = 3L
 ) {
   format <- match.arg(format)
   assert_count(digits)
+  intervals <- names(x)[startsWith(names(x), "p_")]
+  quantiles <- names(x)[startsWith(names(x), "q")]
+  columns <- c(
+    intersect("dose", names(x)),
+    intervals,
+    setdiff(names(x), c("dose", intervals, quantiles)),
+    quantiles
+  )
+  x <- x[columns]
+  if (format == "data.frame") {
+    return(h_report_display(
+      as.data.frame(x),
+      names(x),
+      1L,
+      digits = digits,
+      column_label = "Statistic"
+    ))
+  }
   if (format == "kable") {
     return(knitr::kable(
       as.data.frame(x),
@@ -218,7 +236,8 @@ report_table.tbl_ProbSummary <- function(
         } else {
           "Probability of true DLT rate in ..."
         },
-        columns = columns
+        columns = columns,
+        gather = FALSE
       )
     }
   }

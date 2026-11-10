@@ -6,7 +6,7 @@
 \usage{
 \method{report_table}{tbl_OCDetail}(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   title = attr(x, "title"),
   scenario_labels = NULL,
@@ -16,7 +16,7 @@
 \arguments{
 \item{x}{A \code{tbl_OCDetail} tibble from \code{\link[=report_oc_detail]{report_oc_detail()}}.}
 
-\item{format}{Renderer: \code{"kable"} or \code{"gt"}.}
+\item{format}{Renderer: \code{"kable"}, \code{"gt"}, or formatted \code{"data.frame"}.}
 
 \item{...}{Arguments passed to \code{knitr::kable()} or \code{gt::gt()}.}
 
@@ -25,7 +25,7 @@
 \item{scenario_labels, column_labels}{Optional named display-label overrides.}
 }
 \value{
-A \code{knitr_kable} or \code{gt_tbl}.
+A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame.
 }
 \description{
 Render stored cells with doses as columns, statistics as rows and scenarios

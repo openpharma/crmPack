@@ -12,7 +12,8 @@
 #' @param x A reporting tibble or a `ToxicityScenarios` or `DataScenario` object.
 #' @param max_cols Maximum rendered columns per part, including repeated
 #'   identifier columns. For detail tables, the scenario column counts even
-#'   when gt renders it as a row group.
+#'   when gt renders it as a row group. A grouped overview also counts its
+#'   Group identifier, whether rendered as a column or gt row sections.
 #' @param keep Extra column keys to repeat on every part. The default `"label"`
 #'   denotes the table's mandatory identifiers: statistic for an overview,
 #'   scenario and statistic for detail, scenario for toxicity scenarios, dose
@@ -72,7 +73,7 @@ report_paginate.tbl_OCOverview <- function(
 ) {
   h_report_paginate(
     columns = h_oc_present_order(attr(x, "scenarios"), x$scenario),
-    identifiers = "label",
+    identifiers = c(if (length(attr(x, "row_groups"))) "group", "label"),
     max_cols = max_cols,
     keep = keep,
     subset = function(selected) {

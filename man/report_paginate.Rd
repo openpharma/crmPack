@@ -38,7 +38,8 @@ report_paginate(x, max_cols = 6L, keep = "label", ...)
 
 \item{max_cols}{Maximum rendered columns per part, including repeated
 identifier columns. For detail tables, the scenario column counts even
-when gt renders it as a row group.}
+when gt renders it as a row group. A grouped overview also counts its
+Group identifier, whether rendered as a column or gt row sections.}
 
 \item{keep}{Extra column keys to repeat on every part. The default \code{"label"}
 denotes the table's mandatory identifiers: statistic for an overview,

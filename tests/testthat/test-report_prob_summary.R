@@ -122,3 +122,35 @@ test_that("probability endpoints and single-dose summaries retain their meaning"
   single <- h_as_samples(list(alpha0 = 0, alpha1 = 1))
   expect_true(is.na(report_prob_summary(single, model, data)$sd))
 })
+
+test_that("prior display follows interval, mean, SD, quantile order with native spanners", {
+  samples <- h_as_samples(list(alpha0 = c(-2, 0, 2), alpha1 = c(1, 1, 1)))
+  model <- LogisticNormal(mean = c(0, 1), cov = diag(2), ref_dose = 1)
+  x <- report_prob_summary(
+    samples,
+    model,
+    Data(doseGrid = c(1, 2)),
+    intervals = c(0, .2, .35, 1)
+  )
+  original <- x
+  expected <- c(
+    "dose",
+    "p_[0,0.2)",
+    "p_[0.2,0.35)",
+    "p_[0.35,1]",
+    "mean",
+    "sd",
+    "q2.5",
+    "q50",
+    "q97.5"
+  )
+  expect_equal(names(report_table(x, "data.frame")), expected)
+  expect_identical(x, original)
+  skip_if_not_installed("gt")
+  table <- report_table(x, "gt")
+  expect_equal(names(table[["_data"]]), expected)
+  expect_setequal(
+    unlist(table[["_spanners"]]$spanner_label),
+    c("Quantiles", "Probability of true DLT rate in ...")
+  )
+})

@@ -84,15 +84,15 @@ report_data_scenarios <- function(
 
 #' Render Evaluated Data Scenarios
 #' @param x A DataScenario or a classed scenario tibble.
-#' @param format Renderer.
+#' @param format Renderer: `"kable"`, `"gt"`, or formatted `"data.frame"`.
 #' @param ... Renderer arguments.
 #' @param digits Probability decimal places.
 #' @param probability_labels,column_labels Named display labels.
-#' @return A rendered table.
+#' @return A `knitr_kable`, `gt_tbl`, or formatted data frame.
 #' @export
 report_table.tbl_DataScenarios <- function(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   digits = 3L,
   probability_labels = NULL,
@@ -168,6 +168,14 @@ report_table.tbl_DataScenarios <- function(
   if (!is.null(selected)) {
     display <- display[intersect(selected, names(display))]
   }
+  if (format == "data.frame") {
+    return(h_report_display(
+      display,
+      unname(labels[names(display)]),
+      which(names(display) %in% c("scenario", "arm", "observed_dose")),
+      column_label = "Field"
+    ))
+  }
   if (format == "kable") {
     names(display) <- unname(labels[names(display)])
     return(knitr::kable(display, format = "pipe", row.names = FALSE, ...))
@@ -184,11 +192,9 @@ report_table.tbl_DataScenarios <- function(
     c("observed_dose", "n_patients", "n_dlts"),
     names(display)
   )
-  table <- gt::tab_spanner(
-    table,
-    label = "Observed data",
-    columns = observed
-  )
+  if (length(observed)) {
+    table <- gt::tab_spanner(table, label = "Observed data", columns = observed)
+  }
   probs <- intersect(probs, names(display))
   if (length(probs)) {
     table <- gt::tab_spanner(
@@ -202,14 +208,22 @@ report_table.tbl_DataScenarios <- function(
 
 #' @rdname report_table.tbl_DataScenarios
 #' @export
-report_table.tbl_DataScenario <- function(x, format = c("kable", "gt"), ...) {
+report_table.tbl_DataScenario <- function(
+  x,
+  format = c("kable", "gt", "data.frame"),
+  ...
+) {
   x$scenario <- "Scenario"
   report_table.tbl_DataScenarios(x, format = format, ...)
 }
 
 #' @rdname report_table.tbl_DataScenarios
 #' @export
-report_table.DataScenario <- function(x, format = c("kable", "gt"), ...) {
+report_table.DataScenario <- function(
+  x,
+  format = c("kable", "gt", "data.frame"),
+  ...
+) {
   report_table(tidy(x), format = format, ...)
 }
 

@@ -247,3 +247,25 @@ test_that("data scenario pages keep observations and stopped decisions aligned",
     expect_match(html, "Interval probabilities")
   }
 })
+
+test_that("hypothetical data spanners survive underdose reporting and transposition", {
+  x <- local_data_scenario()
+  x@next_best$overall$probs <- cbind(
+    x@next_best$overall$probs,
+    underdosing = c(.89, .78, .67)
+  )
+  table <- report_data_scenarios(
+    list(First = x),
+    probabilities = c("underdosing", "target", "overdose")
+  )
+  expect_equal(table$underdosing, c(.67, .67))
+  flipped <- report_transpose(table)
+  expect_identical(report_transpose(flipped), table)
+  expect_match(paste(report_table(flipped), collapse = "\n"), "underdosing")
+  skip_if_not_installed("gt")
+  out <- report_table(table, "gt")
+  expect_setequal(
+    unlist(out[["_spanners"]]$spanner_label),
+    c("Observed data", "Interval probabilities of proposed next dose")
+  )
+})

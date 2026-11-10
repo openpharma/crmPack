@@ -16,7 +16,8 @@ the APIs and assumptions in workflow order.
 
 These examples reproduce the available reporting layouts with newly simulated
 illustrative results, rather than the sponsors' original numerical results or
-visual styling. Bayer's six true-probability rows match the notes; dose amounts
+visual styling. HTML output uses gt when installed, including native column
+spanners and row sections. Bayer's six true-probability rows match the notes; dose amounts
 and the design are illustrative. BI examples here use one arm. Missing features
 are flagged beside the corresponding example for a separate implementation step.
 
@@ -93,7 +94,7 @@ PDF p. 3, Figure 10-1: the same probabilities, with the study's target band.
 
 ## Operating characteristics table
 
-PDF pp. 3–4: stopping percentages, selections, correct selections, sample-size
+PDF pp. 3–4: native row sections, supplied stopping-rule labels, selections, correct selections, sample-size
 summaries, patients above target, and per-dose patients/DLTs. Per-dose SDs are
 shown using the requested mean (SD) option.
 
@@ -125,16 +126,23 @@ PDF pp. 4–5: selection percentages and patient counts.
 ```{r reporting-patients-plot}
 ```
 
-**Flagged for later:** the PDF's per-dose patient-count boxplots and violin
-plots are not available through the reporting API. The current patient plot
-shows a mean per dose. The PDF's BOIN comparison and true-rate annotation strip
-are not reproduced by these CRM reporting plots.
+The PDF's per-dose patient-count boxplots and violin
+plots are shown below through `plot_type`. The PDF's BOIN comparison and
+true-rate annotation strip are not reproduced by these CRM reporting plots.
+
+```{r reporting-patient-distributions}
+```
+
+**Flagged for later:** a native comparison across different designs and a
+true-rate annotation strip for these plots.
 
 # Boehringer
 
 ## Summary of Prior Table
 
 PDF pp. 5–6, Tables 9–10: interval probabilities, mean, SD and quantiles.
+Columns follow the PDF order: interval probabilities, mean, SD, quantiles.
+The interval and quantile columns have native gt spanners.
 Here intervals match the illustrative study's 20–35% target; the PDF uses
 16–33%. This is a single-arm prior table.
 
@@ -152,19 +160,18 @@ The last snapshot illustrates a stopping decision.
 ```{r reporting-data-table}
 ```
 
-The reporter already supports combination and hierarchical `DataScenario`
-objects, including arm names. This single-agent example shows the available
-`NextBestNCRM` target/overdose probabilities. **Flagged for later:** its rule does
-not supply the screenshot's underdose probability; a complete three-interval
-example and the exact two-arm scenario remain to be added. No underdose values
-are fabricated here.
+The reporter supports combination and hierarchical `DataScenario` objects,
+including arm names. Native spanners group observed data and proposed-dose
+interval probabilities. `NextBestNCRM` now calculates underdose probability
+from the same posterior draws, so all three interval probabilities are shown.
+**Flagged for later:** the exact two-arm scenario from the notes.
 
 ## Scenario Definition Table
 
 PDF p. 6, Table 14: single-agent counterpart using the shared six true scenarios.
 
 ```{r review-bi-truth-table}
-report_table(truths, digits = 3)
+report_table(truths, format = report_format, digits = 3)
 ```
 
 **Flagged for later:** arm-specific and combination true-toxicity grids are
@@ -178,9 +185,9 @@ min/max sample sizes and DLT counts.
 ```{r reporting-bi}
 ```
 
-**Flagged for later:** hierarchical OC arm subcolumns and a native BI layout
-with scenarios/arms as rows and paired mean (min–max) cells. Current output
-has scenarios as columns and separate mean and range rows. No-recommendation
+**Flagged for later:** hierarchical OC arm subcolumns and paired mean
+(min–max) cells. `report_transpose()` now places scenarios in rows, with
+separate mean and range columns. No-recommendation
 percentage is computed directly, rather than by adding overlapping stop rules.
 
 # Merck
@@ -208,9 +215,13 @@ against their desired reporting convention.
 
 # Additional reporting capabilities
 
-These additions go beyond the screenshot layouts: unrounded cell inspection,
+These additions go beyond the screenshot layouts: reversible transposition,
+unrounded cell inspection,
 automatic column pagination, markdown rendering, and optional gt/Word export.
 See the package vignette for export prerequisites.
+
+```{r reporting-transpose}
+```
 
 ```{r reporting-raw}
 ```

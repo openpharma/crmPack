@@ -943,8 +943,9 @@ Sliced so that each step is an independently reviewable PR with tests
     order for sponsor review and is excluded from the package with `design/`.
     Unavailable layouts and plots are flagged for separate work: hierarchical
     OC arm columns, combination truth/prior tables, the native BI row layout,
-    three-interval hypothetical examples, highest-dose-safe outcomes, per-dose
-    patient boxplots/violins, and cohort-scaled duration summaries.
+    paired mean/range cells, highest-dose-safe outcomes, and cohort-scaled
+    duration summaries. Scenario-row views use `report_transpose()`, and
+    per-dose boxplots/violins use `plot_type` on `plot(oc, type = "nPatients")`.
 
 Extensions explicitly deferred (but anticipated in the tidy column layout):
 combo dose grids in true `ToxicityScenarios` and operating-characteristics
@@ -952,3 +953,44 @@ tables, arm sub-columns for `HierarchicalSimulations`, pseudo/dual simulation
 specifics (efficacy columns), `DASimulations` duration statistics beyond
 mean/SD. Combination and hierarchical `scenario()` results are already in
 scope for the hypothetical data-scenario table described in Topic 2.
+
+
+# Follow-up checklist from the table discussion
+
+Completed in the reporting follow-up:
+
+- [x] Bayer operating-characteristics row sections via `row_groups`, rendered
+  as native gt row groups (or a Group column in markdown).
+- [x] Bayer stopping reasons retain the supplied `report_label` values when
+  `stop_categories = list()` is used; PMDA category unions remain independent.
+- [x] Scenario-faceted per-dose patient boxplots and violins via
+  `plot(oc, type = "nPatients", plot_type = "boxplot" / "violin")`.
+- [x] BI prior-table spanners and PDF column order: interval probabilities,
+  mean, SD, quantiles.
+- [x] Hypothetical-data spanners and directly calculated underdose probabilities
+  for single-agent and combination `NextBestNCRM` evaluations.
+- [x] General `report_transpose()` for all reporting tables, retaining the source
+  and supporting both gt and markdown output.
+- [x] Merck detail-table scenario subsections through native gt row groups.
+- [x] Styled HTML examples with gt, retaining markdown fallback when unavailable.
+
+Flagged for later, requiring separate implementation or study inputs:
+
+- [ ] Arm-specific OC results and hierarchical arm subcolumns/rows.
+- [ ] Combination dose grids and arm-specific true-toxicity scenario tables.
+- [ ] Multi-arm/combination prior-summary tables matching BI Tables 9–10.
+- [ ] The exact BI two-arm hypothetical-data example (the reporter supports
+  hierarchical/combination results; a corresponding study setup is still needed).
+- [ ] BI paired mean (min–max) cells; current means and ranges are separate.
+- [ ] Rule-defined "highest planned dose safe" classification, including its
+  interpretation as a correct outcome when all planned doses are below target.
+- [ ] The Bayer example's five specific stopping rules (requires a study design
+  implementing them; the vignette uses its own explicitly labeled rules).
+- [ ] Cohort-scaled duration and duration min/max/quantiles; current duration
+  mean/SD requires recorded `DASimulations` durations in their original units.
+- [ ] Built-in above-target min/max and quantile entries (currently illustrated
+  with custom `OCStat` objects).
+- [ ] Plot comparisons across designs (such as BOIN versus CRM) and the PDF's
+  true-toxicity annotation strip.
+- [ ] Mutually exclusive terminal-outcome conventions for STOP/MAX/selection;
+  current stopping columns count possibly overlapping rule activations.

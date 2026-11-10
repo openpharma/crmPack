@@ -7,9 +7,10 @@
 #' @param x A reporting object, classed reporting tibble, or nonempty list
 #'   of these.
 #' @param format Renderer: `"kable"` (pipe markdown, the default) or `"gt"`
-#'   (requires the suggested package `gt`).
+#'   (requires the suggested package `gt`), or `"data.frame"` for a flat
+#'   display table with rounded strings and identifier metadata.
 #' @param ... Arguments passed to the renderer, such as `caption` for kable.
-#' @return A `knitr_kable` or `gt_tbl` object. For a nonempty list of reporting
+#' @return A `knitr_kable`, `gt_tbl`, or formatted data frame. For a list of reporting
 #'   tables, a `report_tables` list of rendered tables, displayed consecutively
 #'   by knitr. See [report_paginate()] to split wide tables.
 #' @details Bare reporting objects in R Markdown or Quarto use pipe markdown,
@@ -19,13 +20,17 @@
 #'   when exporting a paginated table.
 #' @seealso [report_paginate()], [gt::gtsave()]
 #' @export
-report_table <- function(x, format = c("kable", "gt"), ...) {
+report_table <- function(x, format = c("kable", "gt", "data.frame"), ...) {
   UseMethod("report_table")
 }
 
 #' @rdname report_table
 #' @export
-report_table.ToxicityScenarios <- function(x, format = c("kable", "gt"), ...) {
+report_table.ToxicityScenarios <- function(
+  x,
+  format = c("kable", "gt", "data.frame"),
+  ...
+) {
   report_table(tidy(x), format = format, ...)
 }
 
@@ -34,7 +39,7 @@ report_table.ToxicityScenarios <- function(x, format = c("kable", "gt"), ...) {
 #' @export
 report_table.tbl_ToxicityScenarios <- function(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   digits = 3L
 ) {
@@ -56,6 +61,15 @@ report_table.tbl_ToxicityScenarios <- function(
     wide[[paste0("Dose ", doses[i])]] <- x$prob[
       match(paste(seq_along(scenarios), i, sep = ":"), keys)
     ]
+  }
+  if (format == "data.frame") {
+    return(h_report_display(
+      wide,
+      names(wide),
+      1L,
+      digits = digits,
+      column_label = "Dose"
+    ))
   }
   if (format == "kable") {
     return(knitr::kable(
@@ -96,7 +110,7 @@ knit_print.tbl_ToxicityScenarios <- function(x, ..., options = NULL) {
 
 #' @rdname report_table
 #' @export
-report_table.list <- function(x, format = c("kable", "gt"), ...) {
+report_table.list <- function(x, format = c("kable", "gt", "data.frame"), ...) {
   format <- match.arg(format)
   if (!length(x)) {
     stop("x must be a nonempty list of reporting tables.")

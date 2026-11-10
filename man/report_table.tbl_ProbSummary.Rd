@@ -4,21 +4,22 @@
 \alias{report_table.tbl_ProbSummary}
 \title{Render a Probability Summary Table}
 \usage{
-\method{report_table}{tbl_ProbSummary}(x, format = c("kable", "gt"), ..., digits = 3L)
+\method{report_table}{tbl_ProbSummary}(x, format = c("kable", "gt", "data.frame"), ..., digits = 3L)
 }
 \arguments{
 \item{x}{A reporting object, classed reporting tibble, or nonempty list
 of these.}
 
 \item{format}{Renderer: \code{"kable"} (pipe markdown, the default) or \code{"gt"}
-(requires the suggested package \code{gt}).}
+(requires the suggested package \code{gt}), or \code{"data.frame"} for a flat
+display table with rounded strings and identifier metadata.}
 
 \item{...}{Arguments passed to the renderer, such as \code{caption} for kable.}
 
 \item{digits}{Number of decimal places for display.}
 }
 \value{
-A \code{knitr_kable} or \code{gt_tbl} object.
+A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame.
 }
 \description{
 Render a Probability Summary Table

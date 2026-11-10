@@ -245,15 +245,15 @@ h_oc_headers <- function(keys, stored = NULL, overrides = NULL) {
 #' Missing formatted cells display as an em dash; existing cells keep their
 #' statistic's formatting for missing components.
 #' @param x A `tbl_OCDetail` tibble from [report_oc_detail()].
-#' @param format Renderer: `"kable"` or `"gt"`.
+#' @param format Renderer: `"kable"`, `"gt"`, or formatted `"data.frame"`.
 #' @param ... Arguments passed to `knitr::kable()` or `gt::gt()`.
 #' @param title Optional title, defaulting to the stored title. `NULL` removes it.
 #' @param scenario_labels,column_labels Optional named display-label overrides.
-#' @return A `knitr_kable` or `gt_tbl`.
+#' @return A `knitr_kable`, `gt_tbl`, or formatted data frame.
 #' @export
 report_table.tbl_OCDetail <- function(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   title = attr(x, "title"),
   scenario_labels = NULL,
@@ -315,6 +315,16 @@ report_table.tbl_OCDetail <- function(
     )
     values <- x$formatted[match(wanted, keys)]
     wide[[cells[i]]] <- ifelse(is.na(values), "\u2014", values)
+  }
+  if (format == "data.frame") {
+    wide$.scenario <- unname(groups[wide$.scenario])
+    return(h_report_display(
+      wide,
+      c("Scenario", "Statistic", unname(headers)),
+      identifiers = 1:2,
+      title = title,
+      column_label = "Dose / summary"
+    ))
   }
   if (format == "kable") {
     wide$.scenario <- unname(groups[wide$.scenario])

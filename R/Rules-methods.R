@@ -53,6 +53,11 @@ NULL
 #'   named `singlePlots` is included. The `singlePlots` is itself a list with
 #'   single plots. An additional list with elements describing the outcome
 #'   of the rule can be contained too.
+#'   For `NextBestNCRM`, `probs` also includes `underdosing`, the posterior
+#'   probability that toxicity is strictly below the lower target boundary.
+#'   Target boundaries are included; overdose probabilities retain the
+#'   configured overdose interval, so the three columns need not partition
+#'   all probabilities if the target and overdose intervals leave a gap.
 #'
 #' @export
 #'
@@ -152,7 +157,11 @@ setMethod(
       ggplot(),
       data@doseGrid,
       dose_scale,
-      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
+      safe_dose = if (identical(safe_dose_marker, "line")) {
+        safe_dose
+      } else {
+        NA_real_
+      },
       overdose_threshold = nextBest@max_overdose_prob * 100
     )
 
@@ -170,7 +179,11 @@ setMethod(
     )
     if (identical(safe_dose_marker, "triangle")) {
       p <- h_next_best_safety_marker(
-        p, safe_dose, prob_overdose, data@doseGrid, dose_scale
+        p,
+        safe_dose,
+        prob_overdose,
+        data@doseGrid,
+        dose_scale
       )
     }
 
@@ -329,6 +342,7 @@ setMethod(
     prob_target <- colMeans(
       h_in_range(prob_samples, nextBest@target)
     )
+    prob_underdosing <- colMeans(prob_samples < nextBest@target[1L])
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- h_next_best_eligible_doses(
@@ -361,7 +375,11 @@ setMethod(
       NA_real_
     }
     p1 <- h_next_best_reference_lines(
-      ggplot(), data@doseGrid, dose_scale, doselimit, safe_dose
+      ggplot(),
+      data@doseGrid,
+      dose_scale,
+      doselimit,
+      safe_dose
     )
 
     p1 <- h_next_best_probability_plot(
@@ -391,7 +409,11 @@ setMethod(
       ggplot(),
       data@doseGrid,
       dose_scale,
-      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
+      safe_dose = if (identical(safe_dose_marker, "line")) {
+        safe_dose
+      } else {
+        NA_real_
+      },
       overdose_threshold = nextBest@max_overdose_prob * 100
     )
     p2 <- h_next_best_probability_plot(
@@ -407,7 +429,11 @@ setMethod(
     )
     if (identical(safe_dose_marker, "triangle")) {
       p2 <- h_next_best_safety_marker(
-        p2, safe_dose, prob_overdose, data@doseGrid, dose_scale
+        p2,
+        safe_dose,
+        prob_overdose,
+        data@doseGrid,
+        dose_scale
       )
     }
 
@@ -420,6 +446,7 @@ setMethod(
       singlePlots = list(plot1 = p2, plot2 = p1),
       probs = cbind(
         dose = data@doseGrid,
+        underdosing = prob_underdosing,
         target = prob_target,
         overdose = prob_overdose
       )
@@ -474,6 +501,7 @@ setMethod(
       bounds_closed = c(FALSE, TRUE)
     ))
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
+    prob_underdosing <- colMeans(prob_samples < nextBest@target[1L])
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- (prob_overdose <= nextBest@max_overdose_prob)
@@ -506,6 +534,8 @@ setMethod(
     all_target_prob[is_below_limit] <- prob_target
     all_overdose_prob <- rep(NA, nrow(all_dose_matrix))
     all_overdose_prob[is_below_limit] <- prob_overdose
+    all_underdosing_prob <- rep(NA_real_, nrow(all_dose_matrix))
+    all_underdosing_prob[is_below_limit] <- prob_underdosing
     all_not_eligible <- rep(FALSE, nrow(all_dose_matrix))
     all_not_eligible[is_below_limit] <- !is_dose_eligible
 
@@ -513,12 +543,14 @@ setMethod(
       data.frame(
         all_dose_matrix[, 1L],
         all_dose_matrix[, 2L],
+        all_underdosing_prob,
         all_target_prob,
         all_overdose_prob,
         all_not_eligible
       ),
       c(
         drug_names,
+        "underdosing_prob",
         "target_prob",
         "overdose_prob",
         "not_eligible"
@@ -971,7 +1003,11 @@ setMethod(
       NA_real_
     }
     p1 <- h_next_best_reference_lines(
-      ggplot(), data@doseGrid, dose_scale, doselimit, safe_dose
+      ggplot(),
+      data@doseGrid,
+      dose_scale,
+      doselimit,
+      safe_dose
     )
 
     p1 <- h_next_best_probability_plot(
@@ -1001,7 +1037,11 @@ setMethod(
       ggplot(),
       data@doseGrid,
       dose_scale,
-      safe_dose = if (identical(safe_dose_marker, "line")) safe_dose else NA_real_,
+      safe_dose = if (identical(safe_dose_marker, "line")) {
+        safe_dose
+      } else {
+        NA_real_
+      },
       overdose_threshold = nextBest@max_overdose_prob * 100
     )
     p2 <- h_next_best_probability_plot(
@@ -1017,7 +1057,11 @@ setMethod(
     )
     if (identical(safe_dose_marker, "triangle")) {
       p2 <- h_next_best_safety_marker(
-        p2, safe_dose, prob_overdose, data@doseGrid, dose_scale
+        p2,
+        safe_dose,
+        prob_overdose,
+        data@doseGrid,
+        dose_scale
       )
     }
 

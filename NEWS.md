@@ -49,6 +49,9 @@
 
 ### Enhancements
 
+* `NextBestNCRM` includes directly calculated underdose probabilities in its
+  single-agent and combination probability tables.
+
 * Dose-toxicity fit plots for `Samples` and `GeneralModel` now support
   `statistic` (mean or median), `level` for the credible interval, and `target`
   for a horizontal target line or shaded target interval.

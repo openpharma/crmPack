@@ -15,6 +15,7 @@ report_oc_overview(
   spanner = NULL,
   sd = FALSE,
   quantiles = c(0.1, 0.9),
+  row_groups = NULL,
   ...
 )
 }
@@ -40,6 +41,11 @@ spanning all scenario columns. Pipe markdown combines them in its caption.}
 
 \item{sd, quantiles}{Passed to \code{\link[=oc_stat_registry]{oc_stat_registry()}} for per-dose SDs and
 quantile variants. Custom \code{OCStat} objects retain their own settings.}
+
+\item{row_groups}{Optional named character vector mapping statistic IDs or
+expanded row IDs to group labels. A statistic mapping applies to all its
+expanded rows; specific row mappings take precedence. gt shows native row
+sections; markdown adds a Group column.}
 
 \item{...}{Arguments passed to \code{\link[=report_table]{report_table()}} when rendering.}
 }

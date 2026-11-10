@@ -167,7 +167,11 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
 
   overdose_layers <- result$singlePlots$plot1$layers
   expect_identical(
-    unname(vapply(overdose_layers, function(x) class(x$geom)[1L], character(1L))),
+    unname(vapply(
+      overdose_layers,
+      function(x) class(x$geom)[1L],
+      character(1L)
+    )),
     c("GeomHline", "GeomVline", "GeomBar")
   )
 
@@ -198,7 +202,11 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
   )
   triangle_layers <- triangle_result$singlePlots$plot1$layers
   expect_identical(
-    unname(vapply(triangle_layers, function(x) class(x$geom)[1L], character(1L))),
+    unname(vapply(
+      triangle_layers,
+      function(x) class(x$geom)[1L],
+      character(1L)
+    )),
     c("GeomHline", "GeomBar", "GeomPoint")
   )
   expect_identical(triangle_layers[[3L]]$aes_params$colour, "red")
@@ -447,11 +455,19 @@ test_that("nextBest-NextBestNCRM-DataCombo works as expected", {
   expect_equal(result$value, c(drug1 = 10, drug2 = 20))
   expect_named(
     result$probs,
-    c("drug1", "drug2", "target_prob", "overdose_prob", "not_eligible")
+    c(
+      "drug1",
+      "drug2",
+      "underdosing_prob",
+      "target_prob",
+      "overdose_prob",
+      "not_eligible"
+    )
   )
   probs <- data.frame(
     drug1 = c(10, 20, 30, 10, 20, 30),
     drug2 = c(20, 20, 20, 40, 40, 40),
+    underdosing_prob = c(0.3, 0.6, 0.6, 0.6, 0.7, NA),
     target_prob = c(0.6, 0.2, 0.2, 0.1, 0.2, NA),
     overdose_prob = c(0.1, 0.2, 0.2, 0.3, 0.1, NA),
     not_eligible = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE)
@@ -509,6 +525,7 @@ test_that("nextBest-NextBestNCRM-DataCombo uses configured drug names in probs",
     c(
       "compound_a",
       "compound_b",
+      "underdosing_prob",
       "target_prob",
       "overdose_prob",
       "not_eligible"
@@ -801,7 +818,11 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements", {
 
   overdose_layers <- result$singlePlots$plot1$layers
   expect_identical(
-    unname(vapply(overdose_layers, function(x) class(x$geom)[1L], character(1L))),
+    unname(vapply(
+      overdose_layers,
+      function(x) class(x$geom)[1L],
+      character(1L)
+    )),
     c("GeomHline", "GeomVline", "GeomBar")
   )
 
@@ -6219,4 +6240,36 @@ test_that("maxDose works as expected when combined with IncrementsMin", {
     maxDose(increments_min, dat),
     2.4
   )
+})
+
+
+test_that("NCRM underdose probabilities use posterior draws and exclude the target boundary", {
+  samples <- h_as_samples(list(alpha0 = c(-2, 0, 2), alpha1 = c(1, 1, 1)))
+  model <- LogisticNormal(mean = c(0, 1), cov = diag(2), ref_dose = 1)
+  data <- Data(doseGrid = c(1, 2))
+  rule <- NextBestNCRM(
+    target = c(.5, .6),
+    overdose = c(.7, 1),
+    max_overdose_prob = .99
+  )
+  out <- nextBest(rule, Inf, samples, model, data)
+  expect_equal(
+    out$probs[, "underdosing"],
+    vapply(
+      data@doseGrid,
+      function(dose) mean(prob(dose, model, samples) < .5),
+      numeric(1)
+    )
+  )
+  expect_equal(unname(out$probs[1, "underdosing"]), 1 / 3)
+  expect_equal(unname(out$probs[1, "target"]), 1 / 3)
+  # With a gap between target and overdose, do not derive underdose by subtraction.
+  gap_rule <- NextBestNCRM(
+    target = c(.1, .2),
+    overdose = c(.7, 1),
+    max_overdose_prob = .99
+  )
+  gap <- nextBest(gap_rule, Inf, samples, model, data)$probs
+  expect_equal(unname(gap[1, "underdosing"]), 0)
+  expect_lt(sum(gap[1, c("underdosing", "target", "overdose")]), 1)
 })

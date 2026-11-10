@@ -62,3 +62,32 @@ test_that("facets handle scenario-specific grids with shared y scales", {
     "Unknown display override"
   )
 })
+
+test_that("patient distribution plots retain every trial-dose count and original grids", {
+  sims <- oc_test_sims()
+  other <- GeneralSimulations(
+    data = list(
+      Data(x = 8, y = 0, doseGrid = c(2, 8)),
+      Data(doseGrid = c(2, 8))
+    ),
+    doses = c(8, NA_real_),
+    seed = 1L,
+    truth = function(dose) dose / 10
+  )
+  x <- SimulationsSummaryList(A = sims, B = other)
+  box <- plot(x, type = "nPatients", plot_type = "boxplot", scales = "free_x")
+  violin <- plot(x, type = "nPatients", plot_type = "violin")
+  expect_equal(
+    box$data$value,
+    c(2L, 1L, 0L, 0L, 2L, 0L, 0L, 0L, 0L, 0L, 1L, 0L, 0L)
+  )
+  expect_equal(box$data$trial, c(rep(1:3, each = 3), rep(1:2, each = 2)))
+  expect_equal(box$data$dose[box$data$scenario == "B"], c(2, 8, 2, 8))
+  expect_equal(violin$data, box$data)
+  expect_equal(box$labels$y, "Number of patients")
+  built <- ggplot_build(box)
+  expect_equal(built$data[[1]]$middle[1:3], c(0, 1, 0))
+  expect_s3_class(box$layers[[1]]$geom, "GeomBoxplot")
+  expect_s3_class(violin$layers[[1]]$geom, "GeomViolin")
+  expect_error(plot(x, plot_type = "boxplot"), "require type")
+})

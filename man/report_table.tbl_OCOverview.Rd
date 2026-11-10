@@ -6,17 +6,18 @@
 \usage{
 \method{report_table}{tbl_OCOverview}(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   title = attr(x, "title"),
   spanner = attr(x, "spanner"),
-  scenario_labels = NULL
+  scenario_labels = NULL,
+  row_groups = attr(x, "row_groups")
 )
 }
 \arguments{
 \item{x}{A \code{tbl_OCOverview} tibble from \code{\link[=report_oc_overview]{report_oc_overview()}}.}
 
-\item{format}{Renderer: \code{"kable"} or \code{"gt"}.}
+\item{format}{Renderer: \code{"kable"}, \code{"gt"}, or formatted \code{"data.frame"}.}
 
 \item{...}{Arguments passed to \code{knitr::kable()} or \code{gt::gt()}.}
 
@@ -25,9 +26,12 @@ metadata stored on \code{x}. Use \code{NULL} to remove a stored heading.}
 
 \item{scenario_labels}{Optional named scenario header overrides, applied
 over any stored overrides.}
+
+\item{row_groups}{Group overrides as in \code{\link[=report_oc_overview]{report_oc_overview()}}, defaulting to
+the stored row groups. Use \code{NULL} to remove grouping.}
 }
 \value{
-A \code{knitr_kable} or \code{gt_tbl} object. Kable uses a pipe table and combines
+A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame. Kable uses a pipe table and combines
 the title and spanner into its caption because pipe tables cannot span cells.
 }
 \description{

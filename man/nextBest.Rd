@@ -210,6 +210,11 @@ from the grid defined in \code{data}, and a plot depicting this recommendation
 named \code{singlePlots} is included. The \code{singlePlots} is itself a list with
 single plots. An additional list with elements describing the outcome
 of the rule can be contained too.
+For \code{NextBestNCRM}, \code{probs} also includes \code{underdosing}, the posterior
+probability that toxicity is strictly below the lower target boundary.
+Target boundaries are included; overdose probabilities retain the
+configured overdose interval, so the three columns need not partition
+all probabilities if the target and overdose intervals leave a gap.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

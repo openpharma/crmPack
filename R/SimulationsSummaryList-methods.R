@@ -3,8 +3,8 @@ NULL
 
 #' Plot Operating Characteristics Across Scenarios
 #'
-#' Plot per-dose selection percentages or mean patient counts, with a panel for
-#' each scenario. Counts include placebo and unvisited doses (zero patients).
+#' Plot per-dose selection percentages, mean patient counts, or per-trial
+#' patient-count distributions, with a panel for each scenario. Counts include placebo and unvisited doses (zero patients).
 #' Selection percentages use all trials as their denominator, including trials
 #' without a recommendation, which appear as `None`. No summaries or MCMC are
 #' recomputed. Existing single-simulation plotting methods are unaffected.
@@ -17,9 +17,13 @@ NULL
 #'   own dose grid. The y-axis is always shared for comparison.
 #' @param ncol Optional positive integer number of facet columns.
 #' @param axis_text_angle Finite angle for dose-axis labels.
+#' @param plot_type For `type = "nPatients"`, `"bar"` shows means (default),
+#'   while `"boxplot"` and `"violin"` show per-trial counts, including zeros
+#'   for unvisited doses. Other values are not supported for dose selection.
 #' @param ... Unused.
 #' @return A `ggplot` with discrete dose columns faceted by scenario. Its data
 #'   retain original scenario names, numeric doses (`NA` for None), and `value`.
+#'   Distribution plots also identify each trial in a `trial` column.
 #' @export
 setMethod(
   "plot",
@@ -32,9 +36,14 @@ setMethod(
     scales = c("fixed", "free_x"),
     ncol = NULL,
     axis_text_angle = 45,
+    plot_type = c("bar", "boxplot", "violin"),
     ...
   ) {
     type <- match.arg(type)
+    plot_type <- match.arg(plot_type)
+    if (type != "nPatients" && plot_type != "bar") {
+      stop("Boxplots and violin plots require type = 'nPatients'.")
+    }
     scales <- match.arg(scales)
     if (!is.null(ncol)) {
       assert_count(ncol, positive = TRUE)
@@ -44,6 +53,16 @@ setMethod(
     headers <- h_oc_headers(scenarios, overrides = scenario_labels)
     values <- dplyr::bind_rows(lapply(scenarios, function(scenario) {
       sims <- x@simulations[[scenario]]
+      if (type == "nPatients" && plot_type != "bar") {
+        grid <- h_report_dose_grid(sims)
+        counts <- h_report_dose_counts(lapply(sims@data, slot, "x"), grid)
+        return(tibble::tibble(
+          scenario = scenario,
+          dose = rep(grid, ncol(counts)),
+          trial = rep(seq_len(ncol(counts)), each = length(grid)),
+          value = as.vector(counts)
+        ))
+      }
       if (type == "doseSelected") {
         result <- report_dose_selection(sims)
         value <- result$percent
@@ -62,8 +81,14 @@ setMethod(
       levels = levels
     )
     values$scenario <- factor(values$scenario, levels = scenarios)
+    geometry <- switch(
+      plot_type,
+      bar = geom_col(width = 0.8),
+      boxplot = geom_boxplot(width = 0.8),
+      violin = geom_violin(width = 0.8, scale = "width")
+    )
     ggplot(values, aes(x = .data$dose_label, y = .data$value)) +
-      geom_col(width = 0.8) +
+      geometry +
       facet_wrap(
         vars(.data$scenario),
         scales = scales,
@@ -75,8 +100,10 @@ setMethod(
         x = "Dose",
         y = if (type == "doseSelected") {
           "Selected dose [%]"
-        } else {
+        } else if (plot_type == "bar") {
           "Mean number of patients"
+        } else {
+          "Number of patients"
         }
       ) +
       theme(

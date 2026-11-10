@@ -7,27 +7,28 @@
 \alias{report_table.list}
 \title{Render a Reporting Table}
 \usage{
-report_table(x, format = c("kable", "gt"), ...)
+report_table(x, format = c("kable", "gt", "data.frame"), ...)
 
-\method{report_table}{ToxicityScenarios}(x, format = c("kable", "gt"), ...)
+\method{report_table}{ToxicityScenarios}(x, format = c("kable", "gt", "data.frame"), ...)
 
-\method{report_table}{tbl_ToxicityScenarios}(x, format = c("kable", "gt"), ..., digits = 3L)
+\method{report_table}{tbl_ToxicityScenarios}(x, format = c("kable", "gt", "data.frame"), ..., digits = 3L)
 
-\method{report_table}{list}(x, format = c("kable", "gt"), ...)
+\method{report_table}{list}(x, format = c("kable", "gt", "data.frame"), ...)
 }
 \arguments{
 \item{x}{A reporting object, classed reporting tibble, or nonempty list
 of these.}
 
 \item{format}{Renderer: \code{"kable"} (pipe markdown, the default) or \code{"gt"}
-(requires the suggested package \code{gt}).}
+(requires the suggested package \code{gt}), or \code{"data.frame"} for a flat
+display table with rounded strings and identifier metadata.}
 
 \item{...}{Arguments passed to the renderer, such as \code{caption} for kable.}
 
 \item{digits}{Non-negative integer number of decimal places for probabilities.}
 }
 \value{
-A \code{knitr_kable} or \code{gt_tbl} object. For a nonempty list of reporting
+A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame. For a list of reporting
 tables, a \code{report_tables} list of rendered tables, displayed consecutively
 by knitr. See \code{\link[=report_paginate]{report_paginate()}} to split wide tables.
 }

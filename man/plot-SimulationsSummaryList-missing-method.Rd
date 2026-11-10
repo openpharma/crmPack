@@ -12,6 +12,7 @@
   scales = c("fixed", "free_x"),
   ncol = NULL,
   axis_text_angle = 45,
+  plot_type = c("bar", "boxplot", "violin"),
   ...
 )
 }
@@ -31,15 +32,20 @@ own dose grid. The y-axis is always shared for comparison.}
 
 \item{axis_text_angle}{Finite angle for dose-axis labels.}
 
+\item{plot_type}{For \code{type = "nPatients"}, \code{"bar"} shows means (default),
+while \code{"boxplot"} and \code{"violin"} show per-trial counts, including zeros
+for unvisited doses. Other values are not supported for dose selection.}
+
 \item{...}{Unused.}
 }
 \value{
 A \code{ggplot} with discrete dose columns faceted by scenario. Its data
 retain original scenario names, numeric doses (\code{NA} for None), and \code{value}.
+Distribution plots also identify each trial in a \code{trial} column.
 }
 \description{
-Plot per-dose selection percentages or mean patient counts, with a panel for
-each scenario. Counts include placebo and unvisited doses (zero patients).
+Plot per-dose selection percentages, mean patient counts, or per-trial
+patient-count distributions, with a panel for each scenario. Counts include placebo and unvisited doses (zero patients).
 Selection percentages use all trials as their denominator, including trials
 without a recommendation, which appear as \code{None}. No summaries or MCMC are
 recomputed. Existing single-simulation plotting methods are unaffected.

@@ -286,3 +286,45 @@ test_that("different dose grids distinguish unavailable doses from zero selectio
   )
   expect_true(all(is.na(unlist(out$value[out$scenario == "B"]))))
 })
+
+test_that("overview row sections preserve report labels, numeric cells and pagination", {
+  x <- SimulationsSummaryList(
+    A = oc_test_sims(),
+    B = oc_test_sims(),
+    stop_categories = list()
+  )
+  out <- report_oc_overview(
+    x,
+    stats = c("prop_stop_by_label", "n_pat_mean_sd"),
+    row_groups = c(
+      prop_stop_by_label = "Stop reason (%)",
+      n_pat_mean_sd = "Patients"
+    )
+  )
+  expect_true(all(
+    paste("Stop (%) :", c("unsafe", "unsafe2", "size", "precision")) %in%
+      out$label
+  ))
+  plain <- report_oc_overview(
+    x,
+    stats = c("prop_stop_by_label", "n_pat_mean_sd")
+  )
+  expect_equal(out$value, plain$value)
+  expect_equal(report_table(out[rev(seq_len(nrow(out))), ]), report_table(out))
+  page <- report_paginate(out, max_cols = 3)[[1]]
+  expect_match(paste(report_table(page), collapse = "\n"), "Stop reason")
+  expect_equal(ncol(report_table(page, "data.frame")), 3L)
+  expect_error(
+    report_oc_overview(x, row_groups = c(missing = "Group")),
+    "Unknown"
+  )
+  skip_if_not_installed("gt")
+  table <- report_table(out, "gt")
+  expect_equal(table[["_row_groups"]], c("Stop reason (%)", "Patients"))
+  withr::local_options(sass.cache = FALSE)
+  html <- gt::as_raw_html(table)
+  expect_match(html, "unsafe2")
+  expect_match(html, "Stop reason")
+  partial <- report_oc_overview(x, row_groups = c(n_pat_mean = "Patients"))
+  expect_s3_class(report_table(partial, "gt"), "gt_tbl")
+})

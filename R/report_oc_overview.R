@@ -17,6 +17,10 @@
 #'   overrides. Names identify original scenarios; partial overrides are allowed.
 #' @param title,spanner Optional strings for the table title and the heading
 #'   spanning all scenario columns. Pipe markdown combines them in its caption.
+#' @param row_groups Optional named character vector mapping statistic IDs or
+#'   expanded row IDs to group labels. A statistic mapping applies to all its
+#'   expanded rows; specific row mappings take precedence. gt shows native row
+#'   sections; markdown adds a Group column.
 #' @param sd,quantiles Passed to [oc_stat_registry()] for per-dose SDs and
 #'   quantile variants. Custom `OCStat` objects retain their own settings.
 #' @param ... Arguments passed to [report_table()] when rendering.
@@ -69,6 +73,7 @@ report_oc_overview <- function(
   spanner = NULL,
   sd = FALSE,
   quantiles = c(0.1, 0.9),
+  row_groups = NULL,
   ...
 ) {
   assert_class(x, "SimulationsSummaryList")
@@ -147,6 +152,8 @@ report_oc_overview <- function(
     result$label[result$stat == id] <- labels[[id]]
   }
   class(result) <- c("tbl_OCOverview", class(result))
+  h_oc_row_groups(unique(result$stat), row_groups)
+  attr(result, "row_groups") <- row_groups
   attr(result, "scenarios") <- scenarios
   attr(result, "stats") <- unique(result$stat)
   attr(result, "scenario_labels") <- h_oc_headers(
@@ -251,22 +258,25 @@ h_resolve_oc_stats <- function(stats, registry) {
 #' match column names such as `label` without affecting cell alignment.
 #'
 #' @param x A `tbl_OCOverview` tibble from [report_oc_overview()].
-#' @param format Renderer: `"kable"` or `"gt"`.
+#' @param format Renderer: `"kable"`, `"gt"`, or formatted `"data.frame"`.
 #' @param ... Arguments passed to `knitr::kable()` or `gt::gt()`.
 #' @param title,spanner Optional title and scenario heading; defaults to the
 #'   metadata stored on `x`. Use `NULL` to remove a stored heading.
 #' @param scenario_labels Optional named scenario header overrides, applied
 #'   over any stored overrides.
-#' @return A `knitr_kable` or `gt_tbl` object. Kable uses a pipe table and combines
+#' @param row_groups Group overrides as in [report_oc_overview()], defaulting to
+#'   the stored row groups. Use `NULL` to remove grouping.
+#' @return A `knitr_kable`, `gt_tbl`, or formatted data frame. Kable uses a pipe table and combines
 #'   the title and spanner into its caption because pipe tables cannot span cells.
 #' @export
 report_table.tbl_OCOverview <- function(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   title = attr(x, "title"),
   spanner = attr(x, "spanner"),
-  scenario_labels = NULL
+  scenario_labels = NULL,
+  row_groups = attr(x, "row_groups")
 ) {
   format <- match.arg(format)
   if (!is.null(title)) {
@@ -311,6 +321,21 @@ report_table.tbl_OCOverview <- function(
     wide[[columns[i]]] <- ifelse(is.na(values), "\u2014", values)
   }
   display <- c("Statistic", unname(headers))
+  groups <- h_oc_row_groups(unique(c(attr(x, "stats"), ids)), row_groups)
+  groups <- groups[ids]
+  if (length(groups)) {
+    wide <- cbind(.group = unname(groups[ids]), wide)
+    display <- c("Group", display)
+  }
+  if (format == "data.frame") {
+    return(h_report_display(
+      wide,
+      display,
+      identifiers = seq_len(1L + as.integer(length(groups) > 0L)),
+      title = paste(c(title, spanner), collapse = " — "),
+      column_label = "Scenario"
+    ))
+  }
   if (format == "kable") {
     caption <- c(title, spanner)
     args <- list(...)
@@ -322,7 +347,10 @@ report_table.tbl_OCOverview <- function(
       format = "pipe",
       row.names = FALSE,
       col.names = display,
-      align = c("l", rep("r", length(scenarios)))
+      align = c(
+        rep("l", ncol(wide) - length(scenarios)),
+        rep("r", length(scenarios))
+      )
     )
     defaults[names(args)] <- args
     return(do.call(knitr::kable, defaults))
@@ -334,7 +362,12 @@ report_table.tbl_OCOverview <- function(
       call. = FALSE
     )
   }
-  table <- gt::gt(wide, ...)
+  table <- if (length(groups)) {
+    gt::gt(wide, rowname_col = ".label", groupname_col = ".group", ...) |>
+      gt::row_group_order(groups = unique(unname(groups[!is.na(groups)])))
+  } else {
+    gt::gt(wide, ...)
+  }
   table <- gt::cols_label(
     table,
     .list = stats::setNames(as.list(display), names(wide))
@@ -357,4 +390,23 @@ report_table.tbl_OCOverview <- function(
 #' @export
 knit_print.tbl_OCOverview <- function(x, ..., options = NULL) {
   h_knit_report_table(x, ...)
+}
+
+
+#' Expand Overview Row Group Overrides
+#' @param ids Ordered expanded statistic IDs.
+#' @param groups Optional named group labels keyed by statistic or expanded ID.
+#' @return Named group labels, with missing labels for ungrouped rows.
+#' @keywords internal
+#' @noRd
+h_oc_row_groups <- function(ids, groups) {
+  if (is.null(groups) || !length(groups)) {
+    return(NULL)
+  }
+  base <- sub("::.*$", "", ids)
+  h_oc_display_labels(groups, unique(c(base, ids)))
+  out <- groups[base]
+  specific <- ids %in% names(groups)
+  out[specific] <- groups[ids[specific]]
+  stats::setNames(unname(out), ids)
 }

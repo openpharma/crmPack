@@ -8,21 +8,21 @@
 \usage{
 \method{report_table}{tbl_DataScenarios}(
   x,
-  format = c("kable", "gt"),
+  format = c("kable", "gt", "data.frame"),
   ...,
   digits = 3L,
   probability_labels = NULL,
   column_labels = NULL
 )
 
-\method{report_table}{tbl_DataScenario}(x, format = c("kable", "gt"), ...)
+\method{report_table}{tbl_DataScenario}(x, format = c("kable", "gt", "data.frame"), ...)
 
-\method{report_table}{DataScenario}(x, format = c("kable", "gt"), ...)
+\method{report_table}{DataScenario}(x, format = c("kable", "gt", "data.frame"), ...)
 }
 \arguments{
 \item{x}{A DataScenario or a classed scenario tibble.}
 
-\item{format}{Renderer.}
+\item{format}{Renderer: \code{"kable"}, \code{"gt"}, or formatted \code{"data.frame"}.}
 
 \item{...}{Renderer arguments.}
 
@@ -31,7 +31,7 @@
 \item{probability_labels, column_labels}{Named display labels.}
 }
 \value{
-A rendered table.
+A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame.
 }
 \description{
 Render Evaluated Data Scenarios

@@ -165,6 +165,7 @@ Collate:
     'report_prob_summary.R'
     'report_simulations.R'
     'report_table.R'
+    'report_transpose.R'
     'utils-pipe.R'
     'utils.R'
 Config/roxygen2/version: 8.1.1
