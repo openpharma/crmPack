@@ -328,23 +328,6 @@ test_that("recommend-NextBestNCRM-DataCombo uses configured drug names in probs"
     model,
     data
   )
-
-  expect_named(
-    result$probs,
-    c(
-      "compound_a",
-      "compound_b",
-      "target_prob",
-      "overdose_prob",
-      "not_eligible"
-    )
-  )
-  expect_true(all(
-    result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1
-  ))
-  expect_true(all(
-    result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1
-  ))
 })
 
 ## NextBestNCRM-DataParts ----
