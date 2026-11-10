@@ -89,24 +89,12 @@ report_oc_overview <- function(
       stat$label <- labels[[id]]
     }
     values <- lapply(scenarios, function(scenario) {
-      tryCatch(
-        h_eval_oc_stat(
-          stat,
-          x@simulations[[scenario]],
-          x@summaries[[scenario]],
-          scenario
-        ),
-        error = function(e) {
-          stop(
-            sprintf(
-              "Statistic '%s', scenario '%s': %s",
-              id,
-              scenario,
-              conditionMessage(e)
-            ),
-            call. = FALSE
-          )
-        }
+      h_eval_oc_scenario(
+        stat,
+        x@simulations[[scenario]],
+        x@summaries[[scenario]],
+        scenario,
+        id
       )
     })
     multiple <- vapply(
@@ -161,9 +149,10 @@ report_oc_overview <- function(
   class(result) <- c("tbl_OCOverview", class(result))
   attr(result, "scenarios") <- scenarios
   attr(result, "stats") <- unique(result$stat)
-  headers <- stats::setNames(scenarios, scenarios)
-  headers[names(scenario_labels)] <- scenario_labels
-  attr(result, "scenario_labels") <- headers
+  attr(result, "scenario_labels") <- h_oc_headers(
+    scenarios,
+    overrides = scenario_labels
+  )
   attr(result, "title") <- title
   attr(result, "spanner") <- spanner
   if (format == "tibble") {
@@ -286,13 +275,8 @@ report_table.tbl_OCOverview <- function(
   if (!is.null(spanner)) {
     assert_string(spanner)
   }
-  scenarios <- attr(x, "scenarios")
-  scenarios <- c(
-    intersect(scenarios, x$scenario),
-    setdiff(unique(x$scenario), scenarios)
-  )
-  ids <- attr(x, "stats")
-  ids <- c(intersect(ids, x$stat), setdiff(unique(x$stat), ids))
+  scenarios <- h_oc_present_order(attr(x, "scenarios"), x$scenario)
+  ids <- h_oc_present_order(attr(x, "stats"), x$stat)
   if (
     !length(scenarios) ||
       !length(ids) ||
@@ -314,14 +298,11 @@ report_table.tbl_OCOverview <- function(
     },
     character(1)
   )
-  h_oc_display_labels(scenario_labels, scenarios)
-  headers <- stats::setNames(scenarios, scenarios)
-  stored <- attr(x, "scenario_labels")
-  headers[intersect(names(stored), scenarios)] <- stored[intersect(
-    names(stored),
-    scenarios
-  )]
-  headers[names(scenario_labels)] <- scenario_labels
+  headers <- h_oc_headers(
+    scenarios,
+    attr(x, "scenario_labels"),
+    scenario_labels
+  )
   wide <- data.frame(.label = unname(labels), check.names = FALSE)
   columns <- paste0(".scenario_", seq_along(scenarios))
   for (i in seq_along(scenarios)) {

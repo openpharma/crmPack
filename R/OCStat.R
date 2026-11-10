@@ -395,3 +395,26 @@ h_oc_additional_stat <- function(name) {
     if (is.null(values)) NA_real_ else mean(values)
   })
 }
+
+#' Evaluate a Statistic with Scenario Context in Errors
+#' @param stat An OCStat.
+#' @param sims Original simulations.
+#' @param summary Cached summary.
+#' @param scenario Scenario name.
+#' @param id Statistic ID.
+#' @return The evaluated statistic tibble.
+#' @keywords internal
+#' @noRd
+h_eval_oc_scenario <- function(stat, sims, summary, scenario, id) {
+  tryCatch(h_eval_oc_stat(stat, sims, summary, scenario), error = function(e) {
+    stop(
+      sprintf(
+        "Statistic '%s', scenario '%s': %s",
+        id,
+        scenario,
+        conditionMessage(e)
+      ),
+      call. = FALSE
+    )
+  })
+}

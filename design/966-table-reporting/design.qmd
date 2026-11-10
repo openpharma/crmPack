@@ -770,6 +770,60 @@ where applicable), row groups are the scenarios, rows within each group are
 the selected per-dose statistics including the true P(DLT) row (evaluated from
 the stored `truth` slots).
 
+
+- SUM is only shown for only for rows regarding number of patients  (first two rows for each scenario)
+- STOP is early termination due to toxicity (only the probability row)
+- MAX is the max number of patients reached (only the probability row)
+
+
+### Implemented detail usage
+
+```{r}
+#| eval: false
+detail <- report_oc_detail(
+    oc_summary, sd = TRUE,
+    labels = c(n_dlt_per_dose = "Patients with DLTs", n_pat_per_dose = "Patients"),
+    column_labels = c(SUM = "Total"),
+    title = "Per-dose simulation results"
+)
+report_table(detail, format = "kable")
+report_table(detail, format = "gt")
+```
+
+SUM is populated only for the two count statistics, using per-trial total
+patients or total patients with DLTs. With `sd = TRUE`, its SD is computed from
+those trial totals, not by adding dose-level SDs. STOP and MAX are populated
+only for `prop_selected` (also available as `dose_selection`): they use the
+configured **Toxicity** and **Max patients** categories from the collection,
+matching `prop_stop_tox` and `prop_stop_max_patients` in the overview registry.
+The stopping metadata record terminal rule activations; categories count the
+union of their rules and can overlap each other and dose recommendations.
+Accordingly, the probability row is not a partition that necessarily sums to
+100%. A missing recommendation alone is not evidence of toxicity stopping, and
+selecting the highest dose does not imply that maximum sample size was reached.
+When stopping metadata are unavailable, STOP/MAX remain missing.
+
+The `tbl_OCDetail` skeleton contains `scenario`, `stat`, `label`, `dose`,
+`column`, `value`, and `formatted`. Dose is numeric and missing for SUM/STOP/MAX;
+`column` is a stable character key. `value` retains unrounded numeric vectors,
+including mean/SD pairs. Dose columns use the sorted union of scenario grids;
+a dose absent from a scenario is missing rather than zero. All statistic and
+scenario combinations include all columns; inapplicable cells render as em
+dashes. Both special-column sets can be disabled with `sum_column = FALSE`
+and `stop_columns = FALSE`.
+
+The supported registry entries are `n_dlt_per_dose`, `n_pat_per_dose`,
+`prop_selected` / `dose_selection`, and `true_prob`. Custom `OCStat` functions
+can provide a named list of numeric vectors keyed by dose on each scenario's
+grid; omitted doses remain missing, and an entirely missing numeric vector
+marks an unavailable statistic. Optional names in `stats` assign stable row
+IDs. `labels`, `scenario_labels`, and `column_labels` change display text
+without changing keys. SUM/STOP/MAX are supplied only for their corresponding
+built-in statistics. Rendering consumes stored formatted cells without
+recalculating statistics, and reordering the skeleton preserves pairing and
+configured order. gt uses native scenario row groups; pipe markdown includes a
+Scenario column. Bare detail tibbles render through `knit_print()` using kable.
+
 ## Plots
 
 Mostly re-uses existing machinery, generalized to multiple scenarios:
@@ -777,6 +831,24 @@ Mostly re-uses existing machinery, generalized to multiple scenarios:
 - `plot(oc_summary, type = "doseSelected")` and `type = "nPatients"` — per-dose
   barplots as today, but faceted by scenario (`facet_wrap(~ scenario)`).
 - Existing single-`Simulations` plots stay untouched.
+
+### Implemented scenario-faceted plots
+
+```{r}
+#| eval: false
+plot(oc_summary, type = "doseSelected", ncol = 2)
+plot(oc_summary, type = "nPatients", scales = "free_x", axis_text_angle = 0)
+```
+
+Each call returns one ggplot with panels in scenario order. `doseSelected`
+shows percentages of all trials, including unvisited grid doses and a **None**
+category for trials without a recommendation. `nPatients` shows mean patients
+per dose across all trials (including zero counts and placebo). The plot's data
+retain original scenario keys, numeric doses, and unrounded values.
+`scenario_labels` relabels facet strips without merging scenarios. The default
+axes share the sorted dose union; `scales = "free_x"` uses each scenario's own
+grid, with a shared y-axis for comparison. These methods reuse the reporting
+accessors and do not recompute summaries or change existing simulation plots.
 
 # Rendering and export layer
 
@@ -837,7 +909,7 @@ Sliced so that each step is an independently reviewable PR with tests
    registry, PMDA-style default `stop_categories`).
 7. Done: **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
    spanner/title).
-8. **`report_oc_detail()`** + scenario-faceted summary plots.
+8. Done: **`report_oc_detail()`** + scenario-faceted summary plots.
 9. **Rendering/export polish**: `report_table()` generic, `knit_print`
    methods, `report_paginate()`, Word-export documentation.
 10. **Vignette** "Reporting simulation results" reproducing the hypothetical

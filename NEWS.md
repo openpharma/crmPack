@@ -2,6 +2,10 @@
 
 ### New Features
 
+* Added `report_oc_detail()` for per-dose operating-characteristics tables,
+  with tibble, markdown, and `gt` formats; scenario row groups; optional mean/SD
+  count summaries. `plot()` on `SimulationsSummaryList` now provides scenario-faceted dose selection and mean patient-count plots.
+
 * Added `report_oc_overview()` for operating-characteristics tables across
   scenarios, with tibble, markdown, and `gt` output. Tables support
   built-in and custom statistics, row and scenario labels, titles, and spanners,
