@@ -887,7 +887,8 @@ For gt output, `report_table(pages, format = "gt")` returns a list of gt tables;
 export each part separately with `gt::gtsave()`. Word export needs `rmarkdown`
 and Pandoc in addition to gt. Bare reporting objects use portable pipe markdown
 in Word reports. The existing "Describing crmPack Objects" vignette documents
-these paths; the end-to-end simulation-reporting vignette remains step 10.
+these paths; the end-to-end "Reporting simulation results" vignette covers these alongside
+the simulation workflow.
 
 ```{r}
 #| eval: false
@@ -935,8 +936,15 @@ Sliced so that each step is an independently reviewable PR with tests
 8. Done: **`report_oc_detail()`** + scenario-faceted summary plots.
 9. Done: **Rendering/export polish**: `report_table()` generic, `knit_print`
    methods, `report_paginate()`, Word-export documentation.
-10. **Vignette** "Reporting simulation results" reproducing the hypothetical
-    data-scenario, Bayer, BI, Merck, and PMDA example tables end-to-end.
+10. Implemented for available APIs: **Vignette** "Reporting simulation results"
+    (`vignettes/reporting-simulation-results.Rmd.orig`, with precomputed `.Rmd`)
+    covers hypothetical data scenarios and Bayer, BI, Merck, and PMDA-style
+    examples end-to-end. `table-discussion-review.qmd` follows the PDF chapter
+    order for sponsor review and is excluded from the package with `design/`.
+    Unavailable layouts and plots are flagged for separate work: hierarchical
+    OC arm columns, combination truth/prior tables, the native BI row layout,
+    three-interval hypothetical examples, highest-dose-safe outcomes, per-dose
+    patient boxplots/violins, and cohort-scaled duration summaries.
 
 Extensions explicitly deferred (but anticipated in the tidy column layout):
 combo dose grids in true `ToxicityScenarios` and operating-characteristics

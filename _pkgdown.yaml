@@ -40,6 +40,7 @@ articles:
       - trial_analysis
       - trial_sanity_checks
       - trial_simulation
+      - reporting-simulation-results
       - trial_backfill
   - title: Examples
     navbar: Examples
