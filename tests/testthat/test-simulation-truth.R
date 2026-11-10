@@ -124,3 +124,18 @@ test_that("stopping entries retain outcomes, duplicate labels and missing classe
   expect_identical(h_stop_report_entries(tree, leaf), expected)
   expect_identical(h_stop_report_entries(TRUE)$label, NA_character_)
 })
+
+
+test_that("tidy GeneralSimulations omits truth metadata consistently", {
+  sims <- .DefaultGeneralSimulations()
+  expected <- tidy(sims)
+  expect_false("truth" %in% names(expected))
+  expect_true(all(vapply(expected, function(x) length(x) > 0L, logical(1L))))
+
+  sims@truth <- plogis
+  expect_identical(tidy(sims), expected)
+
+  # Older saved objects may lack the truth slot altogether.
+  attr(sims, "truth") <- NULL
+  expect_identical(tidy(sims), expected)
+})

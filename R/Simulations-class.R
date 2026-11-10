@@ -1443,6 +1443,19 @@ DASimulations <- function(trial_duration, ...) {
 
 # tidy
 
+## tidy-GeneralSimulations ----
+
+#' @rdname tidy
+#' @aliases tidy-GeneralSimulations
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(x = "GeneralSimulations"),
+  definition = function(x, ...) {
+    h_tidy_all_slots(x, exclude = "truth") %>% h_tidy_class(x)
+  }
+)
+
 ## tidy-Simulations ----
 
 #' @rdname tidy
@@ -1453,20 +1466,8 @@ setMethod(
   f = "tidy",
   signature = signature(x = "Simulations"),
   definition = function(x, ...) {
-    slot_names <- slotNames(x)
-    rv <- list()
-    for (nm in setdiff(slot_names, "truth")) {
-      if (!is.function(slot(x, nm))) {
-        if (nm %in% c("stop_reasons", "additional_stats")) {} else {
-          rv[[nm]] <- h_tidy_slot(x, nm)
-        }
-      }
-    }
-    # Column bind of all list elements have the same number of rows
-    if (length(rv) > 1 && length(unique(sapply(rv, nrow))) == 1) {
-      rv <- rv %>% dplyr::bind_cols()
-    }
-    rv %>% h_tidy_class(x)
+    h_tidy_all_slots(x, exclude = c("truth", "stop_reasons", "additional_stats")) %>%
+      h_tidy_class(x)
   }
 )
 

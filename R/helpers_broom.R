@@ -122,13 +122,14 @@ h_tidy_slot <- function(obj, slot_name, col = NULL, attributes = FALSE) {
 #'
 #' @param obj (`CrmPackObject`)\cr object to be tidied.
 #' @param ... passed to h_tidy_slot
+#' @param exclude (`character`)\cr slot names to omit from the tidy representation.
 #'
 #' @return A (list of) [`tibble`](s)
 #'
 #' @keywords internal
 #' @noRd
-h_tidy_all_slots <- function(obj, ...) {
-  slot_names <- slotNames(obj)
+h_tidy_all_slots <- function(obj, ..., exclude = character()) {
+  slot_names <- setdiff(slotNames(obj), exclude)
   rv <- list()
   for (nm in slot_names) {
     if (!is.function(slot(obj, nm))) {

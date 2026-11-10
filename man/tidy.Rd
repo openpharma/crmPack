@@ -26,6 +26,8 @@
 \alias{tidy-DataCombo}
 \alias{tidy,HierarchicalData-method}
 \alias{tidy-HierarchicalData}
+\alias{tidy,GeneralSimulations-method}
+\alias{tidy-GeneralSimulations}
 \alias{tidy,Simulations-method}
 \alias{tidy-Simulations}
 \alias{tidy,ComboSimulations-method}
@@ -101,6 +103,8 @@ tidy(x, ...)
 \S4method{tidy}{DataCombo}(x, ...)
 
 \S4method{tidy}{HierarchicalData}(x, ...)
+
+\S4method{tidy}{GeneralSimulations}(x, ...)
 
 \S4method{tidy}{Simulations}(x, ...)
 
