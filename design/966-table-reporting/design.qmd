@@ -658,7 +658,7 @@ at the highest dose is not automatically called "highest dose safe"; a separate
 rule-based definition is needed before adding that special column. Duration
 uses recorded `DASimulations@trial_duration` values in their original units;
 other simulations yield unavailable duration rather than a cohort-based proxy.
-Overview/detail assembly and rendering remain steps 7 and 8.
+Overview assembly and rendering are implemented below; detail tables remain step 8.
 
 ## Overview table (PMDA-style, scenarios as columns)
 
@@ -701,6 +701,55 @@ report_oc_overview(
 - Arm-specific sub-columns (BI requirement, `HierarchicalSimulations`): the
   skeleton gains an `arm` column and the gt renderer nests
   scenario → arm spanners. Designed for now, implemented as a follow-up.
+
+### Implemented overview usage
+
+```{r}
+#| eval: false
+custom <- OCStat(
+    label = "Number of simulated trials",
+    fun = function(sims, summary, scenario) summary@nsim,
+    format = "%.0f"
+)
+overview <- report_oc_overview(
+    oc_summary,
+    stats = list("n_pat_mean_sd", "prop_mtd_correct", trials = custom),
+    labels = c(n_pat_mean_sd = "Patients, mean (SD)"),
+    scenario_labels = c("Sc. 1 (DL1 toxic)" = "Scenario 1"),
+    title = "Operating characteristics",
+    spanner = "Simulation results (target: 20-35%)"
+)
+report_table(overview, format = "kable")
+report_table(overview, format = "gt")
+# Or render directly with report_oc_overview(..., format = "kable" / "gt").
+```
+
+The default statistics are the six PMDA-style entries in the example above.
+`stats` also accepts scalar derived candidates such as `"additional:score"`.
+Optional names in `stats` assign stable statistic IDs, allowing repeated
+built-ins with different labels. Unnamed custom statistics receive IDs
+`custom1`, `custom2`, etc., using their position in `stats`.
+
+The long `tbl_OCOverview` skeleton contains `scenario`, `stat`, `label`,
+`value`, and `formatted`. `value` is a list-column of unrounded numeric vectors,
+so mean/SD and quantile components survive independently of their formatting.
+Multi-row statistics receive IDs `<statistic ID>::<row name>` and align across
+scenarios by name, in order of first appearance. The union of rows is retained;
+unavailable rows get `NA` and render as an em dash. An entirely missing scalar
+result may stand in for an unavailable multi-row statistic, but other mixtures
+of scalar and multi-row results are rejected. Missing components in an existing
+cell keep the statistic's own formatting (for example, `"1.0 (NA)"`).
+
+`labels` can override a statistic's label (the prefix for multiple rows) or an
+individual expanded row ID. `scenario_labels` changes display headers without
+changing scenario keys. Title, spanner, scenario headers, and row order are
+stored as tibble metadata; `report_table()` can override the headings later and
+renders stored cells without recalculating statistics. Reordering the skeleton
+does not change cell pairing or the configured display order. Duplicate cells,
+incomplete scenario/statistic grids, and inconsistent row labels are rejected.
+The gt renderer spans all scenario columns; pipe markdown combines the title
+and spanner in its caption because it cannot span cells. Bare overview tibbles
+in Quarto or R Markdown render through `knit_print()` using kable.
 
 ## Detail table (per-dose, scenarios as row groups)
 
@@ -786,7 +835,7 @@ Sliced so that each step is an independently reviewable PR with tests
    `statistic`/`level` options) + `plot_prior_draws()`.
 6. Done: **Statistics registry + `SimulationsSummaryList`** (`OCStat`, built-in
    registry, PMDA-style default `stop_categories`).
-7. **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
+7. Done: **`report_oc_overview()`** table (tibble + kable + gt formats, programmatic
    spanner/title).
 8. **`report_oc_detail()`** + scenario-faceted summary plots.
 9. **Rendering/export polish**: `report_table()` generic, `knit_print`

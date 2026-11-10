@@ -2,6 +2,11 @@
 
 ### New Features
 
+* Added `report_oc_overview()` for operating-characteristics tables across
+  scenarios, with tibble, markdown, and `gt` output. Tables support
+  built-in and custom statistics, row and scenario labels, titles, and spanners,
+  and reuse cached simulation summaries.
+
 * Added `SimulationsSummaryList()` to cache summaries across named simulation
   scenarios, and `OCStat()` / `oc_stat_registry()` for configurable operating
   characteristics, per-dose rows, and scalar derived statistics. Stop reporting

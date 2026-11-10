@@ -37,7 +37,8 @@ OCStat <- function(label, fun, format = "%.1f") {
 #' @param sims Original simulations.
 #' @param summary Cached summary.
 #' @param scenario Scenario name.
-#' @return Tibble with label, numeric list-column value, and formatted columns.
+#' @return Tibble with row key (empty for one cell), label, numeric list-column
+#'   value, and formatted columns.
 #' @keywords internal
 #' @noRd
 h_eval_oc_stat <- function(stat, sims, summary, scenario) {
@@ -74,6 +75,7 @@ h_eval_oc_stat <- function(stat, sims, summary, scenario) {
     character(1)
   )
   tibble::tibble(
+    row = if (multiple) names(result) else "",
     label = if (multiple) paste(stat$label, names(result)) else stat$label,
     value = unname(result),
     formatted = unname(formatted)
