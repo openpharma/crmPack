@@ -210,6 +210,32 @@ extended (`dose_grid` as a matrix / `DataCombo` grid, doses labelled
 "d1 + d2"); the tidy format simply gains the second dose column. This is out of
 scope for the first iteration but the tidy column naming should anticipate it.
 
+### Implemented single-agent example
+
+```{r}
+#| eval: false
+truths <- ToxicityScenarios(
+    scenarios = list(
+        "Low toxicity" = function(dose) plogis(-4 + log1p(dose)),
+        "High toxicity" = function(dose) plogis(-2 + log1p(dose))
+    ),
+    dose_grid = c(5, 10, 20, 40),
+    target = c(0.2, 0.35)
+)
+tidy(truths) # unrounded scenario / dose / prob tibble
+plot(truths)
+report_table(truths, format = "kable", digits = 2)
+report_table(tidy(truths), format = "gt", digits = 2)
+# Bare truths or tidy(truths) in a Quarto chunk render as markdown tables.
+```
+
+The dose grid must be finite, non-negative, and strictly increasing. Each
+uniquely named truth function must return one probability per dose; validation
+identifies failing scenarios by name. The optional target is an increasing
+pair in `[0, 1]`. `report_table()` defaults to the always-available kable path;
+`format = "gt"` requires the suggested `gt` package. The shared generic is
+introduced here; other reporting classes and pagination remain for later steps.
+
 ## Storing the truth on the simulation objects
 
 Several operating characteristics ("correct MTD", "overestimated MTD",
@@ -650,7 +676,7 @@ Sliced so that each step is an independently reviewable PR with tests
    classification out of `show`/`plot` into exported, documented, tested
    `report_*` functions returning tibbles. Refactor `show`/`plot` to use them
    (no behavior change).
-3. **`ToxicityScenarios`** class + `tidy`/`plot`/table methods.
+3. Done: **`ToxicityScenarios`** class + `tidy`/`plot`/table methods.
 4. **`DataScenario`** return class for `scenario()`, plus
    `report_data_scenarios()` and `tbl_DataScenario`/`tbl_DataScenarios` methods,
    including single-agent, combination, and hierarchical result flattening.

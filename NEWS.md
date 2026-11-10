@@ -2,6 +2,10 @@
 
 ### New Features
 
+* Added `ToxicityScenarios` for named true dose-toxicity curves, with `tidy()`,
+  `plot()`, and automatic knitr tables. `report_table()` renders the object or
+  its tidy tibble as markdown or, with the suggested `gt` package, a rich table.
+
 * Added tibble accessors for simulation reporting: `report_dose_selection()`,
   `report_patients_per_dose()`, `report_dlts_per_dose()`,
   `report_stop_reasons()`, `report_sample_size()`, and
