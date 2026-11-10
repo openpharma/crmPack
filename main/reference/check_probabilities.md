@@ -14,7 +14,8 @@ check_probabilities(
   bounds_closed = TRUE,
   len = NULL,
   unique = FALSE,
-  sorted = FALSE
+  sorted = FALSE,
+  any.missing = FALSE
 )
 
 assert_probabilities(
@@ -23,6 +24,7 @@ assert_probabilities(
   len = NULL,
   unique = FALSE,
   sorted = FALSE,
+  any.missing = FALSE,
   .var.name = checkmate::vname(x),
   add = NULL
 )
@@ -32,7 +34,8 @@ test_probabilities(
   bounds_closed = TRUE,
   len = NULL,
   unique = FALSE,
-  sorted = FALSE
+  sorted = FALSE,
+  any.missing = FALSE
 )
 
 expect_probabilities(
@@ -41,6 +44,7 @@ expect_probabilities(
   len = NULL,
   unique = FALSE,
   sorted = FALSE,
+  any.missing = FALSE,
   info = NULL,
   label = vname(x)
 )
@@ -77,6 +81,11 @@ expect_probabilities(
   \[`logical(1)`\]\
   Elements must be sorted in ascending order. Missing values are
   ignored.
+
+- any.missing:
+
+  \[`logical(1)`\]\
+  Are vectors with missing values allowed? Default is `TRUE`.
 
 - .var.name:
 
