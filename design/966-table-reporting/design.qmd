@@ -645,7 +645,7 @@ Sliced so that each step is an independently reviewable PR with tests
    `summary()` optional (defaulting to the stored slot), and record the
    stopping rule classes in the `stop_report` assembly (for the default
    `stop_categories`).
-2. **Data-layer accessors**: factor per-dose selection %, patients/DLTs per
+2. Done: **Data-layer accessors**: factor per-dose selection %, patients/DLTs per
    dose, stop-report percentages, sample-size summaries, and MTD
    classification out of `show`/`plot` into exported, documented, tested
    `report_*` functions returning tibbles. Refactor `show`/`plot` to use them

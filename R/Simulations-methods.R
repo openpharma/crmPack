@@ -226,12 +226,9 @@ h_plot_doses_tried <- function(
   axis_ticks <- match.arg(axis_ticks)
 
   # Derive the proportion of patients at each dose across all simulations.
-  all_doses <- unlist(sim_doses, use.names = FALSE)
-  average_dose_dist <- if (length(all_doses) > 0L) {
-    as.numeric(prop.table(table(factor(all_doses, levels = dose_grid))))
-  } else {
-    rep(0, length(dose_grid))
-  }
+  counts <- h_report_dose_counts(sim_doses, dose_grid)
+  total <- sum(counts)
+  average_dose_dist <- if (total > 0L) rowSums(counts) / total else rep(0, length(dose_grid))
 
   if (identical(dose_scale, "auto")) {
     dose_scale <- "linear"

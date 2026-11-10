@@ -2,6 +2,11 @@
 
 ### New Features
 
+* Added tibble accessors for simulation reporting: `report_dose_selection()`,
+  `report_patients_per_dose()`, `report_dlts_per_dose()`,
+  `report_stop_reasons()`, `report_sample_size()`, and
+  `report_mtd_classification()`.
+
 * Added `StoppingDoseStabilized`, a stopping rule that stops when the current
   next best dose has been administered to a prespecified number of consecutive
   cohorts.

@@ -29,17 +29,21 @@ h_barplot_percentages <- function(
   assert_numeric(discrete_levels, null.ok = TRUE, any.missing = FALSE)
   assert_number(axis_text_angle, finite = TRUE)
 
-  tabx <- table(x) / length(x)
+  percentages <- h_report_percentages(x)
   dat <- data.frame(
     x = if (x_is_discrete) {
       factor(
-        names(tabx),
-        levels = if (is.null(discrete_levels)) names(tabx) else discrete_levels
+        as.character(percentages$dose),
+        levels = if (is.null(discrete_levels)) {
+          as.character(percentages$dose)
+        } else {
+          discrete_levels
+        }
       )
     } else {
-      as.numeric(names(tabx))
+      percentages$dose
     },
-    perc = as.numeric(tabx) * 100
+    perc = percentages$percent
   )
   bar_width <- if (x_is_discrete) {
     0.8
@@ -119,9 +123,8 @@ h_histogram_percentages <- function(x, description, bins = 30L) {
 #' @return named list with label and percentage of rule activation
 
 h_calc_report_label_percentage <- function(stop_report) {
-  stop_pct <- colMeans(stop_report) * 100
-  stop_pct_to_print <- stop_pct[!is.na(names(stop_pct))]
-  stop_pct_to_print
+  result <- h_report_stop_reasons(stop_report)
+  stats::setNames(result$percent, result$label)
 }
 
 
@@ -163,10 +166,15 @@ h_summarize_add_stats <- function(stats_list) {
 #' get_simulation_truth(sims)(c(0, 1))
 #' @export
 get_simulation_truth <- function(object) {
-  assert_multi_class(object, c("GeneralSimulations", "ComboSimulations", "HierarchicalSimulations"))
+  assert_multi_class(
+    object,
+    c("GeneralSimulations", "ComboSimulations", "HierarchicalSimulations")
+  )
   truth <- tryCatch(slot(object, "truth"), error = function(e) NULL)
   if (is.null(truth)) {
-    stop("No truth is stored on this simulation object. Supply the truth explicitly to summary().")
+    stop(
+      "No truth is stored on this simulation object. Supply the truth explicitly to summary()."
+    )
   }
   truth
 }

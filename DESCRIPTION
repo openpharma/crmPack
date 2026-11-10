@@ -150,6 +150,7 @@ Collate:
     'helpers_model.R'
     'helpers_samples.R'
     'helpers_simulations.R'
+    'report_simulations.R'
     'utils-pipe.R'
     'utils.R'
 Config/roxygen2/version: 8.1.1
