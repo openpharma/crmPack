@@ -19,7 +19,7 @@ This class captures summary output from \code{\link{ComboSimulations}} objects.
 
 \describe{
 \item{\code{target}}{(\code{numeric})
-target toxicity interval. Empty if no truth function was supplied.}
+target toxicity interval.}
 
 \item{\code{nsim}}{(\code{integer})
 number of simulations.}
@@ -37,10 +37,10 @@ average fitted toxicity risk in each simulation.}
 selected dose combinations; one row per simulation.}
 
 \item{\code{tox_at_doses_selected}}{(\code{numeric})
-true toxicity at selected dose combinations (if truth supplied).}
+true toxicity at selected dose combinations.}
 
 \item{\code{prop_at_target}}{(\code{numeric})
-proportion of selected combinations within target interval (if truth supplied).}
+proportion of selected combinations within target interval.}
 
 \item{\code{dose_most_selected}}{(\code{numeric})
 most frequently selected dose combination.}
@@ -52,7 +52,8 @@ observed toxicity rate at the most frequently selected combination.}
 dose grid for each drug.}
 
 \item{\code{stop_report}}{(\code{matrix})
-matrix of stopping rule outcomes.}
+matrix of stopping rule outcomes, with a named \code{stopping_classes}
+attribute recording the rule class for each column.}
 
 \item{\code{stop_reasons}}{(\code{list})
 stopping reasons by simulation.}

@@ -8,22 +8,28 @@
 
 testthat::local_mocked_bindings(
   .DefaultDASimulations = function(...) {
-    readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
+    result <- readRDS(testthat::test_path("fixtures", "default_da_simulations.Rds"))
+    result@truth <- NULL
+    result
   }
 )
 
 testthat::local_mocked_bindings(
   .DefaultSimulations = function(...) {
-    readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
+    result <- readRDS(testthat::test_path("fixtures", "default_simulations.Rds"))
+    result@truth <- NULL
+    result
   }
 )
 
 testthat::local_mocked_bindings(
   .DefaultDualSimulations = function(...) {
-    readRDS(testthat::test_path(
+    result <- readRDS(testthat::test_path(
       "fixtures",
       "default_dual_simulations.Rds"
     ))
+    result@truth <- NULL
+    result
   }
 )
 # End of mocks
@@ -73,7 +79,7 @@ test_that("GeneralSimulations object can be created with the user constructor", 
 test_that("GeneralSimulations user constructor arguments names are as expected", {
   expect_function(
     GeneralSimulations,
-    args = c("data", "doses", "seed"),
+    args = c("data", "doses", "seed", "truth"),
     ordered = TRUE
   )
 })
@@ -222,7 +228,8 @@ test_that("ComboSimulations user constructor arguments names are as expected", {
       "stop_reasons",
       "stop_report",
       "additional_stats",
-      "seed"
+      "seed",
+      "truth"
     ),
     ordered = TRUE
   )

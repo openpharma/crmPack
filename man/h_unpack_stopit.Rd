@@ -2,18 +2,20 @@
 % Please edit documentation in R/helpers_design.R
 \name{h_unpack_stopit}
 \alias{h_unpack_stopit}
-\title{Helper function to recursively unpack stopping rules and return lists with
-logical value and label given}
+\title{Flatten a Stopping Result into a Named Logical Report}
 \usage{
-h_unpack_stopit(stopit_tree)
+h_unpack_stopit(stopit_tree, stopping = NULL)
 }
 \arguments{
-\item{stopit_tree}{object from simulate method}
+\item{stopit_tree}{result returned by \code{stopTrial()}.}
+
+\item{stopping}{optional stopping rule used to produce the result.}
 }
 \value{
-named list
+A named logical vector in parent-before-children order. When \code{stopping}
+is supplied, its \code{stopping_classes} attribute records the class for each entry.
 }
 \description{
-Helper function to recursively unpack stopping rules and return lists with
-logical value and label given
+Flatten a Stopping Result into a Named Logical Report
 }
+\keyword{internal}

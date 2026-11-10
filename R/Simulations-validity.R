@@ -18,6 +18,7 @@ NULL
 
 v_general_simulations <- function(object) {
   v <- Validate()
+  v$check(v_simulation_truth(object), "truth must be NULL, a function, or a named list of functions")
 
   nSims <- length(object@data)
 
@@ -83,6 +84,7 @@ v_simulations <- function(object) {
 #'   posterior samples, fits, and stopping outputs.
 v_hierarchical_simulations <- function(object) {
   v <- Validate()
+  v$check(v_simulation_truth(object), "truth must be NULL, a function, or a named list of functions")
 
   nSims <- length(object@data)
 
@@ -127,6 +129,7 @@ v_hierarchical_simulations <- function(object) {
 #'   and stopping outputs.
 v_combo_simulations <- function(object) {
   v <- Validate()
+  v$check(v_simulation_truth(object), "truth must be NULL, a function, or a named list of functions")
 
   nSims <- length(object@data)
 
@@ -277,4 +280,18 @@ v_da_simulations <- function(object) {
   )
 
   v$result()
+}
+
+
+#' Validate Stored Simulation Truth
+#'
+#' @param object a simulation object.
+#' @return Whether the truth is absent, a function, or a named list of functions.
+#' @keywords internal
+v_simulation_truth <- function(object) {
+  truth <- tryCatch(slot(object, "truth"), error = function(e) NULL)
+  is.null(truth) || is.function(truth) ||
+    (is.list(truth) && length(truth) > 0L &&
+      !is.null(names(truth)) && !anyNA(names(truth)) && all(nzchar(names(truth))) &&
+      !anyDuplicated(names(truth)) && all(vapply(truth, is.function, logical(1L))))
 }

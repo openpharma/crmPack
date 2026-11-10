@@ -20,6 +20,8 @@ NULL
 #'
 #' @slot data (`list`)\cr produced [`Data`] objects.
 #' @slot doses (`numeric`)\cr final dose recommendations.
+#' @slot truth (`function`, named `list` of functions, or `NULL`)\cr true toxicity
+#'   curve(s) supplied to `simulate()`. `NULL` denotes an unavailable truth.
 #' @slot seed (`integer`)\cr random generator state before starting the simulation.
 #'
 #' @aliases GeneralSimulations
@@ -30,7 +32,8 @@ NULL
     slots = c(
       data = "list",
       doses = "numeric",
-      seed = "integer"
+      seed = "integer",
+      truth = "ANY"
     ),
     prototype = prototype(
       data = list(
@@ -50,7 +53,8 @@ NULL
         )
       ),
       doses = c(1, 2),
-      seed = 1L
+      seed = 1L,
+      truth = NULL
     ),
     contains = "CrmPackClass",
     validity = v_general_simulations
@@ -63,15 +67,17 @@ NULL
 #' @param data (`list`)\cr see slot definition.
 #' @param doses (`numeric`)\cr see slot definition.
 #' @param seed (`integer`)\cr see slot definition.
+#' @param truth see slot definition.
 #'
 #' @example examples/Simulations-class-GeneralSimulations.R
 #' @export
-GeneralSimulations <- function(data, doses, seed) {
+GeneralSimulations <- function(data, doses, seed, truth = NULL) {
   assert_integerish(seed)
   .GeneralSimulations(
     data = data,
     doses = doses,
-    seed = as.integer(seed)
+    seed = as.integer(seed),
+    truth = truth
   )
 }
 
@@ -108,7 +114,8 @@ GeneralSimulations <- function(data, doses, seed) {
 #'
 #' @slot fit (`list`)\cr final fits
 #' @slot stop_reasons (`list`)\cr stopping reasons for each simulation run
-#' @slot stop_report matrix of stopping rule outcomes
+#' @slot stop_report matrix of stopping rule outcomes. The named
+#'   `stopping_classes` attribute records the rule class for each column.
 #' @slot additional_stats list of additional statistical summary
 #' @slot overdose_prob (`numeric`)\cr posterior probability that the toxicity
 #'   probability at the final recommended dose exceeds the upper target bound,
@@ -216,6 +223,8 @@ Simulations <- function(
 #' @slot stop_report (`list`)\cr arm-specific stopping rule outcomes for each
 #'   simulation run.
 #' @slot additional_stats (`list`)\cr additional arm-specific statistics.
+#' @slot truth (`function`, named `list` of functions, or `NULL`)\cr true toxicity
+#'   curve(s) supplied to `simulate()`. `NULL` denotes an unavailable truth.
 #' @slot seed (`integer`)\cr random generator state before starting the
 #'   simulation.
 #'
@@ -231,7 +240,8 @@ Simulations <- function(
     stop_report = "list",
     stop_reasons = "list",
     additional_stats = "list",
-    seed = "integer"
+    seed = "integer",
+    truth = "ANY"
   ),
   prototype = prototype(
     data = list(.DefaultHierarchicalData()),
@@ -241,7 +251,8 @@ Simulations <- function(
     stop_report = list(list()),
     stop_reasons = list(list()),
     additional_stats = list(list()),
-    seed = 1L
+    seed = 1L,
+    truth = NULL
   ),
   contains = "CrmPackClass",
   validity = v_hierarchical_simulations
@@ -259,6 +270,7 @@ Simulations <- function(
 #' @param stop_report (`list`)\cr see slot definition.
 #' @param additional_stats (`list`)\cr see slot definition.
 #' @param seed (`integer`)\cr see slot definition.
+#' @param truth see slot definition.
 #'
 #' @export
 HierarchicalSimulations <- function(
@@ -269,7 +281,8 @@ HierarchicalSimulations <- function(
   stop_reasons,
   stop_report,
   additional_stats,
-  seed
+  seed,
+  truth = NULL
 ) {
   assert_integerish(seed)
   .HierarchicalSimulations(
@@ -280,7 +293,8 @@ HierarchicalSimulations <- function(
     stop_report = stop_report,
     stop_reasons = stop_reasons,
     additional_stats = additional_stats,
-    seed = as.integer(seed)
+    seed = as.integer(seed),
+    truth = truth
   )
 }
 
@@ -335,9 +349,11 @@ HierarchicalSimulations <- function(
 #' @slot stop_reasons (`list`)
 #'   stopping reasons for each simulation run.
 #' @slot stop_report (`matrix`)
-#'   matrix of stopping rule outcomes.
+#'   matrix of stopping rule outcomes, with a named `stopping_classes`
+#'   attribute recording the rule class for each column.
 #' @slot additional_stats (`list`)
 #'   list of additional statistical summary values.
+#' @slot truth (`function` or `NULL`)\cr true toxicity curve supplied to `simulate()`.
 #' @slot seed (`integer`)
 #'   random generator state before starting the simulation.
 #' @aliases ComboSimulations
@@ -352,7 +368,8 @@ HierarchicalSimulations <- function(
       stop_report = "matrix",
       stop_reasons = "list",
       additional_stats = "list",
-      seed = "integer"
+      seed = "integer",
+      truth = "ANY"
     ),
     prototype = prototype(
       data = list(
@@ -391,7 +408,8 @@ HierarchicalSimulations <- function(
       stop_report = matrix(TRUE, nrow = 2),
       stop_reasons = list("A", "B"),
       additional_stats = list(list(), list()),
-      seed = 1L
+      seed = 1L,
+      truth = NULL
     ),
     contains = "CrmPackClass",
     validity = v_combo_simulations
@@ -413,6 +431,7 @@ HierarchicalSimulations <- function(
 #'   see slot definition.
 #' @param additional_stats (`list`)
 #'   see slot definition.
+#' @param truth see slot definition.
 #' @param seed (`integer`)
 #'   see slot definition.
 #' @export
@@ -423,7 +442,8 @@ ComboSimulations <- function(
   stop_reasons,
   stop_report,
   additional_stats,
-  seed
+  seed,
+  truth = NULL
 ) {
   if (!is.matrix(doses)) {
     doses <- as.matrix(doses)
@@ -438,7 +458,8 @@ ComboSimulations <- function(
     stop_report = stop_report,
     stop_reasons = stop_reasons,
     additional_stats = additional_stats,
-    seed = as.integer(seed)
+    seed = as.integer(seed),
+    truth = truth
   )
 }
 
@@ -744,7 +765,7 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' This class captures summary output from [`ComboSimulations`] objects.
 #'
 #' @slot target (`numeric`)
-#'   target toxicity interval. Empty if no truth function was supplied.
+#'   target toxicity interval.
 #' @slot nsim (`integer`)
 #'   number of simulations.
 #' @slot n_obs (`integer`)
@@ -756,9 +777,9 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' @slot dose_selected (`matrix`)
 #'   selected dose combinations; one row per simulation.
 #' @slot tox_at_doses_selected (`numeric`)
-#'   true toxicity at selected dose combinations (if truth supplied).
+#'   true toxicity at selected dose combinations.
 #' @slot prop_at_target (`numeric`)
-#'   proportion of selected combinations within target interval (if truth supplied).
+#'   proportion of selected combinations within target interval.
 #' @slot dose_most_selected (`numeric`)
 #'   most frequently selected dose combination.
 #' @slot obs_tox_rate_at_dose_most_selected (`numeric`)
@@ -766,7 +787,8 @@ DualSimulations <- function(rho_est, sigma2w_est, fit_biomarker, ...) {
 #' @slot dose_grid (`list`)
 #'   dose grid for each drug.
 #' @slot stop_report (`matrix`)
-#'   matrix of stopping rule outcomes.
+#'   matrix of stopping rule outcomes, with a named `stopping_classes`
+#'   attribute recording the rule class for each column.
 #' @slot stop_reasons (`list`)
 #'   stopping reasons by simulation.
 #' @slot additional_stats (`list`)
@@ -1433,7 +1455,7 @@ setMethod(
   definition = function(x, ...) {
     slot_names <- slotNames(x)
     rv <- list()
-    for (nm in slot_names) {
+    for (nm in setdiff(slot_names, "truth")) {
       if (!is.function(slot(x, nm))) {
         if (nm %in% c("stop_reasons", "additional_stats")) {} else {
           rv[[nm]] <- h_tidy_slot(x, nm)

@@ -146,3 +146,27 @@ h_summarize_add_stats <- function(stats_list) {
 
   list(param_names, averages)
 }
+
+
+#' Retrieve the Truth Stored on a Simulation Object
+#'
+#' Returns the toxicity truth supplied to `simulate()`. For hierarchical
+#' simulations, this can be a named list with one function per arm.
+#' Objects without a stored truth, including objects saved with older package
+#' versions, cause an error; supply truth explicitly when summarizing these objects.
+#'
+#' @param object a [`GeneralSimulations`], [`ComboSimulations`], or
+#'   [`HierarchicalSimulations`] object.
+#' @return The stored truth function or named list of arm-specific functions.
+#' @examples
+#' sims <- GeneralSimulations(list(), numeric(), seed = 1L, truth = plogis)
+#' get_simulation_truth(sims)(c(0, 1))
+#' @export
+get_simulation_truth <- function(object) {
+  assert_multi_class(object, c("GeneralSimulations", "ComboSimulations", "HierarchicalSimulations"))
+  truth <- tryCatch(slot(object, "truth"), error = function(e) NULL)
+  if (is.null(truth)) {
+    stop("No truth is stored on this simulation object. Supply the truth explicitly to summary().")
+  }
+  truth
+}

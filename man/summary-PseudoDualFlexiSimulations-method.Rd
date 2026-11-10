@@ -7,7 +7,7 @@
 \usage{
 \S4method{summary}{PseudoDualFlexiSimulations}(
   object,
-  trueDLE,
+  trueDLE = get_simulation_truth(object),
   trueEff,
   targetEndOfTrial = 0.3,
   targetDuringTrial = 0.35,
@@ -19,7 +19,8 @@
 summarize.}
 
 \item{trueDLE}{(\code{function})\cr a function which takes as input a dose
-(vector) and returns the true probability of DLE (vector).}
+(vector) and returns the true probability of DLE (vector). Defaults to the
+stored simulation truth; supply explicitly for older objects.}
 
 \item{trueEff}{(\code{numeric})\cr a vector which takes as input the true mean
 efficacy values at all dose levels (in order).}

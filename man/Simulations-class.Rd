@@ -48,7 +48,8 @@ the general class \code{\link{GeneralSimulations}}.
 
 \item{\code{stop_reasons}}{(\code{list})\cr stopping reasons for each simulation run}
 
-\item{\code{stop_report}}{matrix of stopping rule outcomes}
+\item{\code{stop_report}}{matrix of stopping rule outcomes. The named
+\code{stopping_classes} attribute records the rule class for each column.}
 
 \item{\code{additional_stats}}{list of additional statistical summary}
 

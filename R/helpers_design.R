@@ -177,7 +177,7 @@ h_simulations_output_format <- function(resultList) {
 
   # individual stopping rule results as matrix, labels as column names
   stopResults <- lapply(resultList, "[[", "report_results")
-  stop_matrix <- as.matrix(do.call(rbind, stopResults))
+  stop_matrix <- h_bind_stop_reports(stopResults)
 
   # Result list of additional statistical summary.
   additional_stats <- lapply(resultList, "[[", "additional_stats")
@@ -194,27 +194,79 @@ h_simulations_output_format <- function(resultList) {
 }
 
 
-#' Helper function to recursively unpack stopping rules and return lists with
-#' logical value and label given
+#' Flatten a Stopping Result into a Named Logical Report
 #'
-#' @param stopit_tree object from simulate method
-#' @return named list
-
-h_unpack_stopit <- function(stopit_tree) {
-  label <- attr(stopit_tree, "report_label")
-  value <- stopit_tree[1]
-  names(value) <- label
-  value
-  if (is.null(attr(stopit_tree, "individual"))) {
-    value
-  } else {
-    unlist(c(
-      value,
-      lapply(attr(stopit_tree, "individual"), h_unpack_stopit)
-    ))
+#' @param stopit_tree result returned by `stopTrial()`.
+#' @param stopping optional stopping rule used to produce the result.
+#' @return A named logical vector in parent-before-children order. When `stopping`
+#'   is supplied, its `stopping_classes` attribute records the class for each entry.
+#' @keywords internal
+h_unpack_stopit <- function(stopit_tree, stopping = NULL) {
+  entries <- h_stop_report_entries(stopit_tree, stopping)
+  report <- stats::setNames(entries$stopped, entries$label)
+  if (!is.null(stopping)) {
+    attr(report, "stopping_classes") <- stats::setNames(entries$rule_class, entries$label)
   }
+  report
 }
 
+#' Extract the Child Rules of a Stopping Rule
+#'
+#' @param stopping a stopping rule or `NULL`. Wrappers with a `rule` slot are
+#'   unwrapped before extracting their `stop_list`.
+#' @return A list of child rules, or an empty list for a leaf or unknown rule.
+#' @keywords internal
+h_stop_rule_children <- function(stopping) {
+  if (is.null(stopping)) {
+    return(list())
+  }
+  if ("rule" %in% slotNames(stopping)) {
+    return(h_stop_rule_children(stopping@rule))
+  }
+  if ("stop_list" %in% slotNames(stopping)) {
+    return(stopping@stop_list)
+  }
+  list()
+}
+
+#' Flatten Stopping Results into One Row per Rule
+#'
+#' @param stopit_tree result returned by `stopTrial()`.
+#' @param stopping the corresponding stopping rule or `NULL` if unknown.
+#' @return A data frame with logical `stopped`, character `label`, and character
+#'   `rule_class` columns. Unknown rule classes are `NA`.
+#' @keywords internal
+h_stop_report_entries <- function(stopit_tree, stopping = NULL) {
+  label <- attr(stopit_tree, "report_label")
+  entry <- data.frame(
+    stopped = as.logical(stopit_tree[1L]),
+    label = if (is.null(label)) NA_character_ else label,
+    rule_class = if (is.null(stopping)) NA_character_ else class(stopping)[1L]
+  )
+  individual <- attr(stopit_tree, "individual")
+  child_rules <- h_stop_rule_children(stopping)
+  children <- lapply(seq_along(individual), function(i) {
+    child_rule <- if (i <= length(child_rules)) child_rules[[i]] else NULL
+    h_stop_report_entries(individual[[i]], child_rule)
+  })
+  do.call(rbind, c(list(entry), children))
+}
+
+#' Bind Stopping Reports While Preserving Rule Classes
+#'
+#' @param reports list of named logical stopping reports.
+#' @return A logical matrix with a named `stopping_classes` attribute corresponding
+#'   to its columns, including composite rules and unlabelled rules.
+#' @keywords internal
+h_bind_stop_reports <- function(reports) {
+  result <- as.matrix(do.call(rbind, reports))
+  classes <- lapply(reports, attr, "stopping_classes")
+  available <- which(!vapply(classes, is.null, logical(1L)))
+  if (length(available)) {
+    attr(result, "stopping_classes") <- classes[[available[1L]]]
+  }
+  result
+}
 
 #' Helper function to determine the dlts including first separate and placebo
 #' condition

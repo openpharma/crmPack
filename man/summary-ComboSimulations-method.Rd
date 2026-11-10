@@ -5,19 +5,25 @@
 \alias{summary-ComboSimulations}
 \title{Summarize \code{ComboSimulations}}
 \usage{
-\S4method{summary}{ComboSimulations}(object, truth, target = c(0.2, 0.35), ...)
+\S4method{summary}{ComboSimulations}(
+  object,
+  truth = get_simulation_truth(object),
+  target = c(0.2, 0.35),
+  ...
+)
 }
 \arguments{
 \item{object}{(\code{ComboSimulations})
 the object we want to summarize.}
 
 \item{truth}{(\code{function})
-optional function mapping a dose combination to a toxicity probability.
+function mapping a dose combination to a toxicity probability. Defaults to
+the stored simulation truth; supply explicitly for older objects.
 It can accept one argument (length-2 numeric vector or one-row matrix) or
 two numeric arguments (\code{drug1}, \code{drug2}).}
 
 \item{target}{(\code{numeric})
-optional target toxicity interval used only when \code{truth} is supplied.}
+target toxicity interval used for the computations.}
 
 \item{...}{additional arguments can be supplied here for \code{truth}.}
 }

@@ -5,13 +5,20 @@
 \alias{summary-PseudoSimulations}
 \title{Summarize \code{PseudoSimulations}}
 \usage{
-\S4method{summary}{PseudoSimulations}(object, truth, targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
+\S4method{summary}{PseudoSimulations}(
+  object,
+  truth = get_simulation_truth(object),
+  targetEndOfTrial = 0.3,
+  targetDuringTrial = 0.35,
+  ...
+)
 }
 \arguments{
 \item{object}{(\code{PseudoSimulations})\cr the object we want to summarize.}
 
 \item{truth}{(\code{function})\cr a function which takes as input a dose (vector)
-and returns the true probability (vector) for toxicity.}
+and returns the true probability (vector) for toxicity. Defaults to the
+stored simulation truth; supply explicitly for older objects.}
 
 \item{targetEndOfTrial}{(\code{number})\cr the target probability of DLE wanted
 to achieve at the end of a trial.}

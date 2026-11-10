@@ -253,7 +253,7 @@ setMethod(
           model = object@model,
           data = data
         )
-        stopit_results <- h_unpack_stopit(should_stop)
+        stopit_results <- h_unpack_stopit(should_stop, object@stopping)
       }
 
       fit_model <- fit(object = samples, model = object@model, data = data)
@@ -308,7 +308,8 @@ setMethod(
       stop_reasons = simulations_output$stopReasons,
       additional_stats = simulations_output$additional_stats,
       overdose_prob = as.numeric(sapply(result_list, "[[", "overdose_prob")),
-      seed = rng_state
+      seed = rng_state,
+      truth = truth
     )
   }
 )
@@ -468,7 +469,7 @@ setMethod(
           model = object@model,
           data = data
         )
-        stopit_results <- h_unpack_stopit(should_stop)
+        stopit_results <- h_unpack_stopit(should_stop, object@stopping)
 
         stop_reason <- attr(should_stop, "message")
         if (anyNA(dose) && !isTRUE(should_stop)) {
@@ -540,7 +541,7 @@ setMethod(
     fit_list <- lapply(result_list, "[[", "fit")
     stop_reasons <- lapply(result_list, "[[", "stop")
     stop_results <- lapply(result_list, "[[", "report_results")
-    stop_report <- as.matrix(do.call(rbind, stop_results))
+    stop_report <- h_bind_stop_reports(stop_results)
     additional_stats <- lapply(result_list, "[[", "additional_stats")
 
     ComboSimulations(
@@ -550,7 +551,8 @@ setMethod(
       stop_report = stop_report,
       stop_reasons = stop_reasons,
       additional_stats = additional_stats,
-      seed = rng_state
+      seed = rng_state,
+      truth = truth
     )
   }
 )
@@ -661,7 +663,8 @@ setMethod(
     GeneralSimulations(
       data = data_list,
       doses = recommended_doses,
-      seed = rng_state
+      seed = rng_state,
+      truth = truth
     )
   }
 )
@@ -931,7 +934,7 @@ setMethod(
           model = object@model,
           data = data
         )
-        stopit_results <- h_unpack_stopit(should_stop)
+        stopit_results <- h_unpack_stopit(should_stop, object@stopping)
       }
 
       fit_model <- fit(object = samples, model = object@model, data = data)
@@ -993,7 +996,7 @@ setMethod(
     fit_biomarker_list <- lapply(result_list, "[[", "fit_biomarker")
     stop_reasons <- lapply(result_list, "[[", "stop")
     stop_results <- lapply(result_list, "[[", "report_results")
-    stop_report <- as.matrix(do.call(rbind, stop_results))
+    stop_report <- h_bind_stop_reports(stop_results)
     additional_stats <- lapply(result_list, "[[", "additional_stats")
 
     DualSimulations(
@@ -1007,7 +1010,8 @@ setMethod(
       stop_reasons = stop_reasons,
       additional_stats = additional_stats,
       overdose_prob = as.numeric(sapply(result_list, "[[", "overdose_prob")),
-      seed = rng_state
+      seed = rng_state,
+      truth = trueTox
     )
   }
 )
@@ -1203,7 +1207,7 @@ setMethod(
           model = model,
           data = data
         )
-        stopit_results <- h_unpack_stopit(should_stop)
+        stopit_results <- h_unpack_stopit(should_stop, object@stopping)
       }
 
       fit_model <- fit(object = samples, model = model, data = data)
@@ -1279,7 +1283,7 @@ setMethod(
     stop_reasons <- lapply(result_list, "[[", "stop")
 
     stop_results <- lapply(result_list, "[[", "report_results")
-    stop_report <- as.matrix(do.call(rbind, stop_results))
+    stop_report <- h_bind_stop_reports(stop_results)
 
     PseudoSimulations(
       data = data_list,
@@ -1295,7 +1299,8 @@ setMethod(
       final_tdeot_ratios = ratio_tdeot_list,
       stop_reasons = stop_reasons,
       stop_report = stop_report,
-      seed = rng_state
+      seed = rng_state,
+      truth = truth
     )
   }
 )
@@ -1481,7 +1486,7 @@ setMethod(
           model = model,
           data = data
         )
-        stopit_results <- h_unpack_stopit(should_stop)
+        stopit_results <- h_unpack_stopit(should_stop, object@stopping)
       }
 
       prob_fun <- probFunction(
@@ -1565,7 +1570,7 @@ setMethod(
     stop_reasons <- lapply(result_list, "[[", "stop")
 
     stop_results <- lapply(result_list, "[[", "report_results")
-    stop_report <- as.matrix(do.call(rbind, stop_results))
+    stop_report <- h_bind_stop_reports(stop_results)
 
     PseudoSimulations(
       data = data_list,
@@ -1581,7 +1586,8 @@ setMethod(
       final_tdeot_ratios = ratio_tdeot_list,
       stop_reasons = stop_reasons,
       stop_report = stop_report,
-      seed = rng_state
+      seed = rng_state,
+      truth = truth
     )
   }
 )
@@ -1866,7 +1872,7 @@ setMethod(
           data = data,
           Effmodel = eff_model
         )
-        stopit_results <- h_unpack_stopit(should_stop)
+        stopit_results <- h_unpack_stopit(should_stop, object@stopping)
       }
 
       prob_fun <- probFunction(
@@ -1988,7 +1994,7 @@ setMethod(
     stop_reasons <- lapply(result_list, "[[", "stop")
 
     stop_results <- lapply(result_list, "[[", "report_results")
-    stop_report <- as.matrix(do.call(rbind, stop_results))
+    stop_report <- h_bind_stop_reports(stop_results)
 
     PseudoDualSimulations(
       data = data_list,
@@ -2012,7 +2018,8 @@ setMethod(
       sigma2_est = sigma2_estimates,
       stop_reasons = stop_reasons,
       stop_report = stop_report,
-      seed = rng_state
+      seed = rng_state,
+      truth = trueDLE
     )
   }
 )
@@ -2330,7 +2337,7 @@ h_simulate_flexi <- function(
         Effsamples = eff_samples,
         Gstarderive = object@nextBest@mg_derive
       )
-      stop_results <- h_unpack_stopit(should_stop)
+      stop_results <- h_unpack_stopit(should_stop, object@stopping)
     }
 
     # Calculate final model fits
@@ -2466,7 +2473,7 @@ h_simulate_flexi <- function(
   stop_reasons <- lapply(result_list, "[[", "stop")
 
   stop_results <- lapply(result_list, "[[", "report_results")
-  stop_report <- as.matrix(do.call(rbind, stop_results))
+  stop_report <- h_bind_stop_reports(stop_results)
 
   # Return simulation results
   PseudoDualFlexiSimulations(
@@ -2492,7 +2499,8 @@ h_simulate_flexi <- function(
     sigma2_beta_w_est = sigma2_beta_w_estimates,
     stop_reasons = stop_reasons,
     stop_report = stop_report,
-    seed = rng_state
+    seed = rng_state,
+    truth = trueDLE
   )
 }
 
@@ -2819,7 +2827,7 @@ h_simulate_nonflexi <- function(
         Effsamples = eff_samples,
         Gstarderive = object@nextBest@mg_derive
       )
-      stop_results <- h_unpack_stopit(should_stop)
+      stop_results <- h_unpack_stopit(should_stop, object@stopping)
     }
     # Calculate final model fits
     dle_fit <- fit(
@@ -2946,7 +2954,7 @@ h_simulate_nonflexi <- function(
   stop_reasons <- lapply(result_list, "[[", "stop")
 
   stop_results <- lapply(result_list, "[[", "report_results")
-  stop_report <- as.matrix(do.call(rbind, stop_results))
+  stop_report <- h_bind_stop_reports(stop_results)
 
   # Return simulation results
   PseudoDualSimulations(
@@ -2971,7 +2979,8 @@ h_simulate_nonflexi <- function(
     sigma2_est = sigma2_estimates,
     stop_reasons = stop_reasons,
     stop_report = stop_report,
-    seed = rng_state
+    seed = rng_state,
+    truth = trueDLE
   )
 }
 
@@ -3691,7 +3700,7 @@ setMethod(
           model = object@model,
           data = data
         )
-        stop_results <- h_unpack_stopit(should_stop)
+        stop_results <- h_unpack_stopit(should_stop, object@stopping)
       }
 
       # Calculate final model fit.
@@ -3761,7 +3770,7 @@ setMethod(
     stop_reasons <- lapply(result_list, "[[", "stop")
 
     stop_results <- lapply(result_list, "[[", "report_results")
-    stop_report <- as.matrix(do.call(rbind, stop_results))
+    stop_report <- h_bind_stop_reports(stop_results)
 
     additional_stats <- lapply(result_list, "[[", "additional_stats")
     overdose_prob <- as.numeric(sapply(result_list, "[[", "overdose_prob"))
@@ -3776,7 +3785,8 @@ setMethod(
       stop_reasons = stop_reasons,
       additional_stats = additional_stats,
       overdose_prob = overdose_prob,
-      seed = rng_state
+      seed = rng_state,
+      truth = truthTox
     )
   }
 )
@@ -3961,7 +3971,7 @@ setMethod(
               current$combo$data,
               group = "combo"
             )
-          current$combo$results <- h_unpack_stopit(current$combo$stop)
+          current$combo$results <- h_unpack_stopit(current$combo$stop, object@combo@stopping)
         }
         if (!current$mono$stop) {
           current$mono$stop <- object@mono@stopping %>%
@@ -3973,7 +3983,7 @@ setMethod(
               group = "mono",
               external = current$combo$stop
             )
-          current$mono$results <- h_unpack_stopit(current$mono$stop)
+          current$mono$results <- h_unpack_stopit(current$mono$stop, object@mono@stopping)
         }
         if (
           object@same_dose_for_all && !current$mono$stop && !current$combo$stop
@@ -4046,13 +4056,14 @@ setMethod(
       combo = lapply(result_list, "[[", "combo")
     )
     # Put everything in a list with both mono and combo Simulations:
-    lapply(result_list, function(this_list) {
+    setNames(lapply(names(result_list), function(arm_name) {
+      this_list <- result_list[[arm_name]]
       data_list <- lapply(this_list, "[[", "data")
       recommended_doses <- as.numeric(sapply(this_list, "[[", "dose"))
       fit_list <- lapply(this_list, "[[", "fit")
       stop_reasons <- lapply(this_list, "[[", "stop")
       report_results <- lapply(this_list, "[[", "results")
-      stop_report <- as.matrix(do.call(rbind, report_results))
+      stop_report <- h_bind_stop_reports(report_results)
       additional_stats <- lapply(this_list, "[[", "additional_stats")
       overdose_prob <- as.numeric(sapply(this_list, "[[", "overdose_prob"))
 
@@ -4064,9 +4075,10 @@ setMethod(
         stop_report = stop_report,
         additional_stats = additional_stats,
         overdose_prob = overdose_prob,
-        seed = rng_state
+        seed = rng_state,
+        truth = if (arm_name == "mono") truth else combo_truth
       )
-    })
+    }), names(result_list))
   }
 )
 

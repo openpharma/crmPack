@@ -8,7 +8,7 @@
 \alias{.DefaultGeneralSimulations}
 \title{\code{GeneralSimulations}}
 \usage{
-GeneralSimulations(data, doses, seed)
+GeneralSimulations(data, doses, seed, truth = NULL)
 
 .DefaultGeneralSimulations()
 }
@@ -18,6 +18,8 @@ GeneralSimulations(data, doses, seed)
 \item{doses}{(\code{numeric})\cr see slot definition.}
 
 \item{seed}{(\code{integer})\cr see slot definition.}
+
+\item{truth}{see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -34,6 +36,9 @@ saved, in order to be able to reproduce the outcome. For this just use
 \item{\code{data}}{(\code{list})\cr produced \code{\link{Data}} objects.}
 
 \item{\code{doses}}{(\code{numeric})\cr final dose recommendations.}
+
+\item{\code{truth}}{(\code{function}, named \code{list} of functions, or \code{NULL})\cr true toxicity
+curve(s) supplied to \code{simulate()}. \code{NULL} denotes an unavailable truth.}
 
 \item{\code{seed}}{(\code{integer})\cr random generator state before starting the simulation.}
 }}

@@ -5,13 +5,19 @@
 \alias{summary-GeneralSimulations}
 \title{Summarize the \code{GeneralSimulations}, Relative to a Given Truth}
 \usage{
-\S4method{summary}{GeneralSimulations}(object, truth, target = c(0.2, 0.35), ...)
+\S4method{summary}{GeneralSimulations}(
+  object,
+  truth = get_simulation_truth(object),
+  target = c(0.2, 0.35),
+  ...
+)
 }
 \arguments{
 \item{object}{(\code{GeneralSimulations})\cr the object we want to summarize.}
 
 \item{truth}{(\code{function})\cr a function which takes as input a dose (vector)
-and returns the true probability (vector) for toxicity.}
+and returns the true probability (vector) for toxicity. Defaults to the
+stored simulation truth; supply explicitly for older objects.}
 
 \item{target}{(\code{numeric})\cr the target toxicity interval (default: 20-35\%)
 used for the computations.}

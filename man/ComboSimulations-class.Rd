@@ -15,7 +15,8 @@ ComboSimulations(
   stop_reasons,
   stop_report,
   additional_stats,
-  seed
+  seed,
+  truth = NULL
 )
 
 .DefaultComboSimulations()
@@ -41,6 +42,8 @@ see slot definition.}
 
 \item{seed}{(\code{integer})
 see slot definition.}
+
+\item{truth}{see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -69,10 +72,13 @@ final fitted toxicity surfaces for each simulation run.}
 stopping reasons for each simulation run.}
 
 \item{\code{stop_report}}{(\code{matrix})
-matrix of stopping rule outcomes.}
+matrix of stopping rule outcomes, with a named \code{stopping_classes}
+attribute recording the rule class for each column.}
 
 \item{\code{additional_stats}}{(\code{list})
 list of additional statistical summary values.}
+
+\item{\code{truth}}{(\code{function} or \code{NULL})\cr true toxicity curve supplied to \code{simulate()}.}
 
 \item{\code{seed}}{(\code{integer})
 random generator state before starting the simulation.}

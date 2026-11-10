@@ -7,7 +7,7 @@
 \usage{
 \S4method{summary}{PseudoDualSimulations}(
   object,
-  trueDLE,
+  trueDLE = get_simulation_truth(object),
   trueEff,
   targetEndOfTrial = 0.3,
   targetDuringTrial = 0.35,
@@ -18,7 +18,8 @@
 \item{object}{(\code{PseudoDualSimulations})\cr the object we want to summarize.}
 
 \item{trueDLE}{(\code{function})\cr a function which takes as input a dose
-(vector) and returns the true probability (vector) of DLE.}
+(vector) and returns the true probability (vector) of DLE. Defaults to the
+stored simulation truth; supply explicitly for older objects.}
 
 \item{trueEff}{(\code{function})\cr a function which takes as input a dose
 (vector) and returns the mean efficacy value(s) (vector).}

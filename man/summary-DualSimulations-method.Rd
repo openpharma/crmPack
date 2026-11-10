@@ -5,13 +5,20 @@
 \alias{summary-DualSimulations}
 \title{Summarize Dual-Endpoint Design Simulations}
 \usage{
-\S4method{summary}{DualSimulations}(object, trueTox, trueBiomarker, target = c(0.2, 0.35), ...)
+\S4method{summary}{DualSimulations}(
+  object,
+  trueTox = get_simulation_truth(object),
+  trueBiomarker,
+  target = c(0.2, 0.35),
+  ...
+)
 }
 \arguments{
 \item{object}{(\code{DualSimulations})\cr the object we want to summarize.}
 
 \item{trueTox}{(\code{function})\cr a function which takes as input a dose
-(vector) and returns the true probability (vector) for toxicity.}
+(vector) and returns the true probability (vector) for toxicity. Defaults
+to the stored simulation truth; supply explicitly for older objects.}
 
 \item{trueBiomarker}{(\code{function})\cr a function which takes as input a dose
 (vector) and returns the true biomarker level (vector).}

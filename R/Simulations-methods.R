@@ -878,7 +878,8 @@ setMethod(
 #'
 #' @param object (`GeneralSimulations`)\cr the object we want to summarize.
 #' @param truth (`function`)\cr a function which takes as input a dose (vector)
-#'   and returns the true probability (vector) for toxicity.
+#'   and returns the true probability (vector) for toxicity. Defaults to the
+#'   stored simulation truth; supply explicitly for older objects.
 #' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
 #'   used for the computations.
 #' @param ... additional arguments can be supplied here for `truth`.
@@ -891,7 +892,7 @@ setMethod(
 setMethod(
   f = "summary",
   signature = signature(object = "GeneralSimulations"),
-  def = function(object, truth, target = c(0.2, 0.35), ...) {
+  def = function(object, truth = get_simulation_truth(object), target = c(0.2, 0.35), ...) {
     # Validate arguments.
     assert_function(truth)
     assert_numeric(target, min.len = 1, max.len = 2, lower = 0, upper = 1)
@@ -1162,11 +1163,12 @@ h_eval_combo_truth <- function(truth, dose_pair, ...) {
 #' @param object (`ComboSimulations`)
 #'   the object we want to summarize.
 #' @param truth (`function`)
-#'   optional function mapping a dose combination to a toxicity probability.
+#'   function mapping a dose combination to a toxicity probability. Defaults to
+#'   the stored simulation truth; supply explicitly for older objects.
 #'   It can accept one argument (length-2 numeric vector or one-row matrix) or
 #'   two numeric arguments (`drug1`, `drug2`).
 #' @param target (`numeric`)
-#'   optional target toxicity interval used only when `truth` is supplied.
+#'   target toxicity interval used for the computations.
 #' @param ... additional arguments can be supplied here for `truth`.
 #'
 #' @return An object of class [`ComboSimulationsSummary`].
@@ -1176,15 +1178,11 @@ h_eval_combo_truth <- function(truth, dose_pair, ...) {
 setMethod(
   f = "summary",
   signature = signature(object = "ComboSimulations"),
-  def = function(object, truth, target = c(0.2, 0.35), ...) {
-    has_truth <- !missing(truth)
-
-    if (has_truth) {
-      assert_function(truth)
-      assert_numeric(target, min.len = 1, max.len = 2, lower = 0, upper = 1)
-      if (length(target) == 2L) {
-        assert_true(target[1L] < target[2L])
-      }
+  def = function(object, truth = get_simulation_truth(object), target = c(0.2, 0.35), ...) {
+    assert_function(truth)
+    assert_numeric(target, min.len = 1, max.len = 2, lower = 0, upper = 1)
+    if (length(target) == 2L) {
+      assert_true(target[1L] < target[2L])
     }
 
     nsim <- length(object@data)
@@ -1254,37 +1252,30 @@ setMethod(
       }
     }
 
-    tox_at_doses_selected <- rep(NA_real_, nsim)
-    prop_at_target <- NA_real_
-    target_value <- numeric(0)
-
-    if (has_truth) {
-      tox_at_doses_selected <- apply(
-        dose_selected,
-        1L,
-        function(dose_row) {
-          h_eval_combo_truth(
-            truth = truth,
-            dose_pair = as.numeric(dose_row),
-            ...
-          )
-        }
-      )
-
-      prop_at_target <- if (length(target) == 2L) {
-        mean(
-          (tox_at_doses_selected > target[1L]) &
-            (tox_at_doses_selected < target[2L]),
-          na.rm = TRUE
+    tox_at_doses_selected <- apply(
+      dose_selected,
+      1L,
+      function(dose_row) {
+        h_eval_combo_truth(
+          truth = truth,
+          dose_pair = as.numeric(dose_row),
+          ...
         )
-      } else {
-        mean(tox_at_doses_selected < target[1L], na.rm = TRUE)
       }
-      target_value <- target
+    )
+
+    prop_at_target <- if (length(target) == 2L) {
+      mean(
+        (tox_at_doses_selected > target[1L]) &
+          (tox_at_doses_selected < target[2L]),
+        na.rm = TRUE
+      )
+    } else {
+      mean(tox_at_doses_selected < target[1L], na.rm = TRUE)
     }
 
     .ComboSimulationsSummary(
-      target = target_value,
+      target = target,
       nsim = as.integer(nsim),
       n_obs = n_obs,
       prop_dlts = prop_dlts,
@@ -1312,7 +1303,8 @@ setMethod(
 #'
 #' @param object (`Simulations`)\cr the object we want to summarize.
 #' @param truth (`function`)\cr a function which takes as input a dose (vector)
-#'   and returns the true probability (vector) for toxicity.
+#'   and returns the true probability (vector) for toxicity. Defaults to the
+#'   stored simulation truth; supply explicitly for older objects.
 #' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
 #'   used for the computations.
 #' @param ... additional arguments can be supplied here for `truth`.
@@ -1326,7 +1318,7 @@ setMethod(
 setMethod(
   f = "summary",
   signature = signature(object = "Simulations"),
-  def = function(object, truth, target = c(0.2, 0.35), ...) {
+  def = function(object, truth = get_simulation_truth(object), target = c(0.2, 0.35), ...) {
     # Call the parent method.
     start <- callNextMethod(
       object = object,
@@ -1449,7 +1441,7 @@ h_hierarchical_bind_stop_report <- function(stop_report, arm_name, nsim) {
       x
     }
   })
-  as.matrix(do.call(rbind, arm_report))
+  h_bind_stop_reports(arm_report)
 }
 
 #' Extract Arm-Level Simulations from Hierarchical Simulations
@@ -1497,6 +1489,12 @@ h_hierarchical_bind_stop_report <- function(stop_report, arm_name, nsim) {
 #'
 #' @export
 get_arm_simulations <- function(object, arm_name) {
+  stored_truth <- tryCatch(slot(object, "truth"), error = function(e) NULL)
+  arm_truth <- if (!is.null(stored_truth)) {
+    h_hierarchical_get_arm_arg(stored_truth, arm_name)
+  } else {
+    NULL
+  }
   nsim <- length(object@data)
   arm_data <- lapply(object@data, function(x) x@arms[[arm_name]])
   arm_fit <- lapply(object@fit, function(x) x[[arm_name]])
@@ -1533,7 +1531,8 @@ get_arm_simulations <- function(object, arm_name) {
       stop_reasons = arm_stop_reasons,
       stop_report = arm_stop_report,
       additional_stats = arm_additional_stats,
-      seed = object@seed
+      seed = object@seed,
+      truth = arm_truth
     )
   } else {
     arm_doses <- vapply(
@@ -1556,7 +1555,8 @@ get_arm_simulations <- function(object, arm_name) {
       stop_reasons = arm_stop_reasons,
       stop_report = arm_stop_report,
       additional_stats = arm_additional_stats,
-      seed = object@seed
+      seed = object@seed,
+      truth = arm_truth
     )
   }
 }
@@ -1571,7 +1571,7 @@ get_arm_simulations <- function(object, arm_name) {
 #' @param object (`HierarchicalSimulations`)\cr the object we want to summarize.
 #' @param truth (`function` or named `list` of `function`)\cr true DLT
 #'   probability function(s). If a list is supplied, names must match the
-#'   hierarchical arms.
+#'   hierarchical arms. Defaults to the stored simulation truth.
 #' @param target (`numeric` or named `list` of `numeric`)\cr target toxicity
 #'   interval(s). If a list is supplied, names must match the hierarchical arms.
 #' @param ... additional arguments can be supplied here for `truth`.
@@ -1583,7 +1583,7 @@ get_arm_simulations <- function(object, arm_name) {
 setMethod(
   f = "summary",
   signature = signature(object = "HierarchicalSimulations"),
-  def = function(object, truth, target = c(0.2, 0.35), ...) {
+  def = function(object, truth = get_simulation_truth(object), target = c(0.2, 0.35), ...) {
     arm_names <- names(object@data[[1L]]@arms)
     arm_summaries <- stats::setNames(
       vector("list", length(arm_names)),
@@ -1618,7 +1618,8 @@ setMethod(
 #'
 #' @param object (`DualSimulations`)\cr the object we want to summarize.
 #' @param trueTox (`function`)\cr a function which takes as input a dose
-#'   (vector) and returns the true probability (vector) for toxicity.
+#'   (vector) and returns the true probability (vector) for toxicity. Defaults
+#'   to the stored simulation truth; supply explicitly for older objects.
 #' @param trueBiomarker (`function`)\cr a function which takes as input a dose
 #'   (vector) and returns the true biomarker level (vector).
 #' @param target (`numeric`)\cr the target toxicity interval (default: 20-35%)
@@ -1635,7 +1636,7 @@ setMethod(
 setMethod(
   f = "summary",
   signature = signature(object = "DualSimulations"),
-  def = function(object, trueTox, trueBiomarker, target = c(0.2, 0.35), ...) {
+  def = function(object, trueTox = get_simulation_truth(object), trueBiomarker, target = c(0.2, 0.35), ...) {
     # Call the parent method.
     start <- callNextMethod(
       object = object,
@@ -3085,7 +3086,8 @@ h_pseudo_sim_fit_summary <- function(
 #'
 #' @param object (`PseudoSimulations`)\cr the object we want to summarize.
 #' @param truth (`function`)\cr a function which takes as input a dose (vector)
-#'   and returns the true probability (vector) for toxicity.
+#'   and returns the true probability (vector) for toxicity. Defaults to the
+#'   stored simulation truth; supply explicitly for older objects.
 #' @param targetEndOfTrial (`number`)\cr the target probability of DLE wanted
 #'   to achieve at the end of a trial.
 #' @param targetDuringTrial (`number`)\cr the target probability of DLE wanted
@@ -3103,7 +3105,7 @@ setMethod(
   signature = signature(object = "PseudoSimulations"),
   def = function(
     object,
-    truth,
+    truth = get_simulation_truth(object),
     targetEndOfTrial = 0.3,
     targetDuringTrial = 0.35,
     ...
@@ -4030,7 +4032,8 @@ setMethod(
 #'
 #' @param object (`PseudoDualSimulations`)\cr the object we want to summarize.
 #' @param trueDLE (`function`)\cr a function which takes as input a dose
-#'   (vector) and returns the true probability (vector) of DLE.
+#'   (vector) and returns the true probability (vector) of DLE. Defaults to the
+#'   stored simulation truth; supply explicitly for older objects.
 #' @param trueEff (`function`)\cr a function which takes as input a dose
 #'   (vector) and returns the mean efficacy value(s) (vector).
 #' @param targetEndOfTrial (`number`)\cr the target probability of DLE that are
@@ -4051,7 +4054,7 @@ setMethod(
   signature = signature(object = "PseudoDualSimulations"),
   def = function(
     object,
-    trueDLE,
+    trueDLE = get_simulation_truth(object),
     trueEff,
     targetEndOfTrial = 0.3,
     targetDuringTrial = 0.35,
@@ -4198,7 +4201,8 @@ setMethod(
 #' @param object (`PseudoDualFlexiSimulations`)\cr the object we want to
 #'   summarize.
 #' @param trueDLE (`function`)\cr a function which takes as input a dose
-#'   (vector) and returns the true probability of DLE (vector).
+#'   (vector) and returns the true probability of DLE (vector). Defaults to the
+#'   stored simulation truth; supply explicitly for older objects.
 #' @param trueEff (`numeric`)\cr a vector which takes as input the true mean
 #'   efficacy values at all dose levels (in order).
 #' @param targetEndOfTrial (`number`)\cr the target probability of DLE that are
@@ -4219,7 +4223,7 @@ setMethod(
   signature = signature(object = "PseudoDualFlexiSimulations"),
   def = function(
     object,
-    trueDLE,
+    trueDLE = get_simulation_truth(object),
     trueEff,
     targetEndOfTrial = 0.3,
     targetDuringTrial = 0.35,

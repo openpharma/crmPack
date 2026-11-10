@@ -5,13 +5,19 @@
 \alias{summary-Simulations}
 \title{Summarize Model-Based Design Simulations}
 \usage{
-\S4method{summary}{Simulations}(object, truth, target = c(0.2, 0.35), ...)
+\S4method{summary}{Simulations}(
+  object,
+  truth = get_simulation_truth(object),
+  target = c(0.2, 0.35),
+  ...
+)
 }
 \arguments{
 \item{object}{(\code{Simulations})\cr the object we want to summarize.}
 
 \item{truth}{(\code{function})\cr a function which takes as input a dose (vector)
-and returns the true probability (vector) for toxicity.}
+and returns the true probability (vector) for toxicity. Defaults to the
+stored simulation truth; supply explicitly for older objects.}
 
 \item{target}{(\code{numeric})\cr the target toxicity interval (default: 20-35\%)
 used for the computations.}

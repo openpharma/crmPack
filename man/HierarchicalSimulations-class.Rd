@@ -16,7 +16,8 @@ HierarchicalSimulations(
   stop_reasons,
   stop_report,
   additional_stats,
-  seed
+  seed,
+  truth = NULL
 )
 
 .DefaultHierarchicalSimulations()
@@ -37,6 +38,8 @@ HierarchicalSimulations(
 \item{additional_stats}{(\code{list})\cr see slot definition.}
 
 \item{seed}{(\code{integer})\cr see slot definition.}
+
+\item{truth}{see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -63,6 +66,9 @@ simulation run.}
 simulation run.}
 
 \item{\code{additional_stats}}{(\code{list})\cr additional arm-specific statistics.}
+
+\item{\code{truth}}{(\code{function}, named \code{list} of functions, or \code{NULL})\cr true toxicity
+curve(s) supplied to \code{simulate()}. \code{NULL} denotes an unavailable truth.}
 
 \item{\code{seed}}{(\code{integer})\cr random generator state before starting the
 simulation.}

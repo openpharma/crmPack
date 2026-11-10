@@ -405,7 +405,7 @@ test_that("summary-GeneralSimulations fails gracefully with bad input", {
   myTruth <- function(x) plogis(x)
 
   # Test that missing truth function fails.
-  expect_error(summary(mySims), "\"truth\" is missing")
+  expect_error(summary(mySims), "No truth is stored")
 
   # Test ranges of target interval errors.
   expect_error(
@@ -543,6 +543,8 @@ test_that("summary-ComboSimulations works correctly", {
     }
   }
 
+  expect_error(summary(mySims), "No truth is stored")
+  mySims@truth <- myTruth
   result <- summary(mySims)
   expect_s4_class(result, "ComboSimulationsSummary")
   expect_equal(result@nsim, length(mySims@data))
@@ -1447,7 +1449,7 @@ test_that("plot-PseudoSimulationsSummary works correctly", {
 
   test_that("plot-ComboSimulationsSummary works correctly", {
     mySims <- .DefaultComboSimulations()
-    simSummary <- summary(mySims)
+    simSummary <- summary(mySims, truth = function(dose) rep(0.3, NROW(dose)))
 
     result <- plot(simSummary)
     expect_s3_class(result, "gtable")

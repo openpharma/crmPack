@@ -5,14 +5,19 @@
 \alias{summary-HierarchicalSimulations}
 \title{Summarize Hierarchical Design Simulations}
 \usage{
-\S4method{summary}{HierarchicalSimulations}(object, truth, target = c(0.2, 0.35), ...)
+\S4method{summary}{HierarchicalSimulations}(
+  object,
+  truth = get_simulation_truth(object),
+  target = c(0.2, 0.35),
+  ...
+)
 }
 \arguments{
 \item{object}{(\code{HierarchicalSimulations})\cr the object we want to summarize.}
 
 \item{truth}{(\code{function} or named \code{list} of \code{function})\cr true DLT
 probability function(s). If a list is supplied, names must match the
-hierarchical arms.}
+hierarchical arms. Defaults to the stored simulation truth.}
 
 \item{target}{(\code{numeric} or named \code{list} of \code{numeric})\cr target toxicity
 interval(s). If a list is supplied, names must match the hierarchical arms.}

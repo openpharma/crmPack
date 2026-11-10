@@ -569,7 +569,7 @@ setMethod(
             model = arm_design@model,
             data = arm_data
           )
-          stop_report[[arm_name]] <- h_unpack_stopit(should_stop)
+          stop_report[[arm_name]] <- h_unpack_stopit(should_stop, arm_design@stopping)
           stop_reason <- attr(should_stop, "message")
 
           if (anyNA(next_dose) && !isTRUE(should_stop)) {
@@ -809,7 +809,8 @@ setMethod(
       stop_report = lapply(result_list, "[[", "report_results"),
       stop_reasons = lapply(result_list, "[[", "stop"),
       additional_stats = lapply(result_list, "[[", "additional_stats"),
-      seed = rng_state
+      seed = rng_state,
+      truth = truth
     )
   }
 )
