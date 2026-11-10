@@ -235,117 +235,117 @@ test_that("recommend-NextBestNCRM can accept additional arguments and pass them 
   expect_identical(result@value, NA_real_)
 })
 
-# test_that("recommend-NextBestNCRM-DataCombo works as expected", {
-#   set.seed(123)
-#   data <- h_get_data_combo()
-#   model <-   TwoDrugsCombo(
-#     single_models = list(
-#       drug1 = LogisticLogNormal(
-#         mean = c(-0.85, 1),
-#         cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-#         ref_dose = 10
-#       ),
-#       drug2 = LogisticLogNormal(
-#         mean = c(-0.7, 0.8),
-#         cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
-#         ref_dose = 20
-#       )
-#     ),
-#     gamma = 0,
-#     tau = 1,
-#     log_normal_eta = FALSE
-#   )
-#   samples <- mcmc(
-#     data,
-#     model,
-#     h_get_mcmc_options(samples = 10, burnin = 10)
-#   )
-#   nb_ncrm <- NextBestNCRM(
-#     target = c(0.2, 0.35),
-#     overdose = c(0.35, 1),
-#     max_overdose_prob = 0.25
-#   )
-#   increments <- IncrementsComboCartesian(
-#     drug1 = IncrementsRelative(0, 0.5),
-#     drug2 = IncrementsRelative(0, 1)
-#   )
-#   doselimit <- maxDose(increments, data)
-#   doselimit[3, 2] <- 20
-#   expected <- nextBest(
-#     nb_ncrm,
-#     doselimit,
-#     samples,
-#     model,
-#     data
-#   )
-#   actual <- recommend(
-#     nb_ncrm,
-#     doselimit,
-#     samples,
-#     model,
-#     data
-#   )
-#   expect_equal(actual@value, expected$value)
-# })
+test_that("recommend-NextBestNCRM-DataCombo works as expected", {
+  set.seed(123)
+  data <- h_get_data_combo()
+  model <-   TwoDrugsCombo(
+    single_models = list(
+      drug1 = LogisticLogNormal(
+        mean = c(-0.85, 1),
+        cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+        ref_dose = 10
+      ),
+      drug2 = LogisticLogNormal(
+        mean = c(-0.7, 0.8),
+        cov = matrix(c(1.1, -0.3, -0.3, 0.9), nrow = 2),
+        ref_dose = 20
+      )
+    ),
+    gamma = 0,
+    tau = 1,
+    log_normal_eta = FALSE
+  )
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  increments <- IncrementsComboCartesian(
+    drug1 = IncrementsRelative(0, 0.5),
+    drug2 = IncrementsRelative(0, 1)
+  )
+  doselimit <- maxDose(increments, data)
+  doselimit[3, 2] <- 20
+  expected <- nextBest(
+    nb_ncrm,
+    doselimit,
+    samples,
+    model,
+    data
+  )
+  actual <- recommend(
+    nb_ncrm,
+    doselimit,
+    samples,
+    model,
+    data
+  )
+  expect_equal(actual@value, expected$value)
+})
 
-# test_that("recommend-NextBestNCRM-DataCombo uses configured drug names in probs", {
-#   set.seed(123)
-#   data <- DataCombo(
-#     doseGrid = list(compound_a = c(10, 20, 30), compound_b = c(20, 40)),
-#     x = cbind(
-#       compound_a = c(10, 10, 10, 20, 20, 20),
-#       compound_b = c(20, 20, 20, 20, 20, 20)
-#     ),
-#     y = c(0L, 0L, 1L, 0L, 0L, 0L),
-#     ID = 1L:6L,
-#     cohort = c(1L, 1L, 1L, 2L, 2L, 2L)
-#   )
-#   model <- TwoDrugsCombo(list(
-#     compound_a = .DefaultLogisticLogNormal(),
-#     compound_b = .DefaultLogisticLogNormal()
-#   ))
-#   samples <- mcmc(
-#     data,
-#     model,
-#     h_get_mcmc_options(samples = 10, burnin = 10)
-#   )
-#   nb_ncrm <- NextBestNCRM(
-#     target = c(0.2, 0.35),
-#     overdose = c(0.35, 1),
-#     max_overdose_prob = 0.25
-#   )
-#
-#   result <- recommend(
-#     nb_ncrm,
-#     maxDose(
-#       IncrementsComboCartesian(
-#         drug1 = IncrementsRelative(0, 0.5),
-#         drug2 = IncrementsRelative(0, 1)
-#       ),
-#       data
-#     ),
-#     samples,
-#     model,
-#     data
-#   )
+test_that("recommend-NextBestNCRM-DataCombo uses configured drug names in probs", {
+  set.seed(123)
+  data <- DataCombo(
+    doseGrid = list(compound_a = c(10, 20, 30), compound_b = c(20, 40)),
+    x = cbind(
+      compound_a = c(10, 10, 10, 20, 20, 20),
+      compound_b = c(20, 20, 20, 20, 20, 20)
+    ),
+    y = c(0L, 0L, 1L, 0L, 0L, 0L),
+    ID = 1L:6L,
+    cohort = c(1L, 1L, 1L, 2L, 2L, 2L)
+  )
+  model <- TwoDrugsCombo(list(
+    compound_a = .DefaultLogisticLogNormal(),
+    compound_b = .DefaultLogisticLogNormal()
+  ))
+  samples <- mcmc(
+    data,
+    model,
+    h_get_mcmc_options(samples = 10, burnin = 10)
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
 
-  # expect_named(
-  #   result$probs,
-  #   c(
-  #     "compound_a",
-  #     "compound_b",
-  #     "target_prob",
-  #     "overdose_prob",
-  #     "not_eligible"
-  #   )
-  # )
-  # expect_true(all(
-  #   result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1
-  # ))
-  # expect_true(all(
-  #   result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1
-  # ))
-# })
+  result <- recommend(
+    nb_ncrm,
+    maxDose(
+      IncrementsComboCartesian(
+        drug1 = IncrementsRelative(0, 0.5),
+        drug2 = IncrementsRelative(0, 1)
+      ),
+      data
+    ),
+    samples,
+    model,
+    data
+  )
+
+  expect_named(
+    result$probs,
+    c(
+      "compound_a",
+      "compound_b",
+      "target_prob",
+      "overdose_prob",
+      "not_eligible"
+    )
+  )
+  expect_true(all(
+    result$probs$target_prob[!is.na(result$probs$target_prob)] <= 1
+  ))
+  expect_true(all(
+    result$probs$overdose_prob[!is.na(result$probs$overdose_prob)] <= 1
+  ))
+})
 
 ## NextBestNCRM-DataParts ----
 

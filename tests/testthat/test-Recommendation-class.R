@@ -49,7 +49,10 @@ test_that("RecommendationTD works as expected", {
   )
   testthat::expect_error(
     RecommendationTD(value = 1, details = list()),
-    "invalid object for slot \"details\" in class \"RecommendationTD\": got class \"list\", should be or extend class \"tbl_df\""
+    paste0(
+      "invalid object for slot \"details\" in class \"RecommendationTD\": ",
+      "got class \"list\", should be or extend class \"tbl_df\""
+    )
   )
   testthat::expect_error(
     RecommendationTD(
@@ -217,7 +220,7 @@ test_that("RecommendationAllocation works as expected", {
     RecommendationAllocation(
       value = 3,
       details = tibble::tibble(
-        Dose = c(1.5,   2.5,   3.5,   4.5,   6.0,   7.0),
+        Dose = c(1.5, 2.5, 3.5, 4.5, 6.0, 7.0),
         BadCol = c(0.075, 0.373, 0.281, 0.081, 0.038, 0.152)
       )
     ),
@@ -229,7 +232,7 @@ test_that("RecommendationAllocation works as expected", {
       value = c(1, -1),
       details = tibble::tibble(
         details = tibble::tibble(
-          Dose = c(        1.5,   2.5,   3.5,   4.5,   6.0,   7.0),
+          Dose = c(1.5, 2.5, 3.5, 4.5, 6.0, 7.0),
           Allocation = c(0.075, 0.373, 0.281, 0.081, 0.038, 0.152)
         )
       )
