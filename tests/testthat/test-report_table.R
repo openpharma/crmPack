@@ -192,3 +192,33 @@ test_that("gt pages render selected columns, labels and row groups", {
   tables <- report_table(report_paginate(overview, max_cols = 2), "gt")
   expect_equal(tables[[2]][["_spanners"]]$vars[[1]], ".scenario_1")
 })
+
+
+test_that("pagination supports inherited and custom S3 table methods", {
+  x <- report_oc_overview(
+    SimulationsSummaryList(A = oc_test_sims(), B = oc_test_sims()),
+    stats = "n_pat_mean_sd",
+    title = "Custom overview"
+  )
+  class(x) <- c("tbl_CustomOverview", class(x))
+  inherited <- report_paginate(x, max_cols = 2)
+  expect_length(inherited, 2)
+  expect_s3_class(inherited[[1]], "tbl_CustomOverview")
+  expect_equal(attr(inherited[[2]], "scenarios"), "B")
+  expect_match(
+    paste(report_table(inherited[[2]]), collapse = "\n"),
+    "Custom overview"
+  )
+
+  local_mocked_s3_method(
+    "report_paginate",
+    "tbl_CustomOverview",
+    function(x, max_cols = 6L, keep = "label", ..., tag = NULL) {
+      list(max_cols = max_cols, keep = keep, tag = tag)
+    }
+  )
+  expect_equal(
+    report_paginate(x, max_cols = 3, keep = c("label", "A"), tag = "custom"),
+    list(max_cols = 3, keep = c("label", "A"), tag = "custom")
+  )
+})

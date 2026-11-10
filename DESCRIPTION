@@ -161,6 +161,7 @@ Collate:
     'report_data_scenarios.R'
     'report_oc_detail.R'
     'report_oc_overview.R'
+    'report_paginate.R'
     'report_prob_summary.R'
     'report_simulations.R'
     'report_table.R'
