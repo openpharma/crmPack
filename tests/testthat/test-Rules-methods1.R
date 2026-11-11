@@ -491,7 +491,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (< 33% and e
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, 125)
-  # expect_identical(result$stopHere, setNames(FALSE, 125))
 })
 
 test_that("recommend-NextBestThreePlusThree returns expected values (< 33%, max dose, no escalation)", {
@@ -500,7 +499,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (< 33%, max 
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, 300)
-  # expect_identical(result$stopHere, setNames(TRUE, 300))
 })
 
 test_that("recommend-NextBestThreePlusThree returns expected values (< 33% and no escalation)", {
@@ -513,7 +511,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (< 33% and n
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, 75)
-  # expect_identical(result$stopHere, setNames(TRUE, 75))
 })
 
 test_that("recommend-NextBestThreePlusThree returns expected values (> 33%)", {
@@ -522,7 +519,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (> 33%)", {
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, 150)
-  # expect_identical(result$stopHere, setNames(FALSE, 150))
 })
 
 test_that("recommend-NextBestThreePlusThree returns expected values (== 33%, 3 patients at last_lev)", {
@@ -531,7 +527,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (== 33%, 3 p
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, 200)
-  # expect_identical(result$stopHere, setNames(FALSE, 200))
 })
 
 test_that("recommend-NextBestThreePlusThree returns expected values (== 33%, 6 patients at last_lev)", {
@@ -540,7 +535,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (== 33%, 6 p
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, 175)
-  # expect_identical(result$stopHere, setNames(FALSE, 175))
 })
 
 test_that("recommend-NextBestThreePlusThree returns expected values (next_level == 0)", {
@@ -549,7 +543,6 @@ test_that("recommend-NextBestThreePlusThree returns expected values (next_level 
 
   result <- recommend(NextBestThreePlusThree(), data = data)
   expect_identical(result@value, NA_real_)
-  # expect_identical(result$stopHere, TRUE)
 })
 
 ## NextBestMinDist ----
@@ -564,7 +557,6 @@ test_that("recommend-NextBestMinDist returns expected values and plot", {
 
   result <- recommend(nb_md, 50, samples, model, data)
   expect_identical(result@value, 50)
-  # expect_snap(result$probs)
 })
 
 test_that("recommend-NextBestMinDist returns expected values and plot (with placebo)", {
@@ -580,7 +572,6 @@ test_that("recommend-NextBestMinDist returns expected values and plot (with plac
 
   result <- recommend(nb_md, 40, samples, model, data)
   expect_identical(result@value, 25)
-  # expect_snap(result$probs)
 })
 
 test_that("recommend-NextBestMinDist returns expected values and plot (no doselimit)", {
@@ -593,7 +584,6 @@ test_that("recommend-NextBestMinDist returns expected values and plot (no doseli
 
   result <- recommend(nb_md, Inf, samples, model, data)
   expect_identical(result@value, 75)
-  # expect_snap(result$probs)
 })
 
 ## NextBestInfTheory ----
@@ -629,7 +619,6 @@ test_that("recommend-NextBestInfTheory returns correct next dose (no doselimit)"
   nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
 
   result <- recommend(nb_it, Inf, samples, model, data)
-  # expect_identical(result, list(value = 25))
   expect_identical(result@value, 25)
 })
 
@@ -730,16 +719,6 @@ test_that("recommend-NextBestTD returns expected values of the objects (no dosel
   nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- recommend(nb_td, Inf, model = model, data = data)
-  # expected <- list(
-  #   next_dose_drt = 75,
-  #   prob_target_drt = 0.45,
-  #   dose_target_drt = 75.82941,
-  #   next_dose_eot = 50,
-  #   prob_target_eot = 0.4,
-  #   dose_target_eot = 63.21009,
-  #   ci_dose_target_eot = c(20.38729, 195.98072),
-  #   ci_ratio_dose_target_eot = 9.612886
-  # )
   expect_identical(result@value, c(75, 50))
 })
 
@@ -878,21 +857,6 @@ test_that("recommend-NextBestMaxGain returns expected values of the objects (oth
     data = data,
     model_eff = model_eff
   )
-  # expected <- list(
-  #   next_dose = 75,
-  #   prob_target_drt = 0.45,
-  #   dose_target_drt = 75.82941,
-  #   next_dose_drt = 75,
-  #   prob_target_eot = 0.4,
-  #   dose_target_eot = 63.21009,
-  #   next_dose_eot = 50,
-  #   dose_max_gain = 83.96469,
-  #   next_dose_max_gain = 75,
-  #   ci_dose_target_eot = c(20.38729, 195.98072),
-  #   ci_ratio_dose_target_eot = 9.612886,
-  #   ci_dose_max_gain = c(26.95037, 293.67744),
-  #   ci_ratio_dose_max_gain = 10.89697
-  # )
   expect_identical(result@value, c(75, 50, 83.964693), tolerance = 1e-06)
 })
 
@@ -923,21 +887,6 @@ test_that("recommend-NextBestMaxGainSamples returns expected values of the objec
     model_eff,
     samples_eff
   )
-  # expected <- list(
-  #   next_dose = 25,
-  #   prob_target_drt = 0.45,
-  #   dose_target_drt = 131.8022,
-  #   next_dose_drt = 25,
-  #   prob_target_eot = 0.4,
-  #   dose_target_eot = 103.9855,
-  #   next_dose_eot = 25,
-  #   dose_max_gain = 125,
-  #   next_dose_max_gain = 25,
-  #   ci_dose_target_eot = c(103.9855, 103.9855),
-  #   ci_ratio_dose_target_eot = 1,
-  #   ci_dose_max_gain = c(30.625, 288.750),
-  #   ci_ratio_dose_max_gain = 9.428571
-  # )
   expect_identical(result@value, c(25, 25, 125))
 })
 
@@ -966,21 +915,6 @@ test_that("recommend-NextBestMaxGainSamples returns expected values of the objec
     model_eff,
     samples_eff
   )
-  # expected <- list(
-  #   next_dose = 125,
-  #   prob_target_drt = 0.45,
-  #   dose_target_drt = 131.8022,
-  #   next_dose_drt = 125,
-  #   prob_target_eot = 0.4,
-  #   dose_target_eot = 103.9855,
-  #   next_dose_eot = 100,
-  #   dose_max_gain = 125,
-  #   next_dose_max_gain = 125,
-  #   ci_dose_target_eot = c(103.9855, 103.9855),
-  #   ci_ratio_dose_target_eot = 1,
-  #   ci_dose_max_gain = c(30.625, 288.750),
-  #   ci_ratio_dose_max_gain = 9.428571
-  # )
   expect_identical(result@value, c(125, 100, 125))
 })
 
@@ -1012,21 +946,6 @@ test_that("recommend-NextBestMaxGainSamples returns expected values of the objec
     model_eff,
     samples_eff
   )
-  # expected <- list(
-  #   next_dose = 50,
-  #   prob_target_drt = 0.5,
-  #   dose_target_drt = 182.9664,
-  #   next_dose_drt = 50,
-  #   prob_target_eot = 0.45,
-  #   dose_target_eot = 144.8885,
-  #   next_dose_eot = 50,
-  #   dose_max_gain = 110,
-  #   next_dose_max_gain = 50,
-  #   ci_dose_target_eot = c(144.8885, 144.8885),
-  #   ci_ratio_dose_target_eot = 1,
-  #   ci_dose_max_gain = c(32.5, 300.0),
-  #   ci_ratio_dose_max_gain = 9.230769
-  # )
   expect_identical(result@value, c(50, 50, 110), tolerance = 1e-06)
 })
 
@@ -1045,7 +964,6 @@ test_that("recommend-NextBestProbMTDLTE returns correct next dose and plot", {
 
   result <- recommend(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result@value, 75)
-  # expect_snap(result$allocation)
 })
 
 test_that("recommend-NextBestProbMTDLTE returns correct next dose and plot (with placebo)", {
@@ -1061,7 +979,6 @@ test_that("recommend-NextBestProbMTDLTE returns correct next dose and plot (with
 
   result <- recommend(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result@value, 25)
-  # expect_snap(result$allocation)  expect_doppel("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
 })
 
 test_that("recommend-NextBestProbMTDLTE returns correct next dose and plot (no doselimit)", {
@@ -1077,7 +994,6 @@ test_that("recommend-NextBestProbMTDLTE returns correct next dose and plot (no d
 
   result <- recommend(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result@value, 125)
-  # expect_snap(result$allocation)
 })
 
 ## NextBestProbMTDMinDist ----
@@ -1095,7 +1011,6 @@ test_that("recommend-NextBestProbMTDMinDist returns correct next dose and plot",
 
   result <- recommend(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result@value, 75)
-  # expect_snap(result$allocation)
 })
 
 test_that("recommend-NextBestProbMTDMinDist returns correct next dose and plot (with placebo)", {
@@ -1111,7 +1026,6 @@ test_that("recommend-NextBestProbMTDMinDist returns correct next dose and plot (
 
   result <- recommend(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result@value, 25)
-  # expect_snap(result$allocation)
 })
 
 test_that("recommend-NextBestProbMTDMinDist returns correct next dose and plot (no doselimit)", {
@@ -1127,7 +1041,6 @@ test_that("recommend-NextBestProbMTDMinDist returns correct next dose and plot (
 
   result <- recommend(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result@value, 25)
-  # expect_snap(result$allocation)
 })
 
 ## NextBestOrdinal ----
@@ -1166,7 +1079,7 @@ test_that("recommend-NextBestOrdinal works correctly", {
   expect_equal(actual@value, 50)
 })
 
-# Tests wriotten by ChatGPT 07Nov26
+# Tests written by ChatGPT 07Nov26
 
 test_that("recommend validates matrix dose limits", {
   expect_error(
