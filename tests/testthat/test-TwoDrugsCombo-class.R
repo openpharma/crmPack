@@ -38,6 +38,32 @@ test_that("TwoDrugsCombo expression helpers replace and discover symbols", {
   )
 })
 
+test_that("TwoDrugsCombo expression discovery ignores covr instrumentation", {
+  withr::local_envvar(c(R_COVR = "true"))
+  expr <- quote({
+    if (TRUE) {
+      covr:::count("prior")
+      theta[1:2] ~ dmnorm(mean, prec)
+    }
+    for (i in 1:nObs) {
+      if (TRUE) {
+        covr:::count("predictor")
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+      }
+    }
+  })
+
+  expect_setequal(h_two_drugs_combo_assigned_nodes(expr), c("theta", "p"))
+  expect_equal(
+    h_two_drugs_combo_rhs_expressions(expr),
+    list(quote(dmnorm(mean, prec)), quote(alpha0 + alpha1 * log(x[i] / ref_dose)))
+  )
+  expect_equal(
+    h_two_drugs_combo_normalized_dose_expr(expr, list(x = as.name("x_drug1"))),
+    quote(x_drug1[i] / ref_dose)
+  )
+})
+
 test_that("TwoDrugsCombo specification helpers handle optional ref_dose", {
   log_model <- h_get_logistic_log_normal()
   raw_model <- h_get_general_single_agent_no_ref()

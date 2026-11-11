@@ -156,6 +156,7 @@ h_two_drugs_combo_lhs_symbols <- function(expr) {
 #' @noRd
 #'
 h_two_drugs_combo_assigned_nodes <- function(expr) {
+  expr <- h_covr_detrace(expr)
   lhs <- character()
   if (is.call(expr)) {
     operator <- as.character(expr[[1L]])
@@ -338,6 +339,7 @@ h_two_drugs_combo_normalized_dose_from_expr <- function(expr) {
 #' @noRd
 #'
 h_two_drugs_combo_rhs_expressions <- function(expr) {
+  expr <- h_covr_detrace(expr)
   rhs <- list()
   if (is.call(expr)) {
     operator <- as.character(expr[[1L]])
