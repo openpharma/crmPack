@@ -129,7 +129,9 @@ globalVariables(c(
   "p_single",
   "eta",
   "combo_interaction",
-  "log_eta"
+  "log_eta",
+  "Dose",
+  "Allocation"
 ))
 
 # nolint end

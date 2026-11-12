@@ -1,0 +1,268 @@
+---
+title: " "
+format: html
+editor: visual
+embed-resources: TRUE
+---
+
+```{r}
+#| echo: FALSE
+
+devtools::load_all()
+library(knitr)
+```
+
+This is a temporary document for the illustration and discussion of the new "results of a call to
+`nextBest()`" class. It can be deleted once the development is complete.
+
+## Test data
+
+```{r}
+
+# This is a slight variation of the nextBest example file.  The differences being a coarser
+# dose grid so that the output is shorter, and a larger sample count so that probabilties of
+# overdose are more meaningful.
+
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 10))
+)
+
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
+```
+
+## Progress to date
+
+At the moment, the `recommend` methods are essentially simple copies of the existing `nextBest`
+methods, with all references to graphing (in both the arguments and body) removed. They return an
+object of class `Recommendion` (or a subclass) rather than a `list`. The only subclass I've
+implemented so far is `RecommendationProbs`, which adds an arbitrary array of probabilities.
+
+The `recommend` and `tidy` methods are in `Rules-methods1.R`, to minimise the chance of conflicts
+with other changes. (The `plot` methods, when written, will join them.) Once the code is more
+stable, it can be moved to `Rules-methods.R` and the new file deleted. The `knit_print` methods are
+in `helpers_knitr_Recommendation.R`.
+
+Tests exist for all `recommend` methods. As before, they are essentially copies of the existing
+tests for `nextBest` calls. References to plots have been removed and they test that the
+recommendation returned by `nextBest` matches that returned by `recommend`. All tests pass, though
+one is empty and others report a warning because I'm not 100% certain I understand what the
+corresponding `nextBest` call is doing.
+
+I've created custom `knit_print` methods for both new classes, and a `tidy` method for
+`RecommendationProbs` (`Recommendation` can use the default `tidy` method).
+
+### Sample usage
+
+The simplest `NextBest` rules simply return a suggested dose. `NextBestMTD` is one such class.
+
+```{r}
+mtd_next_best <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
+
+recommend_mtd <- recommend(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+recommend_mtd
+```
+
+Here's the raw return object...
+
+```{r}
+normal_print(recommend_mtd)
+```
+
+and the prettified version, with and without units.
+
+```{r}
+recommend_mtd
+knit_print(recommend_mtd, unit = "mg/dL")
+```
+
+Here's the result of tidying the object.
+
+```{r}
+recommend_mtd %>% tidy()
+```
+
+The next simplest classes return matrices of probabilities. As discussed above, this is now a
+`tibble` in the new methods.
+
+```{r}
+# Define the rule which will be used to select the next best dose
+# based on the 'NextBestEWOC' class.
+ewoc_next_best <- NextBestEWOC(
+  target = 0.30,
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Calculate the next best dose.
+dose_recommendation <- recommend(
+  nextBest = ewoc_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+```
+
+```{r}
+normal_print(dose_recommendation)
+knit_print(dose_recommendation, unit = "mg/dL")
+```
+
+And for `NextBestNCRM`...
+
+```{r}
+nrcm_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+dose_recommendation <- nextBest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+dr <- recommend(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+knit_print(dr)
+normal_print(dr)
+```
+
+> then we could, for convenience, add `Eligible` and/or `Safe` columns to the tibble...
+
+> We could also add slots to the `RecommendationProbs` class to allow for customisation of the
+> probabilities table without resort to the `knit_print` method. Obvious choices are `caption` and
+> `col.names`.
+
+## Plots
+
+The `plot` methods assume the new `Recommendation` object is passed in the `x` parameter to the
+method. The `NextBest` object is passed in the `y` parameter, to permit different behaviours for
+`NextBest` classes that share a common `Recommendation` return value.
+
+Here's the simplest example, for a combination of `Recommendation` and `NextBestMTD`.
+
+```{r}
+#| echo: FALSE
+
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 10))
+)
+
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+
+my_options <- McmcOptions(burnin = 5, step = 1, samples = 1000)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
+
+mtd_next_best <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
+```
+
+```{r}
+dr <- recommend(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+plot(
+  dr, 
+  mtd_next_best, 
+  doselimit = next_max_dose, 
+  samples = my_samples,
+  model = my_model, 
+  data = my_data
+)
+```
+
+Compared to
+
+```{r}
+dr1 <- nextBest(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+dr1$plot
+```
+
+> There is much duplication of arguments passed to different methods as the analysis proceeds. There
+> may be some mileage in creating slots in `Recommendation` to store the inputs on which it was
+> based. (For example, `Recommendation` could have a slot for the `NextBest` rule on which it was
+> based. This would remove the need to pass both objects to subsequent `plot` calls. And potentially
+> reduce the risk of error.) This would allow simplification of future calls, but would be a
+> departure from current practice.

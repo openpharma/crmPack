@@ -3,8 +3,9 @@
 %   R/helpers_knitr_CohortSize.R, R/helpers_knitr_Design.R,
 %   R/helpers_knitr_GeneralData.R, R/helpers_knitr_GeneralModel.R,
 %   R/helpers_knitr_Increments.R, R/helpers_knitr_NextBest.R,
-%   R/helpers_knitr_Opening.R, R/helpers_knitr_Recruitment.R,
-%   R/helpers_knitr_SafetyWindow.R, R/helpers_knitr_Stopping.R
+%   R/helpers_knitr_Opening.R, R/helpers_knitr_Recommendation.R,
+%   R/helpers_knitr_Recruitment.R, R/helpers_knitr_SafetyWindow.R,
+%   R/helpers_knitr_Stopping.R
 \name{knit_print.Backfill}
 \alias{knit_print.Backfill}
 \alias{knit_print}
@@ -81,6 +82,10 @@
 \alias{knit_print.OpeningList}
 \alias{knit_print.OpeningAll}
 \alias{knit_print.OpeningAny}
+\alias{knit_print.Recommendation}
+\alias{knit_print.RecommendationProbs}
+\alias{knit_print.RecommendationThreePlusThree}
+\alias{knit_print.RecommendationDetails}
 \alias{knit_print.RecruitmentUnlimited}
 \alias{knit_print.RecruitmentRatio}
 \alias{knit_print.SafetyWindow}
@@ -426,6 +431,14 @@
 
 \method{knit_print}{OpeningAny}(x, ..., preamble, asis = TRUE)
 
+\method{knit_print}{Recommendation}(x, ..., asis = TRUE, unit = "")
+
+\method{knit_print}{RecommendationProbs}(x, ..., asis = TRUE, unit = "", caption = "Probabilities by dose")
+
+\method{knit_print}{RecommendationThreePlusThree}(x, ..., asis = TRUE, unit = "")
+
+\method{knit_print}{RecommendationDetails}(x, ..., asis = TRUE, unit = "", caption = h_get_table_caption(x))
+
 \method{knit_print}{RecruitmentUnlimited}(x, ..., asis = TRUE)
 
 \method{knit_print}{RecruitmentRatio}(x, ..., asis = TRUE)
@@ -554,9 +567,9 @@
 \method{knit_print}{StoppingMissingDose}(x, ..., asis = TRUE)
 }
 \arguments{
-\item{x}{(\code{ModelParamsNormal})\cr the object to be rendered}
+\item{x}{(\code{RecommendationDetails})\cr The object to knit_print.}
 
-\item{...}{passed to \code{\link[knitr:kable]{knitr::kable()}}}
+\item{...}{Not used at present}
 
 \item{asis}{(\code{flag})\cr Not used at present}
 
@@ -619,6 +632,10 @@ measured}
 list. Spaces with length \code{indent * 4} will be prepended to the beginning of
 the rendered stopping rule list.}
 
+\item{unit}{(\code{character})\cr The dose unit.}
+
+\item{caption}{(\code{character})\cr The caption for the table.}
+
 \item{time_unit}{(\code{character})\cr the word used to describe units of time.
 See Usage Notes below.}
 
@@ -638,6 +655,16 @@ The markdown representation of the object, as a character string
 a character string that represents the object in markdown.
 
 A character string containing a LaTeX rendition of the object.
+
+a character string that represents the object in markdown.
+
+The markdown representation of the object, as a character string
+
+The markdown representation of the object, as a character string
+
+The markdown representation of the object, as a character string
+
+The markdown representation of the object, as a character string
 
 a character string that represents the object in markdown.
 }
@@ -776,6 +803,19 @@ all design classes, not just those that are direct descendants of \code{Design}.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+We provide additional utility functions to allow human-friendly rendition of
+crmPack objects in Markdown and Quarto files
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
