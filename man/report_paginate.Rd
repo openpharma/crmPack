@@ -47,7 +47,9 @@ scenario and statistic for detail, scenario for toxicity scenarios, dose
 for probability summaries, and scenario/arm/observed dose for data scenarios.
 Identifiers always repeat. Other keys are original scenario names for an
 overview, dose/SUM/STOP/MAX keys for detail, character doses for toxicity
-scenarios, or original column names for probability and data scenarios.}
+scenarios, or original column names for probability and data scenarios.
+For overviews with \code{layout = "scenarios"}, the identifier is
+scenario and other keys are statistic IDs instead of scenario names.}
 
 \item{...}{Further arguments passed to class-specific methods.}
 }

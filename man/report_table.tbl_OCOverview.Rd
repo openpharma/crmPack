@@ -11,7 +11,8 @@
   title = attr(x, "title"),
   spanner = attr(x, "spanner"),
   scenario_labels = NULL,
-  row_groups = attr(x, "row_groups")
+  row_groups = attr(x, "row_groups"),
+  layout = attr(x, "layout")
 )
 }
 \arguments{
@@ -21,7 +22,7 @@
 
 \item{...}{Arguments passed to \code{knitr::kable()} or \code{gt::gt()}.}
 
-\item{title, spanner}{Optional title and scenario heading; defaults to the
+\item{title, spanner}{Optional title and result-column heading; defaults to the
 metadata stored on \code{x}. Use \code{NULL} to remove a stored heading.}
 
 \item{scenario_labels}{Optional named scenario header overrides, applied
@@ -29,6 +30,10 @@ over any stored overrides.}
 
 \item{row_groups}{Group overrides as in \code{\link[=report_oc_overview]{report_oc_overview()}}, defaulting to
 the stored row groups. Use \code{NULL} to remove grouping.}
+
+\item{layout}{Layout as in \code{\link[=report_oc_overview]{report_oc_overview()}}, defaulting to the stored
+layout. Changing it here changes rendering only; it does not select new
+statistics or apply the automatic short labels and groups.}
 }
 \value{
 A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame. Kable uses a pipe table and combines

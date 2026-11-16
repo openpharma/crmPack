@@ -21,6 +21,8 @@
 #'   Identifiers always repeat. Other keys are original scenario names for an
 #'   overview, dose/SUM/STOP/MAX keys for detail, character doses for toxicity
 #'   scenarios, or original column names for probability and data scenarios.
+#'   For overviews with `layout = "scenarios"`, the identifier is
+#'   scenario and other keys are statistic IDs instead of scenario names.
 #' @param ... Further arguments passed to class-specific methods.
 #' @return A nonempty `report_tables` list of classed reporting tibbles, each
 #'   accepted by [report_table()]. A table already within the limit yields
@@ -71,14 +73,32 @@ report_paginate.tbl_OCOverview <- function(
   keep = "label",
   ...
 ) {
+  scenario_rows <- attr(x, "layout") %in% "scenarios"
   h_report_paginate(
-    columns = h_oc_present_order(attr(x, "scenarios"), x$scenario),
-    identifiers = c(if (length(attr(x, "row_groups"))) "group", "label"),
+    columns = if (scenario_rows) {
+      h_oc_present_order(attr(x, "stats"), x$stat)
+    } else {
+      h_oc_present_order(attr(x, "scenarios"), x$scenario)
+    },
+    identifiers = if (scenario_rows) {
+      "scenario"
+    } else {
+      c(if (length(attr(x, "row_groups"))) "group", "label")
+    },
     max_cols = max_cols,
     keep = keep,
     subset = function(selected) {
-      part <- x[x$scenario %in% selected, ]
-      attr(part, "scenarios") <- selected
+      part <- if (scenario_rows) {
+        x[x$stat %in% selected, ]
+      } else {
+        x[x$scenario %in% selected, ]
+      }
+      attr(part, if (scenario_rows) "stats" else "scenarios") <- selected
+      if (scenario_rows) {
+        groups <- attr(x, "row_groups")
+        keys <- unique(c(sub("::.*$", "", selected), selected))
+        attr(part, "row_groups") <- groups[names(groups) %in% keys]
+      }
       part
     }
   )

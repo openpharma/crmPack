@@ -430,3 +430,222 @@ test_that("nested row overrides align across scenarios and apply during renderin
   )
   expect_equal(table$Group, c("—", "Second group"))
 })
+
+test_that("scenario layouts preserve cell alignment and scenario overrides", {
+  sims <- oc_test_sims()
+  other <- sims
+  other@doses <- c(4, 4, 4)
+  x <- SimulationsSummaryList(A = sims, B = other, target = c(.1, .2))
+  out <- report_oc_overview(
+    x,
+    stats = c("prop_mtd_correct", "prop_mtd_over"),
+    layout = "scenarios",
+    labels = c(
+      prop_mtd_correct = "MTD correct (%)",
+      prop_mtd_over = "MTD overestimated (%)"
+    ),
+    row_groups = NULL,
+    scenario_labels = c(A = "Low toxicity")
+  )
+  display <- report_table(out, "data.frame")
+  expect_named(
+    display,
+    c("Scenario", "MTD correct (%)", "MTD overestimated (%)")
+  )
+  expect_equal(display[[1]], c("Low toxicity", "B"))
+  expect_equal(display[[2]], c("66.7", "0.0"))
+  expect_equal(display[[3]], c("0.0", "100.0"))
+  expect_equal(report_table(out[c(4, 2, 1, 3), ], "data.frame"), display)
+  expect_match(
+    paste(report_table(out), collapse = "\n"),
+    "Low toxicity.*66.7.*0.0"
+  )
+  expect_equal(
+    unname(unlist(report_table(report_transpose(out), "data.frame")[-1])),
+    c("66.7", "0.0", "0.0", "100.0")
+  )
+})
+
+test_that("scenario-row defaults preserve calculations and supply grouped headers and footnotes", {
+  sims <- oc_test_sims()
+  x <- SimulationsSummaryList(A = sims, B = sims)
+  ids <- c(
+    "prop_mtd_under",
+    "prop_mtd_correct",
+    "prop_mtd_over",
+    "prop_mtd_none",
+    "n_pat_mean",
+    "n_pat_minmax",
+    "n_dlt_mean",
+    "n_dlt_minmax"
+  )
+  out <- report_oc_overview(x, stats = ids, layout = "scenarios")
+  plain <- report_oc_overview(x, stats = ids)
+  expect_equal(out$value, plain$value)
+  expect_equal(out$formatted, plain$formatted)
+  expect_equal(unique(out$stat), ids)
+  display <- report_table(out, "data.frame")
+  expect_equal(dim(display), c(2L, 9L))
+  expect_equal(display[[1]], c("A", "B"))
+  expect_match(names(display)[6], "# Patients Mean", fixed = TRUE)
+  expect_match(names(display)[8], "# DLTs Mean", fixed = TRUE)
+  expect_s3_class(
+    report_oc_overview(x, stats = ids, layout = "scenarios", format = "kable"),
+    "knitr_kable"
+  )
+  skip_if_not_installed("gt")
+  withr::local_options(sass.cache = FALSE)
+  table <- report_table(out, "gt")
+  expect_equal(lengths(table[["_spanners"]]$vars), c(4L, 2L, 2L))
+  expect_equal(
+    unlist(table[["_spanners"]]$spanner_label)[2:3],
+    c("# Patients", "# DLTs")
+  )
+  html <- gt::as_raw_html(table)
+  expect_match(html, "Stopped")
+  expect_match(html, "Trials with no final MTD recommendation")
+})
+
+test_that("scenario-row overrides support aliases, custom statistics and explicit ungrouping", {
+  x <- SimulationsSummaryList(A = oc_test_sims())
+  out <- report_oc_overview(
+    x,
+    layout = "scenarios",
+    stats = list(
+      none = "prop_mtd_none",
+      patients = "n_pat_mean",
+      trials = OCStat(
+        "Trials",
+        function(sims, summary, scenario) summary@nsim,
+        "%.0f"
+      )
+    ),
+    labels = c(none = "No selection"),
+    row_groups = NULL
+  )
+  expect_equal(out$label, c("No selection", "Mean", "Trials"))
+  expect_null(attr(out, "row_groups"))
+  expect_equal(dim(report_table(out, "data.frame")), c(1L, 4L))
+  skip_if_not_installed("gt")
+  withr::local_options(sass.cache = FALSE)
+  table <- report_table(out, "gt")
+  expect_equal(nrow(table[["_spanners"]]), 0L)
+  expect_match(
+    gt::as_raw_html(table),
+    "Trials with no final MTD recommendation"
+  )
+  without_stopped <- report_oc_overview(
+    x,
+    layout = "scenarios",
+    stats = "n_pat_mean"
+  )
+  expect_equal(nrow(report_table(without_stopped, "gt")[["_footnotes"]]), 0L)
+})
+
+test_that("scenario-row pagination splits statistic columns and retains scenario rows", {
+  x <- SimulationsSummaryList(A = oc_test_sims(), B = oc_test_sims())
+  out <- report_oc_overview(
+    x,
+    layout = "scenarios",
+    stats = c(
+      "prop_mtd_under",
+      "prop_mtd_correct",
+      "prop_mtd_over",
+      "prop_mtd_none",
+      "n_pat_mean",
+      "n_pat_minmax",
+      "n_dlt_mean",
+      "n_dlt_minmax"
+    )
+  )
+  pages <- report_paginate(out, max_cols = 4)
+  expect_length(pages, 3)
+  expect_equal(
+    lapply(pages, function(page) unique(page$scenario)),
+    rep(list(c("A", "B")), 3)
+  )
+  expect_equal(
+    unlist(lapply(pages, function(page) unique(page$stat))),
+    unique(out$stat)
+  )
+  expect_equal(
+    lapply(pages, function(page) ncol(report_table(page, "data.frame"))),
+    list(4L, 4L, 3L)
+  )
+  skip_if_not_installed("gt")
+  tables <- report_table(pages, "gt")
+  expect_equal(
+    vapply(tables, function(table) nrow(table[["_footnotes"]]), integer(1)),
+    c(0L, 1L, 0L)
+  )
+})
+
+
+test_that("scenario layout uses the same selected statistics for a Merck-style overview", {
+  x <- SimulationsSummaryList(A = oc_test_sims(), B = oc_test_sims())
+  default <- report_oc_overview(x)
+  scenario_rows <- report_oc_overview(x, layout = "scenarios")
+  expect_equal(scenario_rows$stat, default$stat)
+  expect_equal(scenario_rows$value, default$value)
+  expect_equal(scenario_rows$formatted, default$formatted)
+  max_without_mtd <- OCStat(
+    "Maximum patients without MTD (%)",
+    function(sims, summary, scenario) {
+      100 * mean(sims@stop_report[, "size"] & is.na(sims@doses))
+    }
+  )
+  stats <- list(
+    "n_pat_mean",
+    "n_dlt_mean",
+    "prop_stop_tox",
+    "prop_mtd_correct",
+    max_without_mtd = max_without_mtd,
+    "prop_mtd_over"
+  )
+  out <- report_oc_overview(x, stats = stats, layout = "scenarios")
+  plain <- report_oc_overview(x, stats = stats)
+  expect_equal(out$value, plain$value)
+  expect_equal(out$formatted, plain$formatted)
+  expect_equal(
+    out$label[out$stat == "max_without_mtd"],
+    rep(max_without_mtd$label, 2)
+  )
+  skip_if_not_installed("gt")
+  table <- report_table(out, "gt")
+  expect_equal(
+    table[["_spanners"]]$vars,
+    list(".stat_1", ".stat_2", ".stat_4", ".stat_6")
+  )
+  expect_equal(nrow(table[["_footnotes"]]), 0L)
+})
+
+test_that("scenario headers cover count variants and keep explicit groups", {
+  x <- SimulationsSummaryList(A = oc_test_sims())
+  out <- report_oc_overview(
+    x,
+    layout = "scenarios",
+    quantiles = c(.25, .75),
+    stats = c("n_pat_mean_sd", "n_pat_quantiles", "n_dlt_minmax"),
+    labels = c(n_pat_mean_sd = "Average (SD)")
+  )
+  display <- report_table(out, "data.frame")
+  expect_named(
+    display,
+    c(
+      "Scenario",
+      "# Patients Average (SD)",
+      "# Patients 25–75% quantiles",
+      "# DLTs Min–Max"
+    )
+  )
+  grouped <- report_oc_overview(
+    x,
+    layout = "scenarios",
+    stats = c("n_pat_mean", "n_dlt_mean"),
+    row_groups = c(n_pat_mean = "Sample size")
+  )
+  expect_equal(
+    names(report_table(grouped, "data.frame")),
+    c("Scenario", "Sample size Mean", "Mean")
+  )
+})

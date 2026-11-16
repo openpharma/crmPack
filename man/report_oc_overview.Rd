@@ -16,6 +16,7 @@ report_oc_overview(
   sd = FALSE,
   quantiles = c(0.1, 0.9),
   row_groups = NULL,
+  layout = c("statistics", "scenarios"),
   ...
 )
 }
@@ -25,22 +26,22 @@ report_oc_overview(
 \item{stats}{Nonempty character vector of \code{\link[=oc_stat_registry]{oc_stat_registry()}} names, or a
 list mixing those names and \code{\link[=OCStat]{OCStat()}} objects. Optional names assign
 unique statistic IDs; unnamed custom statistics get IDs \code{custom1}, etc.,
-using their position in \code{stats}. Order determines table row order.}
+using their position in \code{stats}. Order determines statistic order.}
 
 \item{format}{Output format; defaults to the long unrounded tibble.}
 
-\item{labels}{Optional named character vector or named list of row-label
+\item{labels}{Optional named character vector or named list of statistic-label
 overrides, keyed by the names in \code{stats}. Use a string to rename a statistic,
 or a named character vector inside a list to rename its individual rows,
 e.g. \code{list(prop_stop_by_label = c("Lowest dose unsafe" = "Unsafe"))}.
 A statistic-level string also supplies the prefix for its expanded rows.
 Flat expanded row IDs are also accepted.}
 
-\item{scenario_labels}{Optional named character vector of scenario header
+\item{scenario_labels}{Optional named character vector of scenario display-label
 overrides. Names identify original scenarios; partial overrides are allowed.}
 
 \item{title, spanner}{Optional strings for the table title and the heading
-spanning all scenario columns. Pipe markdown combines them in its caption.}
+spanning all result columns. Pipe markdown combines them in its caption.}
 
 \item{sd, quantiles}{Passed to \code{\link[=oc_stat_registry]{oc_stat_registry()}} for per-dose SDs and
 quantile variants. Custom \code{OCStat} objects retain their own settings.}
@@ -50,7 +51,19 @@ statistics to group labels, with the same nesting syntax as \code{labels} for
 individual rows. A statistic mapping applies to all its expanded rows;
 specific row mappings take precedence. Grouped expanded rows show just their
 row names, omitting the statistic prefix unless \code{labels} explicitly sets it.
-gt shows native row sections; markdown adds a Group column.}
+gt shows native row sections; markdown adds a Group column. With scenarios
+in rows, these groups become column spanners in gt and column-label prefixes
+in markdown and data frames.}
+
+\item{layout}{Table layout: \code{"statistics"} (default) puts statistics in rows;
+\code{"scenarios"} puts scenarios in rows, with short labels and automatic column
+groups for built-in count summaries and MTD classification percentages.
+A gt footnote defines "Stopped" as no final MTD recommendation when that
+statistic is selected. \code{stats} has the same default in both layouts;
+custom statistics keep their own labels. Explicit \code{labels} override the
+short labels; \code{row_groups} replaces automatic groups (\code{NULL} disables them).
+Layout is stored for subsequent \code{\link[=report_table]{report_table()}} calls; numeric values
+are unchanged.}
 
 \item{...}{Arguments passed to \code{\link[=report_table]{report_table()}} when rendering.}
 }
@@ -70,7 +83,9 @@ an existing cell retain the statistic's own formatting.
 \description{
 Assemble selected statistics from a \code{\link[=SimulationsSummaryList]{SimulationsSummaryList()}} without
 recomputing its summaries or running MCMC. Rendered tables have statistics
-as rows and scenarios as columns. Arm sub-columns are not yet supported.
+as rows and scenarios as columns by default. Use \code{layout = "scenarios"} to
+place scenarios in rows with automatic statistic headers and column groups.
+Arm sub-columns are not yet supported.
 }
 \examples{
 sims <- GeneralSimulations(
@@ -86,6 +101,7 @@ overview <- report_oc_overview(
   title = "Simulation results", spanner = "Target: 20-35\%"
 )
 report_table(overview, format = "kable")
+report_oc_overview(scenarios, layout = "scenarios", format = "kable")
 custom <- OCStat("Trials simulated", function(sims, summary, scenario) {
   summary@nsim
 }, "\%.0f")

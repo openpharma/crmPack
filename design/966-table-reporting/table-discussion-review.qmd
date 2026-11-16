@@ -453,41 +453,36 @@ report_table(truths, format = report_format, digits = 3)
 ```
 
 **Flagged for later:** arm-specific and combination true-toxicity grids are
-not supported by `ToxicityScenarios`.
+not supported yet by `ToxicityScenarios`.
 
 ## Operating characteristics Table
 
 PDF p. 6, Table 15: selection classifications, no recommendation, mean and
 min/max sample sizes and DLT counts.
 
-Select percentages of under-target, correct, over-target and absent final
-dose recommendations, together with mean and range summaries for patients
-and DLTs. Transpose the overview so that scenarios appear in rows before
-rendering the table.
+Select the four recommendation percentages and mean/range summaries for
+patients and DLTs, with scenarios in rows. This layout automatically adds
+short statistic labels, grouped column headers in `gt`, and a footnote defining
+"Stopped" as no final MTD recommendation. The same layout is used for the
+Merck overview below; `stats` determines which results to include.
 
 ```{r reporting-bi}
 bi <- report_oc_overview(
     oc,
+    layout = "scenarios",
     stats = c(
-        "prop_mtd_under",
-        "prop_mtd_correct",
-        "prop_mtd_over",
-        "prop_mtd_none",
-        "n_pat_mean",
-        "n_pat_minmax",
-        "n_dlt_mean",
-        "n_dlt_minmax"
+        "prop_mtd_under", "prop_mtd_correct", "prop_mtd_over", "prop_mtd_none",
+        "n_pat_mean", "n_pat_minmax", "n_dlt_mean", "n_dlt_minmax"
     ),
-    labels = c(prop_mtd_none = "No final recommendation (%)"),
     title = "BI-style operating characteristics"
 )
-report_table(report_transpose(bi), format = report_format)
+report_table(bi, format = report_format)
 ```
 
 **Flagged for later:** hierarchical OC arm subcolumns and paired mean
-(min–max) cells. `report_transpose()` now places scenarios in rows, with
-separate mean and range columns. No-recommendation
-percentage is computed directly, rather than by adding overlapping stop rules.
+(min–max) cells. The scenario-row layout uses separate mean and range columns.
+No-recommendation percentage is computed directly, rather than by adding
+overlapping stop rules.
 
 # Merck
 
@@ -501,7 +496,9 @@ with an MTD recommendation.
 Define a custom percentage that counts trials satisfying both conditions:
 the maximum-sample-size rule was activated and no final MTD was recommended.
 Combine it with mean patient and DLT counts, toxicity stopping, correct
-selection and over-target selection to produce the six-metric overview.
+selection and over-target selection to produce the six-metric overview. Use
+`layout = "scenarios"` to show scenarios in rows with automatic column headers,
+as in the Boehringer overview above.
 
 ```{r reporting-pmda}
 max_without_mtd <- OCStat(
@@ -513,6 +510,7 @@ max_without_mtd <- OCStat(
 )
 pmda <- report_oc_overview(
     oc,
+    layout = "scenarios",
     stats = list(
         "n_pat_mean",
         "n_dlt_mean",

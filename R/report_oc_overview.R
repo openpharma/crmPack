@@ -2,30 +2,43 @@
 #'
 #' Assemble selected statistics from a [SimulationsSummaryList()] without
 #' recomputing its summaries or running MCMC. Rendered tables have statistics
-#' as rows and scenarios as columns. Arm sub-columns are not yet supported.
+#' as rows and scenarios as columns by default. Use `layout = "scenarios"` to
+#' place scenarios in rows with automatic statistic headers and column groups.
+#' Arm sub-columns are not yet supported.
 #'
 #' @param x A `SimulationsSummaryList`.
 #' @param stats Nonempty character vector of [oc_stat_registry()] names, or a
 #'   list mixing those names and [OCStat()] objects. Optional names assign
 #'   unique statistic IDs; unnamed custom statistics get IDs `custom1`, etc.,
-#'   using their position in `stats`. Order determines table row order.
+#'   using their position in `stats`. Order determines statistic order.
 #' @param format Output format; defaults to the long unrounded tibble.
-#' @param labels Optional named character vector or named list of row-label
+#' @param labels Optional named character vector or named list of statistic-label
 #'   overrides, keyed by the names in `stats`. Use a string to rename a statistic,
 #'   or a named character vector inside a list to rename its individual rows,
 #'   e.g. `list(prop_stop_by_label = c("Lowest dose unsafe" = "Unsafe"))`.
 #'   A statistic-level string also supplies the prefix for its expanded rows.
 #'   Flat expanded row IDs are also accepted.
-#' @param scenario_labels Optional named character vector of scenario header
+#' @param scenario_labels Optional named character vector of scenario display-label
 #'   overrides. Names identify original scenarios; partial overrides are allowed.
 #' @param title,spanner Optional strings for the table title and the heading
-#'   spanning all scenario columns. Pipe markdown combines them in its caption.
+#'   spanning all result columns. Pipe markdown combines them in its caption.
 #' @param row_groups Optional named character vector or named list mapping
 #'   statistics to group labels, with the same nesting syntax as `labels` for
 #'   individual rows. A statistic mapping applies to all its expanded rows;
 #'   specific row mappings take precedence. Grouped expanded rows show just their
 #'   row names, omitting the statistic prefix unless `labels` explicitly sets it.
-#'   gt shows native row sections; markdown adds a Group column.
+#'   gt shows native row sections; markdown adds a Group column. With scenarios
+#'   in rows, these groups become column spanners in gt and column-label prefixes
+#'   in markdown and data frames.
+#' @param layout Table layout: `"statistics"` (default) puts statistics in rows;
+#'   `"scenarios"` puts scenarios in rows, with short labels and automatic column
+#'   groups for built-in count summaries and MTD classification percentages.
+#'   A gt footnote defines "Stopped" as no final MTD recommendation when that
+#'   statistic is selected. `stats` has the same default in both layouts;
+#'   custom statistics keep their own labels. Explicit `labels` override the
+#'   short labels; `row_groups` replaces automatic groups (`NULL` disables them).
+#'   Layout is stored for subsequent [report_table()] calls; numeric values
+#'   are unchanged.
 #' @param sd,quantiles Passed to [oc_stat_registry()] for per-dose SDs and
 #'   quantile variants. Custom `OCStat` objects retain their own settings.
 #' @param ... Arguments passed to [report_table()] when rendering.
@@ -56,6 +69,7 @@
 #'   title = "Simulation results", spanner = "Target: 20-35%"
 #' )
 #' report_table(overview, format = "kable")
+#' report_oc_overview(scenarios, layout = "scenarios", format = "kable")
 #' custom <- OCStat("Trials simulated", function(sims, summary, scenario) {
 #'   summary@nsim
 #' }, "%.0f")
@@ -79,10 +93,13 @@ report_oc_overview <- function(
   sd = FALSE,
   quantiles = c(0.1, 0.9),
   row_groups = NULL,
+  layout = c("statistics", "scenarios"),
   ...
 ) {
   assert_class(x, "SimulationsSummaryList")
   format <- match.arg(format)
+  layout <- match.arg(layout)
+  default_groups <- missing(row_groups)
   labels <- h_oc_expand_overrides(labels)
   row_groups <- h_oc_expand_overrides(row_groups)
   h_oc_display_labels(scenario_labels, names(x@simulations))
@@ -93,6 +110,29 @@ report_oc_overview <- function(
     assert_string(spanner)
   }
   selected <- h_resolve_oc_stats(stats, oc_stat_registry(x, sd, quantiles))
+  sources <- stats::setNames(
+    vapply(
+      stats,
+      function(stat) {
+        if (is.character(stat)) stat else NA_character_
+      },
+      character(1)
+    ),
+    names(selected)
+  )
+  if (layout == "scenarios") {
+    defaults <- h_oc_scenario_layout(quantiles)
+    short_labels <- defaults$labels[sources]
+    names(short_labels) <- names(selected)
+    short_labels <- short_labels[!is.na(short_labels)]
+    short_labels[names(labels)] <- labels
+    labels <- short_labels
+    if (default_groups) {
+      row_groups <- defaults$groups[sources]
+      names(row_groups) <- names(selected)
+      row_groups <- row_groups[!is.na(row_groups)]
+    }
+  }
   scenarios <- names(x@simulations)
   results <- lapply(names(selected), function(id) {
     stat <- selected[[id]]
@@ -173,10 +213,59 @@ report_oc_overview <- function(
   )
   attr(result, "title") <- title
   attr(result, "spanner") <- spanner
+  attr(result, "layout") <- layout
+  attr(result, "stat_sources") <- sources
   if (format == "tibble") {
     return(result)
   }
   report_table(result, format = format, ...)
+}
+
+#' Define Scenario-Row Overview Formatting Defaults
+#' @param quantiles Quantile probabilities used in count-summary headers.
+#' @return A list of statistic labels, column groups and a stopping footnote.
+#' @keywords internal
+#' @noRd
+h_oc_scenario_layout <- function(quantiles = c(0.1, 0.9)) {
+  labels <- c(
+    prop_mtd_under = "Underdose",
+    prop_mtd_correct = "Target dose",
+    prop_mtd_over = "Overdose",
+    prop_mtd_none = "Stopped"
+  )
+  groups <- stats::setNames(
+    rep("% of trials declaring an MTD with true DLT rate in", length(labels)),
+    names(labels)
+  )
+  quantities <- c(
+    pat = "# Patients",
+    dlt = "# DLTs",
+    above_target = "# Patients above target",
+    cohorts = "# Dose escalation cohorts (duration proxy)"
+  )
+  variants <- c(
+    mean = "Mean",
+    mean_sd = "Mean (SD)",
+    minmax = "Min–Max",
+    quantiles = sprintf(
+      "%g–%g%% quantiles",
+      quantiles[1] * 100,
+      quantiles[2] * 100
+    )
+  )
+  for (quantity in names(quantities)) {
+    ids <- paste("n", quantity, names(variants), sep = "_")
+    labels[ids] <- variants
+    groups[ids] <- quantities[[quantity]]
+  }
+  list(
+    labels = labels,
+    groups = groups,
+    footnote = paste(
+      "Trials with no final MTD recommendation, including trials stopped",
+      "for safety or reaching the maximum sample size without selecting an MTD."
+    )
+  )
 }
 
 #' Normalize Statistic and Nested Row Overrides
@@ -316,12 +405,15 @@ h_resolve_oc_stats <- function(stats, registry) {
 #' @param x A `tbl_OCOverview` tibble from [report_oc_overview()].
 #' @param format Renderer: `"kable"`, `"gt"`, or formatted `"data.frame"`.
 #' @param ... Arguments passed to `knitr::kable()` or `gt::gt()`.
-#' @param title,spanner Optional title and scenario heading; defaults to the
+#' @param title,spanner Optional title and result-column heading; defaults to the
 #'   metadata stored on `x`. Use `NULL` to remove a stored heading.
 #' @param scenario_labels Optional named scenario header overrides, applied
 #'   over any stored overrides.
 #' @param row_groups Group overrides as in [report_oc_overview()], defaulting to
 #'   the stored row groups. Use `NULL` to remove grouping.
+#' @param layout Layout as in [report_oc_overview()], defaulting to the stored
+#'   layout. Changing it here changes rendering only; it does not select new
+#'   statistics or apply the automatic short labels and groups.
 #' @return A `knitr_kable`, `gt_tbl`, or formatted data frame. Kable uses a pipe table and combines
 #'   the title and spanner into its caption because pipe tables cannot span cells.
 #' @export
@@ -332,9 +424,14 @@ report_table.tbl_OCOverview <- function(
   title = attr(x, "title"),
   spanner = attr(x, "spanner"),
   scenario_labels = NULL,
-  row_groups = attr(x, "row_groups")
+  row_groups = attr(x, "row_groups"),
+  layout = attr(x, "layout")
 ) {
   format <- match.arg(format)
+  if (is.null(layout)) {
+    layout <- "statistics"
+  }
+  layout <- match.arg(layout, c("statistics", "scenarios"))
   if (!is.null(title)) {
     assert_string(title)
   }
@@ -369,17 +466,38 @@ report_table.tbl_OCOverview <- function(
     attr(x, "scenario_labels"),
     scenario_labels
   )
-  wide <- data.frame(.label = unname(labels), check.names = FALSE)
-  columns <- paste0(".scenario_", seq_along(scenarios))
-  for (i in seq_along(scenarios)) {
-    rows <- x[x$scenario == scenarios[i], ]
-    values <- rows$formatted[match(ids, rows$stat)]
-    wide[[columns[i]]] <- ifelse(is.na(values), "\u2014", values)
-  }
-  display <- c("Statistic", unname(headers))
   groups <- h_oc_row_groups(unique(c(attr(x, "stats"), ids)), row_groups)
   groups <- groups[ids]
-  if (length(groups)) {
+  scenario_rows <- layout != "statistics"
+  row_keys <- if (scenario_rows) scenarios else ids
+  column_keys <- if (scenario_rows) ids else scenarios
+  wide <- data.frame(
+    .label = unname(if (scenario_rows) headers else labels),
+    check.names = FALSE
+  )
+  columns <- paste0(
+    if (scenario_rows) ".stat_" else ".scenario_",
+    seq_along(column_keys)
+  )
+  for (i in seq_along(column_keys)) {
+    rows <- if (scenario_rows) {
+      x[x$stat == column_keys[i], ]
+    } else {
+      x[x$scenario == column_keys[i], ]
+    }
+    values <- rows$formatted[match(
+      row_keys,
+      if (scenario_rows) rows$scenario else rows$stat
+    )]
+    wide[[columns[i]]] <- ifelse(is.na(values), "\u2014", values)
+  }
+  stub <- if (scenario_rows) "Scenario" else "Statistic"
+  display <- c(stub, unname(if (scenario_rows) labels else headers))
+  if (scenario_rows && length(groups) && format != "gt") {
+    grouped <- !is.na(groups)
+    display[which(grouped) + 1L] <- paste(groups[grouped], labels[grouped])
+  }
+  if (!scenario_rows && length(groups)) {
     wide <- cbind(.group = unname(groups[ids]), wide)
     display <- c("Group", display)
   }
@@ -387,9 +505,9 @@ report_table.tbl_OCOverview <- function(
     return(h_report_display(
       wide,
       display,
-      identifiers = seq_len(1L + as.integer(length(groups) > 0L)),
+      identifiers = seq_len(ncol(wide) - length(columns)),
       title = paste(c(title, spanner), collapse = " — "),
-      column_label = "Scenario"
+      column_label = if (scenario_rows) "Statistic" else "Scenario"
     ))
   }
   if (format == "kable") {
@@ -404,8 +522,8 @@ report_table.tbl_OCOverview <- function(
       row.names = FALSE,
       col.names = display,
       align = c(
-        rep("l", ncol(wide) - length(scenarios)),
-        rep("r", length(scenarios))
+        rep("l", ncol(wide) - length(columns)),
+        rep("r", length(columns))
       )
     )
     defaults[names(args)] <- args
@@ -418,7 +536,10 @@ report_table.tbl_OCOverview <- function(
       call. = FALSE
     )
   }
-  table <- if (length(groups)) {
+  table <- if (scenario_rows) {
+    gt::gt(wide, rowname_col = ".label", ...) |>
+      gt::tab_stubhead(label = stub)
+  } else if (length(groups)) {
     gt::gt(wide, rowname_col = ".label", groupname_col = ".group", ...) |>
       gt::row_group_order(groups = unique(unname(groups[!is.na(groups)])))
   } else {
@@ -432,8 +553,33 @@ report_table.tbl_OCOverview <- function(
   if (!is.null(title)) {
     table <- gt::tab_header(table, title = title)
   }
+  if (scenario_rows && length(groups)) {
+    runs <- rle(unname(groups))
+    ends <- cumsum(runs$lengths)
+    for (i in which(!is.na(runs$values))) {
+      table <- gt::tab_spanner(
+        table,
+        label = runs$values[i],
+        id = paste0(".stat_group_", i),
+        columns = columns[seq.int(ends[i] - runs$lengths[i] + 1L, ends[i])],
+        gather = FALSE
+      )
+    }
+  }
   if (!is.null(spanner)) {
     table <- gt::tab_spanner(table, label = spanner, columns = columns)
+  }
+  if (layout == "scenarios") {
+    sources <- attr(x, "stat_sources")
+    stopped <- which(sources[sub("::.*$", "", ids)] == "prop_mtd_none")
+    if (length(stopped)) {
+      table <- gt::tab_footnote(
+        table,
+        footnote = h_oc_scenario_layout()$footnote,
+        locations = gt::cells_column_labels(columns = columns[stopped])
+      ) |>
+        gt::opt_footnote_marks(marks = "standard")
+    }
   }
   table
 }
