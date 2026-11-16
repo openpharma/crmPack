@@ -781,7 +781,8 @@ the stored `truth` slots).
 ```{r}
 #| eval: false
 detail <- report_oc_detail(
-    oc_summary, sd = TRUE,
+    oc_summary,
+    sd = TRUE,
     labels = c(n_dlt_per_dose = "Patients with DLTs", n_pat_per_dose = "Patients"),
     column_labels = c(SUM = "Total"),
     title = "Per-dose simulation results"
@@ -936,7 +937,7 @@ Sliced so that each step is an independently reviewable PR with tests
 8. Done: **`report_oc_detail()`** + scenario-faceted summary plots.
 9. Done: **Rendering/export polish**: `report_table()` generic, `knit_print`
    methods, `report_paginate()`, Word-export documentation.
-10. Implemented for available APIs: **Vignette** "Reporting simulation results"
+10. Done: Implemented for available APIs: **Vignette** "Reporting simulation results"
     (`vignettes/reporting-simulation-results.Rmd.orig`, with precomputed `.Rmd`)
     covers hypothetical data scenarios and Bayer, BI, Merck, and PMDA-style
     examples end-to-end. `table-discussion-review.qmd` follows the PDF chapter
@@ -944,8 +945,7 @@ Sliced so that each step is an independently reviewable PR with tests
     Unavailable layouts and plots are flagged for separate work: hierarchical
     OC arm columns, combination truth/prior tables, the native BI row layout,
     paired mean/range cells, highest-dose-safe outcomes, and cohort-scaled
-    duration summaries. Scenario-row views use `report_transpose()`, and
-    per-dose boxplots/violins use `plot_type` on `plot(oc, type = "nPatients")`.
+    duration summaries.
 
 Extensions explicitly deferred (but anticipated in the tidy column layout):
 combo dose grids in true `ToxicityScenarios` and operating-characteristics
