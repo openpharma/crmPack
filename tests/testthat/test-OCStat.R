@@ -6,13 +6,11 @@ test_that("summary collections cache named summaries with shared metadata", {
   expect_named(x@summaries, c("First", "Second"))
   expect_equal(x@summaries$First, summary(sims, target = c(0.1, 0.2)))
   expect_equal(x@simulations$First, sims)
+  expect_equal(x@stop_categories$First, list())
+  registry <- oc_stat_registry(x)
   expect_equal(
-    x@stop_categories$First,
-    list(
-      Toxicity = c("unsafe", "unsafe2"),
-      `Max patients` = "size",
-      Other = "precision"
-    )
+    registry$prop_stop_by_label$fun(sims, x@summaries$First, "First"),
+    as.list(h_calc_report_label_percentage(sims@stop_report))
   )
   expect_equal(
     SimulationsSummaryList(list(First = sims))@simulations,
@@ -27,6 +25,47 @@ test_that("summary collections cache named summaries with shared metadata", {
   )
   sims@truth <- NULL
   expect_error(SimulationsSummaryList(A = sims), "No truth")
+})
+
+test_that("summary collections resolve labels independently for each scenario", {
+  labeled <- oc_test_sims()
+  partial <- labeled
+  colnames(partial@stop_report)[1:2] <- NA_character_
+  unlabeled <- labeled
+  colnames(unlabeled@stop_report) <- NULL
+  missing <- labeled
+  colnames(missing@stop_report) <- rep(NA_character_, 4)
+  legacy <- unlabeled
+  attr(legacy@stop_report, "stopping_classes") <- NULL
+  x <- SimulationsSummaryList(
+    Labeled = labeled,
+    Partial = partial,
+    Unlabeled = unlabeled,
+    Missing = missing,
+    Legacy = legacy
+  )
+  expect_equal(x@stop_categories$Labeled, list())
+  expect_equal(x@stop_categories$Partial, list())
+  defaults <- list(
+    Toxicity = rep("StoppingLowestDoseHSRBeta", 2),
+    `Max patients` = "StoppingMinPatients",
+    Other = "StoppingTDCIRatio"
+  )
+  expect_equal(x@stop_categories$Unlabeled, defaults)
+  expect_equal(x@stop_categories$Missing, defaults)
+  expect_length(x@stop_categories$Legacy, 0L)
+  out <- report_oc_overview(x, stats = "prop_stop_by_label")
+  expect_equal(
+    unlist(out$value[
+      out$scenario == "Unlabeled" &
+        out$stat %in% paste0("prop_stop_by_label::", names(defaults))
+    ]),
+    c(200 / 3, 200 / 3, 100 / 3)
+  )
+  expect_equal(
+    report_stop_reasons(partial, x@stop_categories$Partial)$label,
+    c("size", "precision")
+  )
 })
 
 test_that("default stopping categories count unions and explicit mappings override", {
@@ -64,7 +103,11 @@ test_that("default stopping categories count unions and explicit mappings overri
 
 test_that("registry calculations and formats retain numeric components", {
   sims <- oc_test_sims()
-  x <- SimulationsSummaryList(A = sims, target = c(0.1, 0.2))
+  x <- SimulationsSummaryList(
+    A = sims,
+    target = c(0.1, 0.2),
+    stop_categories = h_default_stop_categories(sims@stop_report)
+  )
   registry <- oc_stat_registry(x, sd = TRUE)
   evaluate <- function(name) {
     h_eval_oc_stat(registry[[name]], sims, x@summaries$A, "A")

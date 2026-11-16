@@ -15,8 +15,9 @@ SimulationsSummaryList(..., target = c(0.2, 0.35), stop_categories = NULL)
 \item{target}{Shared increasing length-two target toxicity interval.}
 
 \item{stop_categories}{Named list mapping categories to report labels, shared
-across scenarios. \code{NULL} uses class-based defaults; \code{list()} keeps individual
-labels. Explicit mappings must reference labels present in every scenario.}
+across scenarios. \code{NULL} keeps provided report labels, falling back to
+class-based defaults only when no labels are available. Explicit mappings
+must reference labels present in every scenario.}
 }
 \value{
 A \code{SimulationsSummaryList} object.

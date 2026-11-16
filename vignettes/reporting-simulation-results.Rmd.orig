@@ -244,7 +244,15 @@ simulations <- lapply(seq_along(truth_functions), function(i) {
   )
 })
 names(simulations) <- names(truth_functions)
-oc <- SimulationsSummaryList(simulations, target = target)
+oc <- SimulationsSummaryList(
+  simulations,
+  target = target,
+  stop_categories = list(
+    Toxicity = "Lowest dose unsafe",
+    `Max patients` = "Maximum sample size",
+    Other = "No admissible dose"
+  )
+)
 ```
 
 ## Bayer: an extended operating-characteristics table
@@ -254,11 +262,10 @@ programmatically. Here per-dose counts use mean (SD); set `sd = FALSE` for means
 only. Quantiles are the 10th and 90th percentiles.
 
 ```{r reporting-bayer}
-# Keep the PMDA collection's categories intact; this variant uses the rule labels.
+# Supplied rule labels are used automatically.
 bayer_oc <- SimulationsSummaryList(
   simulations,
-  target = target,
-  stop_categories = list()
+  target = target
 )
 bayer <- report_oc_overview(
   bayer_oc,
@@ -278,10 +285,7 @@ bayer <- report_oc_overview(
   labels = c(
     n_pat_mean_sd = "Mean (SD)",
     n_pat_minmax = "Min–max",
-    n_pat_quantiles = "10th/90th percentiles",
-    `prop_stop_by_label::Lowest dose unsafe` = "Lowest dose unsafe",
-    `prop_stop_by_label::No admissible dose` = "No admissible dose",
-    `prop_stop_by_label::Maximum sample size` = "Maximum sample size"
+    n_pat_quantiles = "10th/90th percentiles"
   ),
   row_groups = c(
     prop_stop_by_label = "Stop reason (%)",
@@ -304,10 +308,11 @@ if (report_format == "gt") {
 bayer_table
 ```
 
-The Bayer collection uses `stop_categories = list()` so each supplied
-`report_label` appears in the stop reasons. The PMDA collection retains its
-class-based categories. `row_groups` maps statistic IDs to section labels;
-expanded row IDs can override the group of an individual row.
+The Bayer collection uses the default `stop_categories = NULL`, so each supplied
+`report_label` appears in the stop reasons. The PMDA collection explicitly maps
+labels to categories. `row_groups` maps statistic IDs to section labels;
+a nested named vector can override the group of an individual row. Grouped
+rows display their row names without repeating the statistic prefix.
 The gt option `row_group.as_column = TRUE` places group labels in the left stub,
 closer to the PDF's criterion/category layout; the default places section
 headings above the rows. Categories count the

@@ -1,5 +1,5 @@
 ---
-title: "Table discussion: sponsor review"
+title: "Reporting prototype for developer review"
 subtitle: "Examples in the chapter order of the original discussion notes"
 format:
   html:
@@ -10,56 +10,172 @@ execute:
 ---
 
 This review companion follows the headings in **Table discussion.pdf** (seven
-pages, supplied November 10, 2026). It is kept under `design/`, which is excluded
-from the package. The package vignette **Reporting simulation results** explains
-the APIs and assumptions in workflow order.
-
+pages, supplied November 10, 2026).
 These examples reproduce the available reporting layouts with newly simulated
-illustrative results, rather than the sponsors' original numerical results or
+illustrative results, rather than the teams' original numerical results or
 visual styling. HTML output uses gt when installed, including native column
-spanners and row sections. Bayer's six true-probability rows match the notes; dose amounts
-and the design are illustrative. BI examples here use one arm. Missing features
+spanners and row sections. Missing features
 are flagged beside the corresponding example for a separate implementation step.
 
-To render from the repository root (requires `devtools` and Quarto):
+Load `crmPack` and set the display options used throughout this document.
+Tables use `gt` when it is installed and the output is HTML; otherwise they use
+`kable`. The code chunks are shown together with their results.
 
-```r
- quarto::quarto_render("design/966-table-reporting/table-discussion-review.qmd")
+```{r reporting-setup}
+library(crmPack)
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    message = FALSE,
+    error = FALSE,
+    fig.width = 7,
+    fig.height = 5,
+    fig.path = "reporting-simulation-results-figures/"
+)
+report_format <- if (
+    requireNamespace("gt", quietly = TRUE) && knitr::is_html_output()
+) {
+    "gt"
+} else {
+    "kable"
+}
 ```
 
-The review setup loads the development package from this checkout.
-The document reads the vignette source chunks so that both documents execute the
-same examples. It does not depend on the private PDF file or its Desktop path.
+Save generated figures under a directory specific to this review document.
 
-```{r review-init, include=FALSE}
-devtools::load_all("../..", quiet = TRUE)
-source_path <- "../../vignettes/reporting-simulation-results.Rmd.orig"
-code_path <- tempfile(fileext = ".R")
-knitr::purl(source_path, output = code_path, documentation = 1, quiet = TRUE)
-knitr::read_chunk(code_path)
-unlink(code_path)
-```
-
-```{r reporting-setup, include=FALSE}
-```
-
-```{r review-figures, include=FALSE}
+```{r review-figures}
 knitr::opts_chunk$set(fig.path = "table-discussion-review-figures/")
 ```
 
+Define an illustrative single-agent trial with doses of 50, 100, 200 and 400
+and a target dose-limiting toxicity (DLT) probability of 20–35%. The logistic
+model supplies the prior. `NextBestNCRM` chooses doses subject to a 25% upper
+limit on the posterior probability of overdosing. Patients enter in cohorts
+of three, starting at 50, and dose increases are limited to 100%.
+
+The trial stops when the lowest dose is judged unsafe, no dose is admissible,
+or at least 18 patients have been treated. The labels assigned here are reused
+in the reporting tables. The short MCMC settings keep this example manageable;
+a study analysis requires adequate sampling and convergence assessment.
+
 ```{r reporting-design}
+empty_data <- Data(doseGrid = c(50, 100, 200, 400))
+target <- c(0.20, 0.35)
+model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    ref_dose = 200
+)
+design <- Design(
+    model = model,
+    nextBest = NextBestNCRM(
+        target = target,
+        overdose = c(target[2], 1),
+        max_overdose_prob = 0.25
+    ),
+    stopping = StoppingLowestDoseHSRBeta(
+        target = target[2],
+        prob = 0.90,
+        report_label = "Lowest dose unsafe"
+    ) |
+        StoppingMissingDose(report_label = "No admissible dose") |
+        StoppingMinPatients(nPatients = 18, report_label = "Maximum sample size"),
+    increments = IncrementsRelative(intervals = 0, increments = 1),
+    cohort_size = CohortSizeConst(3),
+    data = empty_data,
+    startingDose = 50
+)
+mcmc_options <- McmcOptions(burnin = 100, step = 1, samples = 500)
 ```
 
-```{r reporting-prior-samples, include=FALSE}
+Draw samples from the model with no observed patients, so these are prior
+samples. Setting the seed makes the example reproducible. The same samples
+are reused for the prior plots and summary table.
+
+```{r reporting-prior-samples}
+set.seed(966)
+prior_samples <- mcmc(empty_data, model, mcmc_options)
 ```
 
-```{r reporting-truths, include=FALSE}
+Specify six possible true toxicity profiles, one row per scenario and one
+column per dose. These probabilities describe the data-generating assumptions
+for the simulations; they are separate from the model's prior beliefs.
+Interpolate each row into a function of dose, then collect the functions and
+target interval in a `ToxicityScenarios` object for reporting.
+
+```{r reporting-truths}
+true_probabilities <- list(
+    "T1 (First)" = c(0.30, 0.45, 0.50, 0.55),
+    "T2 (Early)" = c(0.25, 0.30, 0.45, 0.50),
+    "T3 (Late)" = c(0.05, 0.17, 0.30, 0.45),
+    "T4 (Last)" = c(0.17, 0.20, 0.25, 0.30),
+    "T5 (Safe)" = c(0.04, 0.06, 0.08, 0.10),
+    "T6 (Toxic)" = c(0.45, 0.50, 0.55, 0.60)
+)
+truth_functions <- lapply(
+    true_probabilities,
+    function(prob) {
+        # rule = 2 ensures that the function returns the value at the
+        # min and max grid point, respectively, for out-of-bounds doses
+        approxfun(empty_data@doseGrid, prob, rule = 2)
+    }
+)
+truths <- ToxicityScenarios(
+    scenarios = truth_functions,
+    dose_grid = empty_data@doseGrid,
+    target = target
+)
 ```
 
-```{r reporting-data-evaluate, include=FALSE}
+Create three hypothetical trial snapshots at the starting dose: zero, one,
+or three DLTs among three patients. Evaluate each snapshot with `scenario()`
+to obtain posterior summaries and the design's next-dose or stopping decision.
+Retain these evaluations for the trial-realizations table below.
+
+```{r reporting-data-evaluate}
+hypothetical_data <- list(
+    "3 patients, 0 DLTs" = Data(
+        x = rep(50, 3),
+        y = c(0, 0, 0),
+        doseGrid = empty_data@doseGrid
+    ),
+    "3 patients, 1 DLT" = Data(
+        x = rep(50, 3),
+        y = c(0, 0, 1),
+        doseGrid = empty_data@doseGrid
+    ),
+    "3 patients, 3 DLTs" = Data(
+        x = rep(50, 3),
+        y = c(1, 1, 1),
+        doseGrid = empty_data@doseGrid
+    )
+)
+set.seed(968)
+evaluated_data <- lapply(hypothetical_data, function(data) {
+    scenario(design, data = data, mcmcOptions = mcmc_options)
+})
 ```
 
-```{r reporting-simulate, include=FALSE}
+Simulate 10 trials under each of the six true toxicity profiles, using the
+same design and a separate reproducible seed for each scenario. This small
+simulation count demonstrates the reporting interface; reliable operating
+characteristics require many more trials. `SimulationsSummaryList` collects
+the results and summarizes them relative to the target interval. Subsequent
+operating-characteristics tables and plots reuse these results.
+
+```{r reporting-simulate}
+nsim <- 10L
+simulations <- lapply(truth_functions, function(truth_fun) {
+    simulate(
+        design,
+        truth = truth_fun,
+        nsim = nsim,
+        seed = 970,
+        mcmcOptions = mcmc_options,
+        parallel = FALSE
+    )
+})
+oc <- SimulationsSummaryList(simulations, target = target)
 ```
 
 # Bayer
@@ -68,28 +184,56 @@ knitr::opts_chunk$set(fig.path = "table-discussion-review-figures/")
 
 PDF p. 2: mean and 95% prior credible interval with optional target overlay.
 
+Plot the prior mean toxicity probability and its 95% credible interval across
+doses. Overlay the target interval to show how the prior relates to the
+study's desired toxicity range.
+
 ```{r reporting-prior-plot}
+plot(
+    prior_samples,
+    model,
+    empty_data,
+    statistic = "mean",
+    level = 0.95,
+    target = target
+)
 ```
+
+*Question:* Is this ok as is or do we want the option to highlight the specific doses on the dose grid / the points that belong to them?
 
 ## Prior random draws plot
 
 PDF p. 2: 100 curves drawn from the same prior samples.
 
+Display 100 sampled prior dose–toxicity curves to show the variability in
+plausible relationships before observing patients. The plotting seed fixes
+which curves are selected from the existing prior samples.
+
 ```{r reporting-prior-draws}
+plot_prior_draws(prior_samples, model, empty_data, n = 100, seed = 967)
 ```
 
 ## Scenario definition table
 
 PDF pp. 2–3, Table 10-3: the six probability rows are transcribed from the notes.
 
+Render the six true toxicity profiles as a table, rounding probabilities to
+two decimal places. These are the simulation inputs, not estimated results.
+
 ```{r reporting-truth-table}
+report_table(truths, digits = 2)
 ```
 
 ## Scenario definition plot
 
 PDF p. 3, Figure 10-1: the same probabilities, with the study's target band.
 
+Plot the same six true profiles against dose, with the target interval for
+reference. This makes it easier to compare where each scenario lies relative
+to the desired toxicity range. This works because `truths` is a `ToxicityScenarios` object, which the plotting function can interpret correctly.
+
 ```{r reporting-truth-plot}
+plot(truths)
 ```
 
 ## Operating characteristics table
@@ -98,13 +242,96 @@ PDF pp. 3–4: native row sections, supplied stopping-rule labels, selections, c
 summaries, patients above target, and per-dose patients/DLTs. Per-dose SDs are
 shown using the requested mean (SD) option.
 
+First we wrap the list of simulation results into a `SimulationsSummaryList` object, which organizes the data for subsequent reporting.
+Build an overview from the existing simulations, reporting stopping reasons
+under the labels defined in the design. Select the statistics, assign readable
+labels and row sections, and show per-dose counts as mean (SD). Sample-size
+summaries also include the range and 10th/90th percentiles. Render the result
+with the selected table engine; for `gt`, display row-group labels in a column.
+The default `stop_categories = NULL` retains the supplied stopping-rule labels.
+Grouped rows automatically omit the statistic prefix, so the stop reasons
+appear under their supplied labels without additional overrides. Optional
+individual renaming uses a nested list, for example
+`labels = list(prop_stop_by_label = c("Lowest dose unsafe" = "Unsafe"))`.
+Stop rows count rule activations and can overlap, so their percentages need
+not sum to 100.
+
 ```{r reporting-bayer}
+bayer_oc <- SimulationsSummaryList(
+    simulations,
+    target = target
+)
+bayer <- report_oc_overview(
+    bayer_oc,
+    stats = c(
+        "prop_stop_by_label",
+        "dose_selection",
+        "prop_mtd_correct",
+        "n_pat_mean_sd",
+        "n_pat_minmax",
+        "n_pat_quantiles",
+        "n_above_target_mean_sd",
+        "n_pat_per_dose",
+        "n_dlt_per_dose"
+    ),
+    sd = TRUE,
+    quantiles = c(0.1, 0.9),
+    labels = c(
+        n_pat_mean_sd = "Mean (SD)",
+        n_pat_minmax = "Min–max",
+        n_pat_quantiles = "10th/90th percentiles"
+    ),
+    row_groups = c(
+        prop_stop_by_label = "Stop reason (%)",
+        dose_selection = "Dose selection (%)",
+        prop_mtd_correct = "Correct dose selected (%)",
+        n_pat_mean_sd = "Total patients",
+        n_pat_minmax = "Total patients",
+        n_pat_quantiles = "Total patients",
+        n_above_target_mean_sd = "Patients above target",
+        n_pat_per_dose = "Patients per dose, mean (SD)",
+        n_dlt_per_dose = "DLTs per dose, mean (SD)"
+    ),
+    title = "Bayer-style operating characteristics",
+    spanner = sprintf("%d trials per scenario; target 20–35%%", nsim)
+)
+bayer_table <- report_table(bayer, format = report_format)
+if (report_format == "gt") {
+    bayer_table <- gt::tab_options(bayer_table, row_group.as_column = TRUE)
+}
+bayer_table
 ```
 
 Additional available customization: above-target min/max and quantiles via
 `OCStat`, using the cached summary.
 
+Define two custom `OCStat` summaries for the number of patients treated above
+the target interval: the range and the 10th/90th percentiles. Both use the
+cached per-trial summary values. Add them alongside the built-in mean (SD)
+and render a markdown table without rerunning the simulations.
+
 ```{r reporting-custom}
+above_range <- OCStat(
+    label = "Patients above target, min–max",
+    fun = function(sims, summary, scenario) range(summary@n_above_target),
+    format = "[%.0f–%.0f]"
+)
+above_quantiles <- OCStat(
+    label = "Patients above target, 10th/90th percentiles",
+    fun = function(sims, summary, scenario) {
+        quantile(summary@n_above_target, c(0.1, 0.9), names = FALSE)
+    },
+    format = "[%.1f–%.1f]"
+)
+report_oc_overview(
+    oc,
+    stats = list(
+        "n_above_target_mean_sd",
+        range = above_range,
+        quantiles = above_quantiles
+    ),
+    format = "kable"
+)
 ```
 
 **Flagged for later:** the special "highest planned dose safe" outcome needs a
@@ -120,17 +347,30 @@ statistics rather than built-in min/max and quantile entries.
 
 PDF pp. 4–5: selection percentages and patient counts.
 
+Plot the percentage of trials selecting each dose for each true scenario,
+arranging the scenario panels in two columns.
+
 ```{r reporting-selection-plot}
+plot(oc, type = "doseSelected", ncol = 2)
 ```
 
+Plot patient allocation by dose for each true scenario, using the same
+simulation summary and two-column panel layout.
+
 ```{r reporting-patients-plot}
+plot(oc, type = "nPatients", ncol = 2)
 ```
 
 The PDF's per-dose patient-count boxplots and violin
 plots are shown below through `plot_type`. The PDF's BOIN comparison and
 true-rate annotation strip are not reproduced by these CRM reporting plots.
 
+Show the distribution of per-dose patient counts across simulated trials
+with boxplots and then violin plots. Both views use the same trial results.
+
 ```{r reporting-patient-distributions}
+plot(oc, type = "nPatients", plot_type = "boxplot", ncol = 2)
+plot(oc, type = "nPatients", plot_type = "violin", ncol = 2)
 ```
 
 **Flagged for later:** a native comparison across different designs and a
@@ -146,7 +386,20 @@ The interval and quantile columns have native gt spanners.
 Here intervals match the illustrative study's 20–35% target; the PDF uses
 16–33%. This is a single-arm prior table.
 
+Summarize the prior toxicity probability at each dose with its mean, SD,
+2.5th/50th/97.5th percentiles and probabilities of falling below, within or
+above the target interval. The interval boundaries are 0, 0.20, 0.35 and 1.
+Render the table with three decimal places.
+
 ```{r reporting-prior-table}
+prior_table <- report_prob_summary(
+    prior_samples,
+    model,
+    empty_data,
+    quantiles = c(0.025, 0.5, 0.975),
+    intervals = c(0, target, 1)
+)
+report_table(prior_table, format = report_format, digits = 3)
 ```
 
 **Flagged for later:** one native multi-arm/combination prior table matching
@@ -157,7 +410,26 @@ both screenshots is not supported by `report_prob_summary()`.
 PDF p. 6, Table 13: actual `scenario()` evaluations of three trial snapshots.
 The last snapshot illustrates a stopping decision.
 
+Turn the three retained hypothetical-data evaluations into a table of
+observations and proposed-dose interval probabilities. Label the underdosing,
+target and overdosing probabilities as P(UDS), P(TDS) and P(ODS), respectively,
+and display them to three decimal places.
+
 ```{r reporting-data-table}
+data_table <- report_data_scenarios(
+    evaluated_data,
+    probabilities = c("underdosing", "target", "overdose")
+)
+report_table(
+    data_table,
+    format = report_format,
+    probability_labels = c(
+        underdosing = "P(UDS)",
+        target = "P(TDS)",
+        overdose = "P(ODS)"
+    ),
+    digits = 3
+)
 ```
 
 The reporter supports combination and hierarchical `DataScenario` objects,
@@ -169,6 +441,9 @@ from the same posterior draws, so all three interval probabilities are shown.
 ## Scenario Definition Table
 
 PDF p. 6, Table 14: single-agent counterpart using the shared six true scenarios.
+
+Render the same six true toxicity profiles for the Boehringer layout, this
+time using the selected table engine and three decimal places.
 
 ```{r review-bi-truth-table}
 report_table(truths, format = report_format, digits = 3)
@@ -182,7 +457,28 @@ not supported by `ToxicityScenarios`.
 PDF p. 6, Table 15: selection classifications, no recommendation, mean and
 min/max sample sizes and DLT counts.
 
+Select percentages of under-target, correct, over-target and absent final
+dose recommendations, together with mean and range summaries for patients
+and DLTs. Transpose the overview so that scenarios appear in rows before
+rendering the table.
+
 ```{r reporting-bi}
+bi <- report_oc_overview(
+    oc,
+    stats = c(
+        "prop_mtd_under",
+        "prop_mtd_correct",
+        "prop_mtd_over",
+        "prop_mtd_none",
+        "n_pat_mean",
+        "n_pat_minmax",
+        "n_dlt_mean",
+        "n_dlt_minmax"
+    ),
+    labels = c(prop_mtd_none = "No final recommendation (%)"),
+    title = "BI-style operating characteristics"
+)
+report_table(report_transpose(bi), format = report_format)
 ```
 
 **Flagged for later:** hierarchical OC arm subcolumns and paired mean
@@ -199,7 +495,33 @@ statistic uses the public `OCStat` extension interface to match the row meaning.
 The built-in maximum-size stopping percentage alone would also count trials
 with an MTD recommendation.
 
+Define a custom percentage that counts trials satisfying both conditions:
+the maximum-sample-size rule was activated and no final MTD was recommended.
+Combine it with mean patient and DLT counts, toxicity stopping, correct
+selection and over-target selection to produce the six-metric overview.
+
 ```{r reporting-pmda}
+max_without_mtd <- OCStat(
+    label = "Maximum patients without MTD (%)",
+    fun = function(sims, summary, scenario) {
+        100 * mean(sims@stop_report[, "Maximum sample size"] & is.na(sims@doses))
+    },
+    format = "%.1f"
+)
+pmda <- report_oc_overview(
+    oc,
+    stats = list(
+        "n_pat_mean",
+        "n_dlt_mean",
+        "prop_stop_tox",
+        "prop_mtd_correct",
+        max_without_mtd = max_without_mtd,
+        "prop_mtd_over"
+    ),
+    title = "Merck / PMDA-style overview",
+    spanner = sprintf("Simulation results: %d trials; target 20–35%%", nsim)
+)
+report_table(pmda, format = report_format)
 ```
 
 ## Operating characteristics detail table
@@ -210,7 +532,21 @@ rule activations, can overlap with recommendations, and need not make the row
 sum to 100%. This is the current API's meaning, which reviewers should assess
 against their desired reporting convention.
 
+Build a detailed operating-characteristics table with dose columns and
+scenario groups. Request SDs for per-dose patient and DLT counts, assign
+readable count labels, and render the result with the selected table engine.
+
 ```{r reporting-merck}
+merck <- report_oc_detail(
+    oc,
+    sd = TRUE,
+    labels = c(
+        n_dlt_per_dose = "Patients with DLTs, mean (SD)",
+        n_pat_per_dose = "Patients, mean (SD)"
+    ),
+    title = "Merck-style per-dose operating characteristics"
+)
+report_table(merck, format = report_format)
 ```
 
 # Additional reporting capabilities
@@ -220,14 +556,44 @@ unrounded cell inspection,
 automatic column pagination, markdown rendering, and optional gt/Word export.
 See the package vignette for export prerequisites.
 
+Transpose the previously constructed prior table to exchange its row and
+column layout, then render it without recomputing the prior summaries.
+
 ```{r reporting-transpose}
+report_table(report_transpose(prior_table), format = report_format)
 ```
+
+Inspect the first three rows of the PMDA overview as a data frame. Display
+the scenario, statistic identifier, unrounded value and formatted text side
+by side to see how numerical results relate to the displayed cells.
 
 ```{r reporting-raw}
+as.data.frame(pmda)[1:3, c("scenario", "stat", "value", "formatted")]
 ```
+
+Split wide tables into column-sized parts for display. Limit the overview
+to four columns per part and the detail table to six, retaining `label` and
+`SUM` in each detail part so that split tables keep their row context.
 
 ```{r reporting-pagination}
+report_table(report_paginate(pmda, max_cols = 4), format = report_format)
+report_table(
+    report_paginate(merck, max_cols = 6, keep = c("label", "SUM")),
+    format = report_format
+)
 ```
 
+Export the overview to Word and the detailed table to HTML using `gt` and
+`gt::gtsave()`. The loop exports each paginated overview part to its own Word
+file. This chunk is shown but not executed automatically because it writes
+files. To run it manually, install `gt` and its Word-export dependency
+`rmarkdown`; Word export also requires Pandoc.
+
 ```{r reporting-export, eval=FALSE}
+report_table(pmda, format = "gt") |> gt::gtsave("overview.docx")
+report_table(merck, format = "gt") |> gt::gtsave("detail.html")
+parts <- report_table(report_paginate(pmda, max_cols = 4), format = "gt")
+for (i in seq_along(parts)) {
+    gt::gtsave(parts[[i]], sprintf("overview-%d.docx", i))
+}
 ```

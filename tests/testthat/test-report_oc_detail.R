@@ -1,7 +1,8 @@
 test_that("detail statistics agree with per-dose accessors and terminal stopping categories", {
   x <- SimulationsSummaryList(
     `Z low` = oc_test_sims(),
-    `A high` = oc_test_sims()
+    `A high` = oc_test_sims(),
+    stop_categories = h_default_stop_categories(oc_test_sims()@stop_report)
   )
   out <- report_oc_detail(x)
   expect_s3_class(out, "tbl_OCDetail")
@@ -135,7 +136,11 @@ test_that("detail renderers preserve grouping, pairing and stored formatting", {
   sims <- oc_test_sims()
   other <- sims
   other@doses <- c(4, 4, 4)
-  x <- SimulationsSummaryList(label = sims, SUM = other)
+  x <- SimulationsSummaryList(
+    label = sims,
+    SUM = other,
+    stop_categories = h_default_stop_categories(sims@stop_report)
+  )
   out <- report_oc_detail(
     x,
     title = "Per-dose results",

@@ -91,8 +91,9 @@ v_simulations_summary_list <- function(object) {
 #' @param ... Uniquely named simulation objects, or one named list of objects.
 #' @param target Shared increasing length-two target toxicity interval.
 #' @param stop_categories Named list mapping categories to report labels, shared
-#'   across scenarios. `NULL` uses class-based defaults; `list()` keeps individual
-#'   labels. Explicit mappings must reference labels present in every scenario.
+#'   across scenarios. `NULL` keeps provided report labels, falling back to
+#'   class-based defaults only when no labels are available. Explicit mappings
+#'   must reference labels present in every scenario.
 #' @return A `SimulationsSummaryList` object.
 #' @examples
 #' sims <- GeneralSimulations(
@@ -140,7 +141,11 @@ SimulationsSummaryList <- function(
       return(list())
     }
     mapping <- if (is.null(stop_categories)) {
-      h_default_stop_categories(sims@stop_report)
+      if (any(!is.na(colnames(sims@stop_report)))) {
+        list()
+      } else {
+        h_default_stop_categories(sims@stop_report)
+      }
     } else {
       stop_categories
     }

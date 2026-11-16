@@ -10,17 +10,22 @@
 #'   unique statistic IDs; unnamed custom statistics get IDs `custom1`, etc.,
 #'   using their position in `stats`. Order determines table row order.
 #' @param format Output format; defaults to the long unrounded tibble.
-#' @param labels Optional named character vector of row-label overrides. Names
-#'   identify statistic IDs or expanded row IDs (`<statistic ID>::<row name>`).
-#'   A statistic-level override also supplies the prefix for its expanded rows.
+#' @param labels Optional named character vector or named list of row-label
+#'   overrides, keyed by the names in `stats`. Use a string to rename a statistic,
+#'   or a named character vector inside a list to rename its individual rows,
+#'   e.g. `list(prop_stop_by_label = c("Lowest dose unsafe" = "Unsafe"))`.
+#'   A statistic-level string also supplies the prefix for its expanded rows.
+#'   Flat expanded row IDs are also accepted.
 #' @param scenario_labels Optional named character vector of scenario header
 #'   overrides. Names identify original scenarios; partial overrides are allowed.
 #' @param title,spanner Optional strings for the table title and the heading
 #'   spanning all scenario columns. Pipe markdown combines them in its caption.
-#' @param row_groups Optional named character vector mapping statistic IDs or
-#'   expanded row IDs to group labels. A statistic mapping applies to all its
-#'   expanded rows; specific row mappings take precedence. gt shows native row
-#'   sections; markdown adds a Group column.
+#' @param row_groups Optional named character vector or named list mapping
+#'   statistics to group labels, with the same nesting syntax as `labels` for
+#'   individual rows. A statistic mapping applies to all its expanded rows;
+#'   specific row mappings take precedence. Grouped expanded rows show just their
+#'   row names, omitting the statistic prefix unless `labels` explicitly sets it.
+#'   gt shows native row sections; markdown adds a Group column.
 #' @param sd,quantiles Passed to [oc_stat_registry()] for per-dose SDs and
 #'   quantile variants. Custom `OCStat` objects retain their own settings.
 #' @param ... Arguments passed to [report_table()] when rendering.
@@ -78,7 +83,8 @@ report_oc_overview <- function(
 ) {
   assert_class(x, "SimulationsSummaryList")
   format <- match.arg(format)
-  h_oc_display_labels(labels)
+  labels <- h_oc_expand_overrides(labels)
+  row_groups <- h_oc_expand_overrides(row_groups)
   h_oc_display_labels(scenario_labels, names(x@simulations))
   if (!is.null(title)) {
     assert_string(title)
@@ -124,6 +130,11 @@ report_oc_overview <- function(
     ))
     row_ids <- ifelse(nzchar(keys), paste0(id, "::", keys), id)
     row_labels <- ifelse(nzchar(keys), paste(stat$label, keys), stat$label)
+    groups <- h_oc_row_groups(row_ids, row_groups, validate = FALSE)
+    if (!is.null(groups) && !id %in% names(labels)) {
+      grouped <- nzchar(keys) & !is.na(groups)
+      row_labels[grouped] <- keys[grouped]
+    }
     rows <- dplyr::bind_rows(lapply(seq_along(values), function(i) {
       value <- values[[i]]
       index <- match(keys, value$row)
@@ -168,6 +179,35 @@ report_oc_overview <- function(
   report_table(result, format = format, ...)
 }
 
+#' Normalize Statistic and Nested Row Overrides
+#' @param overrides A named character vector or named list of overrides.
+#' @return A validated named character vector keyed by statistic or expanded ID.
+#' @keywords internal
+#' @noRd
+h_oc_expand_overrides <- function(overrides) {
+  if (!length(overrides)) {
+    return(NULL)
+  }
+  if (is.list(overrides)) {
+    h_oc_names(overrides)
+    overrides <- unlist(
+      lapply(names(overrides), function(id) {
+        value <- overrides[[id]]
+        if (is.null(names(value))) {
+          assert_string(value)
+          stats::setNames(value, id)
+        } else {
+          h_oc_display_labels(value)
+          stats::setNames(value, paste0(id, "::", names(value)))
+        }
+      }),
+      use.names = TRUE
+    )
+  }
+  h_oc_display_labels(overrides)
+  overrides
+}
+
 #' Validate Named Display Overrides
 #' @param labels Optional named character vector.
 #' @param keys Optional allowed names.
@@ -189,9 +229,25 @@ h_oc_display_labels <- function(labels, keys = NULL) {
     stop("Display overrides must have unique, nonempty names and labels.")
   }
   if (!is.null(keys) && !all(names(labels) %in% keys)) {
+    unknown <- setdiff(names(labels), keys)
+    descriptions <- vapply(
+      unknown,
+      function(key) {
+        if (grepl("::", key, fixed = TRUE)) {
+          sprintf(
+            "row '%s' of statistic '%s'",
+            sub("^[^:]*::", "", key),
+            sub("::.*$", "", key)
+          )
+        } else {
+          key
+        }
+      },
+      character(1)
+    )
     stop(paste(
       "Unknown display override:",
-      paste(setdiff(names(labels), keys), collapse = ", ")
+      paste(descriptions, collapse = ", ")
     ))
   }
   invisible(NULL)
@@ -396,15 +452,20 @@ knit_print.tbl_OCOverview <- function(x, ..., options = NULL) {
 #' Expand Overview Row Group Overrides
 #' @param ids Ordered expanded statistic IDs.
 #' @param groups Optional named group labels keyed by statistic or expanded ID.
+#' @param validate Reject group names absent from `ids`. Set to `FALSE` when
+#'   resolving a subset of the selected statistics.
 #' @return Named group labels, with missing labels for ungrouped rows.
 #' @keywords internal
 #' @noRd
-h_oc_row_groups <- function(ids, groups) {
+h_oc_row_groups <- function(ids, groups, validate = TRUE) {
+  groups <- h_oc_expand_overrides(groups)
   if (is.null(groups) || !length(groups)) {
     return(NULL)
   }
   base <- sub("::.*$", "", ids)
-  h_oc_display_labels(groups, unique(c(base, ids)))
+  if (validate) {
+    h_oc_display_labels(groups, unique(c(base, ids)))
+  }
   out <- groups[base]
   specific <- ids %in% names(groups)
   out[specific] <- groups[ids[specific]]

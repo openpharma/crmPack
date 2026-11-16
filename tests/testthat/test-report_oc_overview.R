@@ -3,7 +3,8 @@ test_that("overview defaults preserve numeric values and scenario order", {
   x <- SimulationsSummaryList(
     `Z low` = sims,
     `A high` = sims,
-    target = c(.1, .2)
+    target = c(.1, .2),
+    stop_categories = h_default_stop_categories(sims@stop_report)
   )
   out <- report_oc_overview(x)
   expect_s3_class(out, "tbl_OCOverview")
@@ -48,10 +49,10 @@ test_that("mixed statistics, aliases, labels and display options are independent
       "n_pat_quantiles",
       "n_pat_per_dose"
     ),
-    labels = c(
+    labels = list(
       n_pat_mean_sd = "Patients, mean (SD)",
       trials = "Trials",
-      `n_pat_per_dose::2` = "Dose two"
+      n_pat_per_dose = c("2" = "Dose two")
     ),
     sd = TRUE,
     quantiles = c(0, 1)
@@ -282,7 +283,7 @@ test_that("different dose grids distinguish unavailable doses from zero selectio
   out <- report_oc_overview(x, stats = "prop_stop_by_label")
   expect_equal(
     unique(out$stat),
-    paste0("prop_stop_by_label::", c("Toxicity", "Max patients", "Other"))
+    paste0("prop_stop_by_label::", colnames(sims@stop_report))
   )
   expect_true(all(is.na(unlist(out$value[out$scenario == "B"]))))
 })
@@ -290,8 +291,7 @@ test_that("different dose grids distinguish unavailable doses from zero selectio
 test_that("overview row sections preserve report labels, numeric cells and pagination", {
   x <- SimulationsSummaryList(
     A = oc_test_sims(),
-    B = oc_test_sims(),
-    stop_categories = list()
+    B = oc_test_sims()
   )
   out <- report_oc_overview(
     x,
@@ -302,8 +302,7 @@ test_that("overview row sections preserve report labels, numeric cells and pagin
     )
   )
   expect_true(all(
-    paste("Stop (%) :", c("unsafe", "unsafe2", "size", "precision")) %in%
-      out$label
+    c("unsafe", "unsafe2", "size", "precision") %in% out$label
   ))
   plain <- report_oc_overview(
     x,
@@ -327,4 +326,97 @@ test_that("overview row sections preserve report labels, numeric cells and pagin
   expect_match(html, "Stop reason")
   partial <- report_oc_overview(x, row_groups = c(n_pat_mean = "Patients"))
   expect_s3_class(report_table(partial, "gt"), "gt_tbl")
+})
+
+
+test_that("grouped expanded rows omit prefixes and honor nested overrides", {
+  sims <- oc_test_sims()
+  x <- SimulationsSummaryList(A = sims, B = sims)
+  plain <- report_oc_overview(x, stats = "prop_stop_by_label")
+  grouped <- report_oc_overview(
+    x,
+    stats = "prop_stop_by_label",
+    row_groups = c(prop_stop_by_label = "Stop reason (%)")
+  )
+  expect_equal(unique(grouped$label), colnames(sims@stop_report))
+  expect_equal(
+    unique(plain$label),
+    paste("Stop (%) :", colnames(sims@stop_report))
+  )
+  expect_equal(grouped$value, plain$value)
+  expect_equal(grouped$stat, plain$stat)
+  renamed <- report_oc_overview(
+    x,
+    stats = "prop_stop_by_label",
+    labels = list(
+      prop_stop_by_label = c(unsafe = "Unsafe", size = "Maximum size")
+    ),
+    row_groups = c(prop_stop_by_label = "Stop reason (%)")
+  )
+  expect_equal(
+    unique(renamed$label),
+    c("Unsafe", "unsafe2", "Maximum size", "precision")
+  )
+  expect_equal(renamed$value, grouped$value)
+  prefixed <- report_oc_overview(
+    x,
+    stats = "prop_stop_by_label",
+    labels = c(prop_stop_by_label = "Rule:"),
+    row_groups = c(prop_stop_by_label = "Stop reason (%)")
+  )
+  expect_equal(
+    unique(prefixed$label),
+    paste("Rule:", colnames(sims@stop_report))
+  )
+  partial <- report_oc_overview(
+    x,
+    stats = "prop_stop_by_label",
+    row_groups = list(prop_stop_by_label = c(unsafe = "Safety"))
+  )
+  expect_equal(
+    unique(partial$label),
+    c(
+      "unsafe",
+      paste("Stop (%) :", c("unsafe2", "size", "precision"))
+    )
+  )
+  table <- report_table(partial, "data.frame")
+  expect_equal(table$Group, c("Safety", "—", "—", "—"))
+  expect_error(
+    report_oc_overview(
+      x,
+      stats = "prop_stop_by_label",
+      labels = list(prop_stop_by_label = c(missing = "Missing"))
+    ),
+    "Unknown display override: row 'missing' of statistic 'prop_stop_by_label'",
+    fixed = TRUE
+  )
+  expect_error(
+    report_oc_overview(x, labels = list(n_pat_mean = c("One", "Two")))
+  )
+  expect_equal(
+    report_oc_overview(x, labels = list(), row_groups = list()),
+    report_oc_overview(x)
+  )
+})
+
+test_that("nested row overrides align across scenarios and apply during rendering", {
+  x <- SimulationsSummaryList(A = oc_test_sims(), B = oc_test_sims())
+  stat <- OCStat("Metric:", function(sims, summary, scenario) {
+    if (scenario == "A") list(one = 1) else list(two = 2)
+  })
+  out <- report_oc_overview(
+    x,
+    stats = list(metric = stat),
+    labels = list(metric = c(two = "Second")),
+    row_groups = c(metric = "Metrics")
+  )
+  expect_equal(out$label, c("one", "Second", "one", "Second"))
+  expect_equal(unlist(out$value), c(1, NA, NA, 2))
+  table <- report_table(
+    out,
+    "data.frame",
+    row_groups = list(metric = c(two = "Second group"))
+  )
+  expect_equal(table$Group, c("—", "Second group"))
 })

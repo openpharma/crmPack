@@ -19,7 +19,8 @@
 #'   `StoppingMinCohorts`, and `Other` for other bundled rules. Missing-dose,
 #'   composite and wrapper rules are `Other`: their class alone does not prove
 #'   toxicity. Unknown classes and legacy reports without metadata retain their
-#'   labels. `list()` requests individual rules. These are rule activations,
+#'   labels. When no report labels are available, rule class names are used as
+#'   fallback labels. `list()` requests individual rules. These are rule activations,
 #'   not mutually exclusive causes of termination; minimum-size rules may also
 #'   be gates inside composite rules.
 #'   Set stopping rules' `report_label`s to obtain readable output.
@@ -233,10 +234,13 @@ report_stop_reasons <- function(sims, stop_categories = NULL) {
 #' @return A tibble of rule or category activation percentages.
 #' @keywords internal
 h_report_stop_reasons <- function(report, categories = NULL) {
-  labels <- colnames(report)
+  labels <- h_stop_report_labels(report)
   keep <- which(!is.na(labels))
   labels <- labels[keep]
   classes <- attr(report, "stopping_classes")
+  if (any(!is.na(colnames(report)))) {
+    classes <- classes[colnames(report)]
+  }
   groups <- as.list(keep)
   names(groups) <- labels
   if (!is.null(categories)) {
@@ -267,7 +271,7 @@ h_report_stop_reasons <- function(report, categories = NULL) {
     groups,
     function(index) {
       if (length(index) == 1L && !is.null(classes)) {
-        unname(classes[colnames(report)[index]])
+        unname(classes[index])
       } else {
         NA_character_
       }
@@ -282,6 +286,20 @@ h_report_stop_reasons <- function(report, categories = NULL) {
   )
 }
 
+#' Resolve Stopping Report Labels
+#' @param report Logical stop report matrix with optional class metadata.
+#' @return Report labels, using rule classes when no labels are available.
+#' @keywords internal
+#' @noRd
+h_stop_report_labels <- function(report) {
+  labels <- colnames(report)
+  if (any(!is.na(labels))) {
+    labels
+  } else {
+    unname(attr(report, "stopping_classes"))
+  }
+}
+
 #' Resolve Default Stopping Categories from Rule Classes
 #' @param report Logical stop report matrix with optional class metadata.
 #' @return Named list mapping default categories to report labels.
@@ -289,8 +307,10 @@ h_report_stop_reasons <- function(report, categories = NULL) {
 #' @noRd
 h_default_stop_categories <- function(report) {
   classes <- attr(report, "stopping_classes")
-  labels <- colnames(report)
-  classes <- classes[labels]
+  labels <- h_stop_report_labels(report)
+  if (any(!is.na(colnames(report)))) {
+    classes <- classes[labels]
+  }
   # Explicitly enumerate bundled classes; unknown/custom classes stay unmapped.
   other <- c(
     "StoppingMissingDose",

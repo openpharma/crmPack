@@ -29,9 +29,12 @@ using their position in \code{stats}. Order determines table row order.}
 
 \item{format}{Output format; defaults to the long unrounded tibble.}
 
-\item{labels}{Optional named character vector of row-label overrides. Names
-identify statistic IDs or expanded row IDs (\verb{<statistic ID>::<row name>}).
-A statistic-level override also supplies the prefix for its expanded rows.}
+\item{labels}{Optional named character vector or named list of row-label
+overrides, keyed by the names in \code{stats}. Use a string to rename a statistic,
+or a named character vector inside a list to rename its individual rows,
+e.g. \code{list(prop_stop_by_label = c("Lowest dose unsafe" = "Unsafe"))}.
+A statistic-level string also supplies the prefix for its expanded rows.
+Flat expanded row IDs are also accepted.}
 
 \item{scenario_labels}{Optional named character vector of scenario header
 overrides. Names identify original scenarios; partial overrides are allowed.}
@@ -42,10 +45,12 @@ spanning all scenario columns. Pipe markdown combines them in its caption.}
 \item{sd, quantiles}{Passed to \code{\link[=oc_stat_registry]{oc_stat_registry()}} for per-dose SDs and
 quantile variants. Custom \code{OCStat} objects retain their own settings.}
 
-\item{row_groups}{Optional named character vector mapping statistic IDs or
-expanded row IDs to group labels. A statistic mapping applies to all its
-expanded rows; specific row mappings take precedence. gt shows native row
-sections; markdown adds a Group column.}
+\item{row_groups}{Optional named character vector or named list mapping
+statistics to group labels, with the same nesting syntax as \code{labels} for
+individual rows. A statistic mapping applies to all its expanded rows;
+specific row mappings take precedence. Grouped expanded rows show just their
+row names, omitting the statistic prefix unless \code{labels} explicitly sets it.
+gt shows native row sections; markdown adds a Group column.}
 
 \item{...}{Arguments passed to \code{\link[=report_table]{report_table()}} when rendering.}
 }
