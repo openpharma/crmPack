@@ -409,7 +409,8 @@ both screenshots is not supported by `report_prob_summary()`.
 ## Hypothetical Data Scenarios aka Trial Realizations Table
 
 PDF p. 6, Table 13: actual `scenario()` evaluations of three trial snapshots.
-The last snapshot illustrates a stopping decision.
+The last snapshot illustrates a stopping decision, displayed simply as "Stop".
+The full stopping reason remains available in `data_table$stop_reason`.
 
 Turn the three retained hypothetical-data evaluations into a table of
 observations and proposed-dose interval probabilities. Label the underdosing,
@@ -437,6 +438,7 @@ The reporter supports combination and hierarchical `DataScenario` objects,
 including arm names. Native spanners group observed data and proposed-dose
 interval probabilities. `NextBestNCRM` now calculates underdose probability
 from the same posterior draws, so all three interval probabilities are shown.
+
 **Flagged for later:** the exact two-arm scenario from the notes.
 
 ## Scenario Definition Table

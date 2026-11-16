@@ -35,6 +35,7 @@ A tbl_DataScenarios tibble, knitr_kable, or gt_tbl.
 }
 \description{
 Bind evaluated scenarios without rerunning MCMC. Raw probabilities and proposed
-doses remain available after stopping; rendered tables show Stop and suppress
-proposed-dose probabilities for stopped arms.
+doses remain available after stopping; rendered tables show only "Stop" and
+suppress proposed-dose probabilities for stopped arms. Full stopping messages
+remain available in the \code{stop_reason} column of the unrounded tibble.
 }

@@ -1,8 +1,9 @@
 #' Report Evaluated Hypothetical Data Scenarios
 #'
 #' Bind evaluated scenarios without rerunning MCMC. Raw probabilities and proposed
-#' doses remain available after stopping; rendered tables show Stop and suppress
-#' proposed-dose probabilities for stopped arms.
+#' doses remain available after stopping; rendered tables show only "Stop" and
+#' suppress proposed-dose probabilities for stopped arms. Full stopping messages
+#' remain available in the `stop_reason` column of the unrounded tibble.
 #' @param x A DataScenario or a uniquely named nonempty list of them.
 #' @param probabilities Probability names, or NULL to use those shared by all
 #'   evaluated arms and scenarios.
@@ -105,10 +106,7 @@ report_table.tbl_DataScenarios <- function(
   first <- !duplicated(x[c("scenario", "arm")])
   action <- ifelse(
     x$stop %in% TRUE,
-    paste0(
-      "Stop",
-      ifelse(is.na(x$stop_reason), "", paste0(": ", x$stop_reason))
-    ),
+    "Stop",
     ifelse(
       is.na(x$stop),
       x$stop_reason,

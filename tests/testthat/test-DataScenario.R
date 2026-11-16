@@ -92,7 +92,9 @@ test_that("assembly validates input and renders stop actions without changing ra
   expect_equal(d$scenario, rep(c("First", "Second"), each = 2))
   expect_equal(d$target, rep(.3, 4))
   table <- paste(report_table(d), collapse = "\n")
-  expect_match(table, "Stop: Safety", fixed = TRUE)
+  expect_match(table, "Stop", fixed = TRUE)
+  expect_false(grepl("Safety", table, fixed = TRUE))
+  expect_equal(d$stop_reason[d$stop], rep("Safety", 2))
   expect_s3_class(knitr::knit_print(tidy(x)), "knit_asis")
   expect_error(report_data_scenarios(list(x)), "names|names|Names")
   expect_error(report_data_scenarios(list(A = list())), "DataScenario")
@@ -213,7 +215,7 @@ test_that("data scenario pages keep observations and stopped decisions aligned",
     )
   )
   text <- paste(report_table(pages[[3]]), collapse = "\n")
-  expect_match(text, "Stop: Safety")
+  expect_match(text, "Stop")
   expect_match(text, "3 (n = 3)", fixed = TRUE)
   expect_match(text, "0.300")
   lines <- strsplit(text, "\n")[[1]]
@@ -243,7 +245,7 @@ test_that("data scenario pages keep observations and stopped decisions aligned",
       c("scenario", "observed_dose", "overdose")
     )
     html <- gt::as_raw_html(tables[[3]])
-    expect_match(html, "Stop: Safety")
+    expect_match(html, "Stop")
     expect_match(html, "Interval probabilities")
   }
 })
