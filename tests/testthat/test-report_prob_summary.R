@@ -144,13 +144,47 @@ test_that("prior display follows interval, mean, SD, quantile order with native 
     "q50",
     "q97.5"
   )
-  expect_equal(names(report_table(x, "data.frame")), expected)
+  labels <- c(
+    "Dose",
+    "[0-0.2)",
+    "[0.2-0.35)",
+    "[0.35-1]",
+    "Mean",
+    "SD",
+    "2.5%",
+    "50%",
+    "97.5%"
+  )
+  expect_equal(names(report_table(x, "data.frame")), labels)
+  markdown <- report_table(x, "kable")
+  for (label in labels) {
+    expect_match(markdown[1], label, fixed = TRUE)
+  }
+  transposed <- report_table(report_transpose(x), "data.frame")
+  expect_equal(transposed$Statistic, labels[-1L])
+  renamed <- dplyr::rename(x, MEAN = mean, SD = sd)
+  expect_equal(
+    names(report_table(renamed, "data.frame")),
+    replace(labels, 5L, "MEAN")
+  )
+  expect_identical(renamed$MEAN, x$mean)
+  expect_identical(renamed$SD, x$sd)
+  dose_only <- x["dose"]
+  expect_equal(names(report_table(dose_only, "data.frame")), "Dose")
   expect_identical(x, original)
   skip_if_not_installed("gt")
   table <- report_table(x, "gt")
   expect_equal(names(table[["_data"]]), expected)
+  expect_equal(unlist(table[["_boxhead"]]$column_label), labels)
+  expect_identical(table[["_data"]]$mean, x$mean)
   expect_setequal(
     unlist(table[["_spanners"]]$spanner_label),
-    c("Quantiles", "Probability of true DLT rate in ...")
+    c("Quantiles", "Probability of true DLT rate in")
   )
+  renamed_table <- report_table(renamed, "gt")
+  expect_equal(
+    unlist(renamed_table[["_boxhead"]]$column_label),
+    replace(labels, 5L, "MEAN")
+  )
+  expect_s3_class(report_table(dose_only, "gt"), "gt_tbl")
 })

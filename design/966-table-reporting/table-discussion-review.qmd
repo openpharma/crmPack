@@ -376,7 +376,10 @@ Here intervals match the illustrative study's 20–35% target; the PDF uses
 Summarize the prior toxicity probability at each dose with its mean, SD,
 2.5th/50th/97.5th percentiles and probabilities of falling below, within or
 above the target interval. The interval boundaries are 0, 0.20, 0.35 and 1.
-Render the table with three decimal places.
+Render the table with three decimal places. Default display labels are `Dose`,
+interval ranges such as `[0-0.2)`, `Mean`, `SD`, and percentage quantiles such
+as `2.5%`, `50%`, and `97.5%`. Dose units are not assumed; rename the dose
+column if a unit label is needed.
 
 ```{r reporting-prior-table}
 prior_table <- report_prob_summary(
@@ -387,6 +390,17 @@ prior_table <- report_prob_summary(
     intervals = c(0, target, 1)
 )
 report_table(prior_table, format = report_format, digits = 3)
+```
+
+The result of `report_prob_summary()` is a tibble, so use `dplyr::rename()`
+to customize column names before rendering with either table engine. The
+source column names remain `mean` and `sd`; for example, override their
+default `Mean` and `SD` display labels with custom names without changing
+their values:
+
+```{r reporting-prior-table-labels}
+renamed_prior_table <- dplyr::rename(prior_table, MEAN = mean, STDEV = sd)
+report_table(renamed_prior_table, format = report_format, digits = 3)
 ```
 
 **Flagged for later:** one native multi-arm/combination prior table matching

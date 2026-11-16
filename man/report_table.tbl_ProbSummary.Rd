@@ -22,5 +22,10 @@ display table with rounded strings and identifier metadata.}
 A \code{knitr_kable}, \code{gt_tbl}, or formatted data frame.
 }
 \description{
-Render a Probability Summary Table
+Display columns as \code{Dose}, interval ranges (for example \verb{[0-0.2)}),
+\code{Mean}, \code{SD}, and percentage quantiles (for example \verb{2.5\%}). The \code{gt}
+renderer groups intervals under "Probability of true DLT rate in" and
+quantiles under "Quantiles". Dose units are not assumed.
+The source tibble retains its original column names and unrounded values;
+use \code{dplyr::rename()} before rendering to customize individual labels.
 }

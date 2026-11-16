@@ -175,6 +175,13 @@ plot_prior_draws <- function(samples, model, data, n = 100, seed = NULL) {
 
 #' Render a Probability Summary Table
 #'
+#' Display columns as `Dose`, interval ranges (for example `[0-0.2)`),
+#' `Mean`, `SD`, and percentage quantiles (for example `2.5%`). The `gt`
+#' renderer groups intervals under "Probability of true DLT rate in" and
+#' quantiles under "Quantiles". Dose units are not assumed.
+#' The source tibble retains its original column names and unrounded values;
+#' use `dplyr::rename()` before rendering to customize individual labels.
+#'
 #' @inheritParams report_table
 #' @param digits Number of decimal places for display.
 #' @return A `knitr_kable`, `gt_tbl`, or formatted data frame.
@@ -196,10 +203,21 @@ report_table.tbl_ProbSummary <- function(
     quantiles
   )
   x <- x[columns]
+  labels <- stats::setNames(names(x), names(x))
+  defaults <- c(dose = "Dose", mean = "Mean", sd = "SD")
+  known <- intersect(names(defaults), names(x))
+  labels[known] <- defaults[known]
+  labels[intervals] <- sub(
+    ",",
+    "-",
+    sub("^p_", "", intervals),
+    fixed = TRUE
+  )
+  labels[quantiles] <- paste0(sub("^q", "", quantiles), "%")
   if (format == "data.frame") {
     return(h_report_display(
       as.data.frame(x),
-      names(x),
+      unname(labels),
       1L,
       digits = digits,
       column_label = "Statistic"
@@ -210,6 +228,7 @@ report_table.tbl_ProbSummary <- function(
       as.data.frame(x),
       format = "pipe",
       digits = digits,
+      col.names = unname(labels),
       row.names = FALSE,
       ...
     ))
@@ -221,6 +240,7 @@ report_table.tbl_ProbSummary <- function(
     )
   }
   table <- gt::gt(as.data.frame(x), ...)
+  table <- gt::cols_label(table, .list = as.list(labels))
   table <- gt::fmt_number(
     table,
     columns = setdiff(names(x), "dose"),
@@ -234,7 +254,7 @@ report_table.tbl_ProbSummary <- function(
         label = if (prefix == "q") {
           "Quantiles"
         } else {
-          "Probability of true DLT rate in ..."
+          "Probability of true DLT rate in"
         },
         columns = columns,
         gather = FALSE
