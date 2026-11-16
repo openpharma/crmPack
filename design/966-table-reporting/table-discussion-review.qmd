@@ -489,6 +489,8 @@ report_table(report_transpose(bi), format = report_format)
 separate mean and range columns. No-recommendation
 percentage is computed directly, rather than by adding overlapping stop rules.
 
+**Limitations:** `gt` doesn't support merging the two label cells for "Correct dose selected" horizontally for just one row.
+
 # Merck
 
 ## Operating characteristics overview table
