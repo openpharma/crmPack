@@ -588,33 +588,44 @@ test_that("scenario layout uses the same selected statistics for a Merck-style o
   expect_equal(scenario_rows$stat, default$stat)
   expect_equal(scenario_rows$value, default$value)
   expect_equal(scenario_rows$formatted, default$formatted)
-  max_without_mtd <- OCStat(
-    "Maximum patients without MTD (%)",
-    function(sims, summary, scenario) {
-      100 * mean(sims@stop_report[, "size"] & is.na(sims@doses))
-    }
-  )
-  stats <- list(
+  stats <- c(
     "n_pat_mean",
     "n_dlt_mean",
     "prop_stop_tox",
     "prop_mtd_correct",
-    max_without_mtd = max_without_mtd,
+    "max_without_mtd",
     "prop_mtd_over"
   )
-  out <- report_oc_overview(x, stats = stats, layout = "scenarios")
+  labels <- c(
+    prop_stop_tox = "Stop: Toxicity",
+    prop_mtd_correct = "Correctly chosen MTD",
+    max_without_mtd = "Reaching max without MTD",
+    prop_mtd_over = "Overestimated MTD"
+  )
+  groups <- c(
+    n_pat_mean = "# Patients",
+    n_dlt_mean = "# DLTs",
+    stats::setNames(rep("% of trials with", 4), stats[3:6])
+  )
+  out <- report_oc_overview(
+    x,
+    stats = stats,
+    layout = "scenarios",
+    labels = labels,
+    row_groups = groups
+  )
   plain <- report_oc_overview(x, stats = stats)
   expect_equal(out$value, plain$value)
   expect_equal(out$formatted, plain$formatted)
   expect_equal(
     out$label[out$stat == "max_without_mtd"],
-    rep(max_without_mtd$label, 2)
+    rep("Reaching max without MTD", 2)
   )
   skip_if_not_installed("gt")
   table <- report_table(out, "gt")
   expect_equal(
     table[["_spanners"]]$vars,
-    list(".stat_1", ".stat_2", ".stat_4", ".stat_6")
+    list(".stat_1", ".stat_2", paste0(".stat_", 3:6))
   )
   expect_equal(nrow(table[["_footnotes"]]), 0L)
 })

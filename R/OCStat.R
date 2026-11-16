@@ -90,7 +90,7 @@ h_eval_oc_stat <- function(stat, sims, summary, scenario) {
 #'
 #' Built-ins include `n_pat_*`, `n_dlt_*`, `n_above_target_*`, and `n_cohorts_*`
 #' with suffixes `mean`, `mean_sd`, `minmax`, `quantiles`; `prop_stop_tox`, `prop_stop_max_patients`,
-#' `prop_stop_by_label`; `prop_mtd_correct`, `prop_mtd_over`, `prop_mtd_under`,
+#' `max_without_mtd`, `prop_stop_by_label`; `prop_mtd_correct`, `prop_mtd_over`, `prop_mtd_under`,
 #' `prop_mtd_none`; `dose_selection`;
 #' `duration_mean_sd`; `n_pat_per_dose`, `n_dlt_per_dose`, `prop_selected`,
 #' and `true_prob`. Percentages are on a 0--100 scale, true probabilities on 0--1.
@@ -106,7 +106,10 @@ h_eval_oc_stat <- function(stat, sims, summary, scenario) {
 #' as zero cohorts.
 #' Stop rows use category unions, so overlapping rules are never double counted.
 #' Missing stop reports or class metadata produce `NA` for default category
-#' percentages. `prop_stop_by_label` uses the collection's category mapping, or
+#' percentages. `max_without_mtd` counts trials where a maximum-patient
+#' stopping rule fired and no final MTD was recommended, using the same category
+#' mapping as `prop_stop_max_patients`. It includes all trials in its denominator.
+#' `prop_stop_by_label` uses the collection's category mapping, or
 #' individual labels when that mapping is empty. Missing numeric data propagate.
 #'
 #' With `x`, scalar numeric `additional_stats` stored for every trial become
@@ -143,6 +146,11 @@ oc_stat_registry <- function(x = NULL, sd = FALSE, quantiles = c(0.1, 0.9)) {
   }
   registry$prop_stop_tox <- h_oc_stop_stat("Toxicity", x)
   registry$prop_stop_max_patients <- h_oc_stop_stat("Max patients", x)
+  registry$max_without_mtd <- h_oc_stop_stat(
+    "Max patients",
+    x,
+    without_mtd = TRUE
+  )
   registry$prop_stop_by_label <- h_oc_stop_stat(NULL, x)
   classifications <- c(
     correct = "correct",
@@ -331,14 +339,22 @@ h_oc_mtd_stat <- function(category) {
 #' Construct a Stop Activation Statistic
 #' @param category Category name or NULL for all labels/categories.
 #' @param x Optional summary collection.
+#' @param without_mtd Count only activations without a final MTD recommendation.
 #' @return An `OCStat`.
 #' @keywords internal
 #' @noRd
-h_oc_stop_stat <- function(category, x) {
+h_oc_stop_stat <- function(category, x, without_mtd = FALSE) {
   force(category)
   force(x)
+  force(without_mtd)
   OCStat(
-    if (is.null(category)) "Stop (%) :" else paste("Stop:", category, "(%)"),
+    if (without_mtd) {
+      "Reaching max without MTD (%)"
+    } else if (is.null(category)) {
+      "Stop (%) :"
+    } else {
+      paste("Stop:", category, "(%)")
+    },
     function(sims, summary, scenario) {
       if (!methods::.hasSlot(sims, "stop_report")) {
         return(NA_real_)
@@ -350,6 +366,9 @@ h_oc_stop_stat <- function(category, x) {
       }
       if (is.null(mapping)) {
         stop("Unknown scenario in statistics registry.")
+      }
+      if (without_mtd) {
+        sims@stop_report[,] <- sims@stop_report & is.na(sims@doses)
       }
       values <- report_stop_reasons(sims, mapping)
       if (is.null(category)) {

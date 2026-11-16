@@ -26,7 +26,7 @@ Nothing is calculated until an entry's \code{fun} is called.
 \details{
 Built-ins include \verb{n_pat_*}, \verb{n_dlt_*}, \verb{n_above_target_*}, and \verb{n_cohorts_*}
 with suffixes \code{mean}, \code{mean_sd}, \code{minmax}, \code{quantiles}; \code{prop_stop_tox}, \code{prop_stop_max_patients},
-\code{prop_stop_by_label}; \code{prop_mtd_correct}, \code{prop_mtd_over}, \code{prop_mtd_under},
+\code{max_without_mtd}, \code{prop_stop_by_label}; \code{prop_mtd_correct}, \code{prop_mtd_over}, \code{prop_mtd_under},
 \code{prop_mtd_none}; \code{dose_selection};
 \code{duration_mean_sd}; \code{n_pat_per_dose}, \code{n_dlt_per_dose}, \code{prop_selected},
 and \code{true_prob}. Percentages are on a 0--100 scale, true probabilities on 0--1.
@@ -42,7 +42,10 @@ class has no backfill indicator, all cohorts are counted. Empty trials count
 as zero cohorts.
 Stop rows use category unions, so overlapping rules are never double counted.
 Missing stop reports or class metadata produce \code{NA} for default category
-percentages. \code{prop_stop_by_label} uses the collection's category mapping, or
+percentages. \code{max_without_mtd} counts trials where a maximum-patient
+stopping rule fired and no final MTD was recommended, using the same category
+mapping as \code{prop_stop_max_patients}. It includes all trials in its denominator.
+\code{prop_stop_by_label} uses the collection's category mapping, or
 individual labels when that mapping is empty. Missing numeric data propagate.
 
 With \code{x}, scalar numeric \code{additional_stats} stored for every trial become

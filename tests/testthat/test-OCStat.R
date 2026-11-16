@@ -334,3 +334,64 @@ test_that("duration proxy counts distinct non-backfill cohorts, including repeat
   expect_equal(tail(out$formatted, 3), c("2.0 (2.0)", "[0, 4]", "[0.4, 3.6]"))
   expect_s3_class(report_table(out, format = "kable"), "knitr_kable")
 })
+
+
+test_that("maximum size without MTD counts joint events and unions of rules", {
+  sims <- oc_test_sims()
+  sims@stop_report <- cbind(sims@stop_report, size2 = c(FALSE, TRUE, TRUE))
+  # Explicit labels support reports without class metadata, including legacy reports.
+  x <- SimulationsSummaryList(
+    A = sims,
+    stop_categories = list(
+      Toxicity = c("unsafe", "unsafe2"),
+      `Max patients` = c("size", "size2")
+    )
+  )
+  registry <- oc_stat_registry(x)
+  evaluate <- function(sims) {
+    registry$max_without_mtd$fun(sims, x@summaries$A, "A")
+  }
+  expect_equal(evaluate(sims), 100 / 3)
+  expect_equal(
+    registry$prop_stop_max_patients$fun(sims, x@summaries$A, "A"),
+    200 / 3
+  )
+  sims@doses[] <- 1
+  expect_equal(evaluate(sims), 0)
+  sims@doses[] <- NA_real_
+  expect_equal(evaluate(sims), 200 / 3)
+  sims@stop_report[3, "size"] <- NA
+  sims@stop_report[3, "size2"] <- FALSE
+  expect_true(is.na(evaluate(sims)))
+  sims@doses[3] <- 1
+  expect_equal(evaluate(sims), 100 / 3)
+})
+
+test_that("explicit stopping categories distinguish zero activations from missing data", {
+  sims <- oc_test_sims()
+  attr(sims@stop_report, "stopping_classes") <- NULL
+  sims@stop_report[, c("unsafe", "unsafe2")] <- FALSE
+  x <- SimulationsSummaryList(
+    A = sims,
+    stop_categories = list(
+      Toxicity = c("unsafe", "unsafe2"),
+      `Max patients` = "size"
+    )
+  )
+  out <- report_oc_overview(x, stats = c("prop_stop_tox", "max_without_mtd"))
+  expect_equal(unlist(out$value), c(0, 100 / 3))
+  expect_equal(out$formatted, c("0.0", "33.3"))
+  sims@stop_report[1, "unsafe"] <- NA
+  expect_true(is.na(oc_stat_registry(x)$prop_stop_tox$fun(
+    sims,
+    x@summaries$A,
+    "A"
+  )))
+  general <- GeneralSimulations(
+    data = sims@data,
+    doses = sims@doses,
+    seed = 1L,
+    truth = sims@truth
+  )
+  expect_true(is.na(oc_stat_registry()$max_without_mtd$fun(general, NULL, "A")))
+})

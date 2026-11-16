@@ -176,7 +176,14 @@ simulations <- lapply(truth_functions, function(truth_fun) {
         parallel = FALSE
     )
 })
-oc <- SimulationsSummaryList(simulations, target = target)
+oc <- SimulationsSummaryList(
+    simulations,
+    target = target,
+    stop_categories = list(
+        Toxicity = "Lowest dose unsafe",
+        `Max patients` = "Maximum sample size"
+    )
+)
 ```
 
 # Bayer
@@ -488,41 +495,66 @@ overlapping stop rules.
 
 ## Operating characteristics overview table
 
-PDF pp. 6–7: six PMDA-style metrics. The joint maximum-size/no-recommendation
-statistic uses the public `OCStat` extension interface to match the row meaning.
-The built-in maximum-size stopping percentage alone would also count trials
-with an MTD recommendation.
+PDF pp. 6–7: six PMDA-style metrics. The built-in `max_without_mtd`
+statistic counts trials where the maximum-sample-size rule was activated and
+no final MTD was recommended. The separate `prop_stop_max_patients` statistic
+also counts trials with an MTD recommendation. Both use the stopping-category
+mapping defined when constructing `oc` above. A toxicity stopping percentage
+of zero means that no trial activated the mapped toxicity rule.
 
-Define a custom percentage that counts trials satisfying both conditions:
-the maximum-sample-size rule was activated and no final MTD was recommended.
-Combine it with mean patient and DLT counts, toxicity stopping, correct
-selection and over-target selection to produce the six-metric overview. Use
-`layout = "scenarios"` to show scenarios in rows with automatic column headers,
-as in the Boehringer overview above.
+Combine mean patient and DLT counts with the four trial percentages. Keep
+scenarios in rows and group the last four columns under "% of trials with".
 
 ```{r reporting-pmda}
-max_without_mtd <- OCStat(
-    label = "Maximum patients without MTD (%)",
-    fun = function(sims, summary, scenario) {
-        100 * mean(sims@stop_report[, "Maximum sample size"] & is.na(sims@doses))
-    },
-    format = "%.1f"
-)
 pmda <- report_oc_overview(
     oc,
     layout = "scenarios",
-    stats = list(
+    stats = c(
         "n_pat_mean",
         "n_dlt_mean",
         "prop_stop_tox",
         "prop_mtd_correct",
-        max_without_mtd = max_without_mtd,
+        "max_without_mtd",
         "prop_mtd_over"
+    ),
+    labels = c(
+        prop_stop_tox = "Stop: Toxicity",
+        prop_mtd_correct = "Correctly chosen MTD",
+        max_without_mtd = "Reaching max without MTD",
+        prop_mtd_over = "Overestimated MTD"
+    ),
+    row_groups = c(
+        n_pat_mean = "# Patients",
+        n_dlt_mean = "# DLTs",
+        prop_stop_tox = "% of trials with",
+        prop_mtd_correct = "% of trials with",
+        max_without_mtd = "% of trials with",
+        prop_mtd_over = "% of trials with"
     ),
     title = "Merck / PMDA-style overview",
     spanner = sprintf("Simulation results: %d trials; target 20–35%%", nsim)
 )
 report_table(pmda, format = report_format)
+```
+
+The `OCStat` interface supports additional study-specific statistics. For
+example, summarize the percentage of trials with no observed DLTs, alongside
+the built-in mean DLT count. The denominator includes all simulated trials.
+
+```{r reporting-custom-statistic}
+no_dlts <- OCStat(
+    label = "Trials with no DLTs (%)",
+    fun = function(sims, summary, scenario) {
+        100 * mean(vapply(sims@data, function(data) sum(data@y) == 0, logical(1)))
+    },
+    format = "%.1f"
+)
+report_oc_overview(
+    oc,
+    stats = list("n_dlt_mean", no_dlts = no_dlts),
+    layout = "scenarios",
+    format = report_format
+)
 ```
 
 ## Operating characteristics detail table
