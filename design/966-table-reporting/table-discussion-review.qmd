@@ -331,11 +331,6 @@ available separately as `duration_mean_sd` for `DASimulations`; this ordinary
 use the built-in `n_above_target_minmax` and `n_above_target_quantiles` entries,
 with the requested `quantiles` probabilities.
 
-**Flagged for later:** the special "highest planned dose safe" outcome needs a
-rule-based definition and is not a synonym for highest-dose selection. The notes'
-five particular stop reasons also require a design containing those rules;
-this example has toxicity, no-admissible-dose, and maximum-size rules.
-
 **Limitations:** `gt` doesn't support merging the two label cells for "Correct dose selected" horizontally for just one row. (See [GH issue](https://github.com/rstudio/gt/issues/1496))
 
 ## Plots
@@ -367,9 +362,6 @@ with boxplots and then violin plots. Both views use the same trial results.
 plot(oc, type = "nPatients", plot_type = "boxplot", ncol = 2)
 plot(oc, type = "nPatients", plot_type = "violin", ncol = 2)
 ```
-
-**Flagged for later:** a native comparison across different designs and a
-true-rate annotation strip for these plots.
 
 # Boehringer
 
