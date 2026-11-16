@@ -95,9 +95,9 @@ h_eval_oc_stat <- function(stat, sims, summary, scenario) {
 #' `duration_mean_sd`; `n_pat_per_dose`, `n_dlt_per_dose`, `prop_selected`,
 #' and `true_prob`. Percentages are on a 0--100 scale, true probabilities on 0--1.
 #'
-#' `dose_selection` includes every grid dose and no recommendation. A highest
-#' dose recommendation is not interpreted as evidence that the highest dose is
-#' safe. Duration is taken from `DASimulations@trial_duration` in its original
+#' `dose_selection` shows no recommendation first, followed by every grid dose.
+#' A highest dose recommendation is not interpreted as evidence that the highest
+#' dose is safe. Duration is taken from `DASimulations@trial_duration` in its original
 #' units; it is unavailable for other designs, rather than inferred from cohorts.
 #' Stop rows use category unions, so overlapping rules are never double counted.
 #' Missing stop reports or class metadata produce `NA` for default category
@@ -154,6 +154,7 @@ oc_stat_registry <- function(x = NULL, sd = FALSE, quantiles = c(0.1, 0.9)) {
     "Dose selected:",
     function(sims, summary, scenario) {
       values <- report_dose_selection(sims)
+      values <- values[order(!is.na(values$dose)), ]
       stats::setNames(
         as.list(values$percent),
         ifelse(is.na(values$dose), "none", as.character(values$dose))

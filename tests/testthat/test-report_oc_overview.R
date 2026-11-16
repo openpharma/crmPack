@@ -273,12 +273,22 @@ test_that("different dose grids distinguish unavailable doses from zero selectio
   out <- report_oc_overview(x, stats = "dose_selection")
   expect_equal(
     unique(out$stat),
-    paste0("dose_selection::", c("1", "2", "4", "none", "8"))
+    paste0("dose_selection::", c("none", "1", "2", "4", "8"))
   )
   expect_equal(
     unlist(out$value),
-    c(100 / 3, 100 / 3, 0, 100 / 3, NA, 100 / 3, 100 / 3, NA, 100 / 3, 0)
+    c(100 / 3, 100 / 3, 100 / 3, 0, NA, 100 / 3, 100 / 3, 100 / 3, NA, 0)
   )
+  grouped <- report_oc_overview(
+    x,
+    stats = "dose_selection",
+    labels = list(dose_selection = c(none = "None")),
+    row_groups = c(dose_selection = "Dose selection (%)")
+  )
+  expect_equal(unique(grouped$label), c("None", "1", "2", "4", "8"))
+  expect_equal(grouped$value, out$value)
+  display <- report_table(grouped, format = "data.frame")
+  expect_equal(display$Statistic, c("None", "1", "2", "4", "8"))
   x <- SimulationsSummaryList(A = sims, B = general)
   out <- report_oc_overview(x, stats = "prop_stop_by_label")
   expect_equal(

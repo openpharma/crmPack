@@ -164,6 +164,7 @@ the results and summarizes them relative to the target interval. Subsequent
 operating-characteristics tables and plots reuse these results.
 
 ```{r reporting-simulate}
+#| cache: true
 nsim <- 10L
 simulations <- lapply(truth_functions, function(truth_fun) {
     simulate(
@@ -250,7 +251,8 @@ summaries also include the range and 10th/90th percentiles. Render the result
 with the selected table engine; for `gt`, display row-group labels in a column.
 The default `stop_categories = NULL` retains the supplied stopping-rule labels.
 Grouped rows automatically omit the statistic prefix, so the stop reasons
-appear under their supplied labels without additional overrides. Optional
+appear under their supplied labels without additional overrides. Dose selection
+shows `None` first, followed by the dose values without a repeated prefix. Optional
 individual renaming uses a nested list, for example
 `labels = list(prop_stop_by_label = c("Lowest dose unsafe" = "Unsafe"))`.
 Stop rows count rule activations and can overlap, so their percentages need
@@ -276,7 +278,8 @@ bayer <- report_oc_overview(
     ),
     sd = TRUE,
     quantiles = c(0.1, 0.9),
-    labels = c(
+    labels = list(
+        dose_selection = c(none = "None"),
         n_pat_mean_sd = "Mean (SD)",
         n_pat_minmax = "Min–max",
         n_pat_quantiles = "10th/90th percentiles"

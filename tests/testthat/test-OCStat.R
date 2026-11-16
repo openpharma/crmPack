@@ -126,7 +126,7 @@ test_that("registry calculations and formats retain numeric components", {
   expect_equal(evaluate("prop_mtd_none")$value[[1]], 100 / 3)
   expect_equal(
     unlist(evaluate("dose_selection")$value),
-    c(100 / 3, 100 / 3, 0, 100 / 3)
+    c(100 / 3, 100 / 3, 100 / 3, 0)
   )
   expect_equal(evaluate("n_pat_per_dose")$value[[1]], c(2 / 3, sd(c(2, 0, 0))))
   expect_equal(evaluate("n_dlt_per_dose")$value[[2]], c(2 / 3, sd(c(1, 1, 0))))
