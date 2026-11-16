@@ -277,6 +277,11 @@ bayer <- report_oc_overview(
     "n_pat_minmax",
     "n_pat_quantiles",
     "n_above_target_mean_sd",
+    "n_above_target_minmax",
+    "n_above_target_quantiles",
+    "n_cohorts_mean_sd",
+    "n_cohorts_minmax",
+    "n_cohorts_quantiles",
     "n_pat_per_dose",
     "n_dlt_per_dose"
   ),
@@ -285,7 +290,13 @@ bayer <- report_oc_overview(
   labels = c(
     n_pat_mean_sd = "Mean (SD)",
     n_pat_minmax = "Min–max",
-    n_pat_quantiles = "10th/90th percentiles"
+    n_pat_quantiles = "10th/90th percentiles",
+    n_above_target_mean_sd = "Mean (SD)",
+    n_above_target_minmax = "Min–max",
+    n_above_target_quantiles = "10th/90th percentiles",
+    n_cohorts_mean_sd = "Mean (SD)",
+    n_cohorts_minmax = "Min–max",
+    n_cohorts_quantiles = "10th/90th percentiles"
   ),
   row_groups = c(
     prop_stop_by_label = "Stop reason (%)",
@@ -295,6 +306,11 @@ bayer <- report_oc_overview(
     n_pat_minmax = "Total patients",
     n_pat_quantiles = "Total patients",
     n_above_target_mean_sd = "Patients above target",
+    n_above_target_minmax = "Patients above target",
+    n_above_target_quantiles = "Patients above target",
+    n_cohorts_mean_sd = "Duration proxy (escalation cohorts)",
+    n_cohorts_minmax = "Duration proxy (escalation cohorts)",
+    n_cohorts_quantiles = "Duration proxy (escalation cohorts)",
     n_pat_per_dose = "Patients per dose, mean (SD)",
     n_dlt_per_dose = "DLTs per dose, mean (SD)"
   ),
@@ -324,9 +340,14 @@ rule-based definition: selecting the highest dose alone does not establish it.
 Likewise, below-target scenarios are not automatically successful highest-dose
 selections. Recorded duration mean/SD is available as `duration_mean_sd` for
 `DASimulations`, in its recorded units; this ordinary `Design` has no elapsed-time
-measure. Duration min/max and quantiles remain deferred. The next example shows
-how to add the remaining above-target distribution summaries without changing
-the reporting implementation.
+measure. The table instead summarizes the number of non-backfill dose escalation
+cohorts as a duration proxy (`n_cohorts_mean_sd`, `n_cohorts_minmax`, and
+`n_cohorts_quantiles`). Each distinct cohort ID with non-backfill patients counts
+once, including successive cohorts at the same dose; this is not elapsed time.
+Patients above target and escalation cohorts use the same three summaries as
+total patients. The next example illustrates custom statistics; the above-target
+range and quantiles are also available directly as `n_above_target_minmax` and
+`n_above_target_quantiles`.
 
 ```{r reporting-custom}
 above_range <- OCStat(

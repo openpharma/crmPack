@@ -262,3 +262,75 @@ test_that("collections reject unsupported data and preserve placebo totals", {
   expect_equal(registry$n_pat_mean$fun(sims, x@summaries$A, "A"), 3)
   expect_equal(registry$n_dlt_mean$fun(sims, x@summaries$A, "A"), 1)
 })
+
+test_that("above-target distributions use the requested quantiles", {
+  sims <- oc_test_sims()
+  x <- SimulationsSummaryList(A = sims, target = c(0.05, 0.15))
+  registry <- oc_stat_registry(x, quantiles = c(0.25, 0.75))
+  # Above-target counts are 1, 2, and 0 patients.
+  expect_equal(
+    registry$n_above_target_mean_sd$fun(sims, x@summaries$A, "A"),
+    c(1, 1)
+  )
+  expect_equal(
+    registry$n_above_target_minmax$fun(sims, x@summaries$A, "A"),
+    c(0, 2)
+  )
+  expect_equal(
+    registry$n_above_target_quantiles$fun(sims, x@summaries$A, "A"),
+    c(0.5, 1.5)
+  )
+})
+
+test_that("duration proxy counts distinct non-backfill cohorts, including repeated doses", {
+  sims <- oc_test_sims()
+  sims@data <- list(
+    Data(
+      x = rep(1, 5),
+      y = rep(0, 5),
+      doseGrid = c(1, 2, 4),
+      cohort = c(2L, 2L, 4L, 7L, 9L),
+      backfilled = c(FALSE, FALSE, FALSE, TRUE, TRUE)
+    ),
+    Data(
+      x = rep(1, 4),
+      y = rep(0, 4),
+      doseGrid = c(1, 2, 4),
+      cohort = c(1L, 2L, 3L, 4L)
+    ),
+    Data(doseGrid = c(1, 2, 4))
+  )
+  x <- SimulationsSummaryList(A = sims)
+  registry <- oc_stat_registry(x)
+  # Two and four escalation cohorts, plus one empty trial.
+  expect_equal(
+    registry$n_cohorts_mean_sd$fun(sims, x@summaries$A, "A"),
+    c(2, 2)
+  )
+  expect_equal(
+    registry$n_cohorts_minmax$fun(sims, x@summaries$A, "A"),
+    c(0, 4)
+  )
+  expect_equal(
+    registry$n_cohorts_quantiles$fun(sims, x@summaries$A, "A"),
+    c(0.4, 3.6)
+  )
+  registry <- oc_stat_registry(x, quantiles = c(.25, .75))
+  expect_equal(
+    registry$n_cohorts_quantiles$fun(sims, x@summaries$A, "A"),
+    c(1, 3)
+  )
+  out <- report_oc_overview(
+    x,
+    stats = c(
+      "n_above_target_mean_sd",
+      "n_above_target_minmax",
+      "n_above_target_quantiles",
+      "n_cohorts_mean_sd",
+      "n_cohorts_minmax",
+      "n_cohorts_quantiles"
+    )
+  )
+  expect_equal(tail(out$formatted, 3), c("2.0 (2.0)", "[0, 4]", "[0.4, 3.6]"))
+  expect_s3_class(report_table(out, format = "kable"), "knitr_kable")
+})

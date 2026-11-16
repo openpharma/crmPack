@@ -88,17 +88,22 @@ h_eval_oc_stat <- function(stat, sims, summary, scenario) {
 #' their labels, or mix them with custom `OCStat`s for subsequent table assembly.
 #' Nothing is calculated until an entry's `fun` is called.
 #'
-#' Built-ins include `n_pat_*` and `n_dlt_*` with suffixes `mean`, `mean_sd`,
-#' `minmax`, `quantiles`; `prop_stop_tox`, `prop_stop_max_patients`,
+#' Built-ins include `n_pat_*`, `n_dlt_*`, `n_above_target_*`, and `n_cohorts_*`
+#' with suffixes `mean`, `mean_sd`, `minmax`, `quantiles`; `prop_stop_tox`, `prop_stop_max_patients`,
 #' `prop_stop_by_label`; `prop_mtd_correct`, `prop_mtd_over`, `prop_mtd_under`,
-#' `prop_mtd_none`; `dose_selection`; `n_above_target_mean_sd`,
+#' `prop_mtd_none`; `dose_selection`;
 #' `duration_mean_sd`; `n_pat_per_dose`, `n_dlt_per_dose`, `prop_selected`,
 #' and `true_prob`. Percentages are on a 0--100 scale, true probabilities on 0--1.
 #'
 #' `dose_selection` shows no recommendation first, followed by every grid dose.
 #' A highest dose recommendation is not interpreted as evidence that the highest
 #' dose is safe. Duration is taken from `DASimulations@trial_duration` in its original
-#' units; it is unavailable for other designs, rather than inferred from cohorts.
+#' units; it is unavailable for other designs. The separate `n_cohorts_*` entries
+#' summarize the number of distinct non-backfill dose escalation cohorts per
+#' trial as a duration proxy, including cohorts treated at an unchanged dose.
+#' Backfill patients are excluded before counting cohort IDs; when the data
+#' class has no backfill indicator, all cohorts are counted. Empty trials count
+#' as zero cohorts.
 #' Stop rows use category unions, so overlapping rules are never double counted.
 #' Missing stop reports or class metadata produce `NA` for default category
 #' percentages. `prop_stop_by_label` uses the collection's category mapping, or
@@ -130,7 +135,7 @@ oc_stat_registry <- function(x = NULL, sd = FALSE, quantiles = c(0.1, 0.9)) {
     stop("quantiles must be strictly increasing.")
   }
   registry <- list()
-  for (quantity in c("pat", "dlt")) {
+  for (quantity in c("pat", "dlt", "above_target", "cohorts")) {
     for (variant in c("mean", "mean_sd", "minmax", "quantiles")) {
       key <- paste("n", quantity, variant, sep = "_")
       registry[[key]] <- h_oc_count_stat(quantity, variant, quantiles)
@@ -160,13 +165,6 @@ oc_stat_registry <- function(x = NULL, sd = FALSE, quantiles = c(0.1, 0.9)) {
         ifelse(is.na(values$dose), "none", as.character(values$dose))
       )
     }
-  )
-  registry$n_above_target_mean_sd <- OCStat(
-    "Patients above target, mean (SD)",
-    function(sims, summary, scenario) {
-      c(mean(summary@n_above_target), stats::sd(summary@n_above_target))
-    },
-    "%.1f (%.1f)"
   )
   registry$duration_mean_sd <- OCStat(
     "Trial duration, mean (SD)",
@@ -217,7 +215,8 @@ oc_stat_registry <- function(x = NULL, sd = FALSE, quantiles = c(0.1, 0.9)) {
 }
 
 #' Construct a Count Summary Statistic
-#' @param quantity Patient or DLT counts (`pat` or `dlt`).
+#' @param quantity Patient, DLT, above-target patient, or non-backfill cohort
+#'   counts (`pat`, `dlt`, `above_target`, or `cohorts`).
 #' @param variant Summary display variant.
 #' @param quantiles Quantile probabilities.
 #' @return An `OCStat`.
@@ -234,7 +233,20 @@ h_oc_count_stat <- function(quantity, variant, quantiles) {
     quantiles = "[%.1f, %.1f]"
   )
   OCStat(
-    paste(if (quantity == "pat") "Patients" else "DLTs", variant),
+    paste(
+      switch(
+        quantity,
+        pat = "Patients",
+        dlt = "DLTs",
+        above_target = "Patients above target,",
+        cohorts = "Dose escalation cohorts (duration proxy),"
+      ),
+      if (quantity %in% c("above_target", "cohorts") && variant == "mean_sd") {
+        "mean (SD)"
+      } else {
+        variant
+      }
+    ),
     function(sims, summary, scenario) {
       if (quantity == "pat") {
         values <- report_sample_size(sims, quantiles)
@@ -247,7 +259,22 @@ h_oc_count_stat <- function(quantity, variant, quantiles) {
         )
         return(unlist(values[columns], use.names = FALSE))
       }
-      values <- vapply(sims@data, function(data) sum(data@y), numeric(1))
+      values <- switch(
+        quantity,
+        dlt = vapply(sims@data, function(data) sum(data@y), numeric(1)),
+        above_target = summary@n_above_target,
+        cohorts = vapply(
+          sims@data,
+          function(data) {
+            cohort <- data@cohort
+            if (methods::.hasSlot(data, "backfilled")) {
+              cohort <- cohort[!data@backfilled]
+            }
+            length(unique(cohort))
+          },
+          integer(1)
+        )
+      )
       switch(
         variant,
         mean = mean(values),

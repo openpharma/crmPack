@@ -240,14 +240,15 @@ plot(truths)
 ## Operating characteristics table
 
 PDF pp. 3–4: native row sections, supplied stopping-rule labels, selections, correct selections, sample-size
-summaries, patients above target, and per-dose patients/DLTs. Per-dose SDs are
+summaries, patients above target, a duration proxy, and per-dose patients/DLTs. Per-dose SDs are
 shown using the requested mean (SD) option.
 
 First we wrap the list of simulation results into a `SimulationsSummaryList` object, which organizes the data for subsequent reporting.
 Build an overview from the existing simulations, reporting stopping reasons
 under the labels defined in the design. Select the statistics, assign readable
-labels and row sections, and show per-dose counts as mean (SD). Sample-size
-summaries also include the range and 10th/90th percentiles. Render the result
+labels and row sections, and show per-dose counts as mean (SD). Total patients,
+patients above target, and the number of non-backfill dose escalation cohorts
+each have mean (SD), min–max, and 10th/90th percentile summaries. Render the result
 with the selected table engine; for `gt`, display row-group labels in a column.
 The default `stop_categories = NULL` retains the supplied stopping-rule labels.
 Grouped rows automatically omit the statistic prefix, so the stop reasons
@@ -273,6 +274,11 @@ bayer <- report_oc_overview(
         "n_pat_minmax",
         "n_pat_quantiles",
         "n_above_target_mean_sd",
+        "n_above_target_minmax",
+        "n_above_target_quantiles",
+        "n_cohorts_mean_sd",
+        "n_cohorts_minmax",
+        "n_cohorts_quantiles",
         "n_pat_per_dose",
         "n_dlt_per_dose"
     ),
@@ -282,7 +288,13 @@ bayer <- report_oc_overview(
         dose_selection = c(none = "None"),
         n_pat_mean_sd = "Mean (SD)",
         n_pat_minmax = "Min–max",
-        n_pat_quantiles = "10th/90th percentiles"
+        n_pat_quantiles = "10th/90th percentiles",
+        n_above_target_mean_sd = "Mean (SD)",
+        n_above_target_minmax = "Min–max",
+        n_above_target_quantiles = "10th/90th percentiles",
+        n_cohorts_mean_sd = "Mean (SD)",
+        n_cohorts_minmax = "Min–max",
+        n_cohorts_quantiles = "10th/90th percentiles"
     ),
     row_groups = c(
         prop_stop_by_label = "Stop reason (%)",
@@ -292,6 +304,11 @@ bayer <- report_oc_overview(
         n_pat_minmax = "Total patients",
         n_pat_quantiles = "Total patients",
         n_above_target_mean_sd = "Patients above target",
+        n_above_target_minmax = "Patients above target",
+        n_above_target_quantiles = "Patients above target",
+        n_cohorts_mean_sd = "Duration proxy (escalation cohorts)",
+        n_cohorts_minmax = "Duration proxy (escalation cohorts)",
+        n_cohorts_quantiles = "Duration proxy (escalation cohorts)",
         n_pat_per_dose = "Patients per dose, mean (SD)",
         n_dlt_per_dose = "DLTs per dose, mean (SD)"
     ),
@@ -305,46 +322,19 @@ if (report_format == "gt") {
 bayer_table
 ```
 
-Additional available customization: above-target min/max and quantiles via
-`OCStat`, using the cached summary.
-
-Define two custom `OCStat` summaries for the number of patients treated above
-the target interval: the range and the 10th/90th percentiles. Both use the
-cached per-trial summary values. Add them alongside the built-in mean (SD)
-and render a markdown table without rerunning the simulations.
-
-```{r reporting-custom}
-above_range <- OCStat(
-    label = "Patients above target, min–max",
-    fun = function(sims, summary, scenario) range(summary@n_above_target),
-    format = "[%.0f–%.0f]"
-)
-above_quantiles <- OCStat(
-    label = "Patients above target, 10th/90th percentiles",
-    fun = function(sims, summary, scenario) {
-        quantile(summary@n_above_target, c(0.1, 0.9), names = FALSE)
-    },
-    format = "[%.1f–%.1f]"
-)
-report_oc_overview(
-    oc,
-    stats = list(
-        "n_above_target_mean_sd",
-        range = above_range,
-        quantiles = above_quantiles
-    ),
-    format = "kable"
-)
-```
+The duration proxy counts distinct cohort IDs after excluding backfill patients.
+Successive non-backfill cohorts treated at the same dose each count once; an
+empty trial contributes zero cohorts. The `n_cohorts_*` statistics summarize
+these per-trial counts, rather than elapsed time. Recorded duration mean/SD is
+available separately as `duration_mean_sd` for `DASimulations`; this ordinary
+`Design` has no elapsed-time measure. The above-target range and percentiles
+use the built-in `n_above_target_minmax` and `n_above_target_quantiles` entries,
+with the requested `quantiles` probabilities.
 
 **Flagged for later:** the special "highest planned dose safe" outcome needs a
-rule-based definition and is not a synonym for highest-dose selection. Duration
-mean/SD exists for `DASimulations` with recorded durations; this example has no
-elapsed time. Cohort-scaled duration and duration min/max/quantiles are not
-provided by the current registry. The notes' five particular stop reasons also
-require a design containing those rules; this example has toxicity, no-admissible-dose, and
-maximum-size rules. Above-target distribution summaries use custom
-statistics rather than built-in min/max and quantile entries.
+rule-based definition and is not a synonym for highest-dose selection. The notes'
+five particular stop reasons also require a design containing those rules;
+this example has toxicity, no-admissible-dose, and maximum-size rules.
 
 ## Plots
 
@@ -489,7 +479,7 @@ report_table(report_transpose(bi), format = report_format)
 separate mean and range columns. No-recommendation
 percentage is computed directly, rather than by adding overlapping stop rules.
 
-**Limitations:** `gt` doesn't support merging the two label cells for "Correct dose selected" horizontally for just one row.
+**Limitations:** `gt` doesn't support merging the two label cells for "Correct dose selected" horizontally for just one row. (See [GH issue](https://github.com/rstudio/gt/issues/1496))
 
 # Merck
 

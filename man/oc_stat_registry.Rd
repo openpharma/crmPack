@@ -24,17 +24,22 @@ their labels, or mix them with custom \code{OCStat}s for subsequent table assemb
 Nothing is calculated until an entry's \code{fun} is called.
 }
 \details{
-Built-ins include \verb{n_pat_*} and \verb{n_dlt_*} with suffixes \code{mean}, \code{mean_sd},
-\code{minmax}, \code{quantiles}; \code{prop_stop_tox}, \code{prop_stop_max_patients},
+Built-ins include \verb{n_pat_*}, \verb{n_dlt_*}, \verb{n_above_target_*}, and \verb{n_cohorts_*}
+with suffixes \code{mean}, \code{mean_sd}, \code{minmax}, \code{quantiles}; \code{prop_stop_tox}, \code{prop_stop_max_patients},
 \code{prop_stop_by_label}; \code{prop_mtd_correct}, \code{prop_mtd_over}, \code{prop_mtd_under},
-\code{prop_mtd_none}; \code{dose_selection}; \code{n_above_target_mean_sd},
+\code{prop_mtd_none}; \code{dose_selection};
 \code{duration_mean_sd}; \code{n_pat_per_dose}, \code{n_dlt_per_dose}, \code{prop_selected},
 and \code{true_prob}. Percentages are on a 0--100 scale, true probabilities on 0--1.
 
 \code{dose_selection} shows no recommendation first, followed by every grid dose.
 A highest dose recommendation is not interpreted as evidence that the highest
 dose is safe. Duration is taken from \code{DASimulations@trial_duration} in its original
-units; it is unavailable for other designs, rather than inferred from cohorts.
+units; it is unavailable for other designs. The separate \verb{n_cohorts_*} entries
+summarize the number of distinct non-backfill dose escalation cohorts per
+trial as a duration proxy, including cohorts treated at an unchanged dose.
+Backfill patients are excluded before counting cohort IDs; when the data
+class has no backfill indicator, all cohorts are counted. Empty trials count
+as zero cohorts.
 Stop rows use category unions, so overlapping rules are never double counted.
 Missing stop reports or class metadata produce \code{NA} for default category
 percentages. \code{prop_stop_by_label} uses the collection's category mapping, or

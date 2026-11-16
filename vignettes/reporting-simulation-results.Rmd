@@ -90,6 +90,9 @@ prior_table <- report_prob_summary(
   intervals = c(0, target, 1)
 )
 report_table(prior_table, format = report_format, digits = 3)
+#> Warning in file(con, "wb"): cannot open file
+#> '/Users/daniel/Library/Caches/org.R-project.R/R/sass/c3872ee1e912a356d1a2d205f5fe10bd':
+#> Operation not permitted
 ```
 
 <!--html_preserve--><div id="lzgedntybt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -565,40 +568,40 @@ report_table(prior_table, format = report_format, digits = 3)
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="dose" class="gt_row gt_right">50</td>
-<td headers="p_[0,0.2)" class="gt_row gt_right">0.856</td>
-<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.076</td>
-<td headers="p_[0.35,1]" class="gt_row gt_right">0.068</td>
-<td headers="mean" class="gt_row gt_right">0.081</td>
-<td headers="sd" class="gt_row gt_right">0.148</td>
+<td headers="p_[0,0.2)" class="gt_row gt_right">0.882</td>
+<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.066</td>
+<td headers="p_[0.35,1]" class="gt_row gt_right">0.052</td>
+<td headers="mean" class="gt_row gt_right">0.068</td>
+<td headers="sd" class="gt_row gt_right">0.129</td>
 <td headers="q2.5" class="gt_row gt_right">0.000</td>
-<td headers="q50" class="gt_row gt_right">0.012</td>
-<td headers="q97.5" class="gt_row gt_right">0.576</td></tr>
+<td headers="q50" class="gt_row gt_right">0.008</td>
+<td headers="q97.5" class="gt_row gt_right">0.531</td></tr>
     <tr><td headers="dose" class="gt_row gt_right">100</td>
-<td headers="p_[0,0.2)" class="gt_row gt_right">0.760</td>
-<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.104</td>
-<td headers="p_[0.35,1]" class="gt_row gt_right">0.136</td>
-<td headers="mean" class="gt_row gt_right">0.137</td>
-<td headers="sd" class="gt_row gt_right">0.179</td>
+<td headers="p_[0,0.2)" class="gt_row gt_right">0.768</td>
+<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.128</td>
+<td headers="p_[0.35,1]" class="gt_row gt_right">0.104</td>
+<td headers="mean" class="gt_row gt_right">0.124</td>
+<td headers="sd" class="gt_row gt_right">0.163</td>
 <td headers="q2.5" class="gt_row gt_right">0.000</td>
-<td headers="q50" class="gt_row gt_right">0.059</td>
-<td headers="q97.5" class="gt_row gt_right">0.637</td></tr>
+<td headers="q50" class="gt_row gt_right">0.050</td>
+<td headers="q97.5" class="gt_row gt_right">0.611</td></tr>
     <tr><td headers="dose" class="gt_row gt_right">200</td>
-<td headers="p_[0,0.2)" class="gt_row gt_right">0.332</td>
-<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.268</td>
-<td headers="p_[0.35,1]" class="gt_row gt_right">0.400</td>
-<td headers="mean" class="gt_row gt_right">0.326</td>
-<td headers="sd" class="gt_row gt_right">0.196</td>
-<td headers="q2.5" class="gt_row gt_right">0.054</td>
-<td headers="q50" class="gt_row gt_right">0.286</td>
-<td headers="q97.5" class="gt_row gt_right">0.745</td></tr>
+<td headers="p_[0,0.2)" class="gt_row gt_right">0.296</td>
+<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.292</td>
+<td headers="p_[0.35,1]" class="gt_row gt_right">0.412</td>
+<td headers="mean" class="gt_row gt_right">0.329</td>
+<td headers="sd" class="gt_row gt_right">0.183</td>
+<td headers="q2.5" class="gt_row gt_right">0.050</td>
+<td headers="q50" class="gt_row gt_right">0.310</td>
+<td headers="q97.5" class="gt_row gt_right">0.748</td></tr>
     <tr><td headers="dose" class="gt_row gt_right">400</td>
-<td headers="p_[0,0.2)" class="gt_row gt_right">0.016</td>
-<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.048</td>
-<td headers="p_[0.35,1]" class="gt_row gt_right">0.936</td>
-<td headers="mean" class="gt_row gt_right">0.733</td>
-<td headers="sd" class="gt_row gt_right">0.220</td>
-<td headers="q2.5" class="gt_row gt_right">0.259</td>
-<td headers="q50" class="gt_row gt_right">0.759</td>
+<td headers="p_[0,0.2)" class="gt_row gt_right">0.006</td>
+<td headers="p_[0.2,0.35)" class="gt_row gt_right">0.038</td>
+<td headers="p_[0.35,1]" class="gt_row gt_right">0.956</td>
+<td headers="mean" class="gt_row gt_right">0.765</td>
+<td headers="sd" class="gt_row gt_right">0.199</td>
+<td headers="q2.5" class="gt_row gt_right">0.288</td>
+<td headers="q50" class="gt_row gt_right">0.802</td>
 <td headers="q97.5" class="gt_row gt_right">1.000</td></tr>
   </tbody>
 
@@ -621,14 +624,14 @@ plot(
 )
 ```
 
-![plot of chunk reporting-prior-plot](reporting-simulation-results-figures/reporting-prior-plot-1.png)
+![](reporting-simulation-results-figures/reporting-prior-plot-1.png)<!-- -->
 
 
 ``` r
 plot_prior_draws(prior_samples, model, empty_data, n = 100, seed = 967)
 ```
 
-![plot of chunk reporting-prior-draws](reporting-simulation-results-figures/reporting-prior-draws-1.png)
+![](reporting-simulation-results-figures/reporting-prior-draws-1.png)<!-- -->
 
 ## Define the true toxicity scenarios
 
@@ -681,7 +684,7 @@ report_table(truths, digits = 2)
 plot(truths)
 ```
 
-![plot of chunk reporting-truth-plot](reporting-simulation-results-figures/reporting-truth-plot-1.png)
+![](reporting-simulation-results-figures/reporting-truth-plot-1.png)<!-- -->
 
 This single-agent table also supplies the single-arm counterpart of BI's scenario
 definition table. Combination truth grids and hierarchical OC arm subcolumns
@@ -1219,9 +1222,9 @@ report_table(
 <td headers="3 patients, 0 DLTs  current_dose" class="gt_row gt_right">50</td>
 <td headers="3 patients, 0 DLTs  current_overdose_prob" class="gt_row gt_right">0.014</td>
 <td headers="3 patients, 0 DLTs  next_action" class="gt_row gt_left">100 (n = 3)</td>
-<td headers="3 patients, 0 DLTs  underdosing" class="gt_row gt_left">0.888</td>
-<td headers="3 patients, 0 DLTs  target" class="gt_row gt_left">0.080</td>
-<td headers="3 patients, 0 DLTs  overdose" class="gt_row gt_left">0.032</td></tr>
+<td headers="3 patients, 0 DLTs  underdosing" class="gt_row gt_left">0.866</td>
+<td headers="3 patients, 0 DLTs  target" class="gt_row gt_left">0.090</td>
+<td headers="3 patients, 0 DLTs  overdose" class="gt_row gt_left">0.044</td></tr>
     <tr class="gt_group_heading_row">
       <th colspan="9" class="gt_group_heading" scope="colgroup" id="3 patients, 1 DLT">3 patients, 1 DLT</th>
     </tr>
@@ -1229,11 +1232,11 @@ report_table(
 <td headers="3 patients, 1 DLT  n_patients" class="gt_row gt_right">3</td>
 <td headers="3 patients, 1 DLT  n_dlts" class="gt_row gt_right">1</td>
 <td headers="3 patients, 1 DLT  current_dose" class="gt_row gt_right">50</td>
-<td headers="3 patients, 1 DLT  current_overdose_prob" class="gt_row gt_right">0.162</td>
+<td headers="3 patients, 1 DLT  current_overdose_prob" class="gt_row gt_right">0.208</td>
 <td headers="3 patients, 1 DLT  next_action" class="gt_row gt_left">50 (n = 3)</td>
-<td headers="3 patients, 1 DLT  underdosing" class="gt_row gt_left">0.536</td>
-<td headers="3 patients, 1 DLT  target" class="gt_row gt_left">0.302</td>
-<td headers="3 patients, 1 DLT  overdose" class="gt_row gt_left">0.162</td></tr>
+<td headers="3 patients, 1 DLT  underdosing" class="gt_row gt_left">0.512</td>
+<td headers="3 patients, 1 DLT  target" class="gt_row gt_left">0.280</td>
+<td headers="3 patients, 1 DLT  overdose" class="gt_row gt_left">0.208</td></tr>
     <tr class="gt_group_heading_row">
       <th colspan="9" class="gt_group_heading" scope="colgroup" id="3 patients, 3 DLTs">3 patients, 3 DLTs</th>
     </tr>
@@ -1241,7 +1244,7 @@ report_table(
 <td headers="3 patients, 3 DLTs  n_patients" class="gt_row gt_right">3</td>
 <td headers="3 patients, 3 DLTs  n_dlts" class="gt_row gt_right">3</td>
 <td headers="3 patients, 3 DLTs  current_dose" class="gt_row gt_right">50</td>
-<td headers="3 patients, 3 DLTs  current_overdose_prob" class="gt_row gt_right">0.934</td>
+<td headers="3 patients, 3 DLTs  current_overdose_prob" class="gt_row gt_right">0.890</td>
 <td headers="3 patients, 3 DLTs  next_action" class="gt_row gt_left">Stop: Probability that the lowest active dose of 50 being toxic based on posterior Beta distribution using a Beta(1,1) prior is 98% and thus above the required 90% threshold.; Next dose is NA , i.e., no active dose is safe enough according to the NextBest rule.; Number of patients is 3 and thus below the prespecified minimum number 18</td>
 <td headers="3 patients, 3 DLTs  underdosing" class="gt_row gt_left">—</td>
 <td headers="3 patients, 3 DLTs  target" class="gt_row gt_left">—</td>
@@ -1282,7 +1285,15 @@ simulations <- lapply(seq_along(truth_functions), function(i) {
   )
 })
 names(simulations) <- names(truth_functions)
-oc <- SimulationsSummaryList(simulations, target = target)
+oc <- SimulationsSummaryList(
+  simulations,
+  target = target,
+  stop_categories = list(
+    Toxicity = "Lowest dose unsafe",
+    `Max patients` = "Maximum sample size",
+    Other = "No admissible dose"
+  )
+)
 ```
 
 ## Bayer: an extended operating-characteristics table
@@ -1293,11 +1304,10 @@ only. Quantiles are the 10th and 90th percentiles.
 
 
 ``` r
-# Keep the PMDA collection's categories intact; this variant uses the rule labels.
+# Supplied rule labels are used automatically.
 bayer_oc <- SimulationsSummaryList(
   simulations,
-  target = target,
-  stop_categories = list()
+  target = target
 )
 bayer <- report_oc_overview(
   bayer_oc,
@@ -1309,6 +1319,11 @@ bayer <- report_oc_overview(
     "n_pat_minmax",
     "n_pat_quantiles",
     "n_above_target_mean_sd",
+    "n_above_target_minmax",
+    "n_above_target_quantiles",
+    "n_cohorts_mean_sd",
+    "n_cohorts_minmax",
+    "n_cohorts_quantiles",
     "n_pat_per_dose",
     "n_dlt_per_dose"
   ),
@@ -1318,9 +1333,12 @@ bayer <- report_oc_overview(
     n_pat_mean_sd = "Mean (SD)",
     n_pat_minmax = "Min–max",
     n_pat_quantiles = "10th/90th percentiles",
-    `prop_stop_by_label::Lowest dose unsafe` = "Lowest dose unsafe",
-    `prop_stop_by_label::No admissible dose` = "No admissible dose",
-    `prop_stop_by_label::Maximum sample size` = "Maximum sample size"
+    n_above_target_mean_sd = "Mean (SD)",
+    n_above_target_minmax = "Min–max",
+    n_above_target_quantiles = "10th/90th percentiles",
+    n_cohorts_mean_sd = "Mean (SD)",
+    n_cohorts_minmax = "Min–max",
+    n_cohorts_quantiles = "10th/90th percentiles"
   ),
   row_groups = c(
     prop_stop_by_label = "Stop reason (%)",
@@ -1330,6 +1348,11 @@ bayer <- report_oc_overview(
     n_pat_minmax = "Total patients",
     n_pat_quantiles = "Total patients",
     n_above_target_mean_sd = "Patients above target",
+    n_above_target_minmax = "Patients above target",
+    n_above_target_quantiles = "Patients above target",
+    n_cohorts_mean_sd = "Duration proxy (escalation cohorts)",
+    n_cohorts_minmax = "Duration proxy (escalation cohorts)",
+    n_cohorts_quantiles = "Duration proxy (escalation cohorts)",
     n_pat_per_dose = "Patients per dose, mean (SD)",
     n_dlt_per_dose = "DLTs per dose, mean (SD)"
   ),
@@ -1823,7 +1846,7 @@ bayer_table
 <td headers="Stop reason (%) stub_2_1 .scenario_5" class="gt_row gt_right">0.0</td>
 <td headers="Stop reason (%) stub_2_1 .scenario_6" class="gt_row gt_right">16.7</td></tr>
     <tr><th id="stub_2_2" scope="row" class="gt_row gt_left gt_stub">No admissible dose</th>
-<td headers="Stop reason (%) stub_2_2 .scenario_1" class="gt_row gt_right">58.3</td>
+<td headers="Stop reason (%) stub_2_2 .scenario_1" class="gt_row gt_right">50.0</td>
 <td headers="Stop reason (%) stub_2_2 .scenario_2" class="gt_row gt_right">83.3</td>
 <td headers="Stop reason (%) stub_2_2 .scenario_3" class="gt_row gt_right">0.0</td>
 <td headers="Stop reason (%) stub_2_2 .scenario_4" class="gt_row gt_right">33.3</td>
@@ -1835,59 +1858,59 @@ bayer_table
 <td headers="Stop reason (%) stub_2_3 .scenario_3" class="gt_row gt_right">100.0</td>
 <td headers="Stop reason (%) stub_2_3 .scenario_4" class="gt_row gt_right">66.7</td>
 <td headers="Stop reason (%) stub_2_3 .scenario_5" class="gt_row gt_right">100.0</td>
-<td headers="Stop reason (%) stub_2_3 .scenario_6" class="gt_row gt_right">16.7</td></tr>
+<td headers="Stop reason (%) stub_2_3 .scenario_6" class="gt_row gt_right">25.0</td></tr>
     <tr class="gt_row_group_first"><td headers="Dose selection (%) stub_2_4 stub_1" rowspan="5" class="gt_row gt_left gt_stub_row_group">Dose selection (%)</td>
-<th id="stub_2_4" scope="row" class="gt_row gt_left gt_stub">Dose selected: 50</th>
-<td headers="Dose selection (%) stub_2_4 .scenario_1" class="gt_row gt_right">33.3</td>
-<td headers="Dose selection (%) stub_2_4 .scenario_2" class="gt_row gt_right">8.3</td>
+<th id="stub_2_4" scope="row" class="gt_row gt_left gt_stub">none</th>
+<td headers="Dose selection (%) stub_2_4 .scenario_1" class="gt_row gt_right">50.0</td>
+<td headers="Dose selection (%) stub_2_4 .scenario_2" class="gt_row gt_right">83.3</td>
 <td headers="Dose selection (%) stub_2_4 .scenario_3" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_4 .scenario_4" class="gt_row gt_right">8.3</td>
+<td headers="Dose selection (%) stub_2_4 .scenario_4" class="gt_row gt_right">33.3</td>
 <td headers="Dose selection (%) stub_2_4 .scenario_5" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_4 .scenario_6" class="gt_row gt_right">8.3</td></tr>
-    <tr><th id="stub_2_5" scope="row" class="gt_row gt_left gt_stub">Dose selected: 100</th>
-<td headers="Dose selection (%) stub_2_5 .scenario_1" class="gt_row gt_right">8.3</td>
+<td headers="Dose selection (%) stub_2_4 .scenario_6" class="gt_row gt_right">83.3</td></tr>
+    <tr><th id="stub_2_5" scope="row" class="gt_row gt_left gt_stub">50</th>
+<td headers="Dose selection (%) stub_2_5 .scenario_1" class="gt_row gt_right">33.3</td>
 <td headers="Dose selection (%) stub_2_5 .scenario_2" class="gt_row gt_right">8.3</td>
-<td headers="Dose selection (%) stub_2_5 .scenario_3" class="gt_row gt_right">83.3</td>
-<td headers="Dose selection (%) stub_2_5 .scenario_4" class="gt_row gt_right">41.7</td>
-<td headers="Dose selection (%) stub_2_5 .scenario_5" class="gt_row gt_right">41.7</td>
+<td headers="Dose selection (%) stub_2_5 .scenario_3" class="gt_row gt_right">0.0</td>
+<td headers="Dose selection (%) stub_2_5 .scenario_4" class="gt_row gt_right">0.0</td>
+<td headers="Dose selection (%) stub_2_5 .scenario_5" class="gt_row gt_right">0.0</td>
 <td headers="Dose selection (%) stub_2_5 .scenario_6" class="gt_row gt_right">8.3</td></tr>
-    <tr><th id="stub_2_6" scope="row" class="gt_row gt_left gt_stub">Dose selected: 200</th>
-<td headers="Dose selection (%) stub_2_6 .scenario_1" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_6 .scenario_2" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_6 .scenario_3" class="gt_row gt_right">16.7</td>
-<td headers="Dose selection (%) stub_2_6 .scenario_4" class="gt_row gt_right">16.7</td>
-<td headers="Dose selection (%) stub_2_6 .scenario_5" class="gt_row gt_right">58.3</td>
-<td headers="Dose selection (%) stub_2_6 .scenario_6" class="gt_row gt_right">0.0</td></tr>
-    <tr><th id="stub_2_7" scope="row" class="gt_row gt_left gt_stub">Dose selected: 400</th>
+    <tr><th id="stub_2_6" scope="row" class="gt_row gt_left gt_stub">100</th>
+<td headers="Dose selection (%) stub_2_6 .scenario_1" class="gt_row gt_right">16.7</td>
+<td headers="Dose selection (%) stub_2_6 .scenario_2" class="gt_row gt_right">8.3</td>
+<td headers="Dose selection (%) stub_2_6 .scenario_3" class="gt_row gt_right">83.3</td>
+<td headers="Dose selection (%) stub_2_6 .scenario_4" class="gt_row gt_right">58.3</td>
+<td headers="Dose selection (%) stub_2_6 .scenario_5" class="gt_row gt_right">33.3</td>
+<td headers="Dose selection (%) stub_2_6 .scenario_6" class="gt_row gt_right">8.3</td></tr>
+    <tr><th id="stub_2_7" scope="row" class="gt_row gt_left gt_stub">200</th>
 <td headers="Dose selection (%) stub_2_7 .scenario_1" class="gt_row gt_right">0.0</td>
 <td headers="Dose selection (%) stub_2_7 .scenario_2" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_7 .scenario_3" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_7 .scenario_4" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_7 .scenario_5" class="gt_row gt_right">0.0</td>
+<td headers="Dose selection (%) stub_2_7 .scenario_3" class="gt_row gt_right">16.7</td>
+<td headers="Dose selection (%) stub_2_7 .scenario_4" class="gt_row gt_right">8.3</td>
+<td headers="Dose selection (%) stub_2_7 .scenario_5" class="gt_row gt_right">66.7</td>
 <td headers="Dose selection (%) stub_2_7 .scenario_6" class="gt_row gt_right">0.0</td></tr>
-    <tr><th id="stub_2_8" scope="row" class="gt_row gt_left gt_stub">Dose selected: none</th>
-<td headers="Dose selection (%) stub_2_8 .scenario_1" class="gt_row gt_right">58.3</td>
-<td headers="Dose selection (%) stub_2_8 .scenario_2" class="gt_row gt_right">83.3</td>
+    <tr><th id="stub_2_8" scope="row" class="gt_row gt_left gt_stub">400</th>
+<td headers="Dose selection (%) stub_2_8 .scenario_1" class="gt_row gt_right">0.0</td>
+<td headers="Dose selection (%) stub_2_8 .scenario_2" class="gt_row gt_right">0.0</td>
 <td headers="Dose selection (%) stub_2_8 .scenario_3" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_8 .scenario_4" class="gt_row gt_right">33.3</td>
+<td headers="Dose selection (%) stub_2_8 .scenario_4" class="gt_row gt_right">0.0</td>
 <td headers="Dose selection (%) stub_2_8 .scenario_5" class="gt_row gt_right">0.0</td>
-<td headers="Dose selection (%) stub_2_8 .scenario_6" class="gt_row gt_right">83.3</td></tr>
+<td headers="Dose selection (%) stub_2_8 .scenario_6" class="gt_row gt_right">0.0</td></tr>
     <tr class="gt_row_group_first"><td headers="Correct dose selected (%) stub_2_9 stub_1" rowspan="1" class="gt_row gt_left gt_stub_row_group">Correct dose selected (%)</td>
 <th id="stub_2_9" scope="row" class="gt_row gt_left gt_stub">MTD correct (%)</th>
 <td headers="Correct dose selected (%) stub_2_9 .scenario_1" class="gt_row gt_right">33.3</td>
 <td headers="Correct dose selected (%) stub_2_9 .scenario_2" class="gt_row gt_right">16.7</td>
 <td headers="Correct dose selected (%) stub_2_9 .scenario_3" class="gt_row gt_right">16.7</td>
-<td headers="Correct dose selected (%) stub_2_9 .scenario_4" class="gt_row gt_right">58.3</td>
+<td headers="Correct dose selected (%) stub_2_9 .scenario_4" class="gt_row gt_right">66.7</td>
 <td headers="Correct dose selected (%) stub_2_9 .scenario_5" class="gt_row gt_right">0.0</td>
 <td headers="Correct dose selected (%) stub_2_9 .scenario_6" class="gt_row gt_right">0.0</td></tr>
     <tr class="gt_row_group_first"><td headers="Total patients stub_2_10 stub_1" rowspan="3" class="gt_row gt_left gt_stub_row_group">Total patients</td>
 <th id="stub_2_10" scope="row" class="gt_row gt_left gt_stub">Mean (SD)</th>
-<td headers="Total patients stub_2_10 .scenario_1" class="gt_row gt_right">11.2 (7.3)</td>
-<td headers="Total patients stub_2_10 .scenario_2" class="gt_row gt_right">9.5 (6.0)</td>
+<td headers="Total patients stub_2_10 .scenario_1" class="gt_row gt_right">11.5 (7.2)</td>
+<td headers="Total patients stub_2_10 .scenario_2" class="gt_row gt_right">9.5 (6.2)</td>
 <td headers="Total patients stub_2_10 .scenario_3" class="gt_row gt_right">18.0 (0.0)</td>
-<td headers="Total patients stub_2_10 .scenario_4" class="gt_row gt_right">13.8 (6.5)</td>
+<td headers="Total patients stub_2_10 .scenario_4" class="gt_row gt_right">13.2 (7.1)</td>
 <td headers="Total patients stub_2_10 .scenario_5" class="gt_row gt_right">18.0 (0.0)</td>
-<td headers="Total patients stub_2_10 .scenario_6" class="gt_row gt_right">7.5 (6.1)</td></tr>
+<td headers="Total patients stub_2_10 .scenario_6" class="gt_row gt_right">7.8 (6.3)</td></tr>
     <tr><th id="stub_2_11" scope="row" class="gt_row gt_left gt_stub">Min–max</th>
 <td headers="Total patients stub_2_11 .scenario_1" class="gt_row gt_right">[3, 18]</td>
 <td headers="Total patients stub_2_11 .scenario_2" class="gt_row gt_right">[3, 18]</td>
@@ -1897,86 +1920,123 @@ bayer_table
 <td headers="Total patients stub_2_11 .scenario_6" class="gt_row gt_right">[3, 18]</td></tr>
     <tr><th id="stub_2_12" scope="row" class="gt_row gt_left gt_stub">10th/90th percentiles</th>
 <td headers="Total patients stub_2_12 .scenario_1" class="gt_row gt_right">[3.0, 18.0]</td>
-<td headers="Total patients stub_2_12 .scenario_2" class="gt_row gt_right">[3.3, 18.0]</td>
+<td headers="Total patients stub_2_12 .scenario_2" class="gt_row gt_right">[3.0, 18.0]</td>
 <td headers="Total patients stub_2_12 .scenario_3" class="gt_row gt_right">[18.0, 18.0]</td>
-<td headers="Total patients stub_2_12 .scenario_4" class="gt_row gt_right">[3.3, 18.0]</td>
+<td headers="Total patients stub_2_12 .scenario_4" class="gt_row gt_right">[3.0, 18.0]</td>
 <td headers="Total patients stub_2_12 .scenario_5" class="gt_row gt_right">[18.0, 18.0]</td>
-<td headers="Total patients stub_2_12 .scenario_6" class="gt_row gt_right">[3.0, 17.7]</td></tr>
-    <tr class="gt_row_group_first"><td headers="Patients above target stub_2_13 stub_1" rowspan="1" class="gt_row gt_left gt_stub_row_group">Patients above target</td>
-<th id="stub_2_13" scope="row" class="gt_row gt_left gt_stub">Patients above target, mean (SD)</th>
-<td headers="Patients above target stub_2_13 .scenario_1" class="gt_row gt_right">3.5 (4.8)</td>
+<td headers="Total patients stub_2_12 .scenario_6" class="gt_row gt_right">[3.0, 18.0]</td></tr>
+    <tr class="gt_row_group_first"><td headers="Patients above target stub_2_13 stub_1" rowspan="3" class="gt_row gt_left gt_stub_row_group">Patients above target</td>
+<th id="stub_2_13" scope="row" class="gt_row gt_left gt_stub">Mean (SD)</th>
+<td headers="Patients above target stub_2_13 .scenario_1" class="gt_row gt_right">4.5 (5.0)</td>
 <td headers="Patients above target stub_2_13 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="Patients above target stub_2_13 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="Patients above target stub_2_13 .scenario_4" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="Patients above target stub_2_13 .scenario_5" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients above target stub_2_13 .scenario_6" class="gt_row gt_right">7.5 (6.1)</td></tr>
-    <tr class="gt_row_group_first"><td headers="Patients per dose, mean (SD) stub_2_14 stub_1" rowspan="4" class="gt_row gt_left gt_stub_row_group">Patients per dose, mean (SD)</td>
-<th id="stub_2_14" scope="row" class="gt_row gt_left gt_stub">Patients at dose 50</th>
-<td headers="Patients per dose, mean (SD) stub_2_14 .scenario_1" class="gt_row gt_right">7.8 (5.8)</td>
-<td headers="Patients per dose, mean (SD) stub_2_14 .scenario_2" class="gt_row gt_right">8.0 (4.1)</td>
-<td headers="Patients per dose, mean (SD) stub_2_14 .scenario_3" class="gt_row gt_right">3.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_14 .scenario_4" class="gt_row gt_right">5.5 (2.2)</td>
-<td headers="Patients per dose, mean (SD) stub_2_14 .scenario_5" class="gt_row gt_right">3.2 (0.9)</td>
-<td headers="Patients per dose, mean (SD) stub_2_14 .scenario_6" class="gt_row gt_right">5.5 (3.6)</td></tr>
-    <tr><th id="stub_2_15" scope="row" class="gt_row gt_left gt_stub">Patients at dose 100</th>
-<td headers="Patients per dose, mean (SD) stub_2_15 .scenario_1" class="gt_row gt_right">3.2 (4.1)</td>
-<td headers="Patients per dose, mean (SD) stub_2_15 .scenario_2" class="gt_row gt_right">1.5 (3.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_15 .scenario_3" class="gt_row gt_right">12.2 (3.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_15 .scenario_4" class="gt_row gt_right">6.8 (5.4)</td>
-<td headers="Patients per dose, mean (SD) stub_2_15 .scenario_5" class="gt_row gt_right">9.5 (5.2)</td>
-<td headers="Patients per dose, mean (SD) stub_2_15 .scenario_6" class="gt_row gt_right">2.0 (4.5)</td></tr>
-    <tr><th id="stub_2_16" scope="row" class="gt_row gt_left gt_stub">Patients at dose 200</th>
-<td headers="Patients per dose, mean (SD) stub_2_16 .scenario_1" class="gt_row gt_right">0.2 (0.9)</td>
-<td headers="Patients per dose, mean (SD) stub_2_16 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_16 .scenario_3" class="gt_row gt_right">2.8 (3.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_16 .scenario_4" class="gt_row gt_right">1.5 (3.5)</td>
-<td headers="Patients per dose, mean (SD) stub_2_16 .scenario_5" class="gt_row gt_right">5.2 (5.4)</td>
-<td headers="Patients per dose, mean (SD) stub_2_16 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
-    <tr><th id="stub_2_17" scope="row" class="gt_row gt_left gt_stub">Patients at dose 400</th>
-<td headers="Patients per dose, mean (SD) stub_2_17 .scenario_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_17 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_17 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_17 .scenario_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_17 .scenario_5" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="Patients per dose, mean (SD) stub_2_17 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
-    <tr class="gt_row_group_first"><td headers="DLTs per dose, mean (SD) stub_2_18 stub_1" rowspan="4" class="gt_row gt_left gt_stub_row_group">DLTs per dose, mean (SD)</td>
-<th id="stub_2_18" scope="row" class="gt_row gt_left gt_stub">DLTs at dose 50</th>
-<td headers="DLTs per dose, mean (SD) stub_2_18 .scenario_1" class="gt_row gt_right">2.0 (1.7)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_18 .scenario_2" class="gt_row gt_right">2.5 (1.2)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_18 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_18 .scenario_4" class="gt_row gt_right">1.2 (1.2)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_18 .scenario_5" class="gt_row gt_right">0.1 (0.3)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_18 .scenario_6" class="gt_row gt_right">2.3 (1.2)</td></tr>
-    <tr><th id="stub_2_19" scope="row" class="gt_row gt_left gt_stub">DLTs at dose 100</th>
-<td headers="DLTs per dose, mean (SD) stub_2_19 .scenario_1" class="gt_row gt_right">1.7 (2.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_19 .scenario_2" class="gt_row gt_right">0.5 (1.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_19 .scenario_3" class="gt_row gt_right">2.1 (1.4)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_19 .scenario_4" class="gt_row gt_right">1.2 (1.8)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_19 .scenario_5" class="gt_row gt_right">0.7 (1.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_19 .scenario_6" class="gt_row gt_right">0.8 (1.4)</td></tr>
-    <tr><th id="stub_2_20" scope="row" class="gt_row gt_left gt_stub">DLTs at dose 200</th>
-<td headers="DLTs per dose, mean (SD) stub_2_20 .scenario_1" class="gt_row gt_right">0.1 (0.3)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_20 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_20 .scenario_3" class="gt_row gt_right">1.0 (1.3)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_20 .scenario_4" class="gt_row gt_right">0.4 (1.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_20 .scenario_5" class="gt_row gt_right">0.8 (1.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_20 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
-    <tr><th id="stub_2_21" scope="row" class="gt_row gt_left gt_stub">DLTs at dose 400</th>
-<td headers="DLTs per dose, mean (SD) stub_2_21 .scenario_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_21 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_21 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_21 .scenario_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_21 .scenario_5" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="DLTs per dose, mean (SD) stub_2_21 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
+<td headers="Patients above target stub_2_13 .scenario_6" class="gt_row gt_right">7.8 (6.3)</td></tr>
+    <tr><th id="stub_2_14" scope="row" class="gt_row gt_left gt_stub">Min–max</th>
+<td headers="Patients above target stub_2_14 .scenario_1" class="gt_row gt_right">[0, 15]</td>
+<td headers="Patients above target stub_2_14 .scenario_2" class="gt_row gt_right">[0, 0]</td>
+<td headers="Patients above target stub_2_14 .scenario_3" class="gt_row gt_right">[0, 0]</td>
+<td headers="Patients above target stub_2_14 .scenario_4" class="gt_row gt_right">[0, 0]</td>
+<td headers="Patients above target stub_2_14 .scenario_5" class="gt_row gt_right">[0, 0]</td>
+<td headers="Patients above target stub_2_14 .scenario_6" class="gt_row gt_right">[3, 18]</td></tr>
+    <tr><th id="stub_2_15" scope="row" class="gt_row gt_left gt_stub">10th/90th percentiles</th>
+<td headers="Patients above target stub_2_15 .scenario_1" class="gt_row gt_right">[0.0, 9.0]</td>
+<td headers="Patients above target stub_2_15 .scenario_2" class="gt_row gt_right">[0.0, 0.0]</td>
+<td headers="Patients above target stub_2_15 .scenario_3" class="gt_row gt_right">[0.0, 0.0]</td>
+<td headers="Patients above target stub_2_15 .scenario_4" class="gt_row gt_right">[0.0, 0.0]</td>
+<td headers="Patients above target stub_2_15 .scenario_5" class="gt_row gt_right">[0.0, 0.0]</td>
+<td headers="Patients above target stub_2_15 .scenario_6" class="gt_row gt_right">[3.0, 18.0]</td></tr>
+    <tr class="gt_row_group_first"><td headers="Duration proxy (escalation cohorts) stub_2_16 stub_1" rowspan="3" class="gt_row gt_left gt_stub_row_group">Duration proxy (escalation cohorts)</td>
+<th id="stub_2_16" scope="row" class="gt_row gt_left gt_stub">Mean (SD)</th>
+<td headers="Duration proxy (escalation cohorts) stub_2_16 .scenario_1" class="gt_row gt_right">3.8 (2.4)</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_16 .scenario_2" class="gt_row gt_right">3.2 (2.1)</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_16 .scenario_3" class="gt_row gt_right">6.0 (0.0)</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_16 .scenario_4" class="gt_row gt_right">4.4 (2.4)</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_16 .scenario_5" class="gt_row gt_right">6.0 (0.0)</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_16 .scenario_6" class="gt_row gt_right">2.6 (2.1)</td></tr>
+    <tr><th id="stub_2_17" scope="row" class="gt_row gt_left gt_stub">Min–max</th>
+<td headers="Duration proxy (escalation cohorts) stub_2_17 .scenario_1" class="gt_row gt_right">[1, 6]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_17 .scenario_2" class="gt_row gt_right">[1, 6]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_17 .scenario_3" class="gt_row gt_right">[6, 6]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_17 .scenario_4" class="gt_row gt_right">[1, 6]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_17 .scenario_5" class="gt_row gt_right">[6, 6]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_17 .scenario_6" class="gt_row gt_right">[1, 6]</td></tr>
+    <tr><th id="stub_2_18" scope="row" class="gt_row gt_left gt_stub">10th/90th percentiles</th>
+<td headers="Duration proxy (escalation cohorts) stub_2_18 .scenario_1" class="gt_row gt_right">[1.0, 6.0]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_18 .scenario_2" class="gt_row gt_right">[1.0, 6.0]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_18 .scenario_3" class="gt_row gt_right">[6.0, 6.0]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_18 .scenario_4" class="gt_row gt_right">[1.0, 6.0]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_18 .scenario_5" class="gt_row gt_right">[6.0, 6.0]</td>
+<td headers="Duration proxy (escalation cohorts) stub_2_18 .scenario_6" class="gt_row gt_right">[1.0, 6.0]</td></tr>
+    <tr class="gt_row_group_first"><td headers="Patients per dose, mean (SD) stub_2_19 stub_1" rowspan="4" class="gt_row gt_left gt_stub_row_group">Patients per dose, mean (SD)</td>
+<th id="stub_2_19" scope="row" class="gt_row gt_left gt_stub">50</th>
+<td headers="Patients per dose, mean (SD) stub_2_19 .scenario_1" class="gt_row gt_right">7.0 (4.5)</td>
+<td headers="Patients per dose, mean (SD) stub_2_19 .scenario_2" class="gt_row gt_right">7.5 (4.7)</td>
+<td headers="Patients per dose, mean (SD) stub_2_19 .scenario_3" class="gt_row gt_right">3.2 (0.9)</td>
+<td headers="Patients per dose, mean (SD) stub_2_19 .scenario_4" class="gt_row gt_right">5.2 (2.6)</td>
+<td headers="Patients per dose, mean (SD) stub_2_19 .scenario_5" class="gt_row gt_right">3.8 (1.4)</td>
+<td headers="Patients per dose, mean (SD) stub_2_19 .scenario_6" class="gt_row gt_right">5.8 (3.9)</td></tr>
+    <tr><th id="stub_2_20" scope="row" class="gt_row gt_left gt_stub">100</th>
+<td headers="Patients per dose, mean (SD) stub_2_20 .scenario_1" class="gt_row gt_right">4.2 (4.5)</td>
+<td headers="Patients per dose, mean (SD) stub_2_20 .scenario_2" class="gt_row gt_right">2.0 (4.5)</td>
+<td headers="Patients per dose, mean (SD) stub_2_20 .scenario_3" class="gt_row gt_right">11.2 (3.9)</td>
+<td headers="Patients per dose, mean (SD) stub_2_20 .scenario_4" class="gt_row gt_right">6.8 (5.4)</td>
+<td headers="Patients per dose, mean (SD) stub_2_20 .scenario_5" class="gt_row gt_right">8.5 (4.6)</td>
+<td headers="Patients per dose, mean (SD) stub_2_20 .scenario_6" class="gt_row gt_right">2.0 (4.5)</td></tr>
+    <tr><th id="stub_2_21" scope="row" class="gt_row gt_left gt_stub">200</th>
+<td headers="Patients per dose, mean (SD) stub_2_21 .scenario_1" class="gt_row gt_right">0.2 (0.9)</td>
+<td headers="Patients per dose, mean (SD) stub_2_21 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_21 .scenario_3" class="gt_row gt_right">3.5 (3.6)</td>
+<td headers="Patients per dose, mean (SD) stub_2_21 .scenario_4" class="gt_row gt_right">1.2 (3.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_21 .scenario_5" class="gt_row gt_right">5.8 (5.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_21 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
+    <tr><th id="stub_2_22" scope="row" class="gt_row gt_left gt_stub">400</th>
+<td headers="Patients per dose, mean (SD) stub_2_22 .scenario_1" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_22 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_22 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_22 .scenario_4" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_22 .scenario_5" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="Patients per dose, mean (SD) stub_2_22 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
+    <tr class="gt_row_group_first"><td headers="DLTs per dose, mean (SD) stub_2_23 stub_1" rowspan="4" class="gt_row gt_left gt_stub_row_group">DLTs per dose, mean (SD)</td>
+<th id="stub_2_23" scope="row" class="gt_row gt_left gt_stub">50</th>
+<td headers="DLTs per dose, mean (SD) stub_2_23 .scenario_1" class="gt_row gt_right">1.7 (1.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_23 .scenario_2" class="gt_row gt_right">2.6 (1.8)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_23 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_23 .scenario_4" class="gt_row gt_right">1.0 (0.9)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_23 .scenario_5" class="gt_row gt_right">0.1 (0.3)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_23 .scenario_6" class="gt_row gt_right">2.4 (1.2)</td></tr>
+    <tr><th id="stub_2_24" scope="row" class="gt_row gt_left gt_stub">100</th>
+<td headers="DLTs per dose, mean (SD) stub_2_24 .scenario_1" class="gt_row gt_right">2.2 (2.2)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_24 .scenario_2" class="gt_row gt_right">0.8 (1.4)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_24 .scenario_3" class="gt_row gt_right">1.8 (1.4)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_24 .scenario_4" class="gt_row gt_right">1.2 (1.8)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_24 .scenario_5" class="gt_row gt_right">0.5 (0.9)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_24 .scenario_6" class="gt_row gt_right">0.8 (1.4)</td></tr>
+    <tr><th id="stub_2_25" scope="row" class="gt_row gt_left gt_stub">200</th>
+<td headers="DLTs per dose, mean (SD) stub_2_25 .scenario_1" class="gt_row gt_right">0.1 (0.3)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_25 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_25 .scenario_3" class="gt_row gt_right">1.2 (1.2)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_25 .scenario_4" class="gt_row gt_right">0.3 (0.9)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_25 .scenario_5" class="gt_row gt_right">0.9 (1.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_25 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
+    <tr><th id="stub_2_26" scope="row" class="gt_row gt_left gt_stub">400</th>
+<td headers="DLTs per dose, mean (SD) stub_2_26 .scenario_1" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_26 .scenario_2" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_26 .scenario_3" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_26 .scenario_4" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_26 .scenario_5" class="gt_row gt_right">0.0 (0.0)</td>
+<td headers="DLTs per dose, mean (SD) stub_2_26 .scenario_6" class="gt_row gt_right">0.0 (0.0)</td></tr>
   </tbody>
 
 </table>
 </div><!--/html_preserve-->
 
-The Bayer collection uses `stop_categories = list()` so each supplied
-`report_label` appears in the stop reasons. The PMDA collection retains its
-class-based categories. `row_groups` maps statistic IDs to section labels;
-expanded row IDs can override the group of an individual row.
+The Bayer collection uses the default `stop_categories = NULL`, so each supplied
+`report_label` appears in the stop reasons. The PMDA collection explicitly maps
+labels to categories. `row_groups` maps statistic IDs to section labels;
+a nested named vector can override the group of an individual row. Grouped
+rows display their row names without repeating the statistic prefix.
 The gt option `row_group.as_column = TRUE` places group labels in the left stub,
 closer to the PDF's criterion/category layout; the default places section
 headings above the rows. Categories count the
@@ -1988,9 +2048,14 @@ rule-based definition: selecting the highest dose alone does not establish it.
 Likewise, below-target scenarios are not automatically successful highest-dose
 selections. Recorded duration mean/SD is available as `duration_mean_sd` for
 `DASimulations`, in its recorded units; this ordinary `Design` has no elapsed-time
-measure. Duration min/max and quantiles remain deferred. The next example shows
-how to add the remaining above-target distribution summaries without changing
-the reporting implementation.
+measure. The table instead summarizes the number of non-backfill dose escalation
+cohorts as a duration proxy (`n_cohorts_mean_sd`, `n_cohorts_minmax`, and
+`n_cohorts_quantiles`). Each distinct cohort ID with non-backfill patients counts
+once, including successive cohorts at the same dose; this is not elapsed time.
+Patients above target and escalation cohorts use the same three summaries as
+total patients. The next example illustrates custom statistics; the above-target
+range and quantiles are also available directly as `n_above_target_minmax` and
+`n_above_target_quantiles`.
 
 
 ``` r
@@ -2021,9 +2086,9 @@ report_oc_overview(
 
 |Statistic                                    | T1 (First)| T2 (Early)| T3 (Late)| T4 (Last)| T5 (Safe)| T6 (Toxic)|
 |:--------------------------------------------|----------:|----------:|---------:|---------:|---------:|----------:|
-|Patients above target, mean (SD)             |  3.5 (4.8)|  0.0 (0.0)| 0.0 (0.0)| 0.0 (0.0)| 0.0 (0.0)|  7.5 (6.1)|
+|Patients above target, mean (SD)             |  4.5 (5.0)|  0.0 (0.0)| 0.0 (0.0)| 0.0 (0.0)| 0.0 (0.0)|  7.8 (6.3)|
 |Patients above target, min–max               |     [0–15]|      [0–0]|     [0–0]|     [0–0]|     [0–0]|     [3–18]|
-|Patients above target, 10th/90th percentiles |  [0.0–8.7]|  [0.0–0.0]| [0.0–0.0]| [0.0–0.0]| [0.0–0.0]| [3.0–17.7]|
+|Patients above target, 10th/90th percentiles |  [0.0–9.0]|  [0.0–0.0]| [0.0–0.0]| [0.0–0.0]| [0.0–0.0]| [3.0–18.0]|
 
 
 
@@ -2526,11 +2591,11 @@ report_table(report_transpose(bi), format = report_format)
     <tr><th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">T1 (First)</th>
 <td headers="stub_1_1 .row_1" class="gt_row gt_right">0.0</td>
 <td headers="stub_1_1 .row_2" class="gt_row gt_right">33.3</td>
-<td headers="stub_1_1 .row_3" class="gt_row gt_right">8.3</td>
-<td headers="stub_1_1 .row_4" class="gt_row gt_right">58.3</td>
-<td headers="stub_1_1 .row_5" class="gt_row gt_right">11.2</td>
+<td headers="stub_1_1 .row_3" class="gt_row gt_right">16.7</td>
+<td headers="stub_1_1 .row_4" class="gt_row gt_right">50.0</td>
+<td headers="stub_1_1 .row_5" class="gt_row gt_right">11.5</td>
 <td headers="stub_1_1 .row_6" class="gt_row gt_left">[3, 18]</td>
-<td headers="stub_1_1 .row_7" class="gt_row gt_right">3.8</td>
+<td headers="stub_1_1 .row_7" class="gt_row gt_right">3.9</td>
 <td headers="stub_1_1 .row_8" class="gt_row gt_left">[2, 6]</td></tr>
     <tr><th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">T2 (Early)</th>
 <td headers="stub_1_2 .row_1" class="gt_row gt_right">0.0</td>
@@ -2539,8 +2604,8 @@ report_table(report_transpose(bi), format = report_format)
 <td headers="stub_1_2 .row_4" class="gt_row gt_right">83.3</td>
 <td headers="stub_1_2 .row_5" class="gt_row gt_right">9.5</td>
 <td headers="stub_1_2 .row_6" class="gt_row gt_left">[3, 18]</td>
-<td headers="stub_1_2 .row_7" class="gt_row gt_right">3.0</td>
-<td headers="stub_1_2 .row_8" class="gt_row gt_left">[2, 7]</td></tr>
+<td headers="stub_1_2 .row_7" class="gt_row gt_right">3.3</td>
+<td headers="stub_1_2 .row_8" class="gt_row gt_left">[1, 7]</td></tr>
     <tr><th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">T3 (Late)</th>
 <td headers="stub_1_3 .row_1" class="gt_row gt_right">83.3</td>
 <td headers="stub_1_3 .row_2" class="gt_row gt_right">16.7</td>
@@ -2551,13 +2616,13 @@ report_table(report_transpose(bi), format = report_format)
 <td headers="stub_1_3 .row_7" class="gt_row gt_right">3.1</td>
 <td headers="stub_1_3 .row_8" class="gt_row gt_left">[0, 5]</td></tr>
     <tr><th id="stub_1_4" scope="row" class="gt_row gt_left gt_stub">T4 (Last)</th>
-<td headers="stub_1_4 .row_1" class="gt_row gt_right">8.3</td>
-<td headers="stub_1_4 .row_2" class="gt_row gt_right">58.3</td>
+<td headers="stub_1_4 .row_1" class="gt_row gt_right">0.0</td>
+<td headers="stub_1_4 .row_2" class="gt_row gt_right">66.7</td>
 <td headers="stub_1_4 .row_3" class="gt_row gt_right">0.0</td>
 <td headers="stub_1_4 .row_4" class="gt_row gt_right">33.3</td>
-<td headers="stub_1_4 .row_5" class="gt_row gt_right">13.8</td>
+<td headers="stub_1_4 .row_5" class="gt_row gt_right">13.2</td>
 <td headers="stub_1_4 .row_6" class="gt_row gt_left">[3, 18]</td>
-<td headers="stub_1_4 .row_7" class="gt_row gt_right">2.8</td>
+<td headers="stub_1_4 .row_7" class="gt_row gt_right">2.6</td>
 <td headers="stub_1_4 .row_8" class="gt_row gt_left">[1, 5]</td></tr>
     <tr><th id="stub_1_5" scope="row" class="gt_row gt_left gt_stub">T5 (Safe)</th>
 <td headers="stub_1_5 .row_1" class="gt_row gt_right">100.0</td>
@@ -2573,10 +2638,10 @@ report_table(report_transpose(bi), format = report_format)
 <td headers="stub_1_6 .row_2" class="gt_row gt_right">0.0</td>
 <td headers="stub_1_6 .row_3" class="gt_row gt_right">16.7</td>
 <td headers="stub_1_6 .row_4" class="gt_row gt_right">83.3</td>
-<td headers="stub_1_6 .row_5" class="gt_row gt_right">7.5</td>
+<td headers="stub_1_6 .row_5" class="gt_row gt_right">7.8</td>
 <td headers="stub_1_6 .row_6" class="gt_row gt_left">[3, 18]</td>
-<td headers="stub_1_6 .row_7" class="gt_row gt_right">3.1</td>
-<td headers="stub_1_6 .row_8" class="gt_row gt_left">[1, 6]</td></tr>
+<td headers="stub_1_6 .row_7" class="gt_row gt_right">3.2</td>
+<td headers="stub_1_6 .row_8" class="gt_row gt_left">[1, 7]</td></tr>
   </tbody>
 
 </table>
@@ -3087,19 +3152,19 @@ report_table(pmda, format = report_format)
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers=".label" class="gt_row gt_left">Patients mean</td>
-<td headers=".scenario_1" class="gt_row gt_right">11.2</td>
+<td headers=".scenario_1" class="gt_row gt_right">11.5</td>
 <td headers=".scenario_2" class="gt_row gt_right">9.5</td>
 <td headers=".scenario_3" class="gt_row gt_right">18.0</td>
-<td headers=".scenario_4" class="gt_row gt_right">13.8</td>
+<td headers=".scenario_4" class="gt_row gt_right">13.2</td>
 <td headers=".scenario_5" class="gt_row gt_right">18.0</td>
-<td headers=".scenario_6" class="gt_row gt_right">7.5</td></tr>
+<td headers=".scenario_6" class="gt_row gt_right">7.8</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">DLTs mean</td>
-<td headers=".scenario_1" class="gt_row gt_right">3.8</td>
-<td headers=".scenario_2" class="gt_row gt_right">3.0</td>
+<td headers=".scenario_1" class="gt_row gt_right">3.9</td>
+<td headers=".scenario_2" class="gt_row gt_right">3.3</td>
 <td headers=".scenario_3" class="gt_row gt_right">3.1</td>
-<td headers=".scenario_4" class="gt_row gt_right">2.8</td>
+<td headers=".scenario_4" class="gt_row gt_right">2.6</td>
 <td headers=".scenario_5" class="gt_row gt_right">1.5</td>
-<td headers=".scenario_6" class="gt_row gt_right">3.1</td></tr>
+<td headers=".scenario_6" class="gt_row gt_right">3.2</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">Stop: Toxicity (%)</td>
 <td headers=".scenario_1" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
@@ -3111,18 +3176,18 @@ report_table(pmda, format = report_format)
 <td headers=".scenario_1" class="gt_row gt_right">33.3</td>
 <td headers=".scenario_2" class="gt_row gt_right">16.7</td>
 <td headers=".scenario_3" class="gt_row gt_right">16.7</td>
-<td headers=".scenario_4" class="gt_row gt_right">58.3</td>
+<td headers=".scenario_4" class="gt_row gt_right">66.7</td>
 <td headers=".scenario_5" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_6" class="gt_row gt_right">0.0</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">Maximum patients without MTD (%)</td>
-<td headers=".scenario_1" class="gt_row gt_right">8.3</td>
+<td headers=".scenario_1" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_2" class="gt_row gt_right">8.3</td>
 <td headers=".scenario_3" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_4" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_5" class="gt_row gt_right">0.0</td>
-<td headers=".scenario_6" class="gt_row gt_right">0.0</td></tr>
+<td headers=".scenario_6" class="gt_row gt_right">8.3</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">MTD overestimated (%)</td>
-<td headers=".scenario_1" class="gt_row gt_right">8.3</td>
+<td headers=".scenario_1" class="gt_row gt_right">16.7</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_3" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_4" class="gt_row gt_right">0.0</td>
@@ -3618,24 +3683,24 @@ report_table(merck, format = report_format)
       <th colspan="8" class="gt_group_heading" scope="colgroup" id="T1 (First)">T1 (First)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T1 (First) stub_1_1 .column_1" class="gt_row gt_right">2.0 (1.7)</td>
-<td headers="T1 (First) stub_1_1 .column_2" class="gt_row gt_right">1.7 (2.0)</td>
+<td headers="T1 (First) stub_1_1 .column_1" class="gt_row gt_right">1.7 (1.0)</td>
+<td headers="T1 (First) stub_1_1 .column_2" class="gt_row gt_right">2.2 (2.2)</td>
 <td headers="T1 (First) stub_1_1 .column_3" class="gt_row gt_right">0.1 (0.3)</td>
 <td headers="T1 (First) stub_1_1 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T1 (First) stub_1_1 .column_5" class="gt_row gt_right">3.8 (1.5)</td>
+<td headers="T1 (First) stub_1_1 .column_5" class="gt_row gt_right">3.9 (1.7)</td>
 <td headers="T1 (First) stub_1_1 .column_6" class="gt_row gt_right">—</td>
 <td headers="T1 (First) stub_1_1 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T1 (First) stub_1_2 .column_1" class="gt_row gt_right">7.8 (5.8)</td>
-<td headers="T1 (First) stub_1_2 .column_2" class="gt_row gt_right">3.2 (4.1)</td>
+<td headers="T1 (First) stub_1_2 .column_1" class="gt_row gt_right">7.0 (4.5)</td>
+<td headers="T1 (First) stub_1_2 .column_2" class="gt_row gt_right">4.2 (4.5)</td>
 <td headers="T1 (First) stub_1_2 .column_3" class="gt_row gt_right">0.2 (0.9)</td>
 <td headers="T1 (First) stub_1_2 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T1 (First) stub_1_2 .column_5" class="gt_row gt_right">11.2 (7.3)</td>
+<td headers="T1 (First) stub_1_2 .column_5" class="gt_row gt_right">11.5 (7.2)</td>
 <td headers="T1 (First) stub_1_2 .column_6" class="gt_row gt_right">—</td>
 <td headers="T1 (First) stub_1_2 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T1 (First) stub_1_3 .column_1" class="gt_row gt_right">33.3</td>
-<td headers="T1 (First) stub_1_3 .column_2" class="gt_row gt_right">8.3</td>
+<td headers="T1 (First) stub_1_3 .column_2" class="gt_row gt_right">16.7</td>
 <td headers="T1 (First) stub_1_3 .column_3" class="gt_row gt_right">0.0</td>
 <td headers="T1 (First) stub_1_3 .column_4" class="gt_row gt_right">0.0</td>
 <td headers="T1 (First) stub_1_3 .column_5" class="gt_row gt_right">—</td>
@@ -3653,19 +3718,19 @@ report_table(merck, format = report_format)
       <th colspan="8" class="gt_group_heading" scope="colgroup" id="T2 (Early)">T2 (Early)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_5" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T2 (Early) stub_1_5 .column_1" class="gt_row gt_right">2.5 (1.2)</td>
-<td headers="T2 (Early) stub_1_5 .column_2" class="gt_row gt_right">0.5 (1.0)</td>
+<td headers="T2 (Early) stub_1_5 .column_1" class="gt_row gt_right">2.6 (1.8)</td>
+<td headers="T2 (Early) stub_1_5 .column_2" class="gt_row gt_right">0.8 (1.4)</td>
 <td headers="T2 (Early) stub_1_5 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T2 (Early) stub_1_5 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T2 (Early) stub_1_5 .column_5" class="gt_row gt_right">3.0 (1.7)</td>
+<td headers="T2 (Early) stub_1_5 .column_5" class="gt_row gt_right">3.3 (2.1)</td>
 <td headers="T2 (Early) stub_1_5 .column_6" class="gt_row gt_right">—</td>
 <td headers="T2 (Early) stub_1_5 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_6" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T2 (Early) stub_1_6 .column_1" class="gt_row gt_right">8.0 (4.1)</td>
-<td headers="T2 (Early) stub_1_6 .column_2" class="gt_row gt_right">1.5 (3.0)</td>
+<td headers="T2 (Early) stub_1_6 .column_1" class="gt_row gt_right">7.5 (4.7)</td>
+<td headers="T2 (Early) stub_1_6 .column_2" class="gt_row gt_right">2.0 (4.5)</td>
 <td headers="T2 (Early) stub_1_6 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T2 (Early) stub_1_6 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T2 (Early) stub_1_6 .column_5" class="gt_row gt_right">9.5 (6.0)</td>
+<td headers="T2 (Early) stub_1_6 .column_5" class="gt_row gt_right">9.5 (6.2)</td>
 <td headers="T2 (Early) stub_1_6 .column_6" class="gt_row gt_right">—</td>
 <td headers="T2 (Early) stub_1_6 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_7" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
@@ -3689,16 +3754,16 @@ report_table(merck, format = report_format)
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_9" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T3 (Late) stub_1_9 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T3 (Late) stub_1_9 .column_2" class="gt_row gt_right">2.1 (1.4)</td>
-<td headers="T3 (Late) stub_1_9 .column_3" class="gt_row gt_right">1.0 (1.3)</td>
+<td headers="T3 (Late) stub_1_9 .column_2" class="gt_row gt_right">1.8 (1.4)</td>
+<td headers="T3 (Late) stub_1_9 .column_3" class="gt_row gt_right">1.2 (1.2)</td>
 <td headers="T3 (Late) stub_1_9 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T3 (Late) stub_1_9 .column_5" class="gt_row gt_right">3.1 (1.4)</td>
+<td headers="T3 (Late) stub_1_9 .column_5" class="gt_row gt_right">3.1 (1.3)</td>
 <td headers="T3 (Late) stub_1_9 .column_6" class="gt_row gt_right">—</td>
 <td headers="T3 (Late) stub_1_9 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_10" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T3 (Late) stub_1_10 .column_1" class="gt_row gt_right">3.0 (0.0)</td>
-<td headers="T3 (Late) stub_1_10 .column_2" class="gt_row gt_right">12.2 (3.0)</td>
-<td headers="T3 (Late) stub_1_10 .column_3" class="gt_row gt_right">2.8 (3.0)</td>
+<td headers="T3 (Late) stub_1_10 .column_1" class="gt_row gt_right">3.2 (0.9)</td>
+<td headers="T3 (Late) stub_1_10 .column_2" class="gt_row gt_right">11.2 (3.9)</td>
+<td headers="T3 (Late) stub_1_10 .column_3" class="gt_row gt_right">3.5 (3.6)</td>
 <td headers="T3 (Late) stub_1_10 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T3 (Late) stub_1_10 .column_5" class="gt_row gt_right">18.0 (0.0)</td>
 <td headers="T3 (Late) stub_1_10 .column_6" class="gt_row gt_right">—</td>
@@ -3723,25 +3788,25 @@ report_table(merck, format = report_format)
       <th colspan="8" class="gt_group_heading" scope="colgroup" id="T4 (Last)">T4 (Last)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_13" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T4 (Last) stub_1_13 .column_1" class="gt_row gt_right">1.2 (1.2)</td>
+<td headers="T4 (Last) stub_1_13 .column_1" class="gt_row gt_right">1.0 (0.9)</td>
 <td headers="T4 (Last) stub_1_13 .column_2" class="gt_row gt_right">1.2 (1.8)</td>
-<td headers="T4 (Last) stub_1_13 .column_3" class="gt_row gt_right">0.4 (1.0)</td>
+<td headers="T4 (Last) stub_1_13 .column_3" class="gt_row gt_right">0.3 (0.9)</td>
 <td headers="T4 (Last) stub_1_13 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T4 (Last) stub_1_13 .column_5" class="gt_row gt_right">2.8 (1.2)</td>
+<td headers="T4 (Last) stub_1_13 .column_5" class="gt_row gt_right">2.6 (1.3)</td>
 <td headers="T4 (Last) stub_1_13 .column_6" class="gt_row gt_right">—</td>
 <td headers="T4 (Last) stub_1_13 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_14" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T4 (Last) stub_1_14 .column_1" class="gt_row gt_right">5.5 (2.2)</td>
+<td headers="T4 (Last) stub_1_14 .column_1" class="gt_row gt_right">5.2 (2.6)</td>
 <td headers="T4 (Last) stub_1_14 .column_2" class="gt_row gt_right">6.8 (5.4)</td>
-<td headers="T4 (Last) stub_1_14 .column_3" class="gt_row gt_right">1.5 (3.5)</td>
+<td headers="T4 (Last) stub_1_14 .column_3" class="gt_row gt_right">1.2 (3.0)</td>
 <td headers="T4 (Last) stub_1_14 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T4 (Last) stub_1_14 .column_5" class="gt_row gt_right">13.8 (6.5)</td>
+<td headers="T4 (Last) stub_1_14 .column_5" class="gt_row gt_right">13.2 (7.1)</td>
 <td headers="T4 (Last) stub_1_14 .column_6" class="gt_row gt_right">—</td>
 <td headers="T4 (Last) stub_1_14 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_15" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
-<td headers="T4 (Last) stub_1_15 .column_1" class="gt_row gt_right">8.3</td>
-<td headers="T4 (Last) stub_1_15 .column_2" class="gt_row gt_right">41.7</td>
-<td headers="T4 (Last) stub_1_15 .column_3" class="gt_row gt_right">16.7</td>
+<td headers="T4 (Last) stub_1_15 .column_1" class="gt_row gt_right">0.0</td>
+<td headers="T4 (Last) stub_1_15 .column_2" class="gt_row gt_right">58.3</td>
+<td headers="T4 (Last) stub_1_15 .column_3" class="gt_row gt_right">8.3</td>
 <td headers="T4 (Last) stub_1_15 .column_4" class="gt_row gt_right">0.0</td>
 <td headers="T4 (Last) stub_1_15 .column_5" class="gt_row gt_right">—</td>
 <td headers="T4 (Last) stub_1_15 .column_6" class="gt_row gt_right">0.0</td>
@@ -3759,24 +3824,24 @@ report_table(merck, format = report_format)
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_17" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T5 (Safe) stub_1_17 .column_1" class="gt_row gt_right">0.1 (0.3)</td>
-<td headers="T5 (Safe) stub_1_17 .column_2" class="gt_row gt_right">0.7 (1.0)</td>
-<td headers="T5 (Safe) stub_1_17 .column_3" class="gt_row gt_right">0.8 (1.0)</td>
+<td headers="T5 (Safe) stub_1_17 .column_2" class="gt_row gt_right">0.5 (0.9)</td>
+<td headers="T5 (Safe) stub_1_17 .column_3" class="gt_row gt_right">0.9 (1.0)</td>
 <td headers="T5 (Safe) stub_1_17 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T5 (Safe) stub_1_17 .column_5" class="gt_row gt_right">1.5 (1.1)</td>
 <td headers="T5 (Safe) stub_1_17 .column_6" class="gt_row gt_right">—</td>
 <td headers="T5 (Safe) stub_1_17 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_18" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T5 (Safe) stub_1_18 .column_1" class="gt_row gt_right">3.2 (0.9)</td>
-<td headers="T5 (Safe) stub_1_18 .column_2" class="gt_row gt_right">9.5 (5.2)</td>
-<td headers="T5 (Safe) stub_1_18 .column_3" class="gt_row gt_right">5.2 (5.4)</td>
+<td headers="T5 (Safe) stub_1_18 .column_1" class="gt_row gt_right">3.8 (1.4)</td>
+<td headers="T5 (Safe) stub_1_18 .column_2" class="gt_row gt_right">8.5 (4.6)</td>
+<td headers="T5 (Safe) stub_1_18 .column_3" class="gt_row gt_right">5.8 (5.0)</td>
 <td headers="T5 (Safe) stub_1_18 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T5 (Safe) stub_1_18 .column_5" class="gt_row gt_right">18.0 (0.0)</td>
 <td headers="T5 (Safe) stub_1_18 .column_6" class="gt_row gt_right">—</td>
 <td headers="T5 (Safe) stub_1_18 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_19" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T5 (Safe) stub_1_19 .column_1" class="gt_row gt_right">0.0</td>
-<td headers="T5 (Safe) stub_1_19 .column_2" class="gt_row gt_right">41.7</td>
-<td headers="T5 (Safe) stub_1_19 .column_3" class="gt_row gt_right">58.3</td>
+<td headers="T5 (Safe) stub_1_19 .column_2" class="gt_row gt_right">33.3</td>
+<td headers="T5 (Safe) stub_1_19 .column_3" class="gt_row gt_right">66.7</td>
 <td headers="T5 (Safe) stub_1_19 .column_4" class="gt_row gt_right">0.0</td>
 <td headers="T5 (Safe) stub_1_19 .column_5" class="gt_row gt_right">—</td>
 <td headers="T5 (Safe) stub_1_19 .column_6" class="gt_row gt_right">0.0</td>
@@ -3793,19 +3858,19 @@ report_table(merck, format = report_format)
       <th colspan="8" class="gt_group_heading" scope="colgroup" id="T6 (Toxic)">T6 (Toxic)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_21" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T6 (Toxic) stub_1_21 .column_1" class="gt_row gt_right">2.3 (1.2)</td>
+<td headers="T6 (Toxic) stub_1_21 .column_1" class="gt_row gt_right">2.4 (1.2)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_2" class="gt_row gt_right">0.8 (1.4)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T6 (Toxic) stub_1_21 .column_5" class="gt_row gt_right">3.1 (1.5)</td>
+<td headers="T6 (Toxic) stub_1_21 .column_5" class="gt_row gt_right">3.2 (1.6)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_6" class="gt_row gt_right">—</td>
 <td headers="T6 (Toxic) stub_1_21 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_22" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T6 (Toxic) stub_1_22 .column_1" class="gt_row gt_right">5.5 (3.6)</td>
+<td headers="T6 (Toxic) stub_1_22 .column_1" class="gt_row gt_right">5.8 (3.9)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_2" class="gt_row gt_right">2.0 (4.5)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_4" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T6 (Toxic) stub_1_22 .column_5" class="gt_row gt_right">7.5 (6.1)</td>
+<td headers="T6 (Toxic) stub_1_22 .column_5" class="gt_row gt_right">7.8 (6.3)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_6" class="gt_row gt_right">—</td>
 <td headers="T6 (Toxic) stub_1_22 .column_7" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_23" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
@@ -3815,7 +3880,7 @@ report_table(merck, format = report_format)
 <td headers="T6 (Toxic) stub_1_23 .column_4" class="gt_row gt_right">0.0</td>
 <td headers="T6 (Toxic) stub_1_23 .column_5" class="gt_row gt_right">—</td>
 <td headers="T6 (Toxic) stub_1_23 .column_6" class="gt_row gt_right">16.7</td>
-<td headers="T6 (Toxic) stub_1_23 .column_7" class="gt_row gt_right">16.7</td></tr>
+<td headers="T6 (Toxic) stub_1_23 .column_7" class="gt_row gt_right">25.0</td></tr>
     <tr><th id="stub_1_24" scope="row" class="gt_row gt_left gt_stub">True P(DLT):</th>
 <td headers="T6 (Toxic) stub_1_24 .column_1" class="gt_row gt_right">0.450</td>
 <td headers="T6 (Toxic) stub_1_24 .column_2" class="gt_row gt_right">0.500</td>
@@ -3846,14 +3911,14 @@ patient counts, including zero-count doses. These complement the tables.
 plot(oc, type = "doseSelected", ncol = 2)
 ```
 
-![plot of chunk reporting-selection-plot](reporting-simulation-results-figures/reporting-selection-plot-1.png)
+![](reporting-simulation-results-figures/reporting-selection-plot-1.png)<!-- -->
 
 
 ``` r
 plot(oc, type = "nPatients", ncol = 2)
 ```
 
-![plot of chunk reporting-patients-plot](reporting-simulation-results-figures/reporting-patients-plot-1.png)
+![](reporting-simulation-results-figures/reporting-patients-plot-1.png)<!-- -->
 
 Use `plot_type` to display the distribution of per-trial patient counts at each
 dose. Each trial contributes one count per grid dose, including zero when that
@@ -3864,13 +3929,13 @@ dose was unvisited. These plots share the same scenario facets as the barplots.
 plot(oc, type = "nPatients", plot_type = "boxplot", ncol = 2)
 ```
 
-![plot of chunk reporting-patient-distributions](reporting-simulation-results-figures/reporting-patient-distributions-1.png)
+![](reporting-simulation-results-figures/reporting-patient-distributions-1.png)<!-- -->
 
 ``` r
 plot(oc, type = "nPatients", plot_type = "violin", ncol = 2)
 ```
 
-![plot of chunk reporting-patient-distributions](reporting-simulation-results-figures/reporting-patient-distributions-2.png)
+![](reporting-simulation-results-figures/reporting-patient-distributions-2.png)<!-- -->
 
 ## Inspect, paginate, and export
 
@@ -3882,7 +3947,7 @@ post-processed without parsing rounded strings.
 ``` r
 as.data.frame(pmda)[1:3, c("scenario", "stat", "value", "formatted")]
 #>     scenario       stat value formatted
-#> 1 T1 (First) n_pat_mean 11.25      11.2
+#> 1 T1 (First) n_pat_mean  11.5      11.5
 #> 2 T2 (Early) n_pat_mean   9.5       9.5
 #> 3  T3 (Late) n_pat_mean    18      18.0
 ```
@@ -4365,12 +4430,12 @@ report_table(report_paginate(pmda, max_cols = 4), format = report_format)
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers=".label" class="gt_row gt_left">Patients mean</td>
-<td headers=".scenario_1" class="gt_row gt_right">11.2</td>
+<td headers=".scenario_1" class="gt_row gt_right">11.5</td>
 <td headers=".scenario_2" class="gt_row gt_right">9.5</td>
 <td headers=".scenario_3" class="gt_row gt_right">18.0</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">DLTs mean</td>
-<td headers=".scenario_1" class="gt_row gt_right">3.8</td>
-<td headers=".scenario_2" class="gt_row gt_right">3.0</td>
+<td headers=".scenario_1" class="gt_row gt_right">3.9</td>
+<td headers=".scenario_2" class="gt_row gt_right">3.3</td>
 <td headers=".scenario_3" class="gt_row gt_right">3.1</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">Stop: Toxicity (%)</td>
 <td headers=".scenario_1" class="gt_row gt_right">0.0</td>
@@ -4381,11 +4446,11 @@ report_table(report_paginate(pmda, max_cols = 4), format = report_format)
 <td headers=".scenario_2" class="gt_row gt_right">16.7</td>
 <td headers=".scenario_3" class="gt_row gt_right">16.7</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">Maximum patients without MTD (%)</td>
-<td headers=".scenario_1" class="gt_row gt_right">8.3</td>
+<td headers=".scenario_1" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_2" class="gt_row gt_right">8.3</td>
 <td headers=".scenario_3" class="gt_row gt_right">0.0</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">MTD overestimated (%)</td>
-<td headers=".scenario_1" class="gt_row gt_right">8.3</td>
+<td headers=".scenario_1" class="gt_row gt_right">16.7</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_3" class="gt_row gt_right">0.0</td></tr>
   </tbody>
@@ -4862,25 +4927,25 @@ report_table(report_paginate(pmda, max_cols = 4), format = report_format)
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers=".label" class="gt_row gt_left">Patients mean</td>
-<td headers=".scenario_1" class="gt_row gt_right">13.8</td>
+<td headers=".scenario_1" class="gt_row gt_right">13.2</td>
 <td headers=".scenario_2" class="gt_row gt_right">18.0</td>
-<td headers=".scenario_3" class="gt_row gt_right">7.5</td></tr>
+<td headers=".scenario_3" class="gt_row gt_right">7.8</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">DLTs mean</td>
-<td headers=".scenario_1" class="gt_row gt_right">2.8</td>
+<td headers=".scenario_1" class="gt_row gt_right">2.6</td>
 <td headers=".scenario_2" class="gt_row gt_right">1.5</td>
-<td headers=".scenario_3" class="gt_row gt_right">3.1</td></tr>
+<td headers=".scenario_3" class="gt_row gt_right">3.2</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">Stop: Toxicity (%)</td>
 <td headers=".scenario_1" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_3" class="gt_row gt_right">16.7</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">MTD correct (%)</td>
-<td headers=".scenario_1" class="gt_row gt_right">58.3</td>
+<td headers=".scenario_1" class="gt_row gt_right">66.7</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_3" class="gt_row gt_right">0.0</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">Maximum patients without MTD (%)</td>
 <td headers=".scenario_1" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
-<td headers=".scenario_3" class="gt_row gt_right">0.0</td></tr>
+<td headers=".scenario_3" class="gt_row gt_right">8.3</td></tr>
     <tr><td headers=".label" class="gt_row gt_left">MTD overestimated (%)</td>
 <td headers=".scenario_1" class="gt_row gt_right">0.0</td>
 <td headers=".scenario_2" class="gt_row gt_right">0.0</td>
@@ -5365,18 +5430,18 @@ report_table(
       <th colspan="5" class="gt_group_heading" scope="colgroup" id="T1 (First)">T1 (First)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T1 (First) stub_1_1 .column_1" class="gt_row gt_right">2.0 (1.7)</td>
-<td headers="T1 (First) stub_1_1 .column_2" class="gt_row gt_right">1.7 (2.0)</td>
+<td headers="T1 (First) stub_1_1 .column_1" class="gt_row gt_right">1.7 (1.0)</td>
+<td headers="T1 (First) stub_1_1 .column_2" class="gt_row gt_right">2.2 (2.2)</td>
 <td headers="T1 (First) stub_1_1 .column_3" class="gt_row gt_right">0.1 (0.3)</td>
-<td headers="T1 (First) stub_1_1 .column_4" class="gt_row gt_right">3.8 (1.5)</td></tr>
+<td headers="T1 (First) stub_1_1 .column_4" class="gt_row gt_right">3.9 (1.7)</td></tr>
     <tr><th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T1 (First) stub_1_2 .column_1" class="gt_row gt_right">7.8 (5.8)</td>
-<td headers="T1 (First) stub_1_2 .column_2" class="gt_row gt_right">3.2 (4.1)</td>
+<td headers="T1 (First) stub_1_2 .column_1" class="gt_row gt_right">7.0 (4.5)</td>
+<td headers="T1 (First) stub_1_2 .column_2" class="gt_row gt_right">4.2 (4.5)</td>
 <td headers="T1 (First) stub_1_2 .column_3" class="gt_row gt_right">0.2 (0.9)</td>
-<td headers="T1 (First) stub_1_2 .column_4" class="gt_row gt_right">11.2 (7.3)</td></tr>
+<td headers="T1 (First) stub_1_2 .column_4" class="gt_row gt_right">11.5 (7.2)</td></tr>
     <tr><th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T1 (First) stub_1_3 .column_1" class="gt_row gt_right">33.3</td>
-<td headers="T1 (First) stub_1_3 .column_2" class="gt_row gt_right">8.3</td>
+<td headers="T1 (First) stub_1_3 .column_2" class="gt_row gt_right">16.7</td>
 <td headers="T1 (First) stub_1_3 .column_3" class="gt_row gt_right">0.0</td>
 <td headers="T1 (First) stub_1_3 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_4" scope="row" class="gt_row gt_left gt_stub">True P(DLT):</th>
@@ -5388,15 +5453,15 @@ report_table(
       <th colspan="5" class="gt_group_heading" scope="colgroup" id="T2 (Early)">T2 (Early)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_5" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T2 (Early) stub_1_5 .column_1" class="gt_row gt_right">2.5 (1.2)</td>
-<td headers="T2 (Early) stub_1_5 .column_2" class="gt_row gt_right">0.5 (1.0)</td>
+<td headers="T2 (Early) stub_1_5 .column_1" class="gt_row gt_right">2.6 (1.8)</td>
+<td headers="T2 (Early) stub_1_5 .column_2" class="gt_row gt_right">0.8 (1.4)</td>
 <td headers="T2 (Early) stub_1_5 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T2 (Early) stub_1_5 .column_4" class="gt_row gt_right">3.0 (1.7)</td></tr>
+<td headers="T2 (Early) stub_1_5 .column_4" class="gt_row gt_right">3.3 (2.1)</td></tr>
     <tr><th id="stub_1_6" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T2 (Early) stub_1_6 .column_1" class="gt_row gt_right">8.0 (4.1)</td>
-<td headers="T2 (Early) stub_1_6 .column_2" class="gt_row gt_right">1.5 (3.0)</td>
+<td headers="T2 (Early) stub_1_6 .column_1" class="gt_row gt_right">7.5 (4.7)</td>
+<td headers="T2 (Early) stub_1_6 .column_2" class="gt_row gt_right">2.0 (4.5)</td>
 <td headers="T2 (Early) stub_1_6 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T2 (Early) stub_1_6 .column_4" class="gt_row gt_right">9.5 (6.0)</td></tr>
+<td headers="T2 (Early) stub_1_6 .column_4" class="gt_row gt_right">9.5 (6.2)</td></tr>
     <tr><th id="stub_1_7" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T2 (Early) stub_1_7 .column_1" class="gt_row gt_right">8.3</td>
 <td headers="T2 (Early) stub_1_7 .column_2" class="gt_row gt_right">8.3</td>
@@ -5412,13 +5477,13 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_9" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T3 (Late) stub_1_9 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T3 (Late) stub_1_9 .column_2" class="gt_row gt_right">2.1 (1.4)</td>
-<td headers="T3 (Late) stub_1_9 .column_3" class="gt_row gt_right">1.0 (1.3)</td>
-<td headers="T3 (Late) stub_1_9 .column_4" class="gt_row gt_right">3.1 (1.4)</td></tr>
+<td headers="T3 (Late) stub_1_9 .column_2" class="gt_row gt_right">1.8 (1.4)</td>
+<td headers="T3 (Late) stub_1_9 .column_3" class="gt_row gt_right">1.2 (1.2)</td>
+<td headers="T3 (Late) stub_1_9 .column_4" class="gt_row gt_right">3.1 (1.3)</td></tr>
     <tr><th id="stub_1_10" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T3 (Late) stub_1_10 .column_1" class="gt_row gt_right">3.0 (0.0)</td>
-<td headers="T3 (Late) stub_1_10 .column_2" class="gt_row gt_right">12.2 (3.0)</td>
-<td headers="T3 (Late) stub_1_10 .column_3" class="gt_row gt_right">2.8 (3.0)</td>
+<td headers="T3 (Late) stub_1_10 .column_1" class="gt_row gt_right">3.2 (0.9)</td>
+<td headers="T3 (Late) stub_1_10 .column_2" class="gt_row gt_right">11.2 (3.9)</td>
+<td headers="T3 (Late) stub_1_10 .column_3" class="gt_row gt_right">3.5 (3.6)</td>
 <td headers="T3 (Late) stub_1_10 .column_4" class="gt_row gt_right">18.0 (0.0)</td></tr>
     <tr><th id="stub_1_11" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T3 (Late) stub_1_11 .column_1" class="gt_row gt_right">0.0</td>
@@ -5434,19 +5499,19 @@ report_table(
       <th colspan="5" class="gt_group_heading" scope="colgroup" id="T4 (Last)">T4 (Last)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_13" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T4 (Last) stub_1_13 .column_1" class="gt_row gt_right">1.2 (1.2)</td>
+<td headers="T4 (Last) stub_1_13 .column_1" class="gt_row gt_right">1.0 (0.9)</td>
 <td headers="T4 (Last) stub_1_13 .column_2" class="gt_row gt_right">1.2 (1.8)</td>
-<td headers="T4 (Last) stub_1_13 .column_3" class="gt_row gt_right">0.4 (1.0)</td>
-<td headers="T4 (Last) stub_1_13 .column_4" class="gt_row gt_right">2.8 (1.2)</td></tr>
+<td headers="T4 (Last) stub_1_13 .column_3" class="gt_row gt_right">0.3 (0.9)</td>
+<td headers="T4 (Last) stub_1_13 .column_4" class="gt_row gt_right">2.6 (1.3)</td></tr>
     <tr><th id="stub_1_14" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T4 (Last) stub_1_14 .column_1" class="gt_row gt_right">5.5 (2.2)</td>
+<td headers="T4 (Last) stub_1_14 .column_1" class="gt_row gt_right">5.2 (2.6)</td>
 <td headers="T4 (Last) stub_1_14 .column_2" class="gt_row gt_right">6.8 (5.4)</td>
-<td headers="T4 (Last) stub_1_14 .column_3" class="gt_row gt_right">1.5 (3.5)</td>
-<td headers="T4 (Last) stub_1_14 .column_4" class="gt_row gt_right">13.8 (6.5)</td></tr>
+<td headers="T4 (Last) stub_1_14 .column_3" class="gt_row gt_right">1.2 (3.0)</td>
+<td headers="T4 (Last) stub_1_14 .column_4" class="gt_row gt_right">13.2 (7.1)</td></tr>
     <tr><th id="stub_1_15" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
-<td headers="T4 (Last) stub_1_15 .column_1" class="gt_row gt_right">8.3</td>
-<td headers="T4 (Last) stub_1_15 .column_2" class="gt_row gt_right">41.7</td>
-<td headers="T4 (Last) stub_1_15 .column_3" class="gt_row gt_right">16.7</td>
+<td headers="T4 (Last) stub_1_15 .column_1" class="gt_row gt_right">0.0</td>
+<td headers="T4 (Last) stub_1_15 .column_2" class="gt_row gt_right">58.3</td>
+<td headers="T4 (Last) stub_1_15 .column_3" class="gt_row gt_right">8.3</td>
 <td headers="T4 (Last) stub_1_15 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_16" scope="row" class="gt_row gt_left gt_stub">True P(DLT):</th>
 <td headers="T4 (Last) stub_1_16 .column_1" class="gt_row gt_right">0.170</td>
@@ -5458,18 +5523,18 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_17" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T5 (Safe) stub_1_17 .column_1" class="gt_row gt_right">0.1 (0.3)</td>
-<td headers="T5 (Safe) stub_1_17 .column_2" class="gt_row gt_right">0.7 (1.0)</td>
-<td headers="T5 (Safe) stub_1_17 .column_3" class="gt_row gt_right">0.8 (1.0)</td>
+<td headers="T5 (Safe) stub_1_17 .column_2" class="gt_row gt_right">0.5 (0.9)</td>
+<td headers="T5 (Safe) stub_1_17 .column_3" class="gt_row gt_right">0.9 (1.0)</td>
 <td headers="T5 (Safe) stub_1_17 .column_4" class="gt_row gt_right">1.5 (1.1)</td></tr>
     <tr><th id="stub_1_18" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T5 (Safe) stub_1_18 .column_1" class="gt_row gt_right">3.2 (0.9)</td>
-<td headers="T5 (Safe) stub_1_18 .column_2" class="gt_row gt_right">9.5 (5.2)</td>
-<td headers="T5 (Safe) stub_1_18 .column_3" class="gt_row gt_right">5.2 (5.4)</td>
+<td headers="T5 (Safe) stub_1_18 .column_1" class="gt_row gt_right">3.8 (1.4)</td>
+<td headers="T5 (Safe) stub_1_18 .column_2" class="gt_row gt_right">8.5 (4.6)</td>
+<td headers="T5 (Safe) stub_1_18 .column_3" class="gt_row gt_right">5.8 (5.0)</td>
 <td headers="T5 (Safe) stub_1_18 .column_4" class="gt_row gt_right">18.0 (0.0)</td></tr>
     <tr><th id="stub_1_19" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T5 (Safe) stub_1_19 .column_1" class="gt_row gt_right">0.0</td>
-<td headers="T5 (Safe) stub_1_19 .column_2" class="gt_row gt_right">41.7</td>
-<td headers="T5 (Safe) stub_1_19 .column_3" class="gt_row gt_right">58.3</td>
+<td headers="T5 (Safe) stub_1_19 .column_2" class="gt_row gt_right">33.3</td>
+<td headers="T5 (Safe) stub_1_19 .column_3" class="gt_row gt_right">66.7</td>
 <td headers="T5 (Safe) stub_1_19 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_20" scope="row" class="gt_row gt_left gt_stub">True P(DLT):</th>
 <td headers="T5 (Safe) stub_1_20 .column_1" class="gt_row gt_right">0.040</td>
@@ -5480,15 +5545,15 @@ report_table(
       <th colspan="5" class="gt_group_heading" scope="colgroup" id="T6 (Toxic)">T6 (Toxic)</th>
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_21" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
-<td headers="T6 (Toxic) stub_1_21 .column_1" class="gt_row gt_right">2.3 (1.2)</td>
+<td headers="T6 (Toxic) stub_1_21 .column_1" class="gt_row gt_right">2.4 (1.2)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_2" class="gt_row gt_right">0.8 (1.4)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T6 (Toxic) stub_1_21 .column_4" class="gt_row gt_right">3.1 (1.5)</td></tr>
+<td headers="T6 (Toxic) stub_1_21 .column_4" class="gt_row gt_right">3.2 (1.6)</td></tr>
     <tr><th id="stub_1_22" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
-<td headers="T6 (Toxic) stub_1_22 .column_1" class="gt_row gt_right">5.5 (3.6)</td>
+<td headers="T6 (Toxic) stub_1_22 .column_1" class="gt_row gt_right">5.8 (3.9)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_2" class="gt_row gt_right">2.0 (4.5)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_3" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T6 (Toxic) stub_1_22 .column_4" class="gt_row gt_right">7.5 (6.1)</td></tr>
+<td headers="T6 (Toxic) stub_1_22 .column_4" class="gt_row gt_right">7.8 (6.3)</td></tr>
     <tr><th id="stub_1_23" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T6 (Toxic) stub_1_23 .column_1" class="gt_row gt_right">8.3</td>
 <td headers="T6 (Toxic) stub_1_23 .column_2" class="gt_row gt_right">8.3</td>
@@ -5973,12 +6038,12 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T1 (First) stub_1_1 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T1 (First) stub_1_1 .column_2" class="gt_row gt_right">3.8 (1.5)</td>
+<td headers="T1 (First) stub_1_1 .column_2" class="gt_row gt_right">3.9 (1.7)</td>
 <td headers="T1 (First) stub_1_1 .column_3" class="gt_row gt_right">—</td>
 <td headers="T1 (First) stub_1_1 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
 <td headers="T1 (First) stub_1_2 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T1 (First) stub_1_2 .column_2" class="gt_row gt_right">11.2 (7.3)</td>
+<td headers="T1 (First) stub_1_2 .column_2" class="gt_row gt_right">11.5 (7.2)</td>
 <td headers="T1 (First) stub_1_2 .column_3" class="gt_row gt_right">—</td>
 <td headers="T1 (First) stub_1_2 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
@@ -5996,12 +6061,12 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_5" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T2 (Early) stub_1_5 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T2 (Early) stub_1_5 .column_2" class="gt_row gt_right">3.0 (1.7)</td>
+<td headers="T2 (Early) stub_1_5 .column_2" class="gt_row gt_right">3.3 (2.1)</td>
 <td headers="T2 (Early) stub_1_5 .column_3" class="gt_row gt_right">—</td>
 <td headers="T2 (Early) stub_1_5 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_6" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
 <td headers="T2 (Early) stub_1_6 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T2 (Early) stub_1_6 .column_2" class="gt_row gt_right">9.5 (6.0)</td>
+<td headers="T2 (Early) stub_1_6 .column_2" class="gt_row gt_right">9.5 (6.2)</td>
 <td headers="T2 (Early) stub_1_6 .column_3" class="gt_row gt_right">—</td>
 <td headers="T2 (Early) stub_1_6 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_7" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
@@ -6019,7 +6084,7 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_9" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T3 (Late) stub_1_9 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T3 (Late) stub_1_9 .column_2" class="gt_row gt_right">3.1 (1.4)</td>
+<td headers="T3 (Late) stub_1_9 .column_2" class="gt_row gt_right">3.1 (1.3)</td>
 <td headers="T3 (Late) stub_1_9 .column_3" class="gt_row gt_right">—</td>
 <td headers="T3 (Late) stub_1_9 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_10" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
@@ -6042,12 +6107,12 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_13" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T4 (Last) stub_1_13 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T4 (Last) stub_1_13 .column_2" class="gt_row gt_right">2.8 (1.2)</td>
+<td headers="T4 (Last) stub_1_13 .column_2" class="gt_row gt_right">2.6 (1.3)</td>
 <td headers="T4 (Last) stub_1_13 .column_3" class="gt_row gt_right">—</td>
 <td headers="T4 (Last) stub_1_13 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_14" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
 <td headers="T4 (Last) stub_1_14 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T4 (Last) stub_1_14 .column_2" class="gt_row gt_right">13.8 (6.5)</td>
+<td headers="T4 (Last) stub_1_14 .column_2" class="gt_row gt_right">13.2 (7.1)</td>
 <td headers="T4 (Last) stub_1_14 .column_3" class="gt_row gt_right">—</td>
 <td headers="T4 (Last) stub_1_14 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_15" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
@@ -6088,19 +6153,19 @@ report_table(
     </tr>
     <tr class="gt_row_group_first"><th id="stub_1_21" scope="row" class="gt_row gt_left gt_stub">Patients with DLTs, mean (SD)</th>
 <td headers="T6 (Toxic) stub_1_21 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T6 (Toxic) stub_1_21 .column_2" class="gt_row gt_right">3.1 (1.5)</td>
+<td headers="T6 (Toxic) stub_1_21 .column_2" class="gt_row gt_right">3.2 (1.6)</td>
 <td headers="T6 (Toxic) stub_1_21 .column_3" class="gt_row gt_right">—</td>
 <td headers="T6 (Toxic) stub_1_21 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_22" scope="row" class="gt_row gt_left gt_stub">Patients, mean (SD)</th>
 <td headers="T6 (Toxic) stub_1_22 .column_1" class="gt_row gt_right">0.0 (0.0)</td>
-<td headers="T6 (Toxic) stub_1_22 .column_2" class="gt_row gt_right">7.5 (6.1)</td>
+<td headers="T6 (Toxic) stub_1_22 .column_2" class="gt_row gt_right">7.8 (6.3)</td>
 <td headers="T6 (Toxic) stub_1_22 .column_3" class="gt_row gt_right">—</td>
 <td headers="T6 (Toxic) stub_1_22 .column_4" class="gt_row gt_right">—</td></tr>
     <tr><th id="stub_1_23" scope="row" class="gt_row gt_left gt_stub">Dose selected:</th>
 <td headers="T6 (Toxic) stub_1_23 .column_1" class="gt_row gt_right">0.0</td>
 <td headers="T6 (Toxic) stub_1_23 .column_2" class="gt_row gt_right">—</td>
 <td headers="T6 (Toxic) stub_1_23 .column_3" class="gt_row gt_right">16.7</td>
-<td headers="T6 (Toxic) stub_1_23 .column_4" class="gt_row gt_right">16.7</td></tr>
+<td headers="T6 (Toxic) stub_1_23 .column_4" class="gt_row gt_right">25.0</td></tr>
     <tr><th id="stub_1_24" scope="row" class="gt_row gt_left gt_stub">True P(DLT):</th>
 <td headers="T6 (Toxic) stub_1_24 .column_1" class="gt_row gt_right">0.600</td>
 <td headers="T6 (Toxic) stub_1_24 .column_2" class="gt_row gt_right">—</td>
@@ -6583,44 +6648,44 @@ report_table(report_transpose(prior_table), format = report_format)
   </thead>
   <tbody class="gt_table_body">
     <tr><th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">p_[0,0.2)</th>
-<td headers="stub_1_1 .row_1" class="gt_row gt_right">0.856</td>
-<td headers="stub_1_1 .row_2" class="gt_row gt_right">0.760</td>
-<td headers="stub_1_1 .row_3" class="gt_row gt_right">0.332</td>
-<td headers="stub_1_1 .row_4" class="gt_row gt_right">0.016</td></tr>
+<td headers="stub_1_1 .row_1" class="gt_row gt_right">0.882</td>
+<td headers="stub_1_1 .row_2" class="gt_row gt_right">0.768</td>
+<td headers="stub_1_1 .row_3" class="gt_row gt_right">0.296</td>
+<td headers="stub_1_1 .row_4" class="gt_row gt_right">0.006</td></tr>
     <tr><th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">p_[0.2,0.35)</th>
-<td headers="stub_1_2 .row_1" class="gt_row gt_right">0.076</td>
-<td headers="stub_1_2 .row_2" class="gt_row gt_right">0.104</td>
-<td headers="stub_1_2 .row_3" class="gt_row gt_right">0.268</td>
-<td headers="stub_1_2 .row_4" class="gt_row gt_right">0.048</td></tr>
+<td headers="stub_1_2 .row_1" class="gt_row gt_right">0.066</td>
+<td headers="stub_1_2 .row_2" class="gt_row gt_right">0.128</td>
+<td headers="stub_1_2 .row_3" class="gt_row gt_right">0.292</td>
+<td headers="stub_1_2 .row_4" class="gt_row gt_right">0.038</td></tr>
     <tr><th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">p_[0.35,1]</th>
-<td headers="stub_1_3 .row_1" class="gt_row gt_right">0.068</td>
-<td headers="stub_1_3 .row_2" class="gt_row gt_right">0.136</td>
-<td headers="stub_1_3 .row_3" class="gt_row gt_right">0.400</td>
-<td headers="stub_1_3 .row_4" class="gt_row gt_right">0.936</td></tr>
+<td headers="stub_1_3 .row_1" class="gt_row gt_right">0.052</td>
+<td headers="stub_1_3 .row_2" class="gt_row gt_right">0.104</td>
+<td headers="stub_1_3 .row_3" class="gt_row gt_right">0.412</td>
+<td headers="stub_1_3 .row_4" class="gt_row gt_right">0.956</td></tr>
     <tr><th id="stub_1_4" scope="row" class="gt_row gt_left gt_stub">mean</th>
-<td headers="stub_1_4 .row_1" class="gt_row gt_right">0.081</td>
-<td headers="stub_1_4 .row_2" class="gt_row gt_right">0.137</td>
-<td headers="stub_1_4 .row_3" class="gt_row gt_right">0.326</td>
-<td headers="stub_1_4 .row_4" class="gt_row gt_right">0.733</td></tr>
+<td headers="stub_1_4 .row_1" class="gt_row gt_right">0.068</td>
+<td headers="stub_1_4 .row_2" class="gt_row gt_right">0.124</td>
+<td headers="stub_1_4 .row_3" class="gt_row gt_right">0.329</td>
+<td headers="stub_1_4 .row_4" class="gt_row gt_right">0.765</td></tr>
     <tr><th id="stub_1_5" scope="row" class="gt_row gt_left gt_stub">sd</th>
-<td headers="stub_1_5 .row_1" class="gt_row gt_right">0.148</td>
-<td headers="stub_1_5 .row_2" class="gt_row gt_right">0.179</td>
-<td headers="stub_1_5 .row_3" class="gt_row gt_right">0.196</td>
-<td headers="stub_1_5 .row_4" class="gt_row gt_right">0.220</td></tr>
+<td headers="stub_1_5 .row_1" class="gt_row gt_right">0.129</td>
+<td headers="stub_1_5 .row_2" class="gt_row gt_right">0.163</td>
+<td headers="stub_1_5 .row_3" class="gt_row gt_right">0.183</td>
+<td headers="stub_1_5 .row_4" class="gt_row gt_right">0.199</td></tr>
     <tr><th id="stub_1_6" scope="row" class="gt_row gt_left gt_stub">q2.5</th>
 <td headers="stub_1_6 .row_1" class="gt_row gt_right">0.000</td>
 <td headers="stub_1_6 .row_2" class="gt_row gt_right">0.000</td>
-<td headers="stub_1_6 .row_3" class="gt_row gt_right">0.054</td>
-<td headers="stub_1_6 .row_4" class="gt_row gt_right">0.259</td></tr>
+<td headers="stub_1_6 .row_3" class="gt_row gt_right">0.050</td>
+<td headers="stub_1_6 .row_4" class="gt_row gt_right">0.288</td></tr>
     <tr><th id="stub_1_7" scope="row" class="gt_row gt_left gt_stub">q50</th>
-<td headers="stub_1_7 .row_1" class="gt_row gt_right">0.012</td>
-<td headers="stub_1_7 .row_2" class="gt_row gt_right">0.059</td>
-<td headers="stub_1_7 .row_3" class="gt_row gt_right">0.286</td>
-<td headers="stub_1_7 .row_4" class="gt_row gt_right">0.759</td></tr>
+<td headers="stub_1_7 .row_1" class="gt_row gt_right">0.008</td>
+<td headers="stub_1_7 .row_2" class="gt_row gt_right">0.050</td>
+<td headers="stub_1_7 .row_3" class="gt_row gt_right">0.310</td>
+<td headers="stub_1_7 .row_4" class="gt_row gt_right">0.802</td></tr>
     <tr><th id="stub_1_8" scope="row" class="gt_row gt_left gt_stub">q97.5</th>
-<td headers="stub_1_8 .row_1" class="gt_row gt_right">0.576</td>
-<td headers="stub_1_8 .row_2" class="gt_row gt_right">0.637</td>
-<td headers="stub_1_8 .row_3" class="gt_row gt_right">0.745</td>
+<td headers="stub_1_8 .row_1" class="gt_row gt_right">0.531</td>
+<td headers="stub_1_8 .row_2" class="gt_row gt_right">0.611</td>
+<td headers="stub_1_8 .row_3" class="gt_row gt_right">0.748</td>
 <td headers="stub_1_8 .row_4" class="gt_row gt_right">1.000</td></tr>
   </tbody>
 
