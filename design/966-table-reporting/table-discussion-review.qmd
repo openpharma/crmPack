@@ -336,6 +336,8 @@ rule-based definition and is not a synonym for highest-dose selection. The notes
 five particular stop reasons also require a design containing those rules;
 this example has toxicity, no-admissible-dose, and maximum-size rules.
 
+**Limitations:** `gt` doesn't support merging the two label cells for "Correct dose selected" horizontally for just one row. (See [GH issue](https://github.com/rstudio/gt/issues/1496))
+
 ## Plots
 
 PDF pp. 4–5: selection percentages and patient counts.
@@ -478,8 +480,6 @@ report_table(report_transpose(bi), format = report_format)
 (min–max) cells. `report_transpose()` now places scenarios in rows, with
 separate mean and range columns. No-recommendation
 percentage is computed directly, rather than by adding overlapping stop rules.
-
-**Limitations:** `gt` doesn't support merging the two label cells for "Correct dose selected" horizontally for just one row. (See [GH issue](https://github.com/rstudio/gt/issues/1496))
 
 # Merck
 
