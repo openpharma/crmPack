@@ -20,12 +20,14 @@ function is provided for this class.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{numeric})\cr target toxicity interval}
+\item{\code{target}}{(\code{numeric})\cr target toxicity interval or single rate}
 
-\item{\code{target_dose_interval}}{(\code{numeric})\cr corresponding target dose interval}
+\item{\code{target_dose_interval}}{(\code{numeric})\cr corresponding target dose interval
+or continuous dose at a single target rate (not necessarily on the dose grid)}
 
 \item{\code{true_mtd}}{(\code{numeric})\cr dose-grid level(s) whose true toxicity lies in
-the target interval, or is closest to a scalar target}
+the target interval, or the highest dose with true toxicity strictly below a scalar target
+(empty if no dose qualifies)}
 
 \item{\code{nsim}}{(\code{integer})\cr number of simulations}
 

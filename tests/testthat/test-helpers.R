@@ -846,6 +846,20 @@ test_that("plot for gtable works", {
   expect_doppel("plot-gtable", plot(result))
 })
 
+test_that("plotting and printing gtables each start a new page", {
+  withr::local_pdf(tempfile(fileext = ".pdf"))
+  old_hooks <- getHook("grid.newpage")
+  withr::defer(setHook("grid.newpage", old_hooks, action = "replace"))
+  pages <- 0L
+  setHook("grid.newpage", function() pages <<- pages + 1L, action = "replace")
+  result <- gridExtra::arrangeGrob(grid::rectGrob())
+
+  plot(result)
+  expect_identical(pages, 1L)
+  print(result)
+  expect_identical(pages, 2L)
+})
+
 # match_within_tolerance ----
 
 test_that("match_within_tolerance works as expected", {

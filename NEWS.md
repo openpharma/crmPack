@@ -1,3 +1,39 @@
+# Version 2.3.0.9000
+
+### Enhancements
+
+* `plot()` for `GeneralSimulations` gains `include_backfill`: `"pooled"`
+  preserves the default, `"no"` excludes backfill patients, and `"separate"`
+  overlays the two groups in different colours while preserving original
+  patient IDs. `"separate-number"` numbers patients from 1 within each group
+  and uses dashed backfill curves. Both separate modes show group-specific dose
+  proportions and trial-survival curves conditional on enrollment in that group.
+
+* `plot()` for `GeneralSimulations` gains `trajectory_style`, with diagonal
+  ribbons (the default), stepped ribbons, or intervals showing the full range,
+  interquartile range, and median. Intervals use observed cumulative
+  active-treatment cohort sizes by default; `patient_scale` can override these
+  positions.
+
+* `plot()` for `GeneralSimulations` now includes a `"trialsurvival"` component
+  showing the percentage of simulated trials reaching each patient number on a
+  0--100% axis. All three components are selected by default, with trial survival
+  below the aligned trajectory and doses tried on the right. Placebo patients
+  are excluded from both patient-based components.
+
+### Bug Fixes
+
+* Combined plots now start a new graphics page, restoring e.g. plot-history
+  navigation in RStudio instead of drawing over the current plot.
+
+* Simulation summaries now handle a single target toxicity rate explicitly: the
+  true MTD is the highest grid dose strictly below the target, and overdose counts,
+  selection success, plot markers, and printed labels follow this definition.
+  Reported means exclude missing values consistently with their quantiles.
+
+* Simulation trajectory plots now preserve explicit `patient_scale` positions
+  when only one supplied position lies within the plotted patient range.
+
 # Version 2.3.0
 
 ### New Features
