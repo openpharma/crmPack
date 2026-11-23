@@ -36,7 +36,7 @@ test_that("assert_equal works correctly", {
 
 test_that("check_probabilities returns TRUE as expected", {
   expect_equal(
-    c("x", "bounds_closed", "len", "unique", "sorted"),
+    c("x", "bounds_closed", "len", "unique", "sorted", "any.missing"),
     formalArgs(check_probabilities)
   )
   expect_true(check_probabilities(c(0.2, 0.1, 0.3)))
@@ -49,6 +49,12 @@ test_that("check_probabilities returns TRUE as expected", {
   expect_true(check_probabilities(c(0.6, 0.2, 0.1, 0.3), c(TRUE, FALSE)))
   expect_true(check_probabilities(c(0, 0.2, 0.1, 0.3), c(TRUE, FALSE)))
   expect_true(check_probabilities(c(0.1, 0.2, 0.3), FALSE, 3, TRUE, TRUE))
+})
+
+# Issue 982
+test_that("check_probabilities works correctly with any.missing", {
+  expect_equal(check_probabilities(c(0.1, NA)), "Contains missing values (element 2)") 
+  expect_true(check_probabilities(c(0.1, NA), any.missing = TRUE))
 })
 
 test_that("check_probabilities returns error message as expected", {

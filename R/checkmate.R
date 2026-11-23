@@ -164,7 +164,8 @@ check_probabilities <- function(
   bounds_closed = TRUE,
   len = NULL,
   unique = FALSE,
-  sorted = FALSE
+  sorted = FALSE,
+  any.missing = FALSE
 ) {
   assert_numeric(x)
   assert_logical(bounds_closed, min.len = 1, max.len = 2, any.missing = FALSE)
@@ -174,15 +175,21 @@ check_probabilities <- function(
   result <- check_numeric(
     x,
     finite = TRUE,
-    any.missing = FALSE,
+    any.missing = any.missing,
     len = len,
     unique = unique,
     sorted = sorted
   )
 
+  if (any.missing) {
+    y <- x[which(!is.na(x))]
+  } else {
+    y <- x
+  }
+
   if (isTRUE(result)) {
     in_bounds <- all(h_in_range(
-      x,
+      y,
       range = c(0L, 1L),
       bounds_closed = bounds_closed
     ))
