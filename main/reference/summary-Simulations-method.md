@@ -145,9 +145,9 @@ summary(mySims, truth = myTruth)
 #> Observed toxicity rate at dose most often selected: 14 %
 #> Fitted toxicity rate at dose most often selected : mean 27 % (27 %, 27 %) 
 #> Overdose probability at selected dose : mean 18 % (18 %, 18 %) 
-#> max_mtd : 104.39 
-#> mean_mtd : 22.55 
-#> median_mtd : 21.35 
+#> max_mtd : 106.66 
+#> mean_mtd : 22.05 
+#> median_mtd : 21.16 
 #> Stop reason triggered:
 #>  ≥ 3 cohorts dosed :  100 %
 #>  P(0.2 ≤ prob(DLE | NBD) ≤ 0.35) ≥ 0.5 :  100 %
